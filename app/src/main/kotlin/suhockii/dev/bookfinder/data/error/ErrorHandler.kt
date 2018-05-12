@@ -33,7 +33,7 @@ class ErrorHandler @Inject constructor(
 
                 it.cause is SocketTimeoutException -> ErrorType.NETWORK
 
-                it.cause is OutOfMemoryError -> ErrorType.OUT_OF_MEMORY
+                it is OutOfMemoryError -> ErrorType.OUT_OF_MEMORY
 
                 it.cause?.message?.contains(ERROR_MESSAGE_CORRUPTED_FILE) ?: false ->
                     ErrorType.CORRUPTED_FILE

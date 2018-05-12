@@ -55,3 +55,7 @@ open class CollapsingToolbarLayout2(ctx: Context): net.opacapp.multilinecollapsi
     }
 }
 
+@Throws(InterruptedException::class)
+fun checkThreadInterrupt() {
+    if (Thread.currentThread().isInterrupted) throw InterruptedException()
+}

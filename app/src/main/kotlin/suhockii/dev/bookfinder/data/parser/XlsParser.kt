@@ -1,6 +1,7 @@
 package suhockii.dev.bookfinder.data.parser
 
 import org.jetbrains.anko.AnkoLogger
+import suhockii.dev.bookfinder.checkThreadInterrupt
 import suhockii.dev.bookfinder.data.database.entity.BookEntity
 import suhockii.dev.bookfinder.data.network.interceptor.ProgressEmitter
 import suhockii.dev.bookfinder.data.parser.entity.XlsDocumentEntity
@@ -23,6 +24,7 @@ class XlsParser @Inject constructor(
         val matcher = Pattern.compile(REGEX_XLS_DATA).matcher(contentString)
 
         while (matcher.find()) {
+            checkThreadInterrupt()
             matcher.group().let {
                 allMatches.add(it.removeSurrounding(REGEX_XLS_CDATA_START, REGEX_XLS_CDATA_END))
             }
@@ -47,6 +49,7 @@ class XlsParser @Inject constructor(
             with(objectFieldsQueue) {
                 add(allMatches[index])
                 if (size == OBJECT_FIELD_COUNT) {
+                    checkThreadInterrupt()
                     booksData[currentCategory]!!.add(
                         BookEntity(
                             category = currentCategory!!,

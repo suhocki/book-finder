@@ -73,7 +73,9 @@ class InitialPresenter @Inject constructor(
         interactor.saveDocumentData(xlsDocument.data)
         val statistics = interactor.getBooksAndCategoriesCount()
         uiThread { viewState.showSuccess(statistics) }
-    }.apply { loadDatabaseTask = this }
+    }.apply {
+        loadDatabaseTask = this
+    }
 
     fun stopDownloading() = doAsync(errorHandler.errorReceiver) {
         loadDatabaseTask.cancel(true)
