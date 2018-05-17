@@ -1,4 +1,4 @@
-package suhockii.dev.bookfinder.presentation.initial
+package suhockii.dev.bookfinder.presentation.background
 
 import android.support.annotation.StringRes
 import com.arellomobile.mvp.MvpView
@@ -7,20 +7,14 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 import suhockii.dev.bookfinder.data.progress.ProgressStep
 
 @StateStrategyType(OneExecutionStateStrategy::class)
-interface InitialView : MvpView {
+interface BackgroundView : MvpView {
     fun showLoadingStep(step: ProgressStep)
 
     fun showSuccess(statistics: Pair<Int, Int>)
 
-    fun showMainScreen()
-
-    fun showInitialState()
+    fun cancelService()
 
     fun showError(@StringRes errorDescriptionRes: Int)
 
     fun showProgress(progressStep: ProgressStep, done: Boolean)
-
-    fun synchronizeWithBackground()
-
-    fun initBackgroundService()
 }

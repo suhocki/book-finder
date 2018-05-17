@@ -1,8 +1,8 @@
-package suhockii.dev.bookfinder.di.provider.ui
+package suhockii.dev.bookfinder.di.provider.presentation
 
 import android.support.v7.util.DiffUtil
-import suhockii.dev.bookfinder.presentation.categories.adapter.CategoryItemCallback
 import suhockii.dev.bookfinder.domain.model.Category
+import suhockii.dev.bookfinder.presentation.categories.adapter.CategoryItemCallback
 import javax.inject.Inject
 import javax.inject.Provider
 

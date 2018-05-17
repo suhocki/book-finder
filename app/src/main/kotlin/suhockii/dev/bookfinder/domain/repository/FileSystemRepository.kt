@@ -8,5 +8,7 @@ interface FileSystemRepository {
 
     fun unzip(fromFile: File, toDirectory: File): File
 
-    fun parseXlsDocument(xlsFile: File): XlsDocument
+    fun parseXlsStructure(xlsFile: File): ArrayList<String>
+
+    fun extractXlsDocument(strings: ArrayList<String>): XlsDocument
 }

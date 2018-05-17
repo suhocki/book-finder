@@ -2,88 +2,93 @@ package suhockii.dev.bookfinder.presentation.initial
 
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import suhockii.dev.bookfinder.R
 import suhockii.dev.bookfinder.data.error.ErrorHandler
+import suhockii.dev.bookfinder.data.error.ErrorListener
 import suhockii.dev.bookfinder.data.error.ErrorType
-import suhockii.dev.bookfinder.data.network.interceptor.ProgressEmitter
+import suhockii.dev.bookfinder.data.notifier.ComponentCommandListener
+import suhockii.dev.bookfinder.data.notifier.ComponentNotifier
+import suhockii.dev.bookfinder.data.progress.ProgressHandler
+import suhockii.dev.bookfinder.data.progress.ProgressListener
+import suhockii.dev.bookfinder.data.progress.ProgressStep
 import suhockii.dev.bookfinder.domain.InitialInteractor
-import java.util.concurrent.Future
 import javax.inject.Inject
 
 @InjectViewState
 class InitialPresenter @Inject constructor(
     private val interactor: InitialInteractor,
-    private val progressEmitter: ProgressEmitter,
-    private val errorHandler: ErrorHandler
-) : MvpPresenter<InitialView>(), AnkoLogger {
-
-    private lateinit var loadDatabaseTask: Future<Unit>
+    private val errorHandler: ErrorHandler,
+    private val progressHandler: ProgressHandler,
+    private val componentNotifier: ComponentNotifier
+) : MvpPresenter<InitialView>(), ComponentCommandListener, ErrorListener, ProgressListener {
 
     init {
-        errorHandler.subscriber = {
-            val errorDescriptionRes = when (it) {
-                ErrorType.NETWORK -> R.string.error_network
+        componentNotifier.addListener(this)
+        errorHandler.addListener(this)
+        progressHandler.addListener(this, UPDATE_INTERVAL)
+    }
 
-                ErrorType.OUT_OF_MEMORY -> R.string.out_of_memory
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
+        viewState.initBackgroundService()
+    }
 
-                ErrorType.CORRUPTED_FILE -> R.string.corrupted_file
+    override fun attachView(view: InitialView) {
+        super.attachView(view)
+        errorHandler.invokeLastError()
+        viewState.synchronizeWithBackground()
+    }
 
-                ErrorType.UNKNOWN -> R.string.error_unknown
-            }
-            doAsync { uiThread { viewState.showError(errorDescriptionRes) } }
+    fun flowFinished() =
+        doAsync(errorHandler.errorReceiver) {
+            interactor.setDatabaseLoaded()
+            uiThread { viewState.showMainScreen() }
+        }
+
+    override fun onLoadingStep(step: ProgressStep) {
+        doAsync(errorHandler.errorReceiver) {
+            uiThread { viewState.showLoadingStep(step) }
         }
     }
 
-    override fun destroyView(view: InitialView?) {
-        super.destroyView(view)
-        progressEmitter.subscriber = null
+    override fun onLoadingComplete(statistics: Pair<Int, Int>) {
+        doAsync(errorHandler.errorReceiver) {
+            uiThread { viewState.showSuccess(statistics) }
+        }
     }
 
-    fun loadDatabase() = doAsync(errorHandler.errorReceiver) {
-        var currentStep = ProgressStep.LOADING
-        progressEmitter.subscriber = { progress, done ->
-            uiThread {
-                viewState.showProgress(progress, done)
-                if (currentStep == ProgressStep.ANALYZING) {
-                    currentStep = ProgressStep.PARSING
-                    viewState.showLoadingStep(ProgressStep.PARSING)
-                }
-            }
+    override fun onLoadingCancelled() {
+        doAsync {
+            uiThread { viewState.showInitialState() }
         }
-        uiThread {
-            viewState.showLoadingStep(ProgressStep.LOADING)
-        }
-        val bytes = interactor.downloadDatabaseFile()
-        val zipFile = interactor.saveDatabaseFile(bytes)
-        uiThread {
-            viewState.showLoadingStep(ProgressStep.UNZIPPING)
-        }
-        val unzippedFile = interactor.unzip(zipFile, zipFile.parentFile)
-        uiThread {
-            currentStep = ProgressStep.ANALYZING
-            viewState.showLoadingStep(ProgressStep.ANALYZING)
-        }
-        val xlsDocument = interactor.parseXlsDocument(unzippedFile)
-        uiThread {
-            viewState.showLoadingStep(ProgressStep.SAVING)
-        }
-        interactor.saveDocumentData(xlsDocument.data)
-        val statistics = interactor.getBooksAndCategoriesCount()
-        uiThread { viewState.showSuccess(statistics) }
-    }.apply {
-        loadDatabaseTask = this
     }
 
-    fun stopDownloading() = doAsync(errorHandler.errorReceiver) {
-        loadDatabaseTask.cancel(true)
-        uiThread { viewState.showInitialViewState() }
+    override fun onError(error: ErrorType) = when (error) {
+        ErrorType.NETWORK -> R.string.error_network
+
+        ErrorType.OUT_OF_MEMORY -> R.string.out_of_memory
+
+        ErrorType.CORRUPTED_FILE -> R.string.corrupted_file
+
+        ErrorType.UNKNOWN -> R.string.error_unknown
+    }.let { errorRes ->
+        doAsync { uiThread { viewState.showError(errorRes) } }
     }
 
-    fun flowFinished() = doAsync(errorHandler.errorReceiver) {
-        interactor.setDatabaseLoaded()
-        uiThread { viewState.showMainScreen() }
+    override fun onProgress(progressStep: ProgressStep, done: Boolean) {
+        doAsync { uiThread { viewState.showProgress(progressStep, done) } }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        componentNotifier.removeListener(this)
+        errorHandler.removeListener(this)
+        progressHandler.removeListener(this)
+    }
+
+    companion object {
+        private const val UPDATE_INTERVAL = 100L
     }
 }

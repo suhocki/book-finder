@@ -4,6 +4,7 @@
     package="suhockii.dev.bookfinder">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
         android:name=".App"
@@ -25,7 +26,8 @@
         </activity>
 
         <activity
-            android:name=".presentation.initial.InitializationActivity"
+            android:name=".presentation.initial.InitialActivity"
+            android:launchMode="singleTop"
             android:theme="@style/Dialog" />
 
         <activity android:name=".presentation.categories.CategoriesActivity" />
@@ -49,6 +51,9 @@
                 android:value=".presentation.books.BooksActivity" />
         </activity>
 
+        <service
+            android:name=".presentation.background.BackgroundService"
+            android:exported="false" />
     </application>
 
 </manifest>

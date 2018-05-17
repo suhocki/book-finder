@@ -2,9 +2,10 @@
     <string name="app_name">Book Finder</string>
     <string name="database_load_need">Before using this application, download the book database file.</string>
     <string name="download">Download</string>
-    <string name="stop">Stop</string>
+    <string name="cancel">Cancel</string>
     <string name="_continue">Continue</string>
     <string name="retry">Retry</string>
+    <string name="in_background">In background</string>
     <string name="exit">Exit</string>
     <string name="downloading">Downloading</string>
     <string name="analyzing">Analyzing</string>

@@ -3,11 +3,13 @@ package suhockii.dev.bookfinder.data.network.interceptor
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
+import suhockii.dev.bookfinder.data.progress.ProgressHandler
+import suhockii.dev.bookfinder.data.progress.ProgressStep
 import java.io.IOException
 
 internal class ProgressResponseBody(
     private val responseBody: ResponseBody,
-    private val progressEmitter: ProgressEmitter
+    private val progressEmitter: ProgressHandler
 ) : ResponseBody() {
     private var bufferedSource: BufferedSource? = null
 
@@ -38,7 +40,10 @@ internal class ProgressResponseBody(
                 // read() returns the number of bytes read, or -1 if this source is exhausted.
                 totalBytesRead += if (bytesRead != -1L) bytesRead else 0
                 val downloadedPercent = (totalBytesRead / contentLength.toDouble() * 100).toInt()
-                progressEmitter.updateProgress(downloadedPercent, bytesRead == -1L)
+                progressEmitter.onProgress(
+                    ProgressStep.DOWNLOADING.apply { this.progress = downloadedPercent },
+                    bytesRead == -1L
+                )
                 return bytesRead
             }
         }

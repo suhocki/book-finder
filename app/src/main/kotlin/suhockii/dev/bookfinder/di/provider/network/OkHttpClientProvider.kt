@@ -12,7 +12,7 @@ class OkHttpClientProvider @Inject constructor(
 
     override fun get(): OkHttpClient =
         OkHttpClient.Builder()
-            .readTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(7, TimeUnit.SECONDS)
             .addInterceptor(progressInterceptor)
             .build()
 }

@@ -1,6 +1,7 @@
 package suhockii.dev.bookfinder.data.error
 
 import android.content.Context
+import okhttp3.internal.http2.StreamResetException
 import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.toast
 import retrofit2.HttpException
@@ -13,37 +14,60 @@ import javax.inject.Inject
 class ErrorHandler @Inject constructor(
     private val context: Context
 ) {
-    var subscriber: ((ErrorType) -> Unit)? = null
+    private val listeners = mutableListOf<ErrorListener>()
+    private var lastError: Throwable? = null
 
     val errorReceiver: (Throwable) -> Unit = {
         if (it !is InterruptedException &&
             it !is InterruptedIOException) {
-            handleError(it)
+            it.printStackTrace()
+            with(context) {
+                if (isAppOnForeground()) runOnUiThread { toast(it.message.toString()) }
+                else lastError = it
+            }
+            val errorType = getErrorType(it)
+            listeners.forEach { it.onError(errorType) }
         }
     }
 
-    private fun handleError(it: Throwable) {
-        it.printStackTrace()
-        with(context) { if (isAppOnForeground()) runOnUiThread { toast(it.message.toString()) } }
-        subscriber?.invoke(
-            when {
-                it.cause is UnknownHostException -> ErrorType.NETWORK
+    fun addListener(listener: ErrorListener) {
+        listeners.add(listener)
+    }
 
-                it.cause is HttpException -> ErrorType.NETWORK
+    fun removeListener(listener: ErrorListener) {
+        listeners.remove(listener)
+    }
 
-                it.cause is SocketTimeoutException -> ErrorType.NETWORK
+    private fun getErrorType(throwable: Throwable): ErrorType {
+        return when {
+            throwable is StreamResetException -> ErrorType.NETWORK
 
-                it is OutOfMemoryError -> ErrorType.OUT_OF_MEMORY
+            throwable.cause is UnknownHostException -> ErrorType.NETWORK
 
-                it.cause?.message?.contains(ERROR_MESSAGE_CORRUPTED_FILE) ?: false ->
-                    ErrorType.CORRUPTED_FILE
+            throwable is UnknownHostException -> ErrorType.NETWORK
 
-                it.cause?.message?.contains(ERROR_MESSAGE_INVALID_HOSTNAME) ?: false ->
-                    ErrorType.NETWORK
+            throwable.cause is HttpException -> ErrorType.NETWORK
 
-                else -> ErrorType.UNKNOWN
-            }
-        )
+            throwable.cause is SocketTimeoutException -> ErrorType.NETWORK
+
+            throwable is OutOfMemoryError -> ErrorType.OUT_OF_MEMORY
+
+            throwable.cause?.message?.contains(ERROR_MESSAGE_CORRUPTED_FILE) ?: false ->
+                ErrorType.CORRUPTED_FILE
+
+            throwable.cause?.message?.contains(ERROR_MESSAGE_INVALID_HOSTNAME) ?: false ->
+                ErrorType.NETWORK
+
+            else -> ErrorType.UNKNOWN
+        }
+    }
+
+    fun invokeLastError() {
+        lastError?.let {
+            errorReceiver.invoke(it)
+            lastError = null
+        }
+
     }
 
     companion object {

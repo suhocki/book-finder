@@ -7,7 +7,8 @@ import suhockii.dev.bookfinder.data.database.BooksDatabase
 import suhockii.dev.bookfinder.data.database.dao.BookDao
 import suhockii.dev.bookfinder.data.database.dao.CategoryDao
 import suhockii.dev.bookfinder.data.error.ErrorHandler
-import suhockii.dev.bookfinder.data.parser.XlsParser
+import suhockii.dev.bookfinder.data.notifier.ComponentNotifier
+import suhockii.dev.bookfinder.data.progress.ProgressHandler
 import suhockii.dev.bookfinder.data.repository.RoomRepository
 import suhockii.dev.bookfinder.data.repository.SharedPreferencesRepository
 import suhockii.dev.bookfinder.di.DatabaseFileName
@@ -24,22 +25,18 @@ class AppModule(context: Context) : Module() {
     init {
         bind(Context::class.java).toInstance(context)
 
-        //Database
         bind(String::class.java).withName(DatabaseFileName::class.java).toInstance(BuildConfig.DATABASE_FILE_NAME)
+        bind(String::class.java).withName(SharedPreferencesFileName::class.java).toInstance(BuildConfig.SHARED_PREFERENCES_FILE_NAME)
+
         bind(BooksDatabase::class.java).toProvider(BooksDatabaseProvider::class.java).providesSingletonInScope()
         bind(BookDao::class.java).toProvider(BookDaoProvider::class.java).providesSingletonInScope()
         bind(CategoryDao::class.java).toProvider(CategoryDaoProvider::class.java).providesSingletonInScope()
         bind(DatabaseRepository::class.java).to(RoomRepository::class.java).singletonInScope()
 
-        //Shared Preferences
-        bind(String::class.java).withName(SharedPreferencesFileName::class.java).toInstance(BuildConfig.SHARED_PREFERENCES_FILE_NAME)
         bind(SharedPreferences::class.java).toProvider(SharedPreferencesProvider::class.java).providesSingletonInScope()
-
-        //Tools
-        bind(XlsParser::class.java).singletonInScope()
         bind(ErrorHandler::class.java).singletonInScope()
-
-        //Repository
+        bind(ProgressHandler::class.java).singletonInScope()
+        bind(ComponentNotifier::class.java).singletonInScope()
         bind(SettingsRepository::class.java).to(SharedPreferencesRepository::class.java).singletonInScope()
     }
 }

@@ -1,10 +1,12 @@
 package suhockii.dev.bookfinder.data.repository
 
+import suhockii.dev.bookfinder.checkThreadInterrupt
 import suhockii.dev.bookfinder.data.parser.XlsParser
 import suhockii.dev.bookfinder.di.DownloadDirectoryPath
 import suhockii.dev.bookfinder.domain.model.XlsDocument
 import suhockii.dev.bookfinder.domain.repository.FileSystemRepository
 import java.io.*
+import java.util.*
 import java.util.zip.ZipInputStream
 import javax.inject.Inject
 
@@ -33,6 +35,7 @@ class LocalStorageRepository @Inject constructor(
             outputFile = File(toDirectory, zipInputStream.nextEntry.name)
             FileOutputStream(outputFile).use { fileOutputStream ->
                 while (zipInputStream.read(buffer).apply { count = this } != -1) {
+                    checkThreadInterrupt()
                     fileOutputStream.write(buffer, 0, count)
                 }
             }
@@ -40,7 +43,11 @@ class LocalStorageRepository @Inject constructor(
         return outputFile
     }
 
-    override fun parseXlsDocument(xlsFile: File): XlsDocument {
-        return xlsParser.parseXlsDocument(xlsFile)
+    override fun parseXlsStructure(xlsFile: File): ArrayList<String> {
+        return xlsParser.parseStructure(xlsFile)
+    }
+
+    override fun extractXlsDocument(strings: ArrayList<String>): XlsDocument {
+        return xlsParser.extractPayload(strings)
     }
 }

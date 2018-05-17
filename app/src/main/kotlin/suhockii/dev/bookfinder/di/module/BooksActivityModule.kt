@@ -1,9 +1,9 @@
 package suhockii.dev.bookfinder.di.module
 
 import android.support.v7.widget.LinearLayoutManager
-import suhockii.dev.bookfinder.di.provider.ui.BookItemCallbackProvider
-import suhockii.dev.bookfinder.di.provider.ui.BooksDifferProvider
-import suhockii.dev.bookfinder.di.provider.ui.LayoutManagerProvider
+import suhockii.dev.bookfinder.di.provider.presentation.BookItemCallbackProvider
+import suhockii.dev.bookfinder.di.provider.presentation.BooksDifferProvider
+import suhockii.dev.bookfinder.di.provider.presentation.LayoutManagerProvider
 import suhockii.dev.bookfinder.domain.model.Category
 import suhockii.dev.bookfinder.presentation.books.adapter.BookItemCallback
 import suhockii.dev.bookfinder.presentation.books.adapter.BooksAdapter

@@ -1,4 +1,4 @@
-package suhockii.dev.bookfinder.di.provider.ui
+package suhockii.dev.bookfinder.di.provider.presentation
 
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import suhockii.dev.bookfinder.domain.model.Category

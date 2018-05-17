@@ -3,8 +3,9 @@ package suhockii.dev.bookfinder.data.parser
 import org.jetbrains.anko.AnkoLogger
 import suhockii.dev.bookfinder.checkThreadInterrupt
 import suhockii.dev.bookfinder.data.database.entity.BookEntity
-import suhockii.dev.bookfinder.data.network.interceptor.ProgressEmitter
 import suhockii.dev.bookfinder.data.parser.entity.XlsDocumentEntity
+import suhockii.dev.bookfinder.data.progress.ProgressHandler
+import suhockii.dev.bookfinder.data.progress.ProgressStep
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStream
@@ -15,10 +16,10 @@ import javax.inject.Inject
 
 
 class XlsParser @Inject constructor(
-    private val progressListener: ProgressEmitter
+    private val progressListener: ProgressHandler
 ) : AnkoLogger {
 
-    fun parseXlsDocument(xlsFile: File): XlsDocumentEntity {
+    fun parseStructure(xlsFile: File): ArrayList<String> {
         val contentString = getStringFromFile(xlsFile)
         val allMatches = ArrayList<String>()
         val matcher = Pattern.compile(REGEX_XLS_DATA).matcher(contentString)
@@ -29,25 +30,29 @@ class XlsParser @Inject constructor(
                 allMatches.add(it.removeSurrounding(REGEX_XLS_CDATA_START, REGEX_XLS_CDATA_END))
             }
         }
+        return allMatches
+    }
 
+    fun extractPayload(strings: ArrayList<String>): XlsDocumentEntity {
         val booksData = mutableMapOf<String, MutableList<BookEntity>>()
         var categoryNamePosition = -1
         val objectFieldsQueue = ArrayDeque<String>()
         var currentCategory: String? = null
+        val stepParsing = ProgressStep.PARSING
 
-        for (index in POSITION_COLUMN_NAMES_END + 1 until allMatches.size) {
+        for (index in POSITION_COLUMN_NAMES_END + 1 until strings.size) {
             if (index == categoryNamePosition) continue
 
-            if (allMatches[index] == DATA_DELIMETER) {
+            if (strings[index] == DATA_DELIMETER) {
                 objectFieldsQueue.clear()
                 categoryNamePosition = index + 1
-                currentCategory = allMatches[categoryNamePosition]
+                currentCategory = strings[categoryNamePosition]
                 booksData[currentCategory] = mutableListOf()
                 continue
             }
 
             with(objectFieldsQueue) {
-                add(allMatches[index])
+                add(strings[index])
                 if (size == OBJECT_FIELD_COUNT) {
                     checkThreadInterrupt()
                     booksData[currentCategory]!!.add(
@@ -75,22 +80,23 @@ class XlsParser @Inject constructor(
                                     findValue(KEY_DESCRIPTION, shortDescription, fullDescription)
                         }
                     ).also {
-                        val progress = (index / allMatches.size.toDouble() * 100).toInt()
-                        progressListener.updateProgress(progress, false)
+                        val progress = (index / strings.size.toDouble() * 100).toInt()
+                        stepParsing.progress = progress
+                        progressListener.onProgress(stepParsing, false)
                     }
                 }
             }
         }
 
         return XlsDocumentEntity(
-            title = allMatches[POSITION_TITLE],
-            creationDate = allMatches[POSITION_CREATION_DATE],
-            columnNames = allMatches.subList(
+            title = strings[POSITION_TITLE],
+            creationDate = strings[POSITION_CREATION_DATE],
+            columnNames = strings.subList(
                 POSITION_COLUMN_NAMES_START,
                 POSITION_COLUMN_NAMES_END
             ),
             data = booksData
-        ).also { progressListener.updateProgress(booksData.size, true) }
+        ).also { progressListener.onProgress(ProgressStep.PARSING, true) }
     }
 
     private fun findValue(key: String, vararg strings: String): String? {

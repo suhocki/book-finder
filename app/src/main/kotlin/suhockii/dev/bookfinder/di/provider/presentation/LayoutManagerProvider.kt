@@ -1,4 +1,4 @@
-package suhockii.dev.bookfinder.di.provider.ui
+package suhockii.dev.bookfinder.di.provider.presentation
 
 import android.content.Context
 import android.support.v7.widget.LinearLayoutManager

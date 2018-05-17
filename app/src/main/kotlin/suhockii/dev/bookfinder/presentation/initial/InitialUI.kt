@@ -11,19 +11,22 @@ import suhockii.dev.bookfinder.R
 import suhockii.dev.bookfinder.attrResource
 import javax.inject.Inject
 
-class InitialUI @Inject constructor() : AnkoComponent<InitializationActivity> {
+class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
+
     internal lateinit var textTitle: TextView
     internal lateinit var textDescription: TextView
+    internal lateinit var ivTop: ImageView
+
     internal lateinit var textProgress: TextView
     internal lateinit var progressBar: View
     internal lateinit var btnExit: View
     internal lateinit var btnDownload: View
-    internal lateinit var btnStop: View
+    internal lateinit var btnCancel: View
     internal lateinit var btnContinue: View
     internal lateinit var btnRetry: View
-    internal lateinit var ivTop: ImageView
+    internal lateinit var btnInBackground: View
 
-    override fun createView(ui: AnkoContext<InitializationActivity>) = with(ui) {
+    override fun createView(ui: AnkoContext<InitialActivity>) = with(ui) {
 
         verticalLayout {
             frameLayout {
@@ -89,18 +92,18 @@ class InitialUI @Inject constructor() : AnkoComponent<InitializationActivity> {
             linearLayout {
                 textView(R.string.exit) {
                     btnExit = this
-                    onClick { owner.finish() }
+                    onClick { owner.exitApp() }
                 }
 
                 textView(R.string.download) {
                     btnDownload = this
-                    onClick { owner.presenter.loadDatabase() }
+                    onClick { owner.startDownloading() }
                 }
 
-                textView(R.string.stop) {
-                    btnStop = this
+                textView(R.string.cancel) {
+                    btnCancel = this
                     visibility = View.GONE
-                    onClick { owner.presenter.stopDownloading() }
+                    onClick { owner.cancelDownloading() }
                 }
 
                 textView(R.string._continue) {
@@ -112,7 +115,13 @@ class InitialUI @Inject constructor() : AnkoComponent<InitializationActivity> {
                 textView(R.string.retry) {
                     btnRetry = this
                     visibility = View.GONE
-                    onClick { owner.presenter.loadDatabase() }
+                    onClick { owner.startDownloading() }
+                }
+
+                textView(R.string.in_background) {
+                    btnInBackground = this
+                    visibility = View.GONE
+                    onClick { owner.finish() }
                 }
             }.applyRecursively { view ->
                 when (view) {

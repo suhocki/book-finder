@@ -6,7 +6,7 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.startActivity
 import suhockii.dev.bookfinder.di.DI
-import suhockii.dev.bookfinder.presentation.initial.InitializationActivity
+import suhockii.dev.bookfinder.presentation.initial.InitialActivity
 import suhockii.dev.bookfinder.presentation.categories.CategoriesActivity
 import toothpick.Toothpick
 
@@ -40,7 +40,7 @@ class SplashActivity : MvpAppCompatActivity(), SplashView {
     }
 
     override fun showInitializationScreen() {
-        startActivity<InitializationActivity>()
+        startActivity<InitialActivity>()
         finish()
     }
 }

@@ -1,6 +1,7 @@
 package suhockii.dev.bookfinder
 
 import android.app.Application
+import android.support.v7.app.AppCompatDelegate
 import suhockii.dev.bookfinder.di.DI
 import suhockii.dev.bookfinder.di.module.AppModule
 import toothpick.Toothpick
@@ -15,6 +16,7 @@ class App : Application() {
 
         initToothpick()
         initAppScope()
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     }
 
     private fun initToothpick() {
