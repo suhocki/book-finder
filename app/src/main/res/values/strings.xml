@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Book Finder</string>
+    <string name="app_name">MyBooks</string>
     <string name="database_load_need">Before using this application, download the book database file.</string>
     <string name="download">Download</string>
     <string name="cancel">Cancel</string>
