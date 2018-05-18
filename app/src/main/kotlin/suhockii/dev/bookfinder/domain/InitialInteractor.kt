@@ -7,6 +7,9 @@ class InitialInteractor @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
     fun setDatabaseLoaded() {
-        settingsRepository.isDatabaseLoaded = true
+        settingsRepository.databaseLoaded = true
     }
+
+    fun getDownloadStatistics() =
+        settingsRepository.downloadStatistics
 }

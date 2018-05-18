@@ -6,8 +6,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.startActivity
 import suhockii.dev.bookfinder.di.DI
-import suhockii.dev.bookfinder.presentation.initial.InitialActivity
 import suhockii.dev.bookfinder.presentation.categories.CategoriesActivity
+import suhockii.dev.bookfinder.presentation.initial.InitialActivity
 import toothpick.Toothpick
 
 
@@ -26,7 +26,6 @@ class SplashActivity : MvpAppCompatActivity(), SplashView {
         Toothpick.openScopes(DI.APP_SCOPE, DI.SPLASH_ACTIVITY_SCOPE).apply {
             Toothpick.inject(this@SplashActivity, this)
         }
-        presenter.checkIfDatabaseLoaded()
     }
 
     override fun onDestroy() {

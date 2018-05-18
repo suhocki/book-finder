@@ -30,15 +30,11 @@ class InitialPresenter @Inject constructor(
         progressHandler.addListener(this, UPDATE_INTERVAL)
     }
 
-    override fun onFirstViewAttach() {
-        super.onFirstViewAttach()
-        viewState.initBackgroundService()
-    }
-
     override fun attachView(view: InitialView) {
         super.attachView(view)
         errorHandler.invokeLastError()
         viewState.synchronizeWithBackground()
+        interactor.getDownloadStatistics()?.let { viewState.showSuccess(it) }
     }
 
     fun flowFinished() =

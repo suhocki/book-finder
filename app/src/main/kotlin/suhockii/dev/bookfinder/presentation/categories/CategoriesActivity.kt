@@ -5,6 +5,7 @@ import android.support.v7.widget.LinearLayoutManager
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import org.jetbrains.anko.notificationManager
 import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.startActivity
 import suhockii.dev.bookfinder.R
@@ -35,7 +36,10 @@ class CategoriesActivity : MvpAppCompatActivity(), CategoriesView, OnCategoryCli
     @ProvidePresenter
     fun providePresenter(): CategoriesPresenter =
         Toothpick.openScope(DI.APP_SCOPE)
-            .apply { installModules(CategoriesActivityModule()) }
+            .apply {
+                val startFromNotification = intent.extras?.containsKey(ARG_FROM_NOTIFICATION) ?: false
+                installModules(CategoriesActivityModule(startFromNotification))
+            }
             .getInstance(CategoriesPresenter::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -58,12 +62,17 @@ class CategoriesActivity : MvpAppCompatActivity(), CategoriesView, OnCategoryCli
         adapter.submitList(categories)
     }
 
+    override fun cancelAllNotifications() {
+        notificationManager.cancelAll()
+    }
+
     override fun onCategoryClick(category: Category) {
         startActivity<BooksActivity>(ARG_CATEGORY to category)
     }
 
     companion object {
         const val ARG_CATEGORY = "ARG_CATEGORY"
+        const val ARG_FROM_NOTIFICATION = "ARG_FROM_NOTIFICATION"
     }
 }
 

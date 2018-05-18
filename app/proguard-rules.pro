@@ -1,5 +1,4 @@
 # useless warnings
-
 -dontwarn com.google.auto.**
 -dontwarn com.google.common.**
 -dontwarn java.nio.**
@@ -11,11 +10,9 @@
 -dontwarn javax.tools.**
 
 # kotlin
-
 -dontwarn kotlin.reflect.jvm.internal.**
 
 # support libs
-
 -dontwarn android.support.design.**
 -keep class android.support.design.** { *; }
 -keep interface android.support.design.** { *; }
@@ -29,21 +26,20 @@
 -keep class android.support.v7.widget.RoundRectDrawable { *; }
 
 # moxy
-
 -dontwarn com.arellomobile.mvp.**
 
 # retrofit
-
 -dontnote retrofit2.Platform
 -dontwarn retrofit2.Platform$Java8
 -keepattributes Signature
 -keepattributes Exceptions
 
-# gson
+# okhttp
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn javax.annotation.**
+-dontwarn org.conscrypt.**
+-keepnames class okhttp3.internal.publicsuffix.PublicSuffixDatabase
 
--keepattributes Signature
--keepattributes *Annotation*
--keepattributes EnclosingMethod
--keep class sun.misc.Unsafe { *; }
--keep class com.google.gson.stream.** { *; }
--dontnote com.google.gson.**
+# di
+-adaptclassstrings **

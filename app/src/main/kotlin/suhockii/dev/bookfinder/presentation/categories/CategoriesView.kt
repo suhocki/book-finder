@@ -9,4 +9,6 @@ import suhockii.dev.bookfinder.domain.model.Category
 interface CategoriesView : MvpView {
 
     fun showCategories(categories: List<Category>)
+
+    fun cancelAllNotifications()
 }

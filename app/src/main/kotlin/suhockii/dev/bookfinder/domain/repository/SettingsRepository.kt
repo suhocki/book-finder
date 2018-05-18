@@ -1,5 +1,7 @@
 package suhockii.dev.bookfinder.domain.repository
 
 interface SettingsRepository {
-    var isDatabaseLoaded: Boolean
+    var databaseLoaded: Boolean
+
+    var downloadStatistics: Pair<Int, Int>?
 }

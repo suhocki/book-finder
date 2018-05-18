@@ -150,7 +150,9 @@ class DetailsUI @Inject constructor(
                         textView { text = book.status }.lparams(0, matchParent) { weight = 0.5f }
                     }
 
-                    divider(dip(16), dip(8))
+                    divider(dip(16), dip(8)).apply {
+                        book.description ?: let { setGone(this) }
+                    }
 
                     textView(R.string.description) {
                         book.description ?: let { setGone(this) }
@@ -160,7 +162,9 @@ class DetailsUI @Inject constructor(
                         textAppearance = R.style.TextAppearance_AppCompat_Subhead
                     }
 
-                    divider(dip(8), dip(16))
+                    divider(dip(8), dip(16)).apply {
+                        book.description ?: let { setGone(this) }
+                    }
 
                     textView {
                         book.description ?: let { setGone(this) }
@@ -195,11 +199,10 @@ class DetailsUI @Inject constructor(
         }
     }
 
-    private fun @AnkoViewDslMarker _LinearLayout.divider(top: Int, bottom: Int) {
+    private fun @AnkoViewDslMarker _LinearLayout.divider(top: Int, bottom: Int) =
         view { backgroundResource = R.color.gray }.lparams(matchParent, dip(2)) {
             setMargins(dip(0), top, dip(0), bottom)
         }
-    }
 
     private fun calculateWindowHeight(owner: DetailsActivity) {
         val display = owner.windowManager.defaultDisplay

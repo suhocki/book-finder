@@ -7,5 +7,5 @@ class SplashInteractor @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
     fun isDataLoaded() =
-        settingsRepository.isDatabaseLoaded
+        settingsRepository.databaseLoaded
 }

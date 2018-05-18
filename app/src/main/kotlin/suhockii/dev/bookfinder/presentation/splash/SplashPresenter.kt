@@ -13,9 +13,11 @@ class SplashPresenter @Inject constructor(
     private val errorHandler: ErrorHandler
 ) : MvpPresenter<SplashView>() {
 
-    fun checkIfDatabaseLoaded() =
+    override fun onFirstViewAttach() {
+        super.onFirstViewAttach()
         doAsync(errorHandler.errorReceiver) {
             if (interactor.isDataLoaded()) viewState.showMainScreen()
             else viewState.showInitializationScreen()
         }
+    }
 }

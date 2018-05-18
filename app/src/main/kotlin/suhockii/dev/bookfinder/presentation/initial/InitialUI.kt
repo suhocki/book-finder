@@ -1,6 +1,5 @@
 package suhockii.dev.bookfinder.presentation.initial
 
-import android.graphics.Typeface
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
@@ -30,7 +29,7 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
 
         verticalLayout {
             frameLayout {
-                backgroundResource = R.color.blue
+                backgroundResource = R.color.colorPrimary
 
                 imageView(R.drawable.ic_info) {
                     ivTop = this
@@ -42,9 +41,8 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
 
             textView(R.string.info) {
                 textTitle = this
-                textSizeDimen = R.dimen.title
                 gravity = Gravity.CENTER
-                typeface = Typeface.DEFAULT_BOLD
+                textAppearance = R.style.TextAppearance_AppCompat_Title
             }.lparams {
                 topMargin = dip(24)
                 leftMargin = dip(24)
@@ -63,8 +61,8 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
 
                 textView(resources.getString(R.string.database_load_need)) {
                     textDescription = this
+                    textAppearance = R.style.TextAppearance_AppCompat_Body1
                     setPadding(0, dip(6), 0, dip(6))
-                    textSizeDimen = R.dimen.description
                 }.lparams {
                     leftMargin = dip(24)
                     gravity = Gravity.CENTER_VERTICAL
@@ -72,7 +70,7 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
 
                 textView {
                     textProgress = this
-                    textSize = 12F
+                    textAppearance = R.style.TextAppearance_AppCompat_Body1
                 }.lparams {
                     gravity = Gravity.CENTER
                 }
@@ -83,10 +81,10 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
 
             frameLayout {
                 backgroundResource = R.color.gray
-            }.lparams(matchParent, dip(1)) {
+            }.lparams(matchParent, dip(2)) {
                 topMargin = dip(20)
-                leftMargin = dip(16)
-                rightMargin = dip(16)
+                leftMargin = dip(8)
+                rightMargin = dip(8)
             }
 
             linearLayout {
@@ -126,19 +124,16 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
             }.applyRecursively { view ->
                 when (view) {
                     is TextView -> with(view) {
-                        backgroundResource =
-                                context.attrResource(R.attr.selectableItemBackground)
-                        textSize = 14F
+                        backgroundResource = context.attrResource(R.attr.selectableItemBackground)
                         allCaps = true
-                        textColorResource = R.color.blue
-                        padding = dip(8)
-                        lparams {
-                            margin = dip(8)
-                        }
+                        textAppearance = R.style.TextAppearance_AppCompat_Body2
+                        setPadding(dip(4), dip(12), dip(4), dip(12))
+                        lparams { margin = dip(4) }
                     }
                 }
             }.lparams(wrapContent, dip(52)) {
                 gravity = Gravity.END
+                setMargins(dip(0), dip(0), dip(8), dip(0))
             }
         }
     }

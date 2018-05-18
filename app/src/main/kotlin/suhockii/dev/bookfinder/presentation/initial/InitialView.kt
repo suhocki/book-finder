@@ -21,6 +21,4 @@ interface InitialView : MvpView {
     fun showProgress(progressStep: ProgressStep, done: Boolean)
 
     fun synchronizeWithBackground()
-
-    fun initBackgroundService()
 }

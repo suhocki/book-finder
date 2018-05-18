@@ -92,15 +92,16 @@ class BackgroundService : MvpService(), BackgroundView {
         val title = getString(R.string.success)
         val (categoriesCount, booksCount) = statistics
         val description = getString(R.string.downloading_statistics, booksCount, categoriesCount)
-        val intentContinue = PendingIntent.getActivity(this, 0, intentFor<CategoriesActivity>(), 0)
-        val intentFor = intentFor<InitialActivity>()
+        val intentForContinue = intentFor<CategoriesActivity>(CategoriesActivity.ARG_FROM_NOTIFICATION to null)
+        val intentContinue = PendingIntent.getActivity(this, 0, intentForContinue, 0)
+        val intentForContent = intentFor<InitialActivity>()
             .apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 action = Intent.ACTION_MAIN
                 addCategory(Intent.CATEGORY_LAUNCHER)
             }
         val intentContent = PendingIntent
-            .getActivity(this, 0, intentFor, PendingIntent.FLAG_UPDATE_CURRENT)
+            .getActivity(this, 0, intentForContent, PendingIntent.FLAG_UPDATE_CURRENT)
         val style = NotificationCompat.BigTextStyle()
         val notification = getNotificationBuilder()
             .setSmallIcon(R.drawable.ic_success)
@@ -110,10 +111,12 @@ class BackgroundService : MvpService(), BackgroundView {
             .setPriority(NotificationCompat.PRIORITY_DEFAULT)
             .addAction(NotificationCompat.Action(0, getString(R.string._continue), intentContinue))
             .setStyle(style)
+            .setAutoCancel(true)
             .build()
             .apply { flags = Notification.FLAG_AUTO_CANCEL }
 
-        startForeground(NOTIFICATION_ID, notification)
+        stopForeground(true)
+        notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
     override fun showError(errorDescriptionRes: Int) {

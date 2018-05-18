@@ -51,18 +51,20 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
         layout.setContentView(this)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        if (isFinishing) {
-            unbindService(serviceConnection)
-            Toothpick.closeScope(DI.INITIAL_ACTIVITY_SCOPE)
-        }
-    }
-
-    override fun initBackgroundService() {
+    override fun onStart() {
+        super.onStart()
         intentFor<BackgroundService>().let {
             bindService(it, serviceConnection, Context.BIND_AUTO_CREATE)
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        unbindService(serviceConnection)
+    }
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isFinishing) Toothpick.closeScope(DI.INITIAL_ACTIVITY_SCOPE)
     }
 
     override fun showLoadingStep(step: ProgressStep) {

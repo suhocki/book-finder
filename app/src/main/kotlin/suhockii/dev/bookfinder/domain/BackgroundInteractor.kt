@@ -45,6 +45,10 @@ class BackgroundInteractor @Inject constructor(
     }
 
     fun setDatabaseLoaded() {
-        settingsRepository.isDatabaseLoaded = true
+        settingsRepository.databaseLoaded = true
+    }
+
+    fun setDownloadStatistics(statistics: Pair<Int, Int>) {
+        settingsRepository.downloadStatistics = statistics
     }
 }
