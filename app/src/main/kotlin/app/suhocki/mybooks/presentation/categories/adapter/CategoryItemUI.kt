@@ -5,6 +5,8 @@ import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import app.suhocki.mybooks.R
+import app.suhocki.mybooks.attrResource
 import org.jetbrains.anko.*
 import javax.inject.Inject
 
@@ -16,6 +18,7 @@ class CategoryItemUI @Inject constructor() : AnkoComponent<ViewGroup> {
 
         frameLayout {
             this@CategoryItemUI.parent = this
+            backgroundResource = context.attrResource(R.attr.selectableItemBackground)
 
             frameLayout {
 

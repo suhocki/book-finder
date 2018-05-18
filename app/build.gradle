@@ -4,12 +4,17 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply from: "$rootDir/common-methods.gradle"
 apply from: 'build-config.gradle'
+apply plugin: 'io.fabric'
 
 final userName = System.getProperty("user.name")
 final credentialsFolder = getCredentialsFolder(userName)
 
 final releaseKeystoreProperties = getKeystoreProperties(credentialsFolder + "release-keystore.properties")
 final debugKeystoreProperties = getKeystoreProperties(credentialsFolder + "debug-keystore.properties")
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
 
 android {
     compileSdkVersion 27
@@ -114,6 +119,9 @@ dependencies {
             "com.arello-mobile:moxy-compiler:$moxy_version",
             "android.arch.persistence.room:compiler:$room_version",
     )
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
+        transitive = true
+    }
 }
 
 configurations.all {

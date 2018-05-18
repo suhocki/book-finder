@@ -197,8 +197,8 @@ class BackgroundService : MvpService(), BackgroundView {
         const val COMMAND = "COMMAND"
         const val NOTIFICATION_ID = 1
         const val PROGRESS_MAX = 100
-        private const val CHANNEL_ID = "Book-Finder notifications"
-        private const val CHANNEL_NAME = "Book-Finder channel"
+        private const val CHANNEL_ID = "MyBooks notifications"
+        private const val CHANNEL_NAME = "MyBooks channel"
         private const val ARG_ACTION_CANCEL = "ARG_ACTION_CANCEL"
         private const val ARG_ACTION_RETRY = "ARG_ACTION_RETRY"
     }

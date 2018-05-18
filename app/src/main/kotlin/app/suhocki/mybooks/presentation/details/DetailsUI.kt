@@ -8,6 +8,10 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
+import app.suhocki.mybooks.*
+import app.suhocki.mybooks.domain.model.Book
+import com.crashlytics.android.answers.AddToCartEvent
+import com.crashlytics.android.answers.Answers
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
@@ -16,8 +20,8 @@ import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.nestedScrollView
-import app.suhocki.mybooks.*
-import app.suhocki.mybooks.domain.model.Book
+import java.math.BigDecimal
+import java.util.*
 import javax.inject.Inject
 
 
@@ -92,7 +96,7 @@ class DetailsUI @Inject constructor(
                     textView {
                         text = owner.getString(R.string.rubles, book.price)
                         textAppearance = R.style.TextAppearance_AppCompat_Headline
-                    }.lparams{
+                    }.lparams {
                         setMargins(dip(0), dip(0), dip(0), dip(16))
                     }
 
@@ -189,7 +193,17 @@ class DetailsUI @Inject constructor(
 
             floatingActionButton {
                 id = R.id.id_fab
-                onClick { owner.openLink(book.website) }
+                onClick {
+                    Answers.getInstance().logAddToCart(
+                        AddToCartEvent()
+                            .putItemPrice(BigDecimal.valueOf(book.price))
+                            .putCurrency(Currency.getInstance("RUB"))
+                            .putItemName(book.shortName)
+                            .putItemType(book.website)
+                            .putItemId(book.productCode)
+                    )
+                    owner.openLink(book.website)
+                }
                 useCompatPadding = true
                 imageResource = R.drawable.ic_buy
             }.lparams {

@@ -4,10 +4,11 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import app.suhocki.mybooks.R
+import app.suhocki.mybooks.analytics
+import app.suhocki.mybooks.attrResource
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import app.suhocki.mybooks.R
-import app.suhocki.mybooks.attrResource
 import javax.inject.Inject
 
 class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
@@ -90,36 +91,54 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
             linearLayout {
                 textView(R.string.exit) {
                     btnExit = this
-                    onClick { owner.exitApp() }
+                    onClick {
+                        analytics("Exit")
+                        owner.exitApp()
+                    }
                 }
 
                 textView(R.string.download) {
                     btnDownload = this
-                    onClick { owner.startDownloading() }
+                    onClick {
+                        owner.startDownloading()
+                        analytics("Download")
+                    }
                 }
 
                 textView(R.string.cancel) {
                     btnCancel = this
                     visibility = View.GONE
-                    onClick { owner.cancelDownloading() }
+                    onClick {
+                        analytics("Cancel")
+                        owner.cancelDownloading()
+                    }
                 }
 
                 textView(R.string._continue) {
                     btnContinue = this
                     visibility = View.GONE
-                    onClick { owner.presenter.flowFinished() }
+                    onClick {
+                        analytics("Continue")
+                        owner.presenter.flowFinished()
+                    }
                 }
 
                 textView(R.string.retry) {
                     btnRetry = this
                     visibility = View.GONE
-                    onClick { owner.startDownloading() }
+                    onClick {
+                        analytics("Retry")
+                        owner.startDownloading()
+                    }
                 }
 
                 textView(R.string.in_background) {
                     btnInBackground = this
                     visibility = View.GONE
-                    onClick { owner.finish() }
+                    onClick {
+                        analytics("Do in background")
+                        owner.finish()
+                    }
                 }
             }.applyRecursively { view ->
                 when (view) {
