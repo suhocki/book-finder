@@ -63,7 +63,6 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
                 textView(resources.getString(R.string.database_load_need)) {
                     textDescription = this
                     textAppearance = R.style.TextAppearance_AppCompat_Body1
-                    setPadding(0, dip(6), 0, dip(6))
                 }.lparams {
                     leftMargin = dip(24)
                     gravity = Gravity.CENTER_VERTICAL

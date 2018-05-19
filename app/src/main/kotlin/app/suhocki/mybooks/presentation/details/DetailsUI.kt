@@ -155,11 +155,11 @@ class DetailsUI @Inject constructor(
                     }
 
                     divider(dip(16), dip(8)).apply {
-                        book.description ?: let { setGone(this) }
+                        if (book.description.isNullOrBlank()) setGone(this)
                     }
 
                     textView(R.string.description) {
-                        book.description ?: let { setGone(this) }
+                        if (book.description.isNullOrBlank()) setGone(this)
                         padding = dip(6)
                         gravity = Gravity.CENTER
                         backgroundColorResource = R.color.dark_gray
@@ -167,11 +167,11 @@ class DetailsUI @Inject constructor(
                     }
 
                     divider(dip(8), dip(16)).apply {
-                        book.description ?: let { setGone(this) }
+                        if (book.description.isNullOrBlank()) setGone(this)
                     }
 
                     textView {
-                        book.description ?: let { setGone(this) }
+                        if (book.description.isNullOrBlank()) setGone(this)
                         text = book.description
                     }
                 }.applyRecursively { view ->
@@ -197,7 +197,7 @@ class DetailsUI @Inject constructor(
                     Answers.getInstance().logAddToCart(
                         AddToCartEvent()
                             .putItemPrice(BigDecimal.valueOf(book.price))
-                            .putCurrency(Currency.getInstance("RUB"))
+                            .putCurrency(Currency.getInstance("BYR"))
                             .putItemName(book.shortName)
                             .putItemType(book.website)
                             .putItemId(book.productCode)
