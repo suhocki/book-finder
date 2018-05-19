@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="database_load_need">Перед использованием этого приложения, необходимо загрузить базу данных.</string>
+    <string name="download">Загрузить</string>
+    <string name="cancel">Отмена</string>
+    <string name="_continue">Продолжить</string>
+    <string name="retry">Повтор</string>
+    <string name="in_background">В фоне</string>
+    <string name="exit">Выход</string>
+    <string name="downloading">Загрузка</string>
+    <string name="analyzing">Анализ</string>
+    <string name="parsing">Разбор</string>
+    <string name="saving">Сохранение</string>
+    <string name="unzipping">Разархивирование</string>
+    <string name="info">Информация</string>
+    <string name="success">Успех!</string>
+    <string name="downloading_statistics">Информация о %d книгах из %d категорий успешно сохранена.</string>
+    <string name="step_info">Шаг %d из %d</string>
+    <string name="error_network">Пожалуйста, проверьте Ваше соединение с Интернет.</string>
+    <string name="error_unknown">Неизвестная ошибка.</string>
+    <string name="out_of_memory">Недостаточно оперативной памяти.</string>
+    <string name="corrupted_file">К сожалению, загруженный файл повреждён.</string>
+    <string name="error">Ошибка</string>
+    <string name="categories">Категории</string>
+    <string name="rubles">%.2f руб.</string>
+    <string name="empty_screen">Текущая версия базы данных не содержит книг по этой категории</string>
+    <string name="back">Назад</string>
+    <string name="isbn">ISBN</string>
+    <string name="author">Автор</string>
+    <string name="publisher">Издательство</string>
+    <string name="year">Год</string>
+    <string name="cover">Обложка</string>
+    <string name="pages">Страниц</string>
+    <string name="availability">Наличие</string>
+    <string name="series">Серия</string>
+    <string name="description">Описание</string>
+    <string name="format">Формат</string>
+</resources>

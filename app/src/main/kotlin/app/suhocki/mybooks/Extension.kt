@@ -9,8 +9,10 @@ import android.support.v4.content.res.ResourcesCompat
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewManager
-import org.jetbrains.anko.custom.ankoView
 import app.suhocki.mybooks.presentation.base.CollapsingToolbarLayout2
+import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.CustomEvent
+import org.jetbrains.anko.custom.ankoView
 
 
 fun Context.attrResource(@AttrRes attribute: Int): Int {
@@ -58,4 +60,10 @@ fun setVisible(vararg views: View) {
 
 fun setGone(vararg views: View) {
     views.forEach { it.visibility = View.GONE }
+}
+
+fun analytics(message: String) {
+    if (!BuildConfig.DEBUG) {
+        Answers.getInstance().logCustom(CustomEvent(message))
+    }
 }

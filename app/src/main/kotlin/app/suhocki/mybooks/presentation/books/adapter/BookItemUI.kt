@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import app.suhocki.mybooks.R
+import app.suhocki.mybooks.attrResource
 import org.jetbrains.anko.*
 import javax.inject.Inject
 
@@ -20,6 +22,7 @@ class BookItemUI @Inject constructor() : AnkoComponent<ViewGroup> {
 
         frameLayout {
             this@BookItemUI.parent = this
+            backgroundResource = context.attrResource(R.attr.selectableItemBackground)
 
             linearLayout {
 
