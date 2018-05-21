@@ -10,8 +10,6 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import app.suhocki.mybooks.*
 import app.suhocki.mybooks.domain.model.Book
-import com.crashlytics.android.answers.AddToCartEvent
-import com.crashlytics.android.answers.Answers
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
@@ -20,8 +18,6 @@ import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.nestedScrollView
-import java.math.BigDecimal
-import java.util.*
 import javax.inject.Inject
 
 
@@ -194,14 +190,7 @@ class DetailsUI @Inject constructor(
             floatingActionButton {
                 id = R.id.id_fab
                 onClick {
-                    Answers.getInstance().logAddToCart(
-                        AddToCartEvent()
-                            .putItemPrice(BigDecimal.valueOf(book.price))
-                            .putCurrency(Currency.getInstance("BYR"))
-                            .putItemName(book.shortName)
-                            .putItemType(book.website)
-                            .putItemId(book.productCode)
-                    )
+                    Analytics.bookAddedToCart(book)
                     owner.openLink(book.website)
                 }
                 useCompatPadding = true

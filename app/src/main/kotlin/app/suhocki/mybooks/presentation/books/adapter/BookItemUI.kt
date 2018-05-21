@@ -7,24 +7,32 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.Gravity
-import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import app.suhocki.mybooks.R
-import app.suhocki.mybooks.attrResource
-import app.suhocki.mybooks.setForegroundCompat
+import app.suhocki.mybooks.*
+import app.suhocki.mybooks.domain.model.Book
+import com.squareup.picasso.Picasso
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.tintedImageView
 import org.jetbrains.anko.cardview.v7.themedCardView
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import javax.inject.Inject
 
-class BookItemUI @Inject constructor() : AnkoComponent<ViewGroup> {
-    lateinit var parent: View
-    lateinit var name: TextView
-    lateinit var price: TextView
-    lateinit var icon: ImageView
+class BookItemUI : AnkoComponent<ViewGroup> {
+
+    private lateinit var name: TextView
+    private lateinit var price: TextView
+    private lateinit var icon: ImageView
+    lateinit var parent: ViewGroup
+
+    var book: Book? = null
+        set(value) {
+            field = value
+            Picasso.get().load(book!!.iconLink).into(icon)
+            name.text = book!!.shortName
+            price.text = parent.context.getString(R.string.rubles, book!!.price)
+        }
+
 
     private var windowHeight = 0
 
@@ -66,12 +74,14 @@ class BookItemUI @Inject constructor() : AnkoComponent<ViewGroup> {
                         }
 
                         tintedImageView(R.drawable.ic_buy) {
-                            backgroundResource = context.attrResource(R.attr.selectableItemBackgroundBorderless)
+                            backgroundResource =
+                                    context.attrResource(R.attr.selectableItemBackgroundBorderless)
                             padding = dip(8)
                             val colorPrimary = ContextCompat.getColor(context, R.color.colorPrimary)
                             setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN)
                             onClick {
-
+                                Analytics.bookAddedToCart(book!!)
+                                this@tintedImageView.context.openLink(book!!.website)
                             }
                         }.lparams { gravity = Gravity.END }
                     }.lparams(matchParent, matchParent) {

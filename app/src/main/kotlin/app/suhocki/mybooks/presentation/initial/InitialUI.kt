@@ -91,7 +91,6 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
                 textView(R.string.exit) {
                     btnExit = this
                     onClick {
-                        analytics("Exit")
                         owner.exitApp()
                     }
                 }
@@ -100,7 +99,6 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
                     btnDownload = this
                     onClick {
                         owner.startDownloading()
-                        analytics("Download")
                     }
                 }
 
@@ -108,7 +106,6 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
                     btnCancel = this
                     visibility = View.GONE
                     onClick {
-                        analytics("Cancel")
                         owner.cancelDownloading()
                     }
                 }
@@ -117,7 +114,6 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
                     btnContinue = this
                     visibility = View.GONE
                     onClick {
-                        analytics("Continue")
                         owner.presenter.flowFinished()
                     }
                 }
@@ -126,7 +122,6 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
                     btnRetry = this
                     visibility = View.GONE
                     onClick {
-                        analytics("Retry")
                         owner.startDownloading()
                     }
                 }

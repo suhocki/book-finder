@@ -25,10 +25,9 @@ class BooksAdapter @Inject constructor() :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
-        val bookItemLayout = Toothpick.openScopes(DI.APP_SCOPE, DI.CATEGORIES_ACTIVITY_SCOPE)
-            .getInstance(BookItemUI::class.java)
-        bookItemLayout.createView(AnkoContextImpl(parent.context, parent, false))
-        val viewHolder = BookViewHolder(bookItemLayout)
+        val viewHolder = BookViewHolder(BookItemUI().apply {
+            createView(AnkoContextImpl(parent.context, parent, false))
+        })
 
         viewHolder.itemView.setOnClickListener {
             val book = differ.currentList[viewHolder.adapterPosition]
@@ -40,8 +39,9 @@ class BooksAdapter @Inject constructor() :
     override fun getItemCount(): Int =
         differ.currentList.size
 
-    override fun onBindViewHolder(holder: BookViewHolder, position: Int) =
-        holder.bind(differ.currentList[position])
+    override fun onBindViewHolder(holder: BookViewHolder, position: Int) {
+        holder.layout.book = differ.currentList[position]
+    }
 
     fun submitList(list: List<Book>) =
         mutableListOf<Book>().apply {
