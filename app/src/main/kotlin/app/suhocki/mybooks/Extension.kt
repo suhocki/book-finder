@@ -3,16 +3,22 @@ package app.suhocki.mybooks
 import android.app.ActivityManager
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.support.annotation.AttrRes
+import android.support.annotation.DrawableRes
 import android.support.customtabs.CustomTabsIntent
+import android.support.v4.content.ContextCompat
 import android.support.v4.content.res.ResourcesCompat
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewManager
-import app.suhocki.mybooks.presentation.base.CollapsingToolbarLayout2
+import app.suhocki.mybooks.presentation.base.AutofitRecyclerView
+import app.suhocki.mybooks.presentation.base.MultilineCollapsingToolbarLayout
+import app.suhocki.mybooks.presentation.base._AutofitRecyclerView
 import com.crashlytics.android.answers.Answers
 import com.crashlytics.android.answers.CustomEvent
 import org.jetbrains.anko.custom.ankoView
+import org.jetbrains.anko.internals.AnkoInternals
 
 
 fun Context.attrResource(@AttrRes attribute: Int): Int {
@@ -41,11 +47,21 @@ fun Context.openLink(link: String) {
         .launchUrl(this, Uri.parse(link))
 }
 
-inline fun ViewManager.collapsingToolbarLayout2(init: CollapsingToolbarLayout2.() -> Unit): net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout {
-    return ankoView({ ctx: Context ->
-        CollapsingToolbarLayout2(
-            ctx
-        )
+inline fun ViewManager.multilineCollapsingToolbarLayout(
+    init: MultilineCollapsingToolbarLayout.() -> Unit
+): net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout {
+    return ankoView({ ctx: Context -> MultilineCollapsingToolbarLayout(ctx) }, theme = 0) {
+        init.invoke(this)
+    }
+}
+
+inline fun ViewManager.themedAutofitRecyclerView(
+    theme: Int = 0,
+    init: AutofitRecyclerView.() -> Unit
+): _AutofitRecyclerView {
+    return ankoView({
+        val ctx = AnkoInternals.wrapContextIfNeeded(AnkoInternals.getContext(this), theme)
+        _AutofitRecyclerView(ctx)
     }, theme = 0) { init.invoke(this) }
 }
 
@@ -65,5 +81,13 @@ fun setGone(vararg views: View) {
 fun analytics(message: String) {
     if (!BuildConfig.DEBUG) {
         Answers.getInstance().logCustom(CustomEvent(message))
+    }
+}
+
+fun View.setForegroundCompat(@DrawableRes drawableRes: Int) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        foreground = ContextCompat.getDrawable(context, drawableRes)
+    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        background = ContextCompat.getDrawable(context, drawableRes)
     }
 }

@@ -2,29 +2,33 @@ package app.suhocki.mybooks.presentation.books
 
 import android.graphics.Color
 import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.widget.ProgressBar
+import app.suhocki.mybooks.R
+import app.suhocki.mybooks.presentation.books.adapter.BooksAdapter
+import app.suhocki.mybooks.themedAutofitRecyclerView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.tintedImageView
-import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
-import app.suhocki.mybooks.R
 import javax.inject.Inject
 
 
-class BooksUI @Inject constructor() : AnkoComponent<BooksActivity> {
-    lateinit var recyclerView: RecyclerView
+class BooksUI @Inject constructor(
+    private var adapter: BooksAdapter
+) : AnkoComponent<BooksActivity> {
+
     lateinit var progressBar: ProgressBar
     lateinit var emptyView: View
 
     override fun createView(ui: AnkoContext<BooksActivity>) = with(ui) {
         frameLayout {
-            themedRecyclerView(R.style.ScrollbarRecyclerView) {
+            themedAutofitRecyclerView(R.style.ScrollbarRecyclerView) {
                 id = R.id.id_recycler_books
-                recyclerView = this
                 clipToPadding = false
-                setPadding(0, dip(8), 0, dip(8))
+                setHasFixedSize(true)
+                adapter = this@BooksUI.adapter
+                columnWidth = dip(146)
+                addItemDecoration(ItemDecoratorGrid(dip(8)))
             }
 
             themedProgressBar(R.style.ColoredProgressBar) {

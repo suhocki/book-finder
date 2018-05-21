@@ -3,10 +3,10 @@ package app.suhocki.mybooks.presentation.books.adapter
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import org.jetbrains.anko.AnkoContextImpl
-import org.jetbrains.anko.AnkoLogger
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.Book
+import org.jetbrains.anko.AnkoContextImpl
+import org.jetbrains.anko.AnkoLogger
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -28,8 +28,8 @@ class BooksAdapter @Inject constructor() :
         val bookItemLayout = Toothpick.openScopes(DI.APP_SCOPE, DI.CATEGORIES_ACTIVITY_SCOPE)
             .getInstance(BookItemUI::class.java)
         bookItemLayout.createView(AnkoContextImpl(parent.context, parent, false))
-
         val viewHolder = BookViewHolder(bookItemLayout)
+
         viewHolder.itemView.setOnClickListener {
             val book = differ.currentList[viewHolder.adapterPosition]
             onBookClickListener.onBookClick(book)

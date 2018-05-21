@@ -1,14 +1,8 @@
 package app.suhocki.mybooks.presentation.books
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import android.view.View
-import com.arellomobile.mvp.MvpAppCompatActivity
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.jetbrains.anko.setContentView
-import org.jetbrains.anko.startActivity
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.BooksActivityModule
 import app.suhocki.mybooks.domain.model.Book
@@ -17,6 +11,11 @@ import app.suhocki.mybooks.presentation.books.adapter.BooksAdapter
 import app.suhocki.mybooks.presentation.books.adapter.OnBookClickListener
 import app.suhocki.mybooks.presentation.categories.CategoriesActivity
 import app.suhocki.mybooks.presentation.details.DetailsActivity
+import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.startActivity
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -32,9 +31,6 @@ class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
     @Inject
     lateinit var adapter: BooksAdapter
 
-    @Inject
-    lateinit var layoutManager: LinearLayoutManager
-
     @ProvidePresenter
     fun providePresenter(): BooksPresenter =
         Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_ACTIVITY_SCOPE)
@@ -49,8 +45,6 @@ class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
         Toothpick.inject(this@BooksActivity, scope)
         layout.setContentView(this)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        layout.recyclerView.adapter = adapter
-        layout.recyclerView.layoutManager = layoutManager
         adapter.setOnBookClickListener(this)
     }
 

@@ -42,7 +42,7 @@ class DetailsUI @Inject constructor(
                 id = R.id.id_app_bar_details
                 fitsSystemWindows = true
 
-                collapsingToolbarLayout2 {
+                multilineCollapsingToolbarLayout {
                     maxLines = 2
                     fitsSystemWindows = true
                     setContentScrimResource(R.color.colorPrimary)

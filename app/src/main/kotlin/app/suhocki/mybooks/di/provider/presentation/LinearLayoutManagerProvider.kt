@@ -6,7 +6,7 @@ import android.widget.LinearLayout
 import javax.inject.Inject
 import javax.inject.Provider
 
-class LayoutManagerProvider @Inject constructor(
+class LinearLayoutManagerProvider @Inject constructor(
     private val context: Context
 ) : Provider<LinearLayoutManager> {
 
