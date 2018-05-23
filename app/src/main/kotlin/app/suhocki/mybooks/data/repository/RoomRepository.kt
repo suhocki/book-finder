@@ -17,8 +17,8 @@ class RoomRepository @Inject constructor(
         return categoryDao.getAll()
     }
 
-    override fun saveCategories(categories: Set<String>) {
-        categoryDao.insertAll(categories.map { CategoryEntity(it) })
+    override fun saveCategories(categories: Set<Category>) {
+        categoryDao.insertAll(categories.map { it as CategoryEntity }.distinct())
     }
 
     override fun getBooks(): List<BookEntity> {

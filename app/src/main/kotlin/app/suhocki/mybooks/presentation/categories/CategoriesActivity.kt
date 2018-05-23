@@ -2,19 +2,18 @@ package app.suhocki.mybooks.presentation.categories
 
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
-import com.arellomobile.mvp.MvpAppCompatActivity
-import com.arellomobile.mvp.presenter.InjectPresenter
-import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.jetbrains.anko.notificationManager
-import org.jetbrains.anko.setContentView
-import org.jetbrains.anko.startActivity
-import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.CategoriesActivityModule
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.presentation.books.BooksActivity
 import app.suhocki.mybooks.presentation.categories.adapter.CategoriesAdapter
 import app.suhocki.mybooks.presentation.categories.adapter.OnCategoryClickListener
+import com.arellomobile.mvp.MvpAppCompatActivity
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import org.jetbrains.anko.notificationManager
+import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.startActivity
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -46,8 +45,9 @@ class CategoriesActivity : MvpAppCompatActivity(), CategoriesView, OnCategoryCli
         super.onCreate(savedInstanceState)
         val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.CATEGORIES_ACTIVITY_SCOPE)
         Toothpick.inject(this@CategoriesActivity, scope)
-        title = getString(R.string.categories)
         layout.setContentView(this)
+        setSupportActionBar(layout.toolbar)
+        supportActionBar!!.title = ""
         layout.recyclerView.adapter = adapter
         layout.recyclerView.layoutManager = layoutManager
         adapter.setOnCategoryClickListener(this)

@@ -3,6 +3,7 @@ package app.suhocki.mybooks.domain
 import app.suhocki.mybooks.di.DatabaseFileUrl
 import app.suhocki.mybooks.di.DownloadedFileName
 import app.suhocki.mybooks.domain.model.Book
+import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.repository.DatabaseRepository
 import app.suhocki.mybooks.domain.repository.FileSystemRepository
 import app.suhocki.mybooks.domain.repository.ServerRepository
@@ -33,7 +34,7 @@ class BackgroundInteractor @Inject constructor(
     fun extractXlsDocument(strings: ArrayList<String>) =
         fileSystemRepository.extractXlsDocument(strings)
 
-    fun saveDocumentData(data: Map<String, Collection<Book>>) {
+    fun saveDocumentData(data: Map<out Category, Collection<Book>>) {
         databaseRepository.saveCategories(data.keys)
         databaseRepository.saveBooks(data.values.flatMap { books -> books }.toList())
     }

@@ -1,15 +1,20 @@
 package app.suhocki.mybooks.presentation.books
 
 import android.graphics.Color
+import android.support.design.widget.AppBarLayout
 import android.support.v4.graphics.drawable.DrawableCompat
+import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.View
 import android.widget.ProgressBar
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.presentation.base.themedToolbarCompat
 import app.suhocki.mybooks.presentation.books.adapter.BooksAdapter
 import app.suhocki.mybooks.themedAutofitRecyclerView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.tintedImageView
+import org.jetbrains.anko.design.coordinatorLayout
+import org.jetbrains.anko.design.themedAppBarLayout
 import javax.inject.Inject
 
 
@@ -19,9 +24,22 @@ class BooksUI @Inject constructor(
 
     lateinit var progressBar: ProgressBar
     lateinit var emptyView: View
+    lateinit var toolbar: Toolbar
 
     override fun createView(ui: AnkoContext<BooksActivity>) = with(ui) {
-        frameLayout {
+        coordinatorLayout {
+            fitsSystemWindows = true
+
+            themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
+                themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
+                    toolbar = this
+                    backgroundColorResource = R.color.colorPrimary
+                    popupTheme = R.style.ThemeOverlay_AppCompat_Light
+                }.lparams(matchParent, matchParent) {
+                    scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
+                }
+            }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
+
             themedAutofitRecyclerView(R.style.ScrollbarRecyclerView) {
                 id = R.id.id_recycler_books
                 clipToPadding = false
@@ -29,11 +47,14 @@ class BooksUI @Inject constructor(
                 adapter = this@BooksUI.adapter
                 columnWidth = dip(146)
                 addItemDecoration(ItemDecoratorGrid(dip(8)))
+            }.lparams(matchParent, matchParent) {
+                behavior = AppBarLayout.ScrollingViewBehavior()
             }
 
             themedProgressBar(R.style.ColoredProgressBar) {
                 progressBar = this
                 visibility = View.GONE
+                topPadding = dimenAttr(R.attr.actionBarSize)
             }.lparams {
                 gravity = Gravity.CENTER
             }
@@ -42,6 +63,7 @@ class BooksUI @Inject constructor(
                 emptyView = this
                 gravity = Gravity.CENTER
                 visibility = View.GONE
+                topPadding = dimenAttr(R.attr.actionBarSize)
 
                 tintedImageView(R.drawable.ic_info).apply {
                     DrawableCompat.wrap(drawable).apply {

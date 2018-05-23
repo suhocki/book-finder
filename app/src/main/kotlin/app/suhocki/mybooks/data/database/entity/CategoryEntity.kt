@@ -10,12 +10,17 @@ import app.suhocki.mybooks.domain.model.Category
     primaryKeys = ["name"]
 )
 data class CategoryEntity(
-    override val name: String
+    override var name: String,
+    override var booksCount: Int = 0
 ) : Category {
-    constructor(parcel: Parcel) : this(parcel.readString())
+    constructor(parcel: Parcel) : this(
+        parcel.readString(),
+        parcel.readInt()
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(name)
+        parcel.writeInt(booksCount)
     }
 
     override fun describeContents(): Int {
@@ -30,5 +35,16 @@ data class CategoryEntity(
         override fun newArray(size: Int): Array<CategoryEntity?> {
             return arrayOfNulls(size)
         }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (other == null) return false
+        if (other == this) return true
+        if (other !is Category) return false
+        return other.name == name
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
     }
 }

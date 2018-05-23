@@ -44,6 +44,7 @@ class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
         val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_ACTIVITY_SCOPE)
         Toothpick.inject(this@BooksActivity, scope)
         layout.setContentView(this)
+        setSupportActionBar(layout.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         adapter.setOnBookClickListener(this)
     }

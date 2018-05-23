@@ -1,11 +1,12 @@
 package app.suhocki.mybooks.data.parser
 
-import org.jetbrains.anko.AnkoLogger
 import app.suhocki.mybooks.checkThreadInterrupt
 import app.suhocki.mybooks.data.database.entity.BookEntity
+import app.suhocki.mybooks.data.database.entity.CategoryEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
 import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.progress.ProgressStep
+import org.jetbrains.anko.AnkoLogger
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStream
@@ -34,10 +35,10 @@ class XlsParser @Inject constructor(
     }
 
     fun extractPayload(strings: ArrayList<String>): XlsDocumentEntity {
-        val booksData = mutableMapOf<String, MutableList<BookEntity>>()
+        val booksData = mutableMapOf<CategoryEntity, MutableList<BookEntity>>()
         var categoryNamePosition = -1
         val objectFieldsQueue = ArrayDeque<String>()
-        var currentCategory: String? = null
+        var currentCategory: CategoryEntity? = null
         val stepParsing = ProgressStep.PARSING
 
         for (index in POSITION_COLUMN_NAMES_END + 1 until strings.size) {
@@ -46,7 +47,7 @@ class XlsParser @Inject constructor(
             if (strings[index] == DATA_DELIMETER) {
                 objectFieldsQueue.clear()
                 categoryNamePosition = index + 1
-                currentCategory = strings[categoryNamePosition]
+                currentCategory = CategoryEntity(strings[categoryNamePosition])
                 booksData[currentCategory] = mutableListOf()
                 continue
             }
@@ -57,7 +58,7 @@ class XlsParser @Inject constructor(
                     checkThreadInterrupt()
                     booksData[currentCategory]!!.add(
                         BookEntity(
-                            category = currentCategory!!,
+                            category = currentCategory!!.name,
                             shortName = pop(),
                             fullName = pop(),
                             shortDescription = pop(),
@@ -95,7 +96,7 @@ class XlsParser @Inject constructor(
                 POSITION_COLUMN_NAMES_START,
                 POSITION_COLUMN_NAMES_END
             ),
-            data = booksData
+            data = booksData.apply { forEach { it.key.booksCount = it.value.size } }
         ).also { progressListener.onProgress(ProgressStep.PARSING, true) }
     }
 

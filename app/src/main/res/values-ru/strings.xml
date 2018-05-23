@@ -8,10 +8,10 @@
     <string name="in_background">В фоне</string>
     <string name="exit">Выход</string>
     <string name="downloading">Загрузка</string>
-    <string name="analyzing">Анализ</string>
-    <string name="parsing">Разбор</string>
+    <string name="analyzing">Анализ данных</string>
+    <string name="parsing">Поиск книг</string>
     <string name="saving">Сохранение</string>
-    <string name="unzipping">Разархивирование</string>
+    <string name="unzipping">Извлечение из архива</string>
     <string name="info">Информация</string>
     <string name="success">Успех!</string>
     <string name="downloading_statistics">Информация о %d книгах из %d категорий успешно сохранена.</string>
