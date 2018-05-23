@@ -1,10 +1,10 @@
 package app.suhocki.mybooks.presentation.categories
 
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.CategoriesActivityModule
 import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.domain.model.TypedItem
 import app.suhocki.mybooks.presentation.books.BooksActivity
 import app.suhocki.mybooks.presentation.categories.adapter.CategoriesAdapter
 import app.suhocki.mybooks.presentation.categories.adapter.OnCategoryClickListener
@@ -29,9 +29,6 @@ class CategoriesActivity : MvpAppCompatActivity(), CategoriesView, OnCategoryCli
     @Inject
     lateinit var adapter: CategoriesAdapter
 
-    @Inject
-    lateinit var layoutManager: LinearLayoutManager
-
     @ProvidePresenter
     fun providePresenter(): CategoriesPresenter =
         Toothpick.openScope(DI.APP_SCOPE)
@@ -48,8 +45,6 @@ class CategoriesActivity : MvpAppCompatActivity(), CategoriesView, OnCategoryCli
         layout.setContentView(this)
         setSupportActionBar(layout.toolbar)
         supportActionBar!!.title = ""
-        layout.recyclerView.adapter = adapter
-        layout.recyclerView.layoutManager = layoutManager
         adapter.setOnCategoryClickListener(this)
     }
 
@@ -58,7 +53,7 @@ class CategoriesActivity : MvpAppCompatActivity(), CategoriesView, OnCategoryCli
         if (isFinishing) Toothpick.closeScope(DI.CATEGORIES_ACTIVITY_SCOPE)
     }
 
-    override fun showCategories(categories: List<Category>) {
+    override fun showCategories(categories: List<TypedItem>) {
         adapter.submitList(categories)
     }
 

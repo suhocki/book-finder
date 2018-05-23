@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.di.provider.presentation
 
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
-import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.domain.model.TypedItem
 import app.suhocki.mybooks.presentation.categories.adapter.CategoriesAdapter
 import app.suhocki.mybooks.presentation.categories.adapter.CategoriesDiffer
 import app.suhocki.mybooks.presentation.categories.adapter.CategoryItemCallback
@@ -14,6 +14,6 @@ class CategoriesDifferProvider @Inject constructor(
 ): Provider<CategoriesDiffer> {
 
     override fun get(): CategoriesDiffer = CategoriesDiffer().apply {
-        set(AsyncListDiffer<Category>(adapter, itemCallback.get()))
+        set(AsyncListDiffer<TypedItem>(adapter, itemCallback.get()))
     }
 }

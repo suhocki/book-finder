@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ProgressBar
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.presentation.base.ItemDecoratorGrid
 import app.suhocki.mybooks.presentation.base.themedToolbarCompat
 import app.suhocki.mybooks.presentation.books.adapter.BooksAdapter
 import app.suhocki.mybooks.themedAutofitRecyclerView

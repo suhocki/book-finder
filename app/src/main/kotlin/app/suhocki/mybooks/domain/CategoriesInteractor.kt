@@ -2,6 +2,7 @@ package app.suhocki.mybooks.domain
 
 import app.suhocki.mybooks.domain.repository.DatabaseRepository
 import app.suhocki.mybooks.domain.repository.SettingsRepository
+import app.suhocki.mybooks.presentation.categories.adapter.model.CategoryTypedItem
 import javax.inject.Inject
 
 class CategoriesInteractor @Inject constructor(
@@ -11,6 +12,7 @@ class CategoriesInteractor @Inject constructor(
 
     fun getCategories() =
         databaseRepository.getCategories()
+            .map { CategoryTypedItem(it) }
 
     fun setDatabaseLoaded() {
         settingsRepository.databaseLoaded = true

@@ -1,5 +1,6 @@
-package app.suhocki.mybooks.presentation.categories.adapter
+package app.suhocki.mybooks.presentation.categories.adapter.ui
 
+import android.graphics.Color
 import android.support.v4.widget.TextViewCompat
 import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
@@ -11,6 +12,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.presentation.base.textViewCompat
+import app.suhocki.mybooks.setForegroundCompat
 import org.jetbrains.anko.*
 import javax.inject.Inject
 
@@ -31,7 +33,8 @@ class CategoryItemUI @Inject constructor() : AnkoComponent<ViewGroup> {
 
         frameLayout {
             this@CategoryItemUI.parent = this
-            backgroundResource = context.attrResource(R.attr.selectableItemBackground)
+            setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
+            backgroundColor = Color.WHITE
 
             linearLayout {
 
@@ -47,7 +50,7 @@ class CategoryItemUI @Inject constructor() : AnkoComponent<ViewGroup> {
                 textView {
                     name = this
                     gravity = Gravity.CENTER_VERTICAL
-                    textAppearance = R.style.TextAppearance_AppCompat_Body1
+                    textAppearance = R.style.TextAppearance_AppCompat_Body2
                 }.lparams(matchParent, matchParent) {
                     leftMargin = dip(16)
                 }

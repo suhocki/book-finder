@@ -36,6 +36,8 @@
     <string name="series">Series</string>
     <string name="description">Description</string>
     <string name="format">Format</string>
+    <string name="catalog">Catalog</string>
+    <string name="search">Search</string>
 
     <string name="percent" translatable="false">" "(%d%%)</string>
 </resources>

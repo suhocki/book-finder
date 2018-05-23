@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.presentation.books
+package app.suhocki.mybooks.presentation.base
 
 import android.graphics.Rect
 import android.support.v7.widget.GridLayoutManager

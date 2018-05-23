@@ -58,7 +58,7 @@ class BookItemUI : AnkoComponent<ViewGroup> {
                         name = this
                         ellipsize = TextUtils.TruncateAt.END
                         maxLines = 2
-                        textAppearance = R.style.TextAppearance_AppCompat_Body1
+                        textAppearance = R.style.TextAppearance_AppCompat_Body2
                     }.lparams(wrapContent, sp(38)) {
                         weight = 1f
                         setMargins(0, dip(8), 0, dip(8))
@@ -68,7 +68,7 @@ class BookItemUI : AnkoComponent<ViewGroup> {
                         textView {
                             price = this
                             setPadding(dip(8), 0, 0, dip(8))
-                            textAppearance = R.style.TextAppearance_AppCompat_Body2
+                            textAppearance = R.style.TextAppearance_AppCompat
                         }.lparams(wrapContent, wrapContent) {
                             gravity = Gravity.BOTTOM or Gravity.START
                         }

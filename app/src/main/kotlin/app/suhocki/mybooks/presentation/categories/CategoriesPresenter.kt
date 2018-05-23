@@ -1,14 +1,14 @@
 package app.suhocki.mybooks.presentation.categories
 
+import app.suhocki.mybooks.data.error.ErrorHandler
+import app.suhocki.mybooks.di.CategoriesStartFlag
+import app.suhocki.mybooks.di.PrimitiveWrapper
+import app.suhocki.mybooks.domain.CategoriesInteractor
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
-import app.suhocki.mybooks.data.error.ErrorHandler
-import app.suhocki.mybooks.di.CategoriesStartFlag
-import app.suhocki.mybooks.di.PrimitiveWrapper
-import app.suhocki.mybooks.domain.CategoriesInteractor
 import javax.inject.Inject
 
 @InjectViewState
@@ -26,8 +26,9 @@ class CategoriesPresenter @Inject constructor(
                 interactor.setDatabaseLoaded()
                 viewState.cancelAllNotifications()
             }
-            interactor.getCategories()
-                .let { categories -> uiThread { viewState.showCategories(categories) } }
+            interactor.getCategories().let { categories ->
+                uiThread { viewState.showCategories(categories) }
+            }
         }
     }
 }
