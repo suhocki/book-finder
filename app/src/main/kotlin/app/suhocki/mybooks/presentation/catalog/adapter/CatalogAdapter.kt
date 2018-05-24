@@ -1,35 +1,37 @@
-package app.suhocki.mybooks.presentation.categories.adapter
+package app.suhocki.mybooks.presentation.catalog.adapter
 
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.di.DI
+import app.suhocki.mybooks.domain.model.CatalogItem
 import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.domain.model.TypedItem
-import app.suhocki.mybooks.presentation.categories.adapter.ui.BannersItemUI
-import app.suhocki.mybooks.presentation.categories.adapter.ui.CategoryItemUI
-import app.suhocki.mybooks.presentation.categories.adapter.ui.HeaderCatalogItemUI
-import app.suhocki.mybooks.presentation.categories.adapter.ui.SearchItemUI
-import app.suhocki.mybooks.presentation.categories.adapter.viewholder.BannersViewHolder
-import app.suhocki.mybooks.presentation.categories.adapter.viewholder.CategoryViewHolder
-import app.suhocki.mybooks.presentation.categories.adapter.viewholder.HeaderCatalogViewHolder
-import app.suhocki.mybooks.presentation.categories.adapter.viewholder.SearchViewHolder
+import app.suhocki.mybooks.presentation.catalog.adapter.model.BannersTypedItem
+import app.suhocki.mybooks.presentation.catalog.adapter.ui.BannersItemUI
+import app.suhocki.mybooks.presentation.catalog.adapter.ui.CategoryItemUI
+import app.suhocki.mybooks.presentation.catalog.adapter.ui.HeaderCatalogItemUI
+import app.suhocki.mybooks.presentation.catalog.adapter.ui.SearchItemUI
+import app.suhocki.mybooks.presentation.catalog.adapter.viewholder.BannersViewHolder
+import app.suhocki.mybooks.presentation.catalog.adapter.viewholder.CategoryViewHolder
+import app.suhocki.mybooks.presentation.catalog.adapter.viewholder.HeaderCatalogViewHolder
+import app.suhocki.mybooks.presentation.catalog.adapter.viewholder.SearchViewHolder
+import com.squareup.picasso.Picasso
 import org.jetbrains.anko.AnkoContextImpl
 import org.jetbrains.anko.AnkoLogger
 import toothpick.Toothpick
 import javax.inject.Inject
 
-class CategoriesAdapter @Inject constructor() :
+class CatalogAdapter @Inject constructor() :
     RecyclerView.Adapter<RecyclerView.ViewHolder>(), AnkoLogger {
 
-    private lateinit var differ: AsyncListDiffer<TypedItem>
-    private lateinit var onCategoryClickListener: OnCategoryClickListener
+    private lateinit var differ: AsyncListDiffer<CatalogItem>
+    private var onCategoryClickListener: OnCategoryClickListener? = null
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         if (!this::differ.isInitialized) differ =
-                Toothpick.openScopes(DI.APP_SCOPE, DI.CATEGORIES_ACTIVITY_SCOPE)
-                    .getInstance(CategoriesDiffer::class.java).get()
+                Toothpick.openScopes(DI.APP_SCOPE, DI.CATALOG_ACTIVITY_SCOPE)
+                    .getInstance(CatalogDiffer::class.java).get()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -41,7 +43,7 @@ class CategoriesAdapter @Inject constructor() :
                 })
                 viewHolder.itemView.setOnClickListener {
                     val category = differ.currentList[viewHolder.adapterPosition] as Category
-                    onCategoryClickListener.onCategoryClick(category)
+                    onCategoryClickListener?.onCategoryClick(category)
                 }
             }
             VIEW_TYPE_HEADER_CATALOG -> {
@@ -77,17 +79,28 @@ class CategoriesAdapter @Inject constructor() :
         differ.currentList.size
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (position > 2) (holder as CategoryViewHolder).layout.category =
-                differ.currentList[position] as Category
+        when (position) {
+            0 -> {
+                val bannersTypedItem = differ.currentList[position] as BannersTypedItem
+                val layout = (holder as BannersViewHolder).layout
+                Picasso.get().load(bannersTypedItem.banners.first().pictureUrl)
+                    .into(layout.image)
+                layout.description.text = bannersTypedItem.banners.first().text
+            }
+            1, 2 -> {
+            }
+            else -> (holder as CategoryViewHolder).layout.category =
+                    differ.currentList[position] as Category
+        }
     }
 
-    fun submitList(list: List<TypedItem>) =
-        mutableListOf<TypedItem>().apply {
+    fun submitList(list: List<CatalogItem>) =
+        mutableListOf<CatalogItem>().apply {
             addAll(list)
             differ.submitList(this)
         }
 
-    fun setOnCategoryClickListener(onCategoryClickListener: OnCategoryClickListener) {
+    fun setOnCategoryClickListener(onCategoryClickListener: OnCategoryClickListener?) {
         this.onCategoryClickListener = onCategoryClickListener
     }
 

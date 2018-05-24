@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.presentation.categories
+package app.suhocki.mybooks.presentation.catalog
 
 import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.LinearLayoutManager
@@ -8,7 +8,7 @@ import android.widget.ImageView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.presentation.base.DividerItemDecoration
 import app.suhocki.mybooks.presentation.base.themedToolbarCompat
-import app.suhocki.mybooks.presentation.categories.adapter.CategoriesAdapter
+import app.suhocki.mybooks.presentation.catalog.adapter.CatalogAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
@@ -16,13 +16,13 @@ import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 import javax.inject.Inject
 
 
-class CategoriesUI @Inject constructor(
-    private var adapter: CategoriesAdapter,
+class CatalogUI @Inject constructor(
+    private var adapter: CatalogAdapter,
     private var layoutManager: LinearLayoutManager
-) : AnkoComponent<CategoriesActivity> {
+) : AnkoComponent<CatalogActivity> {
     lateinit var toolbar: Toolbar
 
-    override fun createView(ui: AnkoContext<CategoriesActivity>) = with(ui) {
+    override fun createView(ui: AnkoContext<CatalogActivity>) = with(ui) {
 
         coordinatorLayout {
             fitsSystemWindows = true
@@ -50,10 +50,10 @@ class CategoriesUI @Inject constructor(
             }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
             themedRecyclerView(R.style.ScrollbarRecyclerView) {
-                id = R.id.id_recycler_categories
+                id = R.id.id_recycler_catalog
                 clipToPadding = false
-                adapter = this@CategoriesUI.adapter
-                layoutManager = this@CategoriesUI.layoutManager
+                adapter = this@CatalogUI.adapter
+                layoutManager = this@CatalogUI.layoutManager
                 backgroundColorResource = R.color.gray
                 addItemDecoration(DividerItemDecoration(dip(2)))
             }.lparams(matchParent, matchParent) {

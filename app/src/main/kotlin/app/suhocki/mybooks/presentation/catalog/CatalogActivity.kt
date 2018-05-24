@@ -1,13 +1,13 @@
-package app.suhocki.mybooks.presentation.categories
+package app.suhocki.mybooks.presentation.catalog
 
 import android.os.Bundle
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.CategoriesActivityModule
+import app.suhocki.mybooks.domain.model.CatalogItem
 import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.domain.model.TypedItem
 import app.suhocki.mybooks.presentation.books.BooksActivity
-import app.suhocki.mybooks.presentation.categories.adapter.CategoriesAdapter
-import app.suhocki.mybooks.presentation.categories.adapter.OnCategoryClickListener
+import app.suhocki.mybooks.presentation.catalog.adapter.CatalogAdapter
+import app.suhocki.mybooks.presentation.catalog.adapter.OnCategoryClickListener
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -18,43 +18,52 @@ import toothpick.Toothpick
 import javax.inject.Inject
 
 
-class CategoriesActivity : MvpAppCompatActivity(), CategoriesView, OnCategoryClickListener {
+class CatalogActivity : MvpAppCompatActivity(), CatalogView, OnCategoryClickListener {
 
     @InjectPresenter
-    lateinit var presenter: CategoriesPresenter
+    lateinit var presenter: CatalogPresenter
 
     @Inject
-    lateinit var layout: CategoriesUI
+    lateinit var layout: CatalogUI
 
     @Inject
-    lateinit var adapter: CategoriesAdapter
+    lateinit var adapter: CatalogAdapter
 
     @ProvidePresenter
-    fun providePresenter(): CategoriesPresenter =
+    fun providePresenter(): CatalogPresenter =
         Toothpick.openScope(DI.APP_SCOPE)
             .apply {
                 val startFromNotification = intent.extras?.containsKey(ARG_FROM_NOTIFICATION) ?: false
                 installModules(CategoriesActivityModule(startFromNotification))
             }
-            .getInstance(CategoriesPresenter::class.java)
+            .getInstance(CatalogPresenter::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.CATEGORIES_ACTIVITY_SCOPE)
-        Toothpick.inject(this@CategoriesActivity, scope)
+        val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.CATALOG_ACTIVITY_SCOPE)
+        Toothpick.inject(this@CatalogActivity, scope)
         layout.setContentView(this)
         setSupportActionBar(layout.toolbar)
         supportActionBar!!.title = ""
+    }
+
+    override fun onResume() {
+        super.onResume()
         adapter.setOnCategoryClickListener(this)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        adapter.setOnCategoryClickListener(null)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isFinishing) Toothpick.closeScope(DI.CATEGORIES_ACTIVITY_SCOPE)
+        if (isFinishing) Toothpick.closeScope(DI.CATALOG_ACTIVITY_SCOPE)
     }
 
-    override fun showCategories(categories: List<TypedItem>) {
-        adapter.submitList(categories)
+    override fun showCatalogItems(catalogItems: List<CatalogItem>) {
+        adapter.submitList(catalogItems)
     }
 
     override fun cancelAllNotifications() {

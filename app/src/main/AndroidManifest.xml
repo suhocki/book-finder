@@ -30,15 +30,15 @@
             android:launchMode="singleTop"
             android:theme="@style/Dialog" />
 
-        <activity android:name=".presentation.categories.CategoriesActivity" />
+        <activity android:name=".presentation.catalog.CatalogActivity" />
 
         <activity
             android:name=".presentation.books.BooksActivity"
-            android:parentActivityName=".presentation.categories.CategoriesActivity"
+            android:parentActivityName=".presentation.catalog.CatalogActivity"
             tools:targetApi="jelly_bean">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".presentation.categories.CategoriesActivity" />
+                android:value=".presentation.catalog.CatalogActivity" />
         </activity>
 
         <activity

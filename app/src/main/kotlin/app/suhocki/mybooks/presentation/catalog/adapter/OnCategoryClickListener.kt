@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.presentation.categories.adapter
+package app.suhocki.mybooks.presentation.catalog.adapter
 
 import app.suhocki.mybooks.domain.model.Category
 

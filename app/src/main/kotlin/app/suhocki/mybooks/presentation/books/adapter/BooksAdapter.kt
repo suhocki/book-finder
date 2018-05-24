@@ -15,7 +15,7 @@ class BooksAdapter @Inject constructor() :
     RecyclerView.Adapter<BookViewHolder>(), AnkoLogger {
 
     private lateinit var differ: AsyncListDiffer<Book>
-    private lateinit var onBookClickListener: OnBookClickListener
+    private var onBookClickListener: OnBookClickListener? = null
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -31,7 +31,7 @@ class BooksAdapter @Inject constructor() :
 
         viewHolder.itemView.setOnClickListener {
             val book = differ.currentList[viewHolder.adapterPosition]
-            onBookClickListener.onBookClick(book)
+            onBookClickListener?.onBookClick(book)
         }
         return viewHolder
     }
@@ -49,7 +49,7 @@ class BooksAdapter @Inject constructor() :
             differ.submitList(this)
         }
 
-    fun setOnBookClickListener(onBookClickListener: OnBookClickListener) {
+    fun setOnBookClickListener(onBookClickListener: OnBookClickListener?) {
         this.onBookClickListener = onBookClickListener
     }
 }

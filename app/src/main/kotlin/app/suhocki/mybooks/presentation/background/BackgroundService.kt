@@ -15,7 +15,7 @@ import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.BackgroundServiceModule
 import app.suhocki.mybooks.isAppOnForeground
 import app.suhocki.mybooks.presentation.base.MvpService
-import app.suhocki.mybooks.presentation.categories.CategoriesActivity
+import app.suhocki.mybooks.presentation.catalog.CatalogActivity
 import app.suhocki.mybooks.presentation.initial.InitialActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -94,7 +94,7 @@ class BackgroundService : MvpService(), BackgroundView {
         val (categoriesCount, booksCount) = statistics
         val description = getString(R.string.downloading_statistics, booksCount, categoriesCount)
         val intentForContinue =
-            intentFor<CategoriesActivity>(CategoriesActivity.ARG_FROM_NOTIFICATION to null)
+            intentFor<CatalogActivity>(CatalogActivity.ARG_FROM_NOTIFICATION to null)
         val intentContinue = PendingIntent.getActivity(this, 0, intentForContinue, 0)
         val intentForContent = intentFor<InitialActivity>()
             .apply {

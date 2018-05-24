@@ -12,7 +12,7 @@ import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.InitialActivityModule
 import app.suhocki.mybooks.presentation.background.BackgroundService
 import app.suhocki.mybooks.presentation.background.Command
-import app.suhocki.mybooks.presentation.categories.CategoriesActivity
+import app.suhocki.mybooks.presentation.catalog.CatalogActivity
 import app.suhocki.mybooks.setGone
 import app.suhocki.mybooks.setVisible
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -143,7 +143,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
     }
 
     override fun showMainScreen() {
-        startActivity<CategoriesActivity>()
+        startActivity<CatalogActivity>()
         finish()
     }
 

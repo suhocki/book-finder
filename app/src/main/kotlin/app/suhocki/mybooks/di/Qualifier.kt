@@ -8,3 +8,5 @@ import javax.inject.Qualifier
 @Qualifier annotation class DatabaseFileName
 @Qualifier annotation class SharedPreferencesFileName
 @Qualifier annotation class CategoriesStartFlag
+@Qualifier annotation class SearchCatalogItem
+@Qualifier annotation class HeaderCatalogItem

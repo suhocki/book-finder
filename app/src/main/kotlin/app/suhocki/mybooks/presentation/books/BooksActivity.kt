@@ -9,7 +9,7 @@ import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.presentation.books.adapter.BooksAdapter
 import app.suhocki.mybooks.presentation.books.adapter.OnBookClickListener
-import app.suhocki.mybooks.presentation.categories.CategoriesActivity
+import app.suhocki.mybooks.presentation.catalog.CatalogActivity
 import app.suhocki.mybooks.presentation.details.DetailsActivity
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -35,7 +35,7 @@ class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
     fun providePresenter(): BooksPresenter =
         Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_ACTIVITY_SCOPE)
             .apply {
-                val category = intent.getParcelableExtra<Category>(CategoriesActivity.ARG_CATEGORY)
+                val category = intent.getParcelableExtra<Category>(CatalogActivity.ARG_CATEGORY)
                 installModules(BooksActivityModule(category))
             }.getInstance(BooksPresenter::class.java)
 
@@ -46,7 +46,16 @@ class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
         layout.setContentView(this)
         setSupportActionBar(layout.toolbar)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onStart() {
+        super.onStart()
         adapter.setOnBookClickListener(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        adapter.setOnBookClickListener(null)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

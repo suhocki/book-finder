@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.presentation.categories.adapter.ui
+package app.suhocki.mybooks.presentation.catalog.adapter.ui
 
 import android.graphics.Color
 import android.support.v4.widget.TextViewCompat
@@ -14,9 +14,8 @@ import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.presentation.base.textViewCompat
 import app.suhocki.mybooks.setForegroundCompat
 import org.jetbrains.anko.*
-import javax.inject.Inject
 
-class CategoryItemUI @Inject constructor() : AnkoComponent<ViewGroup> {
+class CategoryItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
     private lateinit var name: TextView
     private lateinit var booksCount: TextView

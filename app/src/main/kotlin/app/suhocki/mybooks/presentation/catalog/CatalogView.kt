@@ -1,14 +1,14 @@
-package app.suhocki.mybooks.presentation.categories
+package app.suhocki.mybooks.presentation.catalog
 
-import app.suhocki.mybooks.domain.model.TypedItem
+import app.suhocki.mybooks.domain.model.CatalogItem
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(OneExecutionStateStrategy::class)
-interface CategoriesView : MvpView {
+interface CatalogView : MvpView {
 
-    fun showCategories(categories: List<TypedItem>)
+    fun showCatalogItems(categories: List<CatalogItem>)
 
     fun cancelAllNotifications()
 }

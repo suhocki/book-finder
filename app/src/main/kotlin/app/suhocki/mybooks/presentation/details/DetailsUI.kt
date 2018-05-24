@@ -97,7 +97,8 @@ class DetailsUI @Inject constructor(
                     }
 
                     linearLayout {
-                        textView(R.string.isbn).lparams(0, matchParent) { weight = 0.5f }
+                        textView(R.string.isbn) { gravity = Gravity.CENTER_VERTICAL }
+                            .lparams(0, matchParent) { weight = 0.5f }
                         textView { text = book.productCode }.lparams(0, matchParent) {
                             weight = 0.5f
                         }
@@ -105,43 +106,50 @@ class DetailsUI @Inject constructor(
 
                     linearLayout {
                         book.author ?: let { setGone(this) }
-                        textView(R.string.author).lparams(0, matchParent) { weight = 0.5f }
+                        textView(R.string.author) { gravity = Gravity.CENTER_VERTICAL }
+                            .lparams(0, matchParent) { weight = 0.5f }
                         textView { text = book.author }.lparams(0, matchParent) { weight = 0.5f }
                     }
 
                     linearLayout {
                         book.publisher ?: let { setGone(this) }
-                        textView(R.string.publisher).lparams(0, matchParent) { weight = 0.5f }
+                        textView(R.string.publisher) { gravity = Gravity.CENTER_VERTICAL }
+                            .lparams(0, matchParent) { weight = 0.5f }
                         textView { text = book.publisher }.lparams(0, matchParent) { weight = 0.5f }
                     }
 
                     linearLayout {
                         book.year ?: let { setGone(this) }
-                        textView(R.string.year).lparams(0, matchParent) { weight = 0.5f }
+                        textView(R.string.year) { gravity = Gravity.CENTER_VERTICAL }
+                            .lparams(0, matchParent) { weight = 0.5f }
                         textView { text = book.year }.lparams(0, matchParent) { weight = 0.5f }
                     }
 
                     linearLayout {
                         book.cover ?: let { setGone(this) }
-                        textView(R.string.cover).lparams(0, matchParent) { weight = 0.5f }
+                        textView(R.string.cover) { gravity = Gravity.CENTER_VERTICAL }
+                            .lparams(0, matchParent) { weight = 0.5f }
                         textView { text = book.cover }.lparams(0, matchParent) { weight = 0.5f }
                     }
 
                     linearLayout {
                         book.format ?: let { setGone(this) }
-                        textView(R.string.format).lparams(0, matchParent) { weight = 0.5f }
+                        textView(R.string.format) { gravity = Gravity.CENTER_VERTICAL }
+                            .lparams(0, matchParent) { weight = 0.5f }
                         textView { text = book.format }.lparams(0, matchParent) { weight = 0.5f }
                     }
 
                     linearLayout {
                         book.pageCount ?: let { setGone(this) }
-                        textView(R.string.pages).lparams(0, matchParent) { weight = 0.5f }
+                        textView(R.string.pages) { gravity = Gravity.CENTER_VERTICAL }
+                            .lparams(0, matchParent) { weight = 0.5f }
                         textView { text = book.pageCount }.lparams(0, matchParent) { weight = 0.5f }
                     }
 
                     linearLayout {
                         book.series ?: let { setGone(this) }
-                        textView(R.string.series).lparams(0, matchParent) { weight = 0.5f }
+                        textView(R.string.series) { gravity = Gravity.CENTER_VERTICAL }
+                            .lparams(0, matchParent) { weight = 0.5f }
                         textView { text = book.series }.lparams(0, matchParent) { weight = 0.5f }
                     }
 

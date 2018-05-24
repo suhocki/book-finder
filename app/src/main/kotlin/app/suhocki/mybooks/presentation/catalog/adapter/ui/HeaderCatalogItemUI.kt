@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.presentation.categories.adapter.ui
+package app.suhocki.mybooks.presentation.catalog.adapter.ui
 
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
@@ -7,9 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import org.jetbrains.anko.*
-import javax.inject.Inject
 
-class HeaderCatalogItemUI @Inject constructor() : AnkoComponent<ViewGroup> {
+class HeaderCatalogItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {

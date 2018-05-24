@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.presentation.categories.adapter.ui
+package app.suhocki.mybooks.presentation.catalog.adapter.ui
 
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
@@ -9,9 +9,8 @@ import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
 import org.jetbrains.anko.*
 import org.jetbrains.anko.cardview.v7.themedCardView
-import javax.inject.Inject
 
-class SearchItemUI @Inject constructor() : AnkoComponent<ViewGroup> {
+class SearchItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
