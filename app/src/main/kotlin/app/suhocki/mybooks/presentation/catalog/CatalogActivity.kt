@@ -32,10 +32,7 @@ class CatalogActivity : MvpAppCompatActivity(), CatalogView, OnCategoryClickList
     @ProvidePresenter
     fun providePresenter(): CatalogPresenter =
         Toothpick.openScope(DI.APP_SCOPE)
-            .apply {
-                val startFromNotification = intent.extras?.containsKey(ARG_FROM_NOTIFICATION) ?: false
-                installModules(CategoriesActivityModule(startFromNotification))
-            }
+            .apply {installModules(CategoriesActivityModule())}
             .getInstance(CatalogPresenter::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,7 +73,6 @@ class CatalogActivity : MvpAppCompatActivity(), CatalogView, OnCategoryClickList
 
     companion object {
         const val ARG_CATEGORY = "ARG_CATEGORY"
-        const val ARG_FROM_NOTIFICATION = "ARG_FROM_NOTIFICATION"
     }
 }
 

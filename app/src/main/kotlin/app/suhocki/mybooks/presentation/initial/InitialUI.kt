@@ -4,8 +4,8 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
+import app.suhocki.mybooks.Analytics
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.analytics
 import app.suhocki.mybooks.attrResource
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -130,8 +130,9 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
                     btnInBackground = this
                     visibility = View.GONE
                     onClick {
-                        analytics("Do in background")
+                        Analytics.custom("Do in background")
                         owner.finish()
+                        owner.synchronizeWithBackground()
                     }
                 }
             }.applyRecursively { view ->

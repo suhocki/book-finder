@@ -3,6 +3,7 @@ package app.suhocki.mybooks
 import app.suhocki.mybooks.domain.model.Book
 import com.crashlytics.android.answers.AddToCartEvent
 import com.crashlytics.android.answers.Answers
+import com.crashlytics.android.answers.CustomEvent
 import java.math.BigDecimal
 import java.util.*
 
@@ -18,5 +19,10 @@ object Analytics {
             .putItemType(book.website)
             .putItemId(book.productCode)
         Answers.getInstance().logAddToCart(toCartEvent)
+    }
+
+    fun custom(message: String) {
+        if (BuildConfig.DEBUG) return
+        Answers.getInstance().logCustom(CustomEvent(message))
     }
 }

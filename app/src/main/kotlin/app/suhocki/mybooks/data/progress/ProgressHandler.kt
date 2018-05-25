@@ -13,6 +13,7 @@ class ProgressHandler @Inject constructor() {
         listeners.remove(listener)
     }
 
+    @Synchronized
     fun onProgress(progressStep: ProgressStep, done: Boolean) {
         listeners.forEach { (listener, updateRule) ->
             if (updateRule.requestUpdate() || done) listener.onProgress(progressStep, done)

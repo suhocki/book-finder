@@ -1,11 +1,12 @@
 package app.suhocki.mybooks.data.error
 
 import android.content.Context
+import app.suhocki.mybooks.inDebug
+import app.suhocki.mybooks.isAppOnForeground
 import okhttp3.internal.http2.StreamResetException
 import org.jetbrains.anko.runOnUiThread
 import org.jetbrains.anko.toast
 import retrofit2.HttpException
-import app.suhocki.mybooks.isAppOnForeground
 import java.io.InterruptedIOException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -22,8 +23,11 @@ class ErrorHandler @Inject constructor(
             it !is InterruptedIOException) {
             it.printStackTrace()
             with(context) {
-                if (isAppOnForeground()) runOnUiThread { toast(it.message.toString()) }
-                else lastError = it
+                if (isAppOnForeground()) {
+                    inDebug { runOnUiThread { toast(it.message.toString()) } }
+                } else {
+                    lastError = it
+                }
             }
             val errorType = getErrorType(it)
             listeners.forEach { it.onError(errorType) }

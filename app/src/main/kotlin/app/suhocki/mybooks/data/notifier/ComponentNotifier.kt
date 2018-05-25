@@ -7,14 +7,17 @@ class ComponentNotifier @Inject constructor() {
 
     private val listeners = mutableListOf<ComponentCommandListener>()
 
+    @Synchronized
     fun addListener(listener: ComponentCommandListener) {
         listeners.add(listener)
     }
 
+    @Synchronized
     fun removeListener(listener: ComponentCommandListener) {
         listeners.remove(listener)
     }
 
+    @Synchronized
     fun onLoadingStep(step: ProgressStep) {
         listeners.forEach { it.onLoadingStep(step) }
     }

@@ -10,8 +10,8 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.progress.ProgressStep
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.InitialActivityModule
+import app.suhocki.mybooks.presentation.background.BackgroundCommand
 import app.suhocki.mybooks.presentation.background.BackgroundService
-import app.suhocki.mybooks.presentation.background.Command
 import app.suhocki.mybooks.presentation.catalog.CatalogActivity
 import app.suhocki.mybooks.setGone
 import app.suhocki.mybooks.setVisible
@@ -62,6 +62,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
         super.onStop()
         unbindService(serviceConnection)
     }
+
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) Toothpick.closeScope(DI.INITIAL_ACTIVITY_SCOPE)
@@ -89,8 +90,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
         if (done) {
             textProgress.text = ""
             setGone(textProgress)
-        }
-        else {
+        } else {
             textProgress.text = getString(R.string.percent, progressStep.progress)
             textProgress.visibility = View.VISIBLE
         }
@@ -162,17 +162,17 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
     }
 
     override fun synchronizeWithBackground() {
-        intentFor<BackgroundService>(BackgroundService.COMMAND to Command.SYNC_STATE)
+        intentFor<BackgroundService>(BackgroundService.COMMAND to BackgroundCommand.SYNC_STATE)
             .let { startService(it) }
     }
 
     fun startDownloading() {
-        intentFor<BackgroundService>(BackgroundService.COMMAND to Command.START)
+        intentFor<BackgroundService>(BackgroundService.COMMAND to BackgroundCommand.START)
             .let { startService(it) }
     }
 
     fun cancelDownloading() {
-        intentFor<BackgroundService>(BackgroundService.COMMAND to Command.CANCEL)
+        intentFor<BackgroundService>(BackgroundService.COMMAND to BackgroundCommand.CANCEL)
             .let { startService(it) }
     }
 

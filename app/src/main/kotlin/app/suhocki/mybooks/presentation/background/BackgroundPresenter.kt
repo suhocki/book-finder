@@ -21,10 +21,12 @@ class BackgroundPresenter @Inject constructor(
     private val interactor: BackgroundInteractor,
     private val progressHandler: ProgressHandler,
     private val errorHandler: ErrorHandler,
-    private val componentNotifier: ComponentNotifier
+    private val componentNotifier: ComponentNotifier,
+    private val notificationProvider: NotificationProvider
 ) : MvpPresenter<BackgroundView>(), ErrorListener, ProgressListener, ComponentCommandListener {
 
     private lateinit var loadDatabaseTask: Future<Unit>
+    private var currentStep: ProgressStep? = null
 
     init {
         errorHandler.addListener(this)
@@ -65,18 +67,29 @@ class BackgroundPresenter @Inject constructor(
         ErrorType.CORRUPTED_FILE -> R.string.corrupted_file
 
         ErrorType.UNKNOWN -> R.string.error_unknown
-    }.let { viewState.showError(it) }
+    }.let {
+        currentStep = null
+        val notification = notificationProvider.getErrorNotification(it)
+        viewState.showNotification(notification)
+        viewState.stopForegroundMode(false)
+    }
 
     override fun onProgress(progressStep: ProgressStep, done: Boolean) {
-        viewState.showProgress(progressStep, done)
+        val notification = notificationProvider.getProgressNotification(progressStep)
+        viewState.showNotification(notification)
     }
 
     override fun onLoadingStep(step: ProgressStep) {
-        viewState.showLoadingStep(step)
+        currentStep = step
+        val notification = notificationProvider.getCurrentStepNotification(step)
+        viewState.showNotification(notification)
     }
 
     override fun onLoadingComplete(statistics: Pair<Int, Int>) {
-        viewState.showSuccess(statistics)
+        currentStep!!.isAllCompleted = true
+        val notification = notificationProvider.getSuccessNotification(statistics)
+        viewState.showNotification(notification)
+        viewState.stopForegroundMode(false)
     }
 
     override fun onLoadingCancelled() {
@@ -90,13 +103,21 @@ class BackgroundPresenter @Inject constructor(
         componentNotifier.removeListener(this)
     }
 
-    fun onTargetComponentForeground(currentStep: ProgressStep) = doAsync(errorHandler.errorReceiver) {
-        if (currentStep.isAllCompleted) {
-            val statistics = interactor.getBooksAndCategoriesCount()
-            componentNotifier.onLoadingComplete(statistics)
-        } else {
-            componentNotifier.onLoadingStep(currentStep)
+    fun sendCurrentStateToComponents() = currentStep?.let {
+        doAsync(errorHandler.errorReceiver) {
+            if (currentStep!!.isAllCompleted) {
+                val statistics = interactor.getBooksAndCategoriesCount()
+                componentNotifier.onLoadingComplete(statistics)
+            } else {
+                componentNotifier.onLoadingStep(currentStep!!)
+            }
         }
+    }
+
+    fun setAllLoaded() {
+        interactor.setDatabaseLoaded()
+        viewState.showCatalogScreen()
+        viewState.stopService()
     }
 
     companion object {

@@ -38,6 +38,7 @@
     <string name="format">Format</string>
     <string name="catalog">Catalog</string>
     <string name="search">Search</string>
+    <string name="notification_channel_name">MyBooks notifications</string>
 
     <string name="percent" translatable="false">" "(%d%%)</string>
 </resources>

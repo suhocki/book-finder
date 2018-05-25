@@ -1,7 +1,8 @@
 package app.suhocki.mybooks.presentation.background
 
-enum class Command {
+enum class BackgroundCommand {
     START,
     CANCEL,
-    SYNC_STATE
+    SYNC_STATE,
+    CONTINUE,
 }

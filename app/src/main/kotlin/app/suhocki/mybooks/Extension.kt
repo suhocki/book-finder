@@ -15,8 +15,6 @@ import android.view.ViewManager
 import app.suhocki.mybooks.presentation.base.AutofitRecyclerView
 import app.suhocki.mybooks.presentation.base.MultilineCollapsingToolbarLayout
 import app.suhocki.mybooks.presentation.base._AutofitRecyclerView
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.CustomEvent
 import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.internals.AnkoInternals
 
@@ -39,6 +37,8 @@ fun Context.isAppOnForeground(): Boolean {
     }
     return false
 }
+
+fun Context.isAppInBackground() = !isAppOnForeground()
 
 fun Context.openLink(link: String) {
     CustomTabsIntent.Builder()
@@ -78,16 +78,14 @@ fun setGone(vararg views: View) {
     views.forEach { it.visibility = View.GONE }
 }
 
-fun analytics(message: String) {
-    if (!BuildConfig.DEBUG) {
-        Answers.getInstance().logCustom(CustomEvent(message))
-    }
-}
-
 fun View.setForegroundCompat(@DrawableRes drawableRes: Int) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         foreground = ContextCompat.getDrawable(context, drawableRes)
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
         background = ContextCompat.getDrawable(context, drawableRes)
     }
+}
+
+fun inDebug(action: () -> Unit) {
+    if (BuildConfig.DEBUG) action.invoke()
 }

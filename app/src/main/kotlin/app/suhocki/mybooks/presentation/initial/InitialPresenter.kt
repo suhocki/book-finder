@@ -1,9 +1,5 @@
 package app.suhocki.mybooks.presentation.initial
 
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.error.ErrorListener
@@ -14,6 +10,10 @@ import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.progress.ProgressListener
 import app.suhocki.mybooks.data.progress.ProgressStep
 import app.suhocki.mybooks.domain.InitialInteractor
+import com.arellomobile.mvp.InjectViewState
+import com.arellomobile.mvp.MvpPresenter
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import javax.inject.Inject
 
 @InjectViewState
