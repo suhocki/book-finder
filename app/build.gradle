@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'
 apply from: "$rootDir/common-methods.gradle"
 apply from: 'build-config.gradle'
 apply plugin: 'io.fabric'
+apply plugin: 'com.getkeepsafe.dexcount'
 
 final userName = System.getProperty("user.name")
 final credentialsFolder = getCredentialsFolder(userName)
@@ -32,6 +33,7 @@ android {
                 includeCompileClasspath = true
             }
         }
+        configureApkName()
     }
     signingConfigs {
         release {
