@@ -5,4 +5,5 @@ android {
         buildConfigField 'String', 'DOWNLOADED_FILE_NAME', "\"$downloadedFileName\""
         buildConfigField 'String', 'SHARED_PREFERENCES_FILE_NAME', "\"$sharedPreferencesFileName\""
     }
+    flavorDimensions "default"
 }

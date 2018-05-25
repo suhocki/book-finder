@@ -20,11 +20,10 @@ android {
     compileSdkVersion 27
     defaultConfig {
         applicationId appId
-        if (gradle.startParameter.taskNames.contains(":app:assembleDebug")) minSdkVersion 23
-        else minSdkVersion 15
+        minSdkVersion 15
         targetSdkVersion 27
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode.toInteger()
+        versionName appVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary true
         javaCompileOptions {
@@ -57,8 +56,17 @@ android {
             debuggable false
         }
         debug {
+            versionNameSuffix = "-debug"
             applicationIdSuffix ".debug"
             debuggable true
+        }
+    }
+    productFlavors {
+        minSdk15 {
+            minSdkVersion 15
+        }
+        minSdk23 {
+            minSdkVersion 23
         }
     }
     compileOptions {
@@ -117,7 +125,7 @@ dependencies {
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
         transitive = true
     }
-    debugImplementation (
+    debugImplementation(
             "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
     )
     testImplementation(
