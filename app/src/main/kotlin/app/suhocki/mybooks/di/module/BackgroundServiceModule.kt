@@ -1,6 +1,5 @@
 package app.suhocki.mybooks.di.module
 
-import okhttp3.OkHttpClient
 import app.suhocki.mybooks.BuildConfig
 import app.suhocki.mybooks.data.network.CloudStorageApi
 import app.suhocki.mybooks.data.parser.XlsParser
@@ -13,11 +12,10 @@ import app.suhocki.mybooks.di.provider.network.ApiProvider
 import app.suhocki.mybooks.di.provider.network.OkHttpClientProvider
 import app.suhocki.mybooks.domain.repository.FileSystemRepository
 import app.suhocki.mybooks.domain.repository.ServerRepository
+import okhttp3.OkHttpClient
 import toothpick.config.Module
 
-class BackgroundServiceModule(
-    downloadDirectory: String
-) : Module() {
+class BackgroundServiceModule(downloadDirectory: String) : Module() {
     init {
         bind(String::class.java).withName(DownloadDirectoryPath::class.java).toInstance(downloadDirectory)
         bind(String::class.java).withName(DownloadedFileName::class.java).toInstance(BuildConfig.DOWNLOADED_FILE_NAME)

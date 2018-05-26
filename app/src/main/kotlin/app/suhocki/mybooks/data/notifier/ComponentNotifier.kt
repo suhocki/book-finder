@@ -1,12 +1,13 @@
 package app.suhocki.mybooks.data.notifier
 
 import app.suhocki.mybooks.data.progress.ProgressStep
+import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 
 class ComponentNotifier @Inject constructor() {
 
     private val listeners = mutableListOf<ComponentCommandListener>()
-    private var lastProgressStep: ProgressStep? = null
+    private var lastProgressStep: AtomicReference<ProgressStep?> = AtomicReference(null)
 
     @Synchronized
     fun addListener(listener: ComponentCommandListener) {
@@ -20,19 +21,22 @@ class ComponentNotifier @Inject constructor() {
 
     @Synchronized
     fun onProgressStep(step: ProgressStep) {
-        lastProgressStep = step
+        lastProgressStep.set(step)
         listeners.forEach { it.onLoadingStep(step) }
     }
 
+    @Synchronized
     fun onLoadingComplete(statistics: Pair<Int, Int>) {
-        lastProgressStep = null
+        lastProgressStep.set(null)
         listeners.forEach { it.onLoadingComplete(statistics) }
     }
 
+    @Synchronized
     fun onLoadingCancelled() {
-        lastProgressStep = null
+        lastProgressStep.set(null)
         listeners.forEach { it.onLoadingCancelled() }
     }
 
-    fun getLastProgressStep() = lastProgressStep
+    @Synchronized
+    fun getLastProgressStep() = lastProgressStep.get()
 }

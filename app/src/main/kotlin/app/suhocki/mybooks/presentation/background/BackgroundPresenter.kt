@@ -98,7 +98,7 @@ class BackgroundPresenter @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        stopDatabaseLoading()
+        if (currentStep != null) stopDatabaseLoading()
         errorHandler.removeListener(this)
         progressHandler.removeListener(this)
         componentNotifier.removeListener(this)
