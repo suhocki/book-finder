@@ -53,7 +53,7 @@ class CategoryItemUI : AnkoComponent<ViewGroup> {
                 }.lparams(matchParent, matchParent) {
                     leftMargin = dip(16)
                 }
-            }.lparams(matchParent, dip(48)) {
+            }.lparams(matchParent, dimenAttr(R.attr.actionBarSize)) {
                 leftMargin = dip(16)
                 rightMargin = dip(16)
             }

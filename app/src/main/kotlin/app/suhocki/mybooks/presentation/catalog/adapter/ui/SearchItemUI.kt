@@ -17,6 +17,7 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
 
         frameLayout {
             this@SearchItemUI.parent = this
+            padding = dimen(R.dimen.padding_item_search)
 
             themedCardView {
                 useCompatPadding = true
@@ -26,7 +27,7 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
 
                     textView(R.string.search) {
                         textAppearance = R.style.TextAppearance_AppCompat_Caption
-                        leftPadding = dip(8)
+                        leftPadding = dip(14)
                         textSize = 14f
                     }.lparams(wrapContent, wrapContent) {
                         gravity = Gravity.CENTER_VERTICAL
@@ -39,10 +40,9 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
                         gravity = Gravity.CENTER_VERTICAL or Gravity.END
                     }
 
-                }.lparams(matchParent, dip(38))
+                }.lparams(matchParent, matchParent)
 
-            }.lparams(matchParent, wrapContent) {
-                setMargins(dip(8), 0, dip(8), 0)
+            }.lparams(matchParent, matchParent) {
                 gravity = Gravity.CENTER_VERTICAL
             }
         }.apply {

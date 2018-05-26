@@ -42,6 +42,26 @@ class CatalogUI : AnkoComponent<CatalogActivity> {
                         }
                     }
 
+                    imageView(R.drawable.ic_search).apply {
+                        padding = dimen(R.dimen.padding_toolbar_search_icon)
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                        layoutParams = Toolbar.LayoutParams(
+                            dimenAttr(R.attr.actionBarSize),
+                            matchParent
+                        ).apply {
+                            gravity = Gravity.END
+                        }
+                    }
+
+                    view {
+                        backgroundColorResource = R.color.gray
+                        layoutParams = Toolbar.LayoutParams(
+                            dip(1),
+                            matchParent
+                        ).apply {
+                            gravity = Gravity.END
+                        }
+                    }
                 }.lparams(matchParent, matchParent) {
                     scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
                 }

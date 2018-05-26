@@ -21,7 +21,7 @@ class HeaderCatalogItemUI : AnkoComponent<ViewGroup> {
                 allCaps = true
                 textAppearance = R.style.TextAppearance_AppCompat_Subhead_Inverse
                 setTypeface(typeface, Typeface.BOLD)
-                leftPadding = dip(16)
+                leftPadding = dip(18)
                 gravity = Gravity.CENTER_VERTICAL
             }.lparams(wrapContent, dimenAttr(R.attr.actionBarSize))
         }.apply {

@@ -27,6 +27,7 @@ class BannersItemUI : AnkoComponent<ViewGroup> {
             textView {
                 this@BannersItemUI.description = this
                 textAppearance = R.style.TextAppearance_AppCompat_Subhead
+                textColorResource = R.color.colorBlack
                 backgroundColorResource = R.color.colorDescriptionBackground
                 gravity = Gravity.CENTER_HORIZONTAL
             }.lparams(matchParent, wrapContent) {
