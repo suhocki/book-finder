@@ -3,26 +3,15 @@ package app.suhocki.mybooks.presentation.books.adapter
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.Book
 import org.jetbrains.anko.AnkoContextImpl
 import org.jetbrains.anko.AnkoLogger
-import toothpick.Toothpick
-import javax.inject.Inject
 
 
-class BooksAdapter @Inject constructor() :
-    RecyclerView.Adapter<BookViewHolder>(), AnkoLogger {
+class BooksAdapter : RecyclerView.Adapter<BookViewHolder>(), AnkoLogger {
 
-    private lateinit var differ: AsyncListDiffer<Book>
-    private var onBookClickListener: OnBookClickListener? = null
-
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        if (!this::differ.isInitialized) differ =
-                Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_ACTIVITY_SCOPE)
-                    .getInstance(BooksDiffer::class.java).get()
-    }
+    private var differ = AsyncListDiffer(this, BooksDiffCallback())
+    private lateinit var onBookClickListener: OnBookClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BookViewHolder {
         val viewHolder = BookViewHolder(BookItemUI().apply {
@@ -31,7 +20,7 @@ class BooksAdapter @Inject constructor() :
 
         viewHolder.itemView.setOnClickListener {
             val book = differ.currentList[viewHolder.adapterPosition]
-            onBookClickListener?.onBookClick(book)
+            onBookClickListener.onBookClick(book)
         }
         return viewHolder
     }
@@ -49,7 +38,7 @@ class BooksAdapter @Inject constructor() :
             differ.submitList(this)
         }
 
-    fun setOnBookClickListener(onBookClickListener: OnBookClickListener?) {
+    fun setOnBookClickListener(onBookClickListener: OnBookClickListener) {
         this.onBookClickListener = onBookClickListener
     }
 }

@@ -2,10 +2,10 @@ package app.suhocki.mybooks.presentation.catalog
 
 import app.suhocki.mybooks.domain.model.CatalogItem
 import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
+import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
-@StateStrategyType(OneExecutionStateStrategy::class)
+@StateStrategyType(AddToEndSingleStrategy::class)
 interface CatalogView : MvpView {
 
     fun showCatalogItems(catalogItems: List<CatalogItem>)

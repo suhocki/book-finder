@@ -3,7 +3,6 @@ package app.suhocki.mybooks.presentation.catalog.adapter
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.CatalogItem
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.presentation.catalog.adapter.model.BannersTypedItem
@@ -18,21 +17,12 @@ import app.suhocki.mybooks.presentation.catalog.adapter.viewholder.SearchViewHol
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.AnkoContextImpl
 import org.jetbrains.anko.AnkoLogger
-import toothpick.Toothpick
-import javax.inject.Inject
 
-class CatalogAdapter @Inject constructor() :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>(), AnkoLogger {
+class CatalogAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>(), AnkoLogger {
 
-    private lateinit var differ: AsyncListDiffer<CatalogItem>
-    private var onCategoryClickListener: OnCategoryClickListener? = null
+    private var differ = AsyncListDiffer(this, CatalogDiffCallback())
 
-    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        super.onAttachedToRecyclerView(recyclerView)
-        if (!this::differ.isInitialized) differ =
-                Toothpick.openScopes(DI.APP_SCOPE, DI.CATALOG_ACTIVITY_SCOPE)
-                    .getInstance(CatalogDiffer::class.java).get()
-    }
+    private lateinit var onCategoryClickListener: OnCategoryClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val viewHolder: RecyclerView.ViewHolder
@@ -43,7 +33,7 @@ class CatalogAdapter @Inject constructor() :
                 })
                 viewHolder.itemView.setOnClickListener {
                     val category = differ.currentList[viewHolder.adapterPosition] as Category
-                    onCategoryClickListener?.onCategoryClick(category)
+                    onCategoryClickListener.onCategoryClick(category)
                 }
             }
             VIEW_TYPE_HEADER_CATALOG -> {
@@ -100,7 +90,7 @@ class CatalogAdapter @Inject constructor() :
             differ.submitList(this)
         }
 
-    fun setOnCategoryClickListener(onCategoryClickListener: OnCategoryClickListener?) {
+    fun setOnCategoryClickListener(onCategoryClickListener: OnCategoryClickListener) {
         this.onCategoryClickListener = onCategoryClickListener
     }
 

@@ -18,13 +18,11 @@ import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.nestedScrollView
-import javax.inject.Inject
 
 
-class DetailsUI @Inject constructor(
-    private val book: Book
-) : AnkoComponent<DetailsActivity>, AnkoLogger {
+class DetailsUI : AnkoComponent<DetailsActivity>, AnkoLogger {
 
+    lateinit var book: Book
     private var windowHeight = 0
 
     override fun createView(ui: AnkoContext<DetailsActivity>) = with(ui) {
@@ -44,6 +42,7 @@ class DetailsUI @Inject constructor(
                     setContentScrimResource(R.color.colorPrimary)
                     setExpandedTitleMargin(dip(16), dip(16), dip(32), dip(16))
                     setExpandedTitleTextAppearance(R.style.TextAppearance_AppCompat_Headline)
+                    title = book.shortName
 
                     frameLayout {
                         foreground = ResourcesCompat.getDrawable(

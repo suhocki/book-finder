@@ -2,25 +2,22 @@ package app.suhocki.mybooks.presentation.catalog
 
 import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.widget.ImageView
+import android.widget.LinearLayout
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.presentation.base.DividerItemDecoration
 import app.suhocki.mybooks.presentation.base.themedToolbarCompat
-import app.suhocki.mybooks.presentation.catalog.adapter.CatalogAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
-import javax.inject.Inject
 
 
-class CatalogUI @Inject constructor(
-    private var adapter: CatalogAdapter,
-    private var layoutManager: LinearLayoutManager
-) : AnkoComponent<CatalogActivity> {
-    lateinit var toolbar: Toolbar
+class CatalogUI : AnkoComponent<CatalogActivity> {
+    lateinit var recyclerView: RecyclerView
 
     override fun createView(ui: AnkoContext<CatalogActivity>) = with(ui) {
 
@@ -29,7 +26,8 @@ class CatalogUI @Inject constructor(
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
-                    toolbar = this
+                    owner.setSupportActionBar(this)
+                    owner.supportActionBar!!.title = ""
                     backgroundColorResource = R.color.colorPrimary
                     popupTheme = R.style.ThemeOverlay_AppCompat_Light
 
@@ -50,10 +48,10 @@ class CatalogUI @Inject constructor(
             }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
             themedRecyclerView(R.style.ScrollbarRecyclerView) {
+                recyclerView = this
                 id = R.id.id_recycler_catalog
                 clipToPadding = false
-                adapter = this@CatalogUI.adapter
-                layoutManager = this@CatalogUI.layoutManager
+                layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
                 backgroundColorResource = R.color.gray
                 addItemDecoration(DividerItemDecoration(dip(2)))
             }.lparams(matchParent, matchParent) {

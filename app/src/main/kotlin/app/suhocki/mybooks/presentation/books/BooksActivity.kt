@@ -17,7 +17,6 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.startActivity
 import toothpick.Toothpick
-import javax.inject.Inject
 
 
 class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
@@ -25,11 +24,9 @@ class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
     @InjectPresenter
     lateinit var presenter: BooksPresenter
 
-    @Inject
-    lateinit var layout: BooksUI
+    private val layout = BooksUI()
 
-    @Inject
-    lateinit var adapter: BooksAdapter
+    private val adapter = BooksAdapter()
 
     @ProvidePresenter
     fun providePresenter(): BooksPresenter =
@@ -43,19 +40,11 @@ class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
         super.onCreate(savedInstanceState)
         val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_ACTIVITY_SCOPE)
         Toothpick.inject(this@BooksActivity, scope)
-        layout.setContentView(this)
-        setSupportActionBar(layout.toolbar)
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-    }
-
-    override fun onStart() {
-        super.onStart()
+        layout.apply {
+            setContentView(this@BooksActivity)
+            recyclerView.adapter = adapter
+        }
         adapter.setOnBookClickListener(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        adapter.setOnBookClickListener(null)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

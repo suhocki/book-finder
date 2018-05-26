@@ -2,7 +2,7 @@ package app.suhocki.mybooks.presentation.catalog
 
 import android.os.Bundle
 import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.di.module.CategoriesActivityModule
+import app.suhocki.mybooks.di.module.CatalogActivityModule
 import app.suhocki.mybooks.domain.model.CatalogItem
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.presentation.books.BooksActivity
@@ -14,7 +14,6 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.startActivity
 import toothpick.Toothpick
-import javax.inject.Inject
 
 
 class CatalogActivity : MvpAppCompatActivity(), CatalogView, OnCategoryClickListener {
@@ -22,35 +21,25 @@ class CatalogActivity : MvpAppCompatActivity(), CatalogView, OnCategoryClickList
     @InjectPresenter
     lateinit var presenter: CatalogPresenter
 
-    @Inject
-    lateinit var layout: CatalogUI
+    private val layout = CatalogUI()
 
-    @Inject
-    lateinit var adapter: CatalogAdapter
+    private val adapter = CatalogAdapter()
 
     @ProvidePresenter
     fun providePresenter(): CatalogPresenter =
         Toothpick.openScope(DI.APP_SCOPE)
-            .apply {installModules(CategoriesActivityModule())}
+            .apply {installModules(CatalogActivityModule())}
             .getInstance(CatalogPresenter::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.CATALOG_ACTIVITY_SCOPE)
         Toothpick.inject(this@CatalogActivity, scope)
-        layout.setContentView(this)
-        setSupportActionBar(layout.toolbar)
-        supportActionBar!!.title = ""
-    }
-
-    override fun onResume() {
-        super.onResume()
+        layout.apply {
+            setContentView(this@CatalogActivity)
+            recyclerView.adapter = adapter
+        }
         adapter.setOnCategoryClickListener(this)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        adapter.setOnCategoryClickListener(null)
     }
 
     override fun onDestroy() {

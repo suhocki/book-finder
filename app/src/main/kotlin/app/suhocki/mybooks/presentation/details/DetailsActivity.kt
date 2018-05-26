@@ -2,16 +2,13 @@ package app.suhocki.mybooks.presentation.details
 
 import android.os.Bundle
 import android.view.MenuItem
+import app.suhocki.mybooks.di.DI
+import app.suhocki.mybooks.presentation.books.BooksActivity
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.setContentView
-import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.di.module.DetailsActivityModule
-import app.suhocki.mybooks.domain.model.Book
-import app.suhocki.mybooks.presentation.books.BooksActivity
 import toothpick.Toothpick
-import javax.inject.Inject
 
 
 class DetailsActivity : MvpAppCompatActivity(), DetailsView {
@@ -19,22 +16,21 @@ class DetailsActivity : MvpAppCompatActivity(), DetailsView {
     @InjectPresenter
     lateinit var presenter: DetailsPresenter
 
-    @Inject
-    lateinit var layout: DetailsUI
+    private var layout = DetailsUI()
 
     @ProvidePresenter
     fun providePresenter(): DetailsPresenter =
         Toothpick.openScopes(DI.APP_SCOPE, DI.DETAILS_ACTIVITY_SCOPE)
-            .apply {
-                val book = intent.getParcelableExtra<Book>(BooksActivity.ARG_BOOK)
-                installModules(DetailsActivityModule(book))
-            }.getInstance(DetailsPresenter::class.java)
+            .getInstance(DetailsPresenter::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.DETAILS_ACTIVITY_SCOPE)
         Toothpick.inject(this@DetailsActivity, scope)
-        layout.setContentView(this)
+        layout.apply {
+            book = intent.getParcelableExtra(BooksActivity.ARG_BOOK)
+            setContentView(this@DetailsActivity)
+        }
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -46,10 +42,6 @@ class DetailsActivity : MvpAppCompatActivity(), DetailsView {
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) Toothpick.closeScope(DI.DETAILS_ACTIVITY_SCOPE)
-    }
-
-    override fun showBookDetails(book: Book) = with(layout) {
-        supportActionBar!!.title = book.shortName
     }
 }
 

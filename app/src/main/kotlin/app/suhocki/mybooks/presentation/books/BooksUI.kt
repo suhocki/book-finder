@@ -3,29 +3,25 @@ package app.suhocki.mybooks.presentation.books
 import android.graphics.Color
 import android.support.design.widget.AppBarLayout
 import android.support.v4.graphics.drawable.DrawableCompat
-import android.support.v7.widget.Toolbar
+import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.widget.ProgressBar
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.presentation.base.ItemDecoratorGrid
 import app.suhocki.mybooks.presentation.base.themedToolbarCompat
-import app.suhocki.mybooks.presentation.books.adapter.BooksAdapter
 import app.suhocki.mybooks.themedAutofitRecyclerView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.tintedImageView
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
-import javax.inject.Inject
 
 
-class BooksUI @Inject constructor(
-    private var adapter: BooksAdapter
-) : AnkoComponent<BooksActivity> {
+class BooksUI : AnkoComponent<BooksActivity> {
 
     lateinit var progressBar: ProgressBar
     lateinit var emptyView: View
-    lateinit var toolbar: Toolbar
+    lateinit var recyclerView: RecyclerView
 
     override fun createView(ui: AnkoContext<BooksActivity>) = with(ui) {
         coordinatorLayout {
@@ -33,7 +29,8 @@ class BooksUI @Inject constructor(
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
-                    toolbar = this
+                    owner.setSupportActionBar(this)
+                    owner.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                     backgroundColorResource = R.color.colorPrimary
                     popupTheme = R.style.ThemeOverlay_AppCompat_Light
                 }.lparams(matchParent, matchParent) {
@@ -44,8 +41,8 @@ class BooksUI @Inject constructor(
             themedAutofitRecyclerView(R.style.ScrollbarRecyclerView) {
                 id = R.id.id_recycler_books
                 clipToPadding = false
+                recyclerView = this
                 setHasFixedSize(true)
-                adapter = this@BooksUI.adapter
                 columnWidth = dip(146)
                 addItemDecoration(ItemDecoratorGrid(dip(8)))
             }.lparams(matchParent, matchParent) {
