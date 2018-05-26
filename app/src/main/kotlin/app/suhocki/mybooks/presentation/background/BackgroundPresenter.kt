@@ -35,16 +35,16 @@ class BackgroundPresenter @Inject constructor(
 
     fun loadDatabase() = doAsync(errorHandler.errorReceiver) {
         componentNotifier.addListener(this@BackgroundPresenter)
-        componentNotifier.onLoadingStep(ProgressStep.DOWNLOADING)
+        componentNotifier.onProgressStep(ProgressStep.DOWNLOADING)
         val bytes = interactor.downloadDatabaseFile()
         val zipFile = interactor.saveDatabaseFile(bytes)
-        componentNotifier.onLoadingStep(ProgressStep.UNZIPPING)
+        componentNotifier.onProgressStep(ProgressStep.UNZIPPING)
         val unzippedFile = interactor.unzip(zipFile, zipFile.parentFile)
-        componentNotifier.onLoadingStep(ProgressStep.ANALYZING)
+        componentNotifier.onProgressStep(ProgressStep.ANALYZING)
         val unhandledStrings = interactor.parseXlsStructure(unzippedFile)
-        componentNotifier.onLoadingStep(ProgressStep.PARSING)
+        componentNotifier.onProgressStep(ProgressStep.PARSING)
         val xlsDocument = interactor.extractXlsDocument(unhandledStrings)
-        componentNotifier.onLoadingStep(ProgressStep.SAVING)
+        componentNotifier.onProgressStep(ProgressStep.SAVING)
         interactor.saveDocumentData(xlsDocument.data)
         val statistics = interactor.getBooksAndCategoriesCount()
         interactor.setDownloadStatistics(statistics)
@@ -98,6 +98,7 @@ class BackgroundPresenter @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
+        stopDatabaseLoading()
         errorHandler.removeListener(this)
         progressHandler.removeListener(this)
         componentNotifier.removeListener(this)
@@ -109,7 +110,7 @@ class BackgroundPresenter @Inject constructor(
                 val statistics = interactor.getBooksAndCategoriesCount()
                 componentNotifier.onLoadingComplete(statistics)
             } else {
-                componentNotifier.onLoadingStep(currentStep!!)
+                componentNotifier.onProgressStep(currentStep!!)
             }
         }
     }

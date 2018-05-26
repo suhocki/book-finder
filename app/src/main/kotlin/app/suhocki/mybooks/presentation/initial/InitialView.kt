@@ -1,10 +1,10 @@
 package app.suhocki.mybooks.presentation.initial
 
 import android.support.annotation.StringRes
+import app.suhocki.mybooks.data.progress.ProgressStep
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
-import app.suhocki.mybooks.data.progress.ProgressStep
 
 @StateStrategyType(OneExecutionStateStrategy::class)
 interface InitialView : MvpView {
@@ -21,4 +21,8 @@ interface InitialView : MvpView {
     fun showProgress(progressStep: ProgressStep, done: Boolean)
 
     fun synchronizeWithBackground()
+
+    fun exitApp()
+
+    fun showToast(@StringRes messageRes: Int)
 }

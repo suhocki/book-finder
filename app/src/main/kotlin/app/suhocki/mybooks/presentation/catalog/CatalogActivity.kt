@@ -11,7 +11,6 @@ import app.suhocki.mybooks.presentation.catalog.adapter.OnCategoryClickListener
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.jetbrains.anko.notificationManager
 import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.startActivity
 import toothpick.Toothpick
@@ -61,10 +60,6 @@ class CatalogActivity : MvpAppCompatActivity(), CatalogView, OnCategoryClickList
 
     override fun showCatalogItems(catalogItems: List<CatalogItem>) {
         adapter.submitList(catalogItems)
-    }
-
-    override fun cancelAllNotifications() {
-        notificationManager.cancelAll()
     }
 
     override fun onCategoryClick(category: Category) {

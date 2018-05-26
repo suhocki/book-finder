@@ -1,7 +1,5 @@
 package app.suhocki.mybooks.presentation.initial
 
-import android.content.Context
-import android.content.ServiceConnection
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.view.View
@@ -9,7 +7,6 @@ import android.view.Window
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.progress.ProgressStep
 import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.di.module.InitialActivityModule
 import app.suhocki.mybooks.presentation.background.BackgroundCommand
 import app.suhocki.mybooks.presentation.background.BackgroundService
 import app.suhocki.mybooks.presentation.catalog.CatalogActivity
@@ -18,10 +15,7 @@ import app.suhocki.mybooks.setVisible
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.setContentView
-import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.textResource
+import org.jetbrains.anko.*
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -34,33 +28,25 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
     @Inject
     lateinit var layout: InitialUI
 
-    @Inject
-    lateinit var serviceConnection: ServiceConnection
-
     @ProvidePresenter
     fun providePresenter(): InitialPresenter =
         Toothpick.openScopes(DI.APP_SCOPE)
-            .apply { installModules(InitialActivityModule()) }
             .getInstance(InitialPresenter::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Toothpick.openScopes(DI.APP_SCOPE, DI.INITIAL_ACTIVITY_SCOPE)
-            .apply { Toothpick.inject(this@InitialActivity, this) }
+        Toothpick.openScopes(DI.APP_SCOPE).apply {
+            Toothpick.inject(this@InitialActivity, this)
+        }
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         layout.setContentView(this)
     }
 
     override fun onStart() {
         super.onStart()
-        intentFor<BackgroundService>().let {
-            bindService(it, serviceConnection, Context.BIND_AUTO_CREATE)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        unbindService(serviceConnection)
+        startService<BackgroundService>(
+            BackgroundService.COMMAND to BackgroundCommand.STOP_FOREGROUND
+        )
     }
 
     override fun onDestroy() {
@@ -162,22 +148,33 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
     }
 
     override fun synchronizeWithBackground() {
-        intentFor<BackgroundService>(BackgroundService.COMMAND to BackgroundCommand.SYNC_STATE)
-            .let { startService(it) }
+        startService<BackgroundService>(
+            BackgroundService.COMMAND to BackgroundCommand.SYNC_STATE
+        )
     }
 
     fun startDownloading() {
-        intentFor<BackgroundService>(BackgroundService.COMMAND to BackgroundCommand.START)
-            .let { startService(it) }
+        startService<BackgroundService>(
+            BackgroundService.COMMAND to BackgroundCommand.START
+        )
     }
 
     fun cancelDownloading() {
-        intentFor<BackgroundService>(BackgroundService.COMMAND to BackgroundCommand.CANCEL)
-            .let { startService(it) }
+        startService<BackgroundService>(
+            BackgroundService.COMMAND to BackgroundCommand.CANCEL
+        )
     }
 
-    fun exitApp() {
-        stopService(intentFor<BackgroundService>())
+    override fun exitApp() {
+        stopService<BackgroundService>()
         finish()
+    }
+
+    override fun showToast(messageRes: Int) {
+        toast(messageRes)
+    }
+
+    override fun onBackPressed() {
+        presenter.onBackPressed()
     }
 }

@@ -9,6 +9,4 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 interface CatalogView : MvpView {
 
     fun showCatalogItems(catalogItems: List<CatalogItem>)
-
-    fun cancelAllNotifications()
 }

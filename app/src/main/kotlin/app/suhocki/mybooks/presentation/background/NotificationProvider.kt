@@ -90,14 +90,14 @@ class NotificationProvider @Inject constructor(
     }
 
     private fun getNotificationBuilder(): NotificationCompat.Builder = with(context) {
-        val pendingIntent = PendingIntent.getActivity(
+        val contentIntent = PendingIntent.getActivity(
             this,
             0,
             intentFor<InitialActivity>(),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)
-            .setContentIntent(pendingIntent)
+            .setContentIntent(contentIntent)
             .setSound(null)
             .setDefaults(0)
     }

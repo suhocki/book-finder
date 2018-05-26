@@ -38,4 +38,5 @@
     <string name="catalog">Каталог</string>
     <string name="search">Поиск</string>
     <string name="notification_channel_name">Уведомления MyBooks</string>
+    <string name="press_back_again">Нажмите кнопку «Назад» еще раз, чтобы отменить загрузку и выйти из приложения.</string>
 </resources>

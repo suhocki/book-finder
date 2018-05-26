@@ -39,6 +39,7 @@
     <string name="catalog">Catalog</string>
     <string name="search">Search</string>
     <string name="notification_channel_name">MyBooks notifications</string>
+    <string name="press_back_again">Press back button one more time to cancel download and exit app.</string>
 
     <string name="percent" translatable="false">" "(%d%%)</string>
 </resources>

@@ -30,6 +30,8 @@ class InitialPresenter @Inject constructor(
         progressHandler.addListener(this, UPDATE_INTERVAL)
     }
 
+    private var previousBackPressedTime = 0L
+
     override fun attachView(view: InitialView) {
         super.attachView(view)
         errorHandler.invokeLastError()
@@ -84,7 +86,20 @@ class InitialPresenter @Inject constructor(
         progressHandler.removeListener(this)
     }
 
+    fun onBackPressed() = doAsync{
+        val currentTime = System.currentTimeMillis()
+        val timePassed = currentTime - previousBackPressedTime
+        if (timePassed <= BACK_PRESSED_INTERVAL ||
+            componentNotifier.getLastProgressStep() == null) {
+            uiThread { viewState.exitApp() }
+        } else {
+            previousBackPressedTime = currentTime
+            uiThread { viewState.showToast(R.string.press_back_again) }
+        }
+    }
+
     companion object {
         private const val UPDATE_INTERVAL = 100L
+        private const val BACK_PRESSED_INTERVAL = 3000L
     }
 }

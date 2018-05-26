@@ -52,6 +52,11 @@ class BackgroundService : MvpService(), BackgroundView {
             BackgroundCommand.SYNC_STATE -> presenter.sendCurrentStateToComponents()
 
             BackgroundCommand.CONTINUE -> presenter.setAllLoaded()
+
+            BackgroundCommand.STOP_FOREGROUND -> {
+                stopForeground(true)
+                notificationManager.cancelAll()
+            }
         }
         return super.onStartCommand(intent, flags, startId)
     }
