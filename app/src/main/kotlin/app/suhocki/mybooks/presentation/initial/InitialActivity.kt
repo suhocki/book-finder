@@ -83,6 +83,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
     }
 
     private fun showLoading() = with(layout) {
+        ivTop.setImageResource(R.drawable.logo)
         textProgress.text = getString(R.string.percent, 0)
         textDescription.textResource = R.string.downloading
         setVisible(btnInBackground, textProgress, progressBar, btnCancel)
@@ -142,6 +143,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
 
     override fun showError(errorDescriptionRes: Int) = with(layout) {
         textTitle.textResource = R.string.error
+        ivTop.setImageResource(R.drawable.ic_error)
         textDescription.textResource = errorDescriptionRes
         setVisible(btnRetry, btnExit)
         setGone(btnDownload, btnInBackground, btnCancel, progressBar, textProgress)

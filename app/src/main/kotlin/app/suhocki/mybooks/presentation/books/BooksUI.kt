@@ -66,7 +66,7 @@ class BooksUI @Inject constructor(
                 visibility = View.GONE
                 topPadding = dimenAttr(R.attr.actionBarSize)
 
-                tintedImageView(R.drawable.ic_info).apply {
+                tintedImageView(R.drawable.ic_error).apply {
                     DrawableCompat.wrap(drawable).apply {
                         DrawableCompat.setTint(this, Color.GRAY)
                         setImageDrawable(this)

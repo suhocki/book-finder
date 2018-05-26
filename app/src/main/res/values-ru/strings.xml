@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="database_load_need">Перед использованием этого приложения, необходимо загрузить базу данных.</string>
+    <string name="database_load_need">Перед использованием данного приложения, необходимо загрузить базу данных.</string>
     <string name="download">Загрузить</string>
     <string name="cancel">Отмена</string>
     <string name="_continue">Продолжить</string>
@@ -38,5 +38,5 @@
     <string name="catalog">Каталог</string>
     <string name="search">Поиск</string>
     <string name="notification_channel_name">Уведомления MyBooks</string>
-    <string name="press_back_again">Нажмите кнопку «Назад» еще раз, чтобы отменить загрузку и выйти из приложения.</string>
+    <string name="press_back_again">Для выхода, нажмите «Назад» еще раз.</string>
 </resources>

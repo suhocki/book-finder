@@ -32,9 +32,9 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
             frameLayout {
                 backgroundResource = R.color.colorPrimary
 
-                imageView(R.drawable.ic_info) {
+                imageView(R.drawable.logo) {
                     ivTop = this
-                }.lparams {
+                }.lparams(height = dip(48)) {
                     gravity = Gravity.CENTER
                     margin = dip(28)
                 }
