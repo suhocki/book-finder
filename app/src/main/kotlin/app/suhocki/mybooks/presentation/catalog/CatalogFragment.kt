@@ -23,14 +23,16 @@ import toothpick.config.Module
 
 class CatalogFragment : BaseFragment(), CatalogView, OnCategoryClickListener {
 
-    @InjectPresenter
-    lateinit var presenter: CatalogPresenter
-
-    private val ui = CatalogUI<CatalogFragment>()
+    private val ui by lazy { CatalogUI<CatalogFragment>() }
 
     private val adapter by lazy {
-        CatalogAdapter().apply { setOnCategoryClickListener(this@CatalogFragment) }
+        CatalogAdapter().apply {
+            setOnCategoryClickListener(this@CatalogFragment)
+        }
     }
+
+    @InjectPresenter
+    lateinit var presenter: CatalogPresenter
 
     @ProvidePresenter
     fun providePresenter(): CatalogPresenter {
