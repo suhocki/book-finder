@@ -4,4 +4,5 @@
     <id name="id_recycler_books">1001</id>
     <id name="id_app_bar_details">1002</id>
     <id name="id_fab">1003</id>
+    <id name="id_main_container">1004</id>
 </resources>

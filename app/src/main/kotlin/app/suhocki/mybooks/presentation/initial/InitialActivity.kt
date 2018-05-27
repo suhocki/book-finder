@@ -9,7 +9,7 @@ import app.suhocki.mybooks.data.progress.ProgressStep
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.presentation.background.BackgroundCommand
 import app.suhocki.mybooks.presentation.background.BackgroundService
-import app.suhocki.mybooks.presentation.catalog.CatalogActivity
+import app.suhocki.mybooks.presentation.main.MainActivity
 import app.suhocki.mybooks.setGone
 import app.suhocki.mybooks.setVisible
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -26,7 +26,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
     lateinit var presenter: InitialPresenter
 
     @Inject
-    lateinit var layout: InitialUI
+    lateinit var ui: InitialUI
 
     @ProvidePresenter
     fun providePresenter(): InitialPresenter =
@@ -39,7 +39,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
             Toothpick.inject(this@InitialActivity, this)
         }
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
-        layout.setContentView(this)
+        ui.setContentView(this)
     }
 
     override fun onStart() {
@@ -55,7 +55,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
     }
 
     override fun showLoadingStep(step: ProgressStep) {
-        layout.textTitle.text =
+        ui.textTitle.text =
                 getString(R.string.step_info, step.number, ProgressStep.values().size)
         when (step) {
             ProgressStep.DOWNLOADING -> showLoading()
@@ -70,7 +70,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
         }
     }
 
-    override fun showProgress(progressStep: ProgressStep, done: Boolean) = with(layout) {
+    override fun showProgress(progressStep: ProgressStep, done: Boolean) = with(ui) {
         setVisible(btnInBackground, textProgress, progressBar, btnCancel)
         setGone(btnExit, btnRetry, btnDownload, btnContinue)
         if (done) {
@@ -82,7 +82,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
         }
     }
 
-    private fun showLoading() = with(layout) {
+    private fun showLoading() = with(ui) {
         ivTop.setImageResource(R.drawable.logo)
         textProgress.text = getString(R.string.percent, 0)
         textDescription.textResource = R.string.downloading
@@ -90,31 +90,31 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
         setGone(btnExit, btnRetry, btnDownload, btnContinue)
     }
 
-    private fun showUnzipping() = with(layout) {
+    private fun showUnzipping() = with(ui) {
         textDescription.textResource = R.string.unzipping
         setVisible(btnInBackground, progressBar, btnCancel)
         setGone(textProgress, btnExit, btnRetry, btnDownload, btnContinue)
     }
 
-    private fun showAnalyzing() = with(layout) {
-        layout.textDescription.textResource = R.string.analyzing
+    private fun showAnalyzing() = with(ui) {
+        ui.textDescription.textResource = R.string.analyzing
         setVisible(btnInBackground, progressBar, btnCancel)
         setGone(textProgress, btnExit, btnRetry, btnDownload, btnContinue)
     }
 
-    private fun showParsing() = with(layout) {
-        layout.textDescription.textResource = R.string.parsing
+    private fun showParsing() = with(ui) {
+        ui.textDescription.textResource = R.string.parsing
         setVisible(btnInBackground, textProgress, progressBar, btnCancel)
         setGone(btnExit, btnRetry, btnDownload, btnContinue)
     }
 
-    private fun showSaving() = with(layout) {
-        layout.textDescription.textResource = R.string.saving
+    private fun showSaving() = with(ui) {
+        ui.textDescription.textResource = R.string.saving
         setVisible(btnInBackground, progressBar, btnCancel)
         setGone(textProgress, btnExit, btnRetry, btnDownload, btnContinue)
     }
 
-    override fun showSuccess(statistics: Pair<Int, Int>) = with(layout) {
+    override fun showSuccess(statistics: Pair<Int, Int>) = with(ui) {
         val (categoriesCount, booksCount) = statistics
         textTitle.textResource = R.string.success
         val statisticsRes = R.string.downloading_statistics
@@ -130,18 +130,18 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
     }
 
     override fun showMainScreen() {
-        startActivity<CatalogActivity>()
+        startActivity<MainActivity>()
         finish()
     }
 
-    override fun showInitialState() = with(layout) {
+    override fun showInitialState() = with(ui) {
         textTitle.text = getString(R.string.info)
         textDescription.textResource = R.string.database_load_need
         setVisible(btnDownload, btnExit)
         setGone(btnInBackground, btnCancel, progressBar, textProgress, btnRetry)
     }
 
-    override fun showError(errorDescriptionRes: Int) = with(layout) {
+    override fun showError(errorDescriptionRes: Int) = with(ui) {
         textTitle.textResource = R.string.error
         ivTop.setImageResource(R.drawable.ic_error)
         textDescription.textResource = errorDescriptionRes

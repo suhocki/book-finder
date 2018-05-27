@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.di.provider.network
+package app.suhocki.mybooks.di.provider
 
 import okhttp3.OkHttpClient
 import app.suhocki.mybooks.data.network.interceptor.ProgressInterceptor

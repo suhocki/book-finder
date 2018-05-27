@@ -1,13 +1,13 @@
 package app.suhocki.mybooks.presentation.splash;
 
 import android.os.Bundle
+import app.suhocki.mybooks.di.DI
+import app.suhocki.mybooks.presentation.initial.InitialActivity
+import app.suhocki.mybooks.presentation.main.MainActivity
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.startActivity
-import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.presentation.catalog.CatalogActivity
-import app.suhocki.mybooks.presentation.initial.InitialActivity
 import toothpick.Toothpick
 
 
@@ -34,7 +34,7 @@ class SplashActivity : MvpAppCompatActivity(), SplashView {
     }
 
     override fun showMainScreen() {
-        startActivity<CatalogActivity>()
+        startActivity<MainActivity>()
         finish()
     }
 

@@ -12,7 +12,8 @@
     <string name="parsing">Поиск книг</string>
     <string name="saving">Сохранение</string>
     <string name="unzipping">Извлечение из архива</string>
-    <string name="info">Информация</string>
+    <string name="info">Инфо</string>
+    <string name="filter">Фильтр</string>
     <string name="success">Загрузка завершена</string>
     <string name="downloading_statistics">Информация о %d книгах из %d категорий успешно сохранена.</string>
     <string name="step_info">Шаг %d из %d</string>

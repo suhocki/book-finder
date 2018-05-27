@@ -80,7 +80,7 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
             }
 
             frameLayout {
-                backgroundResource = R.color.gray
+                backgroundResource = R.color.colorGray
             }.lparams(matchParent, dip(2)) {
                 topMargin = dip(20)
                 leftMargin = dip(8)

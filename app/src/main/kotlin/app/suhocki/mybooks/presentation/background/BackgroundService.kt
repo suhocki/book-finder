@@ -9,7 +9,7 @@ import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.BackgroundServiceModule
 import app.suhocki.mybooks.isAppInBackground
 import app.suhocki.mybooks.presentation.base.MvpService
-import app.suhocki.mybooks.presentation.catalog.CatalogActivity
+import app.suhocki.mybooks.presentation.catalog.CatalogFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.intentFor
@@ -80,7 +80,7 @@ class BackgroundService : MvpService(), BackgroundView {
     }
 
     override fun showCatalogScreen() {
-        intentFor<CatalogActivity>().let {
+        intentFor<CatalogFragment>().let {
             it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(it)
         }

@@ -89,3 +89,5 @@ fun View.setForegroundCompat(@DrawableRes drawableRes: Int) {
 fun inDebug(action: () -> Unit) {
     if (BuildConfig.DEBUG) action.invoke()
 }
+
+fun Context.color(colorRes: Int) = ContextCompat.getColor(this, colorRes)

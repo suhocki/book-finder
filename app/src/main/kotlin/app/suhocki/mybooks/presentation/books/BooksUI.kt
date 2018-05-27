@@ -25,7 +25,7 @@ class BooksUI : AnkoComponent<BooksActivity> {
 
     override fun createView(ui: AnkoContext<BooksActivity>) = with(ui) {
         coordinatorLayout {
-            fitsSystemWindows = true
+            fitsSystemWindows = false
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {

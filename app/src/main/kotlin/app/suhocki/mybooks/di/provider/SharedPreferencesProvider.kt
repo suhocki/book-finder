@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.di.provider.storage
+package app.suhocki.mybooks.di.provider
 
 import android.content.Context
 import android.content.SharedPreferences

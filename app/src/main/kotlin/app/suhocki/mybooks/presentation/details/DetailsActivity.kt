@@ -16,7 +16,7 @@ class DetailsActivity : MvpAppCompatActivity(), DetailsView {
     @InjectPresenter
     lateinit var presenter: DetailsPresenter
 
-    private var layout = DetailsUI()
+    private var ui = DetailsUI()
 
     @ProvidePresenter
     fun providePresenter(): DetailsPresenter =
@@ -27,7 +27,7 @@ class DetailsActivity : MvpAppCompatActivity(), DetailsView {
         super.onCreate(savedInstanceState)
         val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.DETAILS_ACTIVITY_SCOPE)
         Toothpick.inject(this@DetailsActivity, scope)
-        layout.apply {
+        ui.apply {
             book = intent.getParcelableExtra(BooksActivity.ARG_BOOK)
             setContentView(this@DetailsActivity)
         }

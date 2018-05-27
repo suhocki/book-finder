@@ -30,15 +30,15 @@ class DetailsUI : AnkoComponent<DetailsActivity>, AnkoLogger {
         var coloredBackgrounds = 0
 
         coordinatorLayout {
-            fitsSystemWindows = true
+            fitsSystemWindows = false
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 id = R.id.id_app_bar_details
-                fitsSystemWindows = true
+                fitsSystemWindows = false
 
                 multilineCollapsingToolbarLayout {
                     maxLines = 2
-                    fitsSystemWindows = true
+                    fitsSystemWindows = false
                     setContentScrimResource(R.color.colorPrimary)
                     setExpandedTitleMargin(dip(16), dip(16), dip(32), dip(16))
                     setExpandedTitleTextAppearance(R.style.TextAppearance_AppCompat_Headline)
@@ -165,7 +165,7 @@ class DetailsUI : AnkoComponent<DetailsActivity>, AnkoLogger {
                         if (book.description.isNullOrBlank()) setGone(this)
                         padding = dip(6)
                         gravity = Gravity.CENTER
-                        backgroundColorResource = R.color.dark_gray
+                        backgroundColorResource = R.color.colorDarkGray
                         textAppearance = R.style.TextAppearance_AppCompat_Subhead
                     }
 
@@ -183,7 +183,7 @@ class DetailsUI : AnkoComponent<DetailsActivity>, AnkoLogger {
                         when (view) {
                             is LinearLayout -> with(view) {
                                 if (++coloredBackgrounds % 2 == 0) {
-                                    view.setBackgroundResource(R.color.gray)
+                                    view.setBackgroundResource(R.color.colorGray)
                                 }
                             }
                         }
@@ -210,7 +210,7 @@ class DetailsUI : AnkoComponent<DetailsActivity>, AnkoLogger {
     }
 
     private fun @AnkoViewDslMarker _LinearLayout.divider(top: Int, bottom: Int) =
-        view { backgroundResource = R.color.gray }.lparams(matchParent, dip(2)) {
+        view { backgroundResource = R.color.colorGray }.lparams(matchParent, dip(2)) {
             setMargins(dip(0), top, dip(0), bottom)
         }
 

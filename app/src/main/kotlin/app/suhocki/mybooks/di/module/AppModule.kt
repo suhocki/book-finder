@@ -13,30 +13,58 @@ import app.suhocki.mybooks.data.repository.RoomRepository
 import app.suhocki.mybooks.data.repository.SharedPreferencesRepository
 import app.suhocki.mybooks.di.DatabaseFileName
 import app.suhocki.mybooks.di.SharedPreferencesFileName
-import app.suhocki.mybooks.di.provider.storage.BookDaoProvider
-import app.suhocki.mybooks.di.provider.storage.BooksDatabaseProvider
-import app.suhocki.mybooks.di.provider.storage.CategoryDaoProvider
-import app.suhocki.mybooks.di.provider.storage.SharedPreferencesProvider
+import app.suhocki.mybooks.di.provider.BookDaoProvider
+import app.suhocki.mybooks.di.provider.BooksDatabaseProvider
+import app.suhocki.mybooks.di.provider.CategoryDaoProvider
+import app.suhocki.mybooks.di.provider.SharedPreferencesProvider
 import app.suhocki.mybooks.domain.repository.DatabaseRepository
 import app.suhocki.mybooks.domain.repository.SettingsRepository
 import toothpick.config.Module
 
 class AppModule(context: Context) : Module() {
     init {
-        bind(Context::class.java).toInstance(context)
+        bind(Context::class.java)
+            .toInstance(context)
 
-        bind(String::class.java).withName(DatabaseFileName::class.java).toInstance(BuildConfig.DATABASE_FILE_NAME)
-        bind(String::class.java).withName(SharedPreferencesFileName::class.java).toInstance(BuildConfig.SHARED_PREFERENCES_FILE_NAME)
+        bind(String::class.java)
+            .withName(DatabaseFileName::class.java)
+            .toInstance(BuildConfig.DATABASE_FILE_NAME)
 
-        bind(BooksDatabase::class.java).toProvider(BooksDatabaseProvider::class.java).providesSingletonInScope()
-        bind(BookDao::class.java).toProvider(BookDaoProvider::class.java).providesSingletonInScope()
-        bind(CategoryDao::class.java).toProvider(CategoryDaoProvider::class.java).providesSingletonInScope()
-        bind(DatabaseRepository::class.java).to(RoomRepository::class.java).singletonInScope()
+        bind(String::class.java)
+            .withName(SharedPreferencesFileName::class.java)
+            .toInstance(BuildConfig.SHARED_PREFERENCES_FILE_NAME)
 
-        bind(SharedPreferences::class.java).toProvider(SharedPreferencesProvider::class.java).providesSingletonInScope()
-        bind(ErrorHandler::class.java).singletonInScope()
-        bind(ProgressHandler::class.java).singletonInScope()
-        bind(ComponentNotifier::class.java).singletonInScope()
-        bind(SettingsRepository::class.java).to(SharedPreferencesRepository::class.java).singletonInScope()
+        bind(BooksDatabase::class.java)
+            .toProvider(BooksDatabaseProvider::class.java)
+            .providesSingletonInScope()
+
+        bind(BookDao::class.java)
+            .toProvider(BookDaoProvider::class.java)
+            .providesSingletonInScope()
+
+        bind(CategoryDao::class.java)
+            .toProvider(CategoryDaoProvider::class.java)
+            .providesSingletonInScope()
+
+        bind(DatabaseRepository::class.java)
+            .to(RoomRepository::class.java)
+            .singletonInScope()
+
+        bind(SharedPreferences::class.java)
+            .toProvider(SharedPreferencesProvider::class.java)
+            .providesSingletonInScope()
+
+        bind(ErrorHandler::class.java)
+            .singletonInScope()
+
+        bind(ProgressHandler::class.java)
+            .singletonInScope()
+
+        bind(ComponentNotifier::class.java)
+            .singletonInScope()
+
+        bind(SettingsRepository::class.java)
+            .to(SharedPreferencesRepository::class.java)
+            .singletonInScope()
     }
 }

@@ -1,0 +1,87 @@
+package app.suhocki.mybooks.presentation.catalog
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import app.suhocki.mybooks.di.DI
+import app.suhocki.mybooks.di.HeaderCatalogItem
+import app.suhocki.mybooks.di.SearchCatalogItem
+import app.suhocki.mybooks.domain.model.CatalogItem
+import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.presentation.base.BaseFragment
+import app.suhocki.mybooks.presentation.catalog.adapter.CatalogAdapter
+import app.suhocki.mybooks.presentation.catalog.adapter.CatalogItemType
+import app.suhocki.mybooks.presentation.catalog.adapter.OnCategoryClickListener
+import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
+import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.support.v4.ctx
+import toothpick.Toothpick
+import toothpick.config.Module
+
+
+class CatalogFragment : BaseFragment(), CatalogView, OnCategoryClickListener {
+
+    @InjectPresenter
+    lateinit var presenter: CatalogPresenter
+
+    private val ui = CatalogUI<CatalogFragment>()
+
+    private val adapter by lazy {
+        CatalogAdapter().apply { setOnCategoryClickListener(this@CatalogFragment) }
+    }
+
+    @ProvidePresenter
+    fun providePresenter(): CatalogPresenter {
+        val scopeName = "CatalogScope_${hashCode()}"
+        val scope = Toothpick.openScopes(DI.APP_SCOPE, scopeName)
+        scope.installModules(object : Module() {
+            init {
+                bind(CatalogItem::class.java)
+                    .withName(SearchCatalogItem::class.java)
+                    .toInstance(object : CatalogItem {
+                        override val type: CatalogItemType
+                            get() = CatalogItemType.SEARCH
+                    })
+
+                bind(CatalogItem::class.java)
+                    .withName(HeaderCatalogItem::class.java)
+                    .toInstance(object : CatalogItem {
+                        override val type: CatalogItemType
+                            get() = CatalogItemType.HEADER
+                    })
+            }
+        })
+
+        return scope.getInstance(CatalogPresenter::class.java).also {
+            Toothpick.closeScope(scopeName)
+        }
+    }
+
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? = ui.createView(AnkoContext.create(ctx, this@CatalogFragment))
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        ui.recyclerView.adapter = adapter
+    }
+
+    override fun showCatalogItems(catalogItems: List<CatalogItem>) {
+        adapter.submitList(catalogItems)
+    }
+
+    override fun onCategoryClick(category: Category) {
+//        startActivity<BooksActivity>(ARG_CATEGORY to category)
+    }
+
+    companion object {
+        const val ARG_CATEGORY = "ARG_CATEGORY"
+
+        fun newInstance() = CatalogFragment()
+    }
+}
+

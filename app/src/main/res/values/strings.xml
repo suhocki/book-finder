@@ -13,6 +13,7 @@
     <string name="parsing">Parsing</string>
     <string name="saving">Saving</string>
     <string name="unzipping">Unzipping</string>
+    <string name="filter">Filter</string>
     <string name="info">Info</string>
     <string name="success">Success!</string>
     <string name="downloading_statistics">Information about %d books from %d categories was saved successfully.</string>

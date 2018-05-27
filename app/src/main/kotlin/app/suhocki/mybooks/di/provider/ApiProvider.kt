@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.di.provider.network
+package app.suhocki.mybooks.di.provider
 
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit

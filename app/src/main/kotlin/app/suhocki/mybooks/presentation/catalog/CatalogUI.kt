@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.presentation.catalog
 
 import android.support.design.widget.AppBarLayout
+import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -16,18 +17,16 @@ import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 
 
-class CatalogUI : AnkoComponent<CatalogActivity> {
+class CatalogUI<in T : Fragment> : AnkoComponent<T> {
     lateinit var recyclerView: RecyclerView
 
-    override fun createView(ui: AnkoContext<CatalogActivity>) = with(ui) {
+    override fun createView(ui: AnkoContext<T>) = with(ui) {
 
         coordinatorLayout {
-            fitsSystemWindows = true
+            fitsSystemWindows = false
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
-                    owner.setSupportActionBar(this)
-                    owner.supportActionBar!!.title = ""
                     backgroundColorResource = R.color.colorPrimary
                     popupTheme = R.style.ThemeOverlay_AppCompat_Light
 
@@ -54,7 +53,7 @@ class CatalogUI : AnkoComponent<CatalogActivity> {
                     }
 
                     view {
-                        backgroundColorResource = R.color.gray
+                        backgroundColorResource = R.color.colorGray
                         layoutParams = Toolbar.LayoutParams(
                             dip(1),
                             matchParent
@@ -71,8 +70,9 @@ class CatalogUI : AnkoComponent<CatalogActivity> {
                 recyclerView = this
                 id = R.id.id_recycler_catalog
                 clipToPadding = false
+                setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
-                backgroundColorResource = R.color.gray
+                backgroundColorResource = R.color.colorGray
                 addItemDecoration(DividerItemDecoration(dip(2)))
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()

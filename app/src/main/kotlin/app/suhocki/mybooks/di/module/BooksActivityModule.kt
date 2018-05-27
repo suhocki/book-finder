@@ -5,6 +5,7 @@ import toothpick.config.Module
 
 class BooksActivityModule(category: Category) : Module() {
     init {
-        bind(Category::class.java).toInstance(category)
+        bind(Category::class.java)
+            .toInstance(category)
     }
 }
