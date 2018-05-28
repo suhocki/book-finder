@@ -21,7 +21,19 @@ class InfoUI<in T : Fragment> : AnkoComponent<T> {
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                     backgroundColorResource = R.color.colorPrimary
+                    setContentInsetsRelative(0,0)
                     popupTheme = R.style.ThemeOverlay_AppCompat_Light
+
+                    imageView(R.drawable.ic_menu).apply {
+                        padding = dimen(R.dimen.padding_toolbar_icon)
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                        layoutParams = Toolbar.LayoutParams(
+                            dimenAttr(R.attr.actionBarSize),
+                            matchParent
+                        ).apply {
+                            gravity = Gravity.START
+                        }
+                    }
 
                     imageView(R.drawable.logo).apply {
                         scaleType = ImageView.ScaleType.FIT_CENTER

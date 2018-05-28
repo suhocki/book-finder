@@ -5,6 +5,7 @@ import android.support.v4.widget.DrawerLayout
 import android.view.Gravity
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.color
+import app.suhocki.mybooks.inLandscape
 import app.suhocki.mybooks.presentation.base.bottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter
@@ -33,6 +34,7 @@ class MainUI : AnkoComponent<MainActivity> {
 
                 bottomNavigation {
                     bottomBar = this
+                    id = R.id.id_bottom_menu
                     AHBottomNavigationAdapter(owner, R.menu.app_menu).apply {
                         setupWithBottomNavigation(this@bottomNavigation)
                     }
@@ -40,7 +42,11 @@ class MainUI : AnkoComponent<MainActivity> {
                     defaultBackgroundColor = context.color(R.color.colorPrimary)
                     accentColor = context.color(R.color.colorWhite)
                     inactiveColor = context.color(R.color.colorGray)
-                }.lparams(matchParent, wrapContent)
+                    
+                    owner.inLandscape {
+                        titleState = AHBottomNavigation.TitleState.ALWAYS_HIDE
+                    }
+                }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
             }.lparams(matchParent, matchParent)
 

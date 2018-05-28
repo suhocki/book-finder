@@ -5,6 +5,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.presentation.base.BaseFragment
 import app.suhocki.mybooks.presentation.catalog.CatalogFragment
+import app.suhocki.mybooks.presentation.info.InfoFragment
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -78,7 +79,7 @@ class MainActivity : MvpAppCompatActivity(), MainView {
         tabKeys[0] to CatalogFragment.newInstance(),
         tabKeys[1] to CatalogFragment.newInstance(),
         tabKeys[2] to CatalogFragment.newInstance(),
-        tabKeys[3] to CatalogFragment.newInstance()
+        tabKeys[3] to InfoFragment.newInstance()
     )
 
     private fun findFragments(): HashMap<String, BaseFragment> = hashMapOf(

@@ -28,7 +28,18 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                     backgroundColorResource = R.color.colorPrimary
-                    popupTheme = R.style.ThemeOverlay_AppCompat_Light
+                    setContentInsetsRelative(0,0)
+
+                    imageView(R.drawable.ic_menu).apply {
+                        padding = dimen(R.dimen.padding_toolbar_icon)
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                        layoutParams = Toolbar.LayoutParams(
+                            dimenAttr(R.attr.actionBarSize),
+                            matchParent
+                        ).apply {
+                            gravity = Gravity.START
+                        }
+                    }
 
                     imageView(R.drawable.logo).apply {
                         scaleType = ImageView.ScaleType.FIT_CENTER
@@ -42,7 +53,7 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
                     }
 
                     imageView(R.drawable.ic_search).apply {
-                        padding = dimen(R.dimen.padding_toolbar_search_icon)
+                        padding = dimen(R.dimen.padding_toolbar_icon)
                         scaleType = ImageView.ScaleType.FIT_CENTER
                         layoutParams = Toolbar.LayoutParams(
                             dimenAttr(R.attr.actionBarSize),

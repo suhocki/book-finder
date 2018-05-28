@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <id name="id_recycler_catalog">1000</id>
-    <id name="id_recycler_books">1001</id>
-    <id name="id_app_bar_details">1002</id>
-    <id name="id_fab">1003</id>
-    <id name="id_main_container">1004</id>
+    <id name="id_recycler_catalog">0</id>
+    <id name="id_recycler_books">1</id>
+    <id name="id_app_bar_details">2</id>
+    <id name="id_fab">3</id>
+    <id name="id_main_container">4</id>
+    <id name="id_bottom_menu">5</id>
 </resources>

@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
 import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.di.module.BooksActivityModule
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.presentation.books.adapter.BooksAdapter
@@ -17,6 +16,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.startActivity
 import toothpick.Toothpick
+import toothpick.config.Module
 
 
 class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
@@ -24,17 +24,24 @@ class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
     @InjectPresenter
     lateinit var presenter: BooksPresenter
 
-    private val ui = BooksUI()
-
+    private val ui by lazy { BooksUI() }
     private val adapter by lazy { BooksAdapter() }
 
     @ProvidePresenter
-    fun providePresenter(): BooksPresenter =
-        Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_ACTIVITY_SCOPE)
-            .apply {
-                val category = intent.getParcelableExtra<Category>(CatalogFragment.ARG_CATEGORY)
-                installModules(BooksActivityModule(category))
-            }.getInstance(BooksPresenter::class.java)
+    fun providePresenter(): BooksPresenter {
+        val scopeName = "BooksActivity_${hashCode()}"
+        val scope = Toothpick.openScopes(DI.APP_SCOPE, scopeName)
+        scope.installModules(object : Module() {
+            init {
+                bind(Category::class.java)
+                    .toInstance(intent.getParcelableExtra(CatalogFragment.ARG_CATEGORY))
+            }
+        })
+
+        return scope.getInstance(BooksPresenter::class.java).also {
+            Toothpick.closeScope(scopeName)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

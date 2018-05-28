@@ -30,4 +30,7 @@ class InfoFragment : BaseFragment(), InfoView {
         savedInstanceState: Bundle?
     ): View? = ui.createView(AnkoContext.create(ctx, this@InfoFragment))
 
+    companion object {
+        fun newInstance() = InfoFragment()
+    }
 }

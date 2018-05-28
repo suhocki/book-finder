@@ -1,7 +1,9 @@
 package app.suhocki.mybooks
 
+import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.support.annotation.AttrRes
@@ -88,6 +90,11 @@ fun View.setForegroundCompat(@DrawableRes drawableRes: Int) {
 
 fun inDebug(action: () -> Unit) {
     if (BuildConfig.DEBUG) action.invoke()
+}
+
+fun Activity.inLandscape(action: () -> Unit) {
+    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+        action.invoke()
 }
 
 fun Context.color(colorRes: Int) = ContextCompat.getColor(this, colorRes)

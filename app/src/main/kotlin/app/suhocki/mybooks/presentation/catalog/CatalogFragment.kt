@@ -10,12 +10,14 @@ import app.suhocki.mybooks.di.SearchCatalogItem
 import app.suhocki.mybooks.domain.model.CatalogItem
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.presentation.base.BaseFragment
+import app.suhocki.mybooks.presentation.books.BooksActivity
 import app.suhocki.mybooks.presentation.catalog.adapter.CatalogAdapter
 import app.suhocki.mybooks.presentation.catalog.adapter.CatalogItemType
 import app.suhocki.mybooks.presentation.catalog.adapter.OnCategoryClickListener
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.ctx
 import toothpick.Toothpick
 import toothpick.config.Module
@@ -77,7 +79,7 @@ class CatalogFragment : BaseFragment(), CatalogView, OnCategoryClickListener {
     }
 
     override fun onCategoryClick(category: Category) {
-//        startActivity<BooksActivity>(ARG_CATEGORY to category)
+        context!!.startActivity<BooksActivity>(ARG_CATEGORY to category)
     }
 
     companion object {
