@@ -16,7 +16,7 @@
         android:theme="@style/AppTheme">
 
         <activity
-            android:name=".presentation.splash.SplashActivity"
+            android:name=".ui.splash.SplashActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,29 +26,29 @@
         </activity>
 
         <activity
-            android:name=".presentation.initial.InitialActivity"
+            android:name=".ui.initial.InitialActivity"
             android:launchMode="singleTop"
             android:theme="@style/Dialog" />
 
-        <activity android:name=".presentation.main.MainActivity" />
+        <activity android:name=".ui.main.MainActivity" />
 
         <activity
-            android:name=".presentation.books.BooksActivity"
+            android:name=".ui.books.BooksActivity"
             tools:targetApi="jelly_bean">
         </activity>
 
         <activity
-            android:name=".presentation.details.DetailsActivity"
-            android:parentActivityName=".presentation.books.BooksActivity"
+            android:name=".ui.details.DetailsActivity"
+            android:parentActivityName=".ui.books.BooksActivity"
             android:theme="@style/AppTheme.NoActionBar"
             tools:targetApi="jelly_bean">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".presentation.books.BooksActivity" />
+                android:value=".ui.books.BooksActivity" />
         </activity>
 
         <service
-            android:name=".presentation.background.BackgroundService"
+            android:name=".ui.background.BackgroundService"
             android:exported="false" />
 
         <meta-data

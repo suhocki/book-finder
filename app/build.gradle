@@ -101,6 +101,7 @@ ext {
     mockito_kt_version = "1.5.0"
     leakcanary_version = "1.5.4"
     bottomnavigation_version = "2.1.0"
+    adapterdelegates_version = "3.0.1"
 }
 
 dependencies {
@@ -125,6 +126,7 @@ dependencies {
             "android.arch.persistence.room:runtime:$room_version",
             "com.aurelhubert:ahbottomnavigation:$bottomnavigation_version",
             "com.github.stephanenicolas.toothpick:toothpick-runtime:$toothpick_version",
+            "com.hannesdorfmann:adapterdelegates3:$adapterdelegates_version",
     )
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
         transitive = true

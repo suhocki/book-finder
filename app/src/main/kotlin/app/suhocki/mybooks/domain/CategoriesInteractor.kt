@@ -3,8 +3,8 @@ package app.suhocki.mybooks.domain
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.repository.DatabaseRepository
 import app.suhocki.mybooks.domain.repository.SettingsRepository
-import app.suhocki.mybooks.presentation.catalog.adapter.model.BannersTypedItem
-import app.suhocki.mybooks.presentation.catalog.adapter.model.CategoryTypedItem
+import app.suhocki.mybooks.ui.catalog.adapter.model.BannersTypedItem
+import app.suhocki.mybooks.ui.catalog.adapter.model.CategoryTypedItem
 import javax.inject.Inject
 
 class CategoriesInteractor @Inject constructor(
