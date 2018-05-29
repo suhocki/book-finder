@@ -1,23 +1,26 @@
-package app.suhocki.mybooks.ui.catalog.adapter.ui
+package app.suhocki.mybooks.ui.base.adapter.ui
 
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import app.suhocki.mybooks.R
 import org.jetbrains.anko.*
 
-class HeaderCatalogItemUI : AnkoComponent<ViewGroup> {
+class HeaderItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
+    lateinit var title: TextView
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 
         frameLayout {
-            this@HeaderCatalogItemUI.parent = this
+            this@HeaderItemUI.parent = this
             backgroundResource = R.color.colorPrimary
 
-            textView(R.string.catalog) {
+            textView {
+                this@HeaderItemUI.title = this
                 allCaps = true
                 textAppearance = R.style.TextAppearance_AppCompat_Subhead_Inverse
                 setTypeface(typeface, Typeface.BOLD)

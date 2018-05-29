@@ -1,10 +1,9 @@
 package app.suhocki.mybooks.ui.catalog
 
 import app.suhocki.mybooks.data.error.ErrorHandler
-import app.suhocki.mybooks.di.HeaderCatalogItem
-import app.suhocki.mybooks.di.SearchCatalogItem
 import app.suhocki.mybooks.domain.CategoriesInteractor
-import app.suhocki.mybooks.domain.model.CatalogItem
+import app.suhocki.mybooks.domain.model.Header
+import app.suhocki.mybooks.domain.model.Search
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.AnkoLogger
@@ -16,8 +15,8 @@ import javax.inject.Inject
 class CatalogPresenter @Inject constructor(
     private val interactor: CategoriesInteractor,
     private val errorHandler: ErrorHandler,
-    @SearchCatalogItem private val searchCatalogItem: CatalogItem,
-    @HeaderCatalogItem private val headerCatalogItem: CatalogItem
+    private val searchEntity: Search,
+    private val headerEntity: Header
 ) : MvpPresenter<CatalogView>(), AnkoLogger {
 
     override fun onFirstViewAttach() {
@@ -28,11 +27,11 @@ class CatalogPresenter @Inject constructor(
         }
     }
 
-    private fun getCatalogItems(): MutableList<CatalogItem> =
-        mutableListOf<CatalogItem>().apply {
-            add(interactor.getBanners())
-            add(searchCatalogItem)
-            add(headerCatalogItem)
+    private fun getCatalogItems(): MutableList<Any> =
+        mutableListOf<Any>().apply {
+            add(interactor.getBanner())
+            add(searchEntity)
+            add(headerEntity)
             addAll(interactor.getCategories())
         }
 }

@@ -1,6 +1,6 @@
 package app.suhocki.mybooks.domain.model
 
 interface Banner {
-    val pictureUrl: String
-    val text: String
+    val imageUrl: String
+    val description: String
 }

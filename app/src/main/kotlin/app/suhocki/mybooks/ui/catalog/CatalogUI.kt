@@ -16,7 +16,6 @@ import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
-import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
 

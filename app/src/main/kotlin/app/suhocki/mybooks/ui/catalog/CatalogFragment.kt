@@ -4,16 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.di.HeaderCatalogItem
-import app.suhocki.mybooks.di.SearchCatalogItem
-import app.suhocki.mybooks.domain.model.CatalogItem
 import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.domain.model.Header
+import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.books.BooksActivity
-import app.suhocki.mybooks.ui.catalog.adapter.CatalogAdapter
-import app.suhocki.mybooks.ui.catalog.adapter.CatalogItemType
-import app.suhocki.mybooks.ui.catalog.adapter.OnCategoryClickListener
+import app.suhocki.mybooks.ui.base.adapter.listener.OnCategoryClickListener
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
@@ -23,7 +21,8 @@ import toothpick.Toothpick
 import toothpick.config.Module
 
 
-class CatalogFragment : BaseFragment(), CatalogView, OnCategoryClickListener {
+class CatalogFragment : BaseFragment(), CatalogView,
+    OnCategoryClickListener {
 
     private val ui by lazy { CatalogUI<CatalogFragment>() }
 
@@ -38,19 +37,15 @@ class CatalogFragment : BaseFragment(), CatalogView, OnCategoryClickListener {
         val scope = Toothpick.openScopes(DI.APP_SCOPE, scopeName)
         scope.installModules(object : Module() {
             init {
-                bind(CatalogItem::class.java)
-                    .withName(SearchCatalogItem::class.java)
-                    .toInstance(object : CatalogItem {
-                        override val type: CatalogItemType
-                            get() = CatalogItemType.SEARCH
-                    })
+                bind(Search::class.java).toInstance(object : Search {
+                    override val hintRes: Int
+                        get() = R.string.search
+                })
 
-                bind(CatalogItem::class.java)
-                    .withName(HeaderCatalogItem::class.java)
-                    .toInstance(object : CatalogItem {
-                        override val type: CatalogItemType
-                            get() = CatalogItemType.HEADER
-                    })
+                bind(Header::class.java).toInstance(object : Header {
+                    override val titleRes: Int
+                        get() = R.string.catalog
+                })
             }
         })
 
@@ -70,7 +65,7 @@ class CatalogFragment : BaseFragment(), CatalogView, OnCategoryClickListener {
         ui.recyclerView.adapter = adapter
     }
 
-    override fun showCatalogItems(catalogItems: List<CatalogItem>) {
+    override fun showCatalogItems(catalogItems: List<Any>) {
         adapter.submitList(catalogItems)
     }
 

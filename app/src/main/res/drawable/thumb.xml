@@ -10,6 +10,6 @@
         android:right="16dp"
         />
 
-    <solid android:color="@color/colorDarkerGray" />
+    <solid android:color="@color/colorAccent" />
 
 </shape>

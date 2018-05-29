@@ -1,9 +1,10 @@
-package app.suhocki.mybooks.ui.catalog.adapter.ui
+package app.suhocki.mybooks.ui.base.adapter.ui
 
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
@@ -12,6 +13,7 @@ import org.jetbrains.anko.cardview.v7.themedCardView
 
 class SearchItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
+    lateinit var hint: TextView
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 
@@ -25,7 +27,8 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
                 frameLayout {
                     setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
 
-                    textView(R.string.search) {
+                    textView {
+                        this@SearchItemUI.hint = this
                         textAppearance = R.style.TextAppearance_AppCompat_Caption
                         leftPadding = dip(14)
                         textSize = 14f

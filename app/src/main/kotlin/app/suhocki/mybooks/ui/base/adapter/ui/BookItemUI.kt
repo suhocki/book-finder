@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.books.adapter
+package app.suhocki.mybooks.ui.base.adapter.ui
 
 import android.content.Context
 import android.graphics.Point
@@ -20,21 +20,14 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class BookItemUI : AnkoComponent<ViewGroup> {
 
-    private lateinit var name: TextView
-    private lateinit var price: TextView
-    private lateinit var icon: ImageView
     lateinit var parent: ViewGroup
-
-    var book: Book? = null
-        set(value) {
-            field = value
-            Picasso.get().load(book!!.iconLink).into(icon)
-            name.text = book!!.shortName
-            price.text = parent.context.getString(R.string.rubles, book!!.price)
-        }
-
+    lateinit var name: TextView
+    lateinit var price: TextView
+    lateinit var icon: ImageView
+    lateinit var buy: ImageView
 
     private var windowHeight = 0
+
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
         calculateWindowHeight(owner.context)
@@ -74,15 +67,12 @@ class BookItemUI : AnkoComponent<ViewGroup> {
                         }
 
                         tintedImageView(R.drawable.ic_buy) {
+                            buy = this
                             backgroundResource =
                                     context.attrResource(R.attr.selectableItemBackgroundBorderless)
                             padding = dip(8)
                             val colorPrimary = ContextCompat.getColor(context, R.color.colorPrimary)
                             setColorFilter(colorPrimary, PorterDuff.Mode.SRC_IN)
-                            onClick {
-                                Analytics.bookAddedToCart(book!!)
-                                this@tintedImageView.context.openLink(book!!.website)
-                            }
                         }.lparams { gravity = Gravity.END }
                     }.lparams(matchParent, matchParent) {
                         padding = dip(8)

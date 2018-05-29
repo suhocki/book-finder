@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.catalog.adapter.ui
+package app.suhocki.mybooks.ui.base.adapter.ui
 
 import android.graphics.Color
 import android.support.v4.widget.TextViewCompat
@@ -10,23 +10,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
-import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.setForegroundCompat
 import app.suhocki.mybooks.ui.base.textViewCompat
 import org.jetbrains.anko.*
 
 class CategoryItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
-    private lateinit var name: TextView
-    private lateinit var booksCount: TextView
-
-    var category: Category? = null
-        set(value) {
-            field = value
-            name.text = category!!.name
-            booksCount.text = category!!.booksCount.toString()
-        }
-
+    lateinit var name: TextView
+    lateinit var booksCount: TextView
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 

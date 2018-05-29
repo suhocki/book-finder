@@ -2,29 +2,21 @@ package app.suhocki.mybooks.domain
 
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.repository.DatabaseRepository
-import app.suhocki.mybooks.domain.repository.SettingsRepository
-import app.suhocki.mybooks.ui.catalog.adapter.model.BannersTypedItem
-import app.suhocki.mybooks.ui.catalog.adapter.model.CategoryTypedItem
 import javax.inject.Inject
 
 class CategoriesInteractor @Inject constructor(
-    private val databaseRepository: DatabaseRepository,
-    private val settingsRepository: SettingsRepository
+    private val databaseRepository: DatabaseRepository
 ) {
 
     fun getCategories() =
         databaseRepository.getCategories()
-            .map { CategoryTypedItem(it) }
 
-    fun getBanners() =
-        BannersTypedItem(listOf(object : Banner {
-            override val pictureUrl: String
-                get() = "https://mybooks.by/pics/items/3_2.jpg"
-            override val text: String
+    fun getBanner() =
+        object: Banner {
+            override val description: String
                 get() = "ТОЛЬКО В КНИГИ МЫ ВЕРИМ"
-        }))
 
-    fun setDatabaseLoaded() {
-        settingsRepository.databaseLoaded = true
-    }
+            override val imageUrl: String
+                get() = "https://mybooks.by/pics/items/3_2.jpg"
+        }
 }

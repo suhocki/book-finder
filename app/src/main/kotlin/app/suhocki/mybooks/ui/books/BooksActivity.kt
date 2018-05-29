@@ -6,8 +6,7 @@ import android.view.View
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.ui.books.adapter.BooksAdapter
-import app.suhocki.mybooks.ui.books.adapter.OnBookClickListener
+import app.suhocki.mybooks.ui.base.adapter.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -19,7 +18,8 @@ import toothpick.Toothpick
 import toothpick.config.Module
 
 
-class BooksActivity : MvpAppCompatActivity(), BooksView, OnBookClickListener {
+class BooksActivity : MvpAppCompatActivity(), BooksView,
+    OnBookClickListener {
 
     @InjectPresenter
     lateinit var presenter: BooksPresenter

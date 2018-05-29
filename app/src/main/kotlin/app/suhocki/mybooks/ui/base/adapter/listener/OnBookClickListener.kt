@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.books.adapter
+package app.suhocki.mybooks.ui.base.adapter.listener
 
 import app.suhocki.mybooks.domain.model.Book
 

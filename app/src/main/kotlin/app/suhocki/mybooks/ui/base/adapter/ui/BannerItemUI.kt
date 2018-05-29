@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.catalog.adapter.ui
+package app.suhocki.mybooks.ui.base.adapter.ui
 
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
@@ -9,7 +9,7 @@ import android.widget.TextView
 import app.suhocki.mybooks.R
 import org.jetbrains.anko.*
 
-class BannersItemUI : AnkoComponent<ViewGroup> {
+class BannerItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
     lateinit var image: ImageView
     lateinit var description: TextView
@@ -17,15 +17,15 @@ class BannersItemUI : AnkoComponent<ViewGroup> {
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 
         frameLayout {
-            this@BannersItemUI.parent = this
+            this@BannerItemUI.parent = this
 
             imageView {
-                this@BannersItemUI.image = this
+                this@BannerItemUI.image = this
                 scaleType = ImageView.ScaleType.CENTER_CROP
             }.lparams(matchParent, matchParent)
 
             textView {
-                this@BannersItemUI.description = this
+                this@BannerItemUI.description = this
                 textAppearance = R.style.TextAppearance_AppCompat_Subhead
                 textColorResource = R.color.colorBlack
                 backgroundColorResource = R.color.colorDescriptionBackground
