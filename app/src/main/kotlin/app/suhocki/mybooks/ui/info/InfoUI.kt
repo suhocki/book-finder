@@ -6,7 +6,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.widget.ImageView
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.ui.base.DrawerHandler
+import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
@@ -36,7 +36,7 @@ class InfoUI<in T : Fragment> : AnkoComponent<T> {
                             gravity = Gravity.START
                         }
                         onClick {
-                            (owner.activity as DrawerHandler).setExpanded(true)
+                            (owner.activity as NavigationHandler).setDrawerExpanded(true)
                         }
                     }
 

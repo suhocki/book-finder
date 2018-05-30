@@ -10,6 +10,7 @@ import app.suhocki.mybooks.ui.base.bottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter
 import org.jetbrains.anko.*
+import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.navigationView
 import org.jetbrains.anko.support.v4.drawerLayout
 
@@ -24,13 +25,11 @@ class MainUI : AnkoComponent<MainActivity> {
             drawerLayout = this
             fitsSystemWindows = false
 
-            verticalLayout {
+            coordinatorLayout {
 
                 frameLayout {
                     id = R.id.id_main_container
-                }.lparams(matchParent, 0) {
-                    weight = 1f
-                }
+                }.lparams(matchParent, matchParent)
 
                 bottomNavigation {
                     bottomBar = this
@@ -42,11 +41,13 @@ class MainUI : AnkoComponent<MainActivity> {
                     defaultBackgroundColor = context.color(R.color.colorPrimary)
                     accentColor = context.color(R.color.colorWhite)
                     inactiveColor = context.color(R.color.colorGray)
-                    
+                    isBehaviorTranslationEnabled = true
                     owner.inLandscape {
                         titleState = AHBottomNavigation.TitleState.ALWAYS_HIDE
                     }
-                }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
+                }.lparams(matchParent, dimenAttr(R.attr.actionBarSize)) {
+                    gravity = Gravity.BOTTOM
+                }
 
             }.lparams(matchParent, matchParent)
 

@@ -1,11 +1,13 @@
 package app.suhocki.mybooks.ui.main
 
 import android.os.Bundle
+import android.support.v4.widget.DrawerLayout
 import android.view.Gravity
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.ui.base.BaseFragment
-import app.suhocki.mybooks.ui.base.DrawerHandler
+import app.suhocki.mybooks.ui.base.listener.NavigationHandler
+import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.info.InfoFragment
 import com.arellomobile.mvp.MvpAppCompatActivity
@@ -14,7 +16,8 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.setContentView
 import toothpick.Toothpick
 
-class MainActivity : MvpAppCompatActivity(), MainView, DrawerHandler {
+class MainActivity : MvpAppCompatActivity(), MainView,
+    NavigationHandler {
 
     @InjectPresenter
     lateinit var presenter: MainPresenter
@@ -89,6 +92,11 @@ class MainActivity : MvpAppCompatActivity(), MainView, DrawerHandler {
 
     private fun invokeAction(position: Int) {
         showCatalogTab()
+        when (position) {
+            TAB_POSITION_SEARCH -> expandSearchView()
+
+            TAB_POSITION_FILTER -> expandFilterView()
+        }
     }
 
     private fun showCatalogTab() {
@@ -96,6 +104,15 @@ class MainActivity : MvpAppCompatActivity(), MainView, DrawerHandler {
         supportFragmentManager.beginTransaction()
             .show(tabs[tabKeys[TAB_POSITION_CATALOG]])
             .commit()
+    }
+
+    private fun expandSearchView() {
+        val onSearchClickListener = tabs[tabKeys[TAB_POSITION_CATALOG]] as OnSearchClickListener
+        onSearchClickListener.onSearchClick()
+    }
+
+    private fun expandFilterView() {
+
     }
 
     private fun createNewFragments(): HashMap<String, BaseFragment> = hashMapOf(
@@ -111,15 +128,43 @@ class MainActivity : MvpAppCompatActivity(), MainView, DrawerHandler {
             .findFragmentByTag(tabKeys[TAB_POSITION_INFO]) as BaseFragment
     )
 
-    override fun setExpanded(isExpanded: Boolean) {
+    override fun setDrawerExpanded(isExpanded: Boolean) {
         with(ui.drawerLayout) {
             if (isExpanded) openDrawer(Gravity.START)
             else closeDrawer(Gravity.START)
         }
     }
 
+    override fun setDrawerEnabled(isEnabled: Boolean) {
+        ui.drawerLayout.setDrawerLockMode(
+            if (isEnabled) DrawerLayout.LOCK_MODE_UNLOCKED
+            else DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+        )
+    }
+
+    override fun setBottomNavigationVisible(isVisible: Boolean) {
+        with(ui.bottomBar) {
+            if (isVisible) {
+                isBehaviorTranslationEnabled = true
+                restoreBottomNavigation()
+            } else {
+                isBehaviorTranslationEnabled = false
+                hideBottomNavigation()
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        val onSearchClickListener = tabs[tabKeys[TAB_POSITION_CATALOG]] as OnSearchClickListener
+        if (!onSearchClickListener.onCancelSearchClick()) {
+            super.onBackPressed()
+        }
+    }
+
     companion object {
         private const val TAB_POSITION_CATALOG = 0
+        private const val TAB_POSITION_SEARCH = 1
+        private const val TAB_POSITION_FILTER = 2
         private const val TAB_POSITION_INFO = 3
     }
 }

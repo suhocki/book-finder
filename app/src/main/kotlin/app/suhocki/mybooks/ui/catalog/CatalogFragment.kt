@@ -9,7 +9,10 @@ import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Search
+import app.suhocki.mybooks.setGone
+import app.suhocki.mybooks.setVisible
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnCategoryClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.books.BooksActivity
@@ -69,12 +72,36 @@ class CatalogFragment : BaseFragment(), CatalogView,
         adapter.submitList(catalogItems)
     }
 
+    override fun showSearchView(expanded: Boolean) {
+        ui.search.visibility = if (expanded) View.GONE else View.VISIBLE
+        ui.close.visibility = if (expanded) View.VISIBLE else View.GONE
+    }
+
     override fun onCategoryClick(category: Category) {
         context!!.startActivity<BooksActivity>(ARG_CATEGORY to category)
     }
 
     override fun onSearchClick() {
+        with(ui) {
+            setGone(menu, search)
+            setVisible(back, close)
+        }
+        (activity as NavigationHandler).setDrawerEnabled(false)
+        (activity as NavigationHandler).setBottomNavigationVisible(false)
+        presenter.addSearchEntity(adapter.items)
 
+    }
+
+    override fun onCancelSearchClick(): Boolean {
+        val cancelWasVisible = ui.close.visibility == View.VISIBLE
+        with(ui) {
+            setVisible(menu, search)
+            setGone(back, close)
+        }
+        (activity as NavigationHandler).setDrawerEnabled(true)
+        (activity as NavigationHandler).setBottomNavigationVisible(true)
+        presenter.removeSearchEntity(adapter.items)
+        return cancelWasVisible
     }
 
     companion object {

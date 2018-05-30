@@ -8,4 +8,6 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 interface CatalogView : MvpView {
 
     fun showCatalogItems(catalogItems: List<Any>)
+
+    fun showSearchView(expanded: Boolean)
 }
