@@ -12,6 +12,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.ui.base.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.DrawerHandler
+import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
@@ -61,6 +62,7 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
                     }
 
                     imageView(R.drawable.ic_search).apply {
+                        onClick { (owner as OnSearchClickListener).onSearchClick() }
                         padding = dimen(R.dimen.padding_toolbar_icon)
                         backgroundResource = context
                             .attrResource(R.attr.selectableItemBackgroundBorderless)

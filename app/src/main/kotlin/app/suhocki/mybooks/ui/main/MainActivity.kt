@@ -22,10 +22,14 @@ class MainActivity : MvpAppCompatActivity(), MainView, DrawerHandler {
     private var ui = MainUI()
     private lateinit var tabs: HashMap<String, BaseFragment>
     private val tabKeys = listOf(
-        tabIdToFragmentTag(R.id.nav_catalog),
-        tabIdToFragmentTag(R.id.nav_search),
-        tabIdToFragmentTag(R.id.nav_filter),
-        tabIdToFragmentTag(R.id.nav_info)
+        tabIdToTag(R.id.nav_catalog),
+        tabIdToTag(R.id.nav_search),
+        tabIdToTag(R.id.nav_filter),
+        tabIdToTag(R.id.nav_info)
+    )
+    private val fragmentTabPositions = arrayOf(
+        TAB_POSITION_CATALOG,
+        TAB_POSITION_INFO
     )
 
     @ProvidePresenter
@@ -33,69 +37,78 @@ class MainActivity : MvpAppCompatActivity(), MainView, DrawerHandler {
         Toothpick.openScopes(DI.APP_SCOPE)
             .getInstance(MainPresenter::class.java)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) = with(ui) {
         super.onCreate(savedInstanceState)
         Toothpick.openScopes(DI.APP_SCOPE).apply {
             Toothpick.inject(this@MainActivity, this)
         }
-        initUi()
-        initFragments(savedInstanceState)
-    }
-
-    private fun initUi() {
-        with(ui) {
-            setContentView(this@MainActivity)
-            navigationView.setNavigationItemSelectedListener { menuItem ->
-                menuItem.isChecked = true
-                drawerLayout.closeDrawers()
-                true
-            }
-            bottomBar.setOnTabSelectedListener { position, wasSelected ->
-                if (!wasSelected) showTab(position, bottomBar.currentItem)
-                true
-            }
+        setContentView(this@MainActivity)
+        navigationView.setNavigationItemSelectedListener { menuItem ->
+            menuItem.isChecked = true
+            drawerLayout.closeDrawers()
+            true
         }
+        bottomBar.setOnTabSelectedListener { position, wasSelected ->
+            if (!wasSelected) {
+                if (position in fragmentTabPositions) {
+                    showTab(position, bottomBar.currentItem)
+                    return@setOnTabSelectedListener true
+                } else {
+                    invokeAction(position)
+                }
+            }
+            false
+        }
+        initFragments(savedInstanceState)
     }
 
     private fun initFragments(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             tabs = createNewFragments()
+            val fragmentCatalog = tabs[tabKeys[TAB_POSITION_CATALOG]]
+            val fragmentInfo = tabs[tabKeys[TAB_POSITION_INFO]]
             supportFragmentManager.beginTransaction()
-                .add(R.id.id_main_container, tabs[tabKeys[0]], tabKeys[0])
-                .add(R.id.id_main_container, tabs[tabKeys[1]], tabKeys[1])
-                .add(R.id.id_main_container, tabs[tabKeys[2]], tabKeys[2])
-                .add(R.id.id_main_container, tabs[tabKeys[3]], tabKeys[3])
-                .hide(tabs[tabKeys[1]])
-                .hide(tabs[tabKeys[2]])
-                .hide(tabs[tabKeys[3]])
+                .add(R.id.id_main_container, fragmentCatalog, tabKeys[TAB_POSITION_CATALOG])
+                .add(R.id.id_main_container, fragmentInfo, tabKeys[TAB_POSITION_INFO])
+                .hide(fragmentInfo)
                 .commitNow()
-            ui.bottomBar.setCurrentItem(0, false)
+            ui.bottomBar.setCurrentItem(TAB_POSITION_CATALOG, false)
         } else {
             tabs = findFragments()
         }
     }
 
-    private fun tabIdToFragmentTag(id: Int) = "tab_$id"
+    private fun tabIdToTag(id: Int) = "tab_$id"
 
-    private fun showTab(newItem: Int, oldItem: Int) {
+    private fun showTab(newPosition: Int, oldPosition: Int) {
         supportFragmentManager.beginTransaction()
-            .hide(tabs[tabKeys[oldItem]])
-            .show(tabs[tabKeys[newItem]])
+            .hide(tabs[tabKeys[oldPosition]])
+            .show(tabs[tabKeys[newPosition]])
+            .commit()
+    }
+
+    private fun invokeAction(position: Int) {
+        showCatalogTab()
+    }
+
+    private fun showCatalogTab() {
+        ui.bottomBar.currentItem = TAB_POSITION_CATALOG
+        supportFragmentManager.beginTransaction()
+            .show(tabs[tabKeys[TAB_POSITION_CATALOG]])
             .commit()
     }
 
     private fun createNewFragments(): HashMap<String, BaseFragment> = hashMapOf(
-        tabKeys[0] to CatalogFragment.newInstance(),
-        tabKeys[1] to CatalogFragment.newInstance(),
-        tabKeys[2] to CatalogFragment.newInstance(),
-        tabKeys[3] to InfoFragment.newInstance()
+        tabKeys[TAB_POSITION_CATALOG] to CatalogFragment.newInstance(),
+        tabKeys[TAB_POSITION_INFO] to InfoFragment.newInstance()
     )
 
     private fun findFragments(): HashMap<String, BaseFragment> = hashMapOf(
-        tabKeys[0] to supportFragmentManager.findFragmentByTag(tabKeys[0]) as BaseFragment,
-        tabKeys[1] to supportFragmentManager.findFragmentByTag(tabKeys[1]) as BaseFragment,
-        tabKeys[2] to supportFragmentManager.findFragmentByTag(tabKeys[2]) as BaseFragment,
-        tabKeys[3] to supportFragmentManager.findFragmentByTag(tabKeys[3]) as BaseFragment
+        tabKeys[TAB_POSITION_CATALOG] to supportFragmentManager
+            .findFragmentByTag(tabKeys[TAB_POSITION_CATALOG]) as BaseFragment,
+
+        tabKeys[TAB_POSITION_INFO] to supportFragmentManager
+            .findFragmentByTag(tabKeys[TAB_POSITION_INFO]) as BaseFragment
     )
 
     override fun setExpanded(isExpanded: Boolean) {
@@ -103,5 +116,10 @@ class MainActivity : MvpAppCompatActivity(), MainView, DrawerHandler {
             if (isExpanded) openDrawer(Gravity.START)
             else closeDrawer(Gravity.START)
         }
+    }
+
+    companion object {
+        private const val TAB_POSITION_CATALOG = 0
+        private const val TAB_POSITION_INFO = 3
     }
 }

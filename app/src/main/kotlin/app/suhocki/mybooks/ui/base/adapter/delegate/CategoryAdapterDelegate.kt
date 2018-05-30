@@ -3,10 +3,10 @@ package app.suhocki.mybooks.ui.base.adapter.delegate
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.ui.base.adapter.listener.OnCategoryClickListener
+import app.suhocki.mybooks.ui.base.listener.OnCategoryClickListener
 import app.suhocki.mybooks.ui.base.adapter.ui.CategoryItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
-import org.jetbrains.anko.AnkoContextImpl
+import org.jetbrains.anko.AnkoContext
 
 class CategoryAdapterDelegate(
     private val onCategoryClickListener: OnCategoryClickListener
@@ -14,7 +14,7 @@ class CategoryAdapterDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         CategoryItemUI()
-            .apply { createView(AnkoContextImpl(parent.context, parent, false)) }
+            .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
             .let { ViewHolder(it) }
 
     override fun isForViewType(items: MutableList<Any>, position: Int): Boolean =

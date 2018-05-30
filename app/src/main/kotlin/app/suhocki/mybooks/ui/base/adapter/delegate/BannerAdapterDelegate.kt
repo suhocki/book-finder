@@ -6,13 +6,13 @@ import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.ui.base.adapter.ui.BannerItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.squareup.picasso.Picasso
-import org.jetbrains.anko.AnkoContextImpl
+import org.jetbrains.anko.AnkoContext
 
 class BannerAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         BannerItemUI()
-            .apply { createView(AnkoContextImpl(parent.context, parent, false)) }
+            .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
             .let { ViewHolder(it) }
 
     override fun isForViewType(items: MutableList<Any>, position: Int): Boolean =

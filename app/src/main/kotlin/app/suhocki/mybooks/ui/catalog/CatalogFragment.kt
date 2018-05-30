@@ -10,8 +10,9 @@ import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.listener.OnCategoryClickListener
+import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.books.BooksActivity
-import app.suhocki.mybooks.ui.base.adapter.listener.OnCategoryClickListener
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
@@ -22,7 +23,7 @@ import toothpick.config.Module
 
 
 class CatalogFragment : BaseFragment(), CatalogView,
-    OnCategoryClickListener {
+    OnCategoryClickListener, OnSearchClickListener {
 
     private val ui by lazy { CatalogUI<CatalogFragment>() }
 
@@ -48,7 +49,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
                 })
             }
         })
-
         return scope.getInstance(CatalogPresenter::class.java).also {
             Toothpick.closeScope(scopeName)
         }
@@ -71,6 +71,10 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     override fun onCategoryClick(category: Category) {
         context!!.startActivity<BooksActivity>(ARG_CATEGORY to category)
+    }
+
+    override fun onSearchClick() {
+
     }
 
     companion object {

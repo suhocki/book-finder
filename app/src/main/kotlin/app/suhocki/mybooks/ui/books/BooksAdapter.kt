@@ -2,7 +2,7 @@ package app.suhocki.mybooks.ui.books
 
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import app.suhocki.mybooks.ui.base.adapter.delegate.BookAdapterDelegate
-import app.suhocki.mybooks.ui.base.adapter.listener.OnBookClickListener
+import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 
@@ -13,7 +13,11 @@ class BooksAdapter(
     private val differ by lazy { AsyncListDiffer(this, BooksDiffCallback()) }
 
     init {
-        delegatesManager.addDelegate(BookAdapterDelegate(onBookClickListener))
+        delegatesManager.addDelegate(
+            BookAdapterDelegate(
+                onBookClickListener
+            )
+        )
     }
 
     override fun getItemCount(): Int =

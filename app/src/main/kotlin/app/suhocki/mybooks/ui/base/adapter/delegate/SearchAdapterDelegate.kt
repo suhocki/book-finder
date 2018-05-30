@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.adapter.ui.SearchItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
-import org.jetbrains.anko.AnkoContextImpl
+import org.jetbrains.anko.AnkoContext
 
 class SearchAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         SearchItemUI()
-            .apply { createView(AnkoContextImpl(parent.context, parent, false)) }
+            .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
             .let { ViewHolder(it) }
 
     override fun isForViewType(items: MutableList<Any>, position: Int): Boolean =

@@ -6,7 +6,7 @@ import android.view.View
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.ui.base.adapter.listener.OnBookClickListener
+import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import com.arellomobile.mvp.MvpAppCompatActivity

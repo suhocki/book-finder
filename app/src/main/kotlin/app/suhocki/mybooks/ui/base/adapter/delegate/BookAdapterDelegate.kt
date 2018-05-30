@@ -6,11 +6,11 @@ import app.suhocki.mybooks.Analytics
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.openLink
-import app.suhocki.mybooks.ui.base.adapter.listener.OnBookClickListener
+import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.adapter.ui.BookItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.squareup.picasso.Picasso
-import org.jetbrains.anko.AnkoContextImpl
+import org.jetbrains.anko.AnkoContext
 
 class BookAdapterDelegate(
     private val onBookClickListener: OnBookClickListener
@@ -18,7 +18,7 @@ class BookAdapterDelegate(
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         BookItemUI()
-            .apply { createView(AnkoContextImpl(parent.context, parent, false)) }
+            .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
             .let { ViewHolder(it) }
 
     override fun isForViewType(items: MutableList<Any>, position: Int): Boolean =
