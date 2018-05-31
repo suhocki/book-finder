@@ -62,22 +62,23 @@ class CatalogFragment : BaseFragment(), CatalogView,
     override fun showCatalogItems(
         catalogItems: List<Any>,
         scrollToPosition: Int
-    ) {
-        adapter.submitList(catalogItems, endAction = {
-            if (scrollToPosition != UNDEFINED_POSITION) {
-                val layoutManager = ui.recyclerView.layoutManager as MyCustomLayoutManager
-                when (scrollToPosition) {
-                    SEARCH_POSITION -> layoutManager
+    ) = adapter.submitList(catalogItems, onAnimationEndAction = {
+        if (scrollToPosition != UNDEFINED_POSITION) with(ui.recyclerView) {
+            stopScroll()
+            when (scrollToPosition) {
+                SEARCH_POSITION -> {
+                    (layoutManager as MyCustomLayoutManager)
                         .scrollToPositionWithOffset(SEARCH_POSITION, 0)
-
-                    BANNER_POSITION -> {
-                        ui.recyclerView.scrollToPosition(BANNER_POSITION)
-                    }
                 }
-                presenter.clearScrollToPositionCommand(catalogItems)
+
+                BANNER_POSITION -> {
+                    scrollToPosition(BANNER_POSITION)
+                }
             }
-        })
-    }
+            presenter.clearScrollToPositionCommand(catalogItems)
+        }
+    })
+
 
     override fun showSearchMode(expanded: Boolean) {
         ui.search.visibility = if (expanded) View.GONE else View.VISIBLE

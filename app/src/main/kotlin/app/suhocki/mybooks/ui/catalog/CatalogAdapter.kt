@@ -32,8 +32,8 @@ class CatalogAdapter(
     override fun getItemCount(): Int =
         differ.currentList.size
 
-    fun submitList(list: List<Any>, endAction: () -> Unit) {
-        listUpdateCallback.endAction = endAction
+    fun submitList(list: List<Any>, onAnimationEndAction: () -> Unit) {
+        listUpdateCallback.endAction = onAnimationEndAction
         mutableListOf<Any>().apply {
             addAll(list)
             items = this

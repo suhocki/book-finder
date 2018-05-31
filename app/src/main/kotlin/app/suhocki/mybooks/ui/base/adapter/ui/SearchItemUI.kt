@@ -41,6 +41,7 @@ class SearchItemUI(
                         backgroundColorResource = android.R.color.transparent
                         textSize = 14f
                         maxLines = 1
+                        isFocusable = false
                         inputType = InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE
                         imeOptions = EditorInfo.IME_ACTION_DONE
                         isVerticalScrollBarEnabled = false
