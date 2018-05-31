@@ -5,6 +5,7 @@ import android.support.v4.widget.DrawerLayout
 import android.view.Gravity
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
+import app.suhocki.mybooks.di.module.CatalogModule
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
@@ -42,8 +43,15 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
 
     @ProvidePresenter
     fun providePresenter(): MainPresenter =
-        Toothpick.openScopes(DI.APP_SCOPE)
-            .getInstance(MainPresenter::class.java)
+        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE).apply {
+            installModules(CatalogModule())
+        }.getInstance(MainPresenter::class.java)
+
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (isFinishing) Toothpick.closeScope(DI.MAIN_ACTIVITY_SCOPE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) = with(ui) {
         super.onCreate(savedInstanceState)

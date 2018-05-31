@@ -6,4 +6,5 @@
     <id name="id_fab">3</id>
     <id name="id_main_container">4</id>
     <id name="id_bottom_menu">5</id>
+    <id name="id_search">6</id>
 </resources>

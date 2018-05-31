@@ -81,7 +81,7 @@ class NotificationProvider @Inject constructor(
             .setContentTitle(title)
             .setContentText(description)
             .setContentIntent(intentContent)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setPriority(NotificationCompat.PRIORITY_MAX)
             .addAction(NotificationCompat.Action(0, getString(R.string._continue), intentForContinue))
             .setStyle(NotificationCompat.BigTextStyle())
             .setAutoCancel(true)

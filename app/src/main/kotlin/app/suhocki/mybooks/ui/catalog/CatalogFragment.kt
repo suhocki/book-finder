@@ -4,11 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Search
+import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.setGone
 import app.suhocki.mybooks.setVisible
 import app.suhocki.mybooks.ui.base.BaseFragment
@@ -23,7 +22,7 @@ import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.ctx
 import toothpick.Toothpick
-import toothpick.config.Module
+import javax.inject.Inject
 
 
 class CatalogFragment : BaseFragment(), CatalogView,
@@ -31,54 +30,56 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     private val ui by lazy { CatalogUI<CatalogFragment>() }
 
-    private val adapter by lazy { CatalogAdapter(this) }
+    @Inject
+    lateinit var search: Search
+
+    private val adapter by lazy { CatalogAdapter(this, search) }
 
     @InjectPresenter
     lateinit var presenter: CatalogPresenter
 
     @ProvidePresenter
-    fun providePresenter(): CatalogPresenter {
-        val scopeName = "CatalogScope_${hashCode()}"
-        val scope = Toothpick.openScopes(DI.APP_SCOPE, scopeName)
-        scope.installModules(object : Module() {
-            init {
-                bind(Search::class.java).toInstance(object : Search {
-                    override val hintRes: Int
-                        get() = R.string.search
-                })
-
-                bind(Header::class.java).toInstance(object : Header {
-                    override val titleRes: Int
-                        get() = R.string.catalog
-                })
-            }
-        })
-        return scope.getInstance(CatalogPresenter::class.java).also {
-            Toothpick.closeScope(scopeName)
-        }
-    }
+    fun providePresenter(): CatalogPresenter =
+        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE)
+            .getInstance(CatalogPresenter::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? = ui.createView(AnkoContext.create(ctx, this@CatalogFragment))
+    ): View? {
+        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE).apply {
+            Toothpick.inject(this@CatalogFragment, this)
+        }
+        return ui.createView(AnkoContext.create(ctx, this@CatalogFragment))
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         ui.recyclerView.adapter = adapter
     }
 
-    override fun showCatalogItems(catalogItems: List<Any>) {
-        adapter.submitList(catalogItems, {
-            val layoutManager = ui.recyclerView.layoutManager as MyCustomLayoutManager
-            if (ui.inSearchMode()) layoutManager.scrollToPositionWithOffset(1, 0)
-            else if (layoutManager.findFirstCompletelyVisibleItemPosition() <= 1)
-                ui.recyclerView.scrollToPosition(0)
+    override fun showCatalogItems(
+        catalogItems: List<Any>,
+        scrollToPosition: Int
+    ) {
+        adapter.submitList(catalogItems, endAction = {
+            if (scrollToPosition != UNDEFINED_POSITION) {
+                val layoutManager = ui.recyclerView.layoutManager as MyCustomLayoutManager
+                when (scrollToPosition) {
+                    SEARCH_POSITION -> layoutManager
+                        .scrollToPositionWithOffset(SEARCH_POSITION, 0)
+
+                    BANNER_POSITION -> {
+                        ui.recyclerView.scrollToPosition(BANNER_POSITION)
+                    }
+                }
+                presenter.clearScrollToPositionCommand(catalogItems)
+            }
         })
     }
 
-    override fun showSearchView(expanded: Boolean) {
+    override fun showSearchMode(expanded: Boolean) {
         ui.search.visibility = if (expanded) View.GONE else View.VISIBLE
         ui.close.visibility = if (expanded) View.VISIBLE else View.GONE
         (activity as NavigationHandler).setDrawerEnabled(!expanded)
@@ -102,6 +103,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
         with(ui) {
             setVisible(menu, search)
             setGone(back, close)
+            search.hideKeyboard()
         }
         presenter.removeSearchEntity(adapter.items)
         return cancelWasVisible
@@ -109,6 +111,9 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     companion object {
         const val ARG_CATEGORY = "ARG_CATEGORY"
+        const val UNDEFINED_POSITION = -1
+        const val BANNER_POSITION = 0
+        const val SEARCH_POSITION = 1
 
         fun newInstance() = CatalogFragment()
     }

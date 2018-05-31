@@ -1,19 +1,25 @@
 package app.suhocki.mybooks.ui.base.adapter.ui
 
 import android.support.v7.widget.RecyclerView
+import android.text.InputType
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
+import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.setForegroundCompat
 import org.jetbrains.anko.*
 import org.jetbrains.anko.cardview.v7.themedCardView
+import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 
-class SearchItemUI : AnkoComponent<ViewGroup> {
+class SearchItemUI(
+    private val search: Search
+) : AnkoComponent<ViewGroup> {
     lateinit var parent: View
-    lateinit var hint: TextView
+    lateinit var editText: TextView
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 
@@ -24,15 +30,27 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
             themedCardView {
                 useCompatPadding = true
 
-                frameLayout {
+                linearLayout {
                     setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
 
-                    textView {
-                        this@SearchItemUI.hint = this
-                        textAppearance = R.style.TextAppearance_AppCompat_Caption
+                    editText {
+                        id = R.id.id_search
+                        editText = this
                         leftPadding = dip(14)
+                        rightPadding = dip(14)
+                        backgroundColorResource = android.R.color.transparent
                         textSize = 14f
-                    }.lparams(wrapContent, wrapContent) {
+                        maxLines = 1
+                        inputType = InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE
+                        imeOptions = EditorInfo.IME_ACTION_DONE
+                        isVerticalScrollBarEnabled = false
+                        textChangedListener {
+                            onTextChanged { searchQuery, _, _, _ ->
+                                search.searchQuery = searchQuery.toString()
+                            }
+                        }
+                    }.lparams(0, wrapContent) {
+                        weight = 1f
                         gravity = Gravity.CENTER_VERTICAL
                     }
 

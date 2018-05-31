@@ -39,28 +39,34 @@ class CatalogPresenter @Inject constructor(
         return doAsync(errorHandler.errorReceiver) {
             val newList = mutableListOf<Any>().apply {
                 addAll(list)
-                add(SEARCH_ITEM_POSITION, searchEntity)
+                add(CatalogFragment.SEARCH_POSITION, searchEntity)
             }
             uiThread {
-                viewState.showCatalogItems(newList)
-                viewState.showSearchView(true)
+                viewState.showCatalogItems(newList, CatalogFragment.SEARCH_POSITION)
+                viewState.showSearchMode(true)
             }
         }
     }
 
     fun removeSearchEntity(list: MutableList<Any>) =
         doAsync(errorHandler.errorReceiver) {
+            searchEntity.searchQuery = EMPTY_STRING
             val newList = mutableListOf<Any>().apply {
                 addAll(list)
-                removeAt(SEARCH_ITEM_POSITION)
+                removeAt(CatalogFragment.SEARCH_POSITION)
             }
             uiThread {
-                viewState.showCatalogItems(newList)
-                viewState.showSearchView(false)
+                viewState.showCatalogItems(newList, CatalogFragment.BANNER_POSITION)
+                viewState.showSearchMode(false)
             }
         }
 
+    fun clearScrollToPositionCommand(catalogItems: List<Any>) =
+        doAsync {
+            uiThread { viewState.showCatalogItems(catalogItems) }
+        }
+
     companion object {
-        private const val SEARCH_ITEM_POSITION = 1
+        const val EMPTY_STRING = ""
     }
 }

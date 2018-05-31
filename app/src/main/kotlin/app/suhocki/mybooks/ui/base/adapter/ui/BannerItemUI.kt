@@ -37,7 +37,7 @@ class BannerItemUI : AnkoComponent<ViewGroup> {
         }.apply {
             rootView.layoutParams = RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
-                dip(112)
+                dimen(R.dimen.height_item_banner)
             )
         }
     }

@@ -10,6 +10,7 @@ import android.view.View;
 public class DividerItemDecoration extends ItemDecoration {
 
     private int mOffsets;
+    private int mStartFromItem;
 
 
 
@@ -17,8 +18,9 @@ public class DividerItemDecoration extends ItemDecoration {
      * Create new DividerItemDecoration with the specified height and color
      * without additional offsets
      */
-    public DividerItemDecoration(int dividerHeight) {
+    public DividerItemDecoration(int dividerHeight, int startFromItem) {
         mOffsets = dividerHeight;
+        mStartFromItem = startFromItem;
     }
 
     @Override
@@ -31,7 +33,7 @@ public class DividerItemDecoration extends ItemDecoration {
         }
         RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams) view.getLayoutParams();
         int itemPosition = layoutParams.getViewAdapterPosition();
-        if(layoutManager.getPosition(view) != 0 && itemPosition > 3)
+        if(layoutManager.getPosition(view) != 0 && itemPosition > mStartFromItem)
             outRect.top = mOffsets;
     }
 }

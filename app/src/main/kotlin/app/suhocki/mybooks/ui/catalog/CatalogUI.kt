@@ -130,14 +130,10 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
                 setHasFixedSize(true)
                 layoutManager = MyCustomLayoutManager(context)
                 backgroundColorResource = R.color.colorGray
-                addItemDecoration(DividerItemDecoration(dip(2)))
+                addItemDecoration(DividerItemDecoration(dip(2), 2))
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
             }
         }
-    }
-
-    fun inSearchMode(): Boolean {
-        return search.visibility != View.VISIBLE
     }
 }

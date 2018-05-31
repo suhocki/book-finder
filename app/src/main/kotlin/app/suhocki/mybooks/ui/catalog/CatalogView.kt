@@ -7,7 +7,10 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface CatalogView : MvpView {
 
-    fun showCatalogItems(catalogItems: List<Any>)
+    fun showCatalogItems(
+        catalogItems: List<Any>,
+        scrollToPosition: Int = CatalogFragment.UNDEFINED_POSITION
+    )
 
-    fun showSearchView(expanded: Boolean)
+    fun showSearchMode(expanded: Boolean)
 }
