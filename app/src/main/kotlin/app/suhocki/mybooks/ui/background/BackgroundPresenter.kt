@@ -34,6 +34,7 @@ class BackgroundPresenter @Inject constructor(
     }
 
     fun loadDatabase() = doAsync(errorHandler.errorReceiver) {
+        errorHandler.clearLastError()
         componentNotifier.addListener(this@BackgroundPresenter)
         componentNotifier.onProgressStep(ProgressStep.DOWNLOADING)
         val bytes = interactor.downloadDatabaseFile()
@@ -55,6 +56,7 @@ class BackgroundPresenter @Inject constructor(
     }
 
     fun stopDatabaseLoading() = doAsync(errorHandler.errorReceiver) {
+        currentStep = null
         loadDatabaseTask.cancel(true)
         componentNotifier.onLoadingCancelled()
     }
@@ -70,26 +72,26 @@ class BackgroundPresenter @Inject constructor(
     }.let {
         currentStep = null
         val notification = notificationProvider.getErrorNotification(it)
-        viewState.showNotification(notification)
-        viewState.stopForegroundMode(false)
+        viewState.stopForegroundMode()
+        viewState.showNotification(notification, false)
     }
 
     override fun onProgress(progressStep: ProgressStep, done: Boolean) {
         val notification = notificationProvider.getProgressNotification(progressStep)
-        viewState.showNotification(notification)
+        viewState.showNotification(notification, true)
     }
 
     override fun onLoadingStep(step: ProgressStep) {
         currentStep = step
         val notification = notificationProvider.getCurrentStepNotification(step)
-        viewState.showNotification(notification)
+        viewState.showNotification(notification, true)
     }
 
     override fun onLoadingComplete(statistics: Pair<Int, Int>) {
         currentStep!!.isAllCompleted = true
         val notification = notificationProvider.getSuccessNotification(statistics)
-        viewState.showNotification(notification)
-        viewState.stopForegroundMode(false)
+        viewState.stopForegroundMode()
+        viewState.showNotification(notification, false)
     }
 
     override fun onLoadingCancelled() {

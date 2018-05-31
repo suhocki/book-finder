@@ -12,6 +12,7 @@ import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.setGone
 import app.suhocki.mybooks.setVisible
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.MyCustomLayoutManager
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnCategoryClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
@@ -21,8 +22,10 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.ctx
+import org.jetbrains.anko.support.v4.onUiThread
 import toothpick.Toothpick
 import toothpick.config.Module
+import kotlin.concurrent.timer
 
 
 class CatalogFragment : BaseFragment(), CatalogView,
@@ -75,6 +78,17 @@ class CatalogFragment : BaseFragment(), CatalogView,
     override fun showSearchView(expanded: Boolean) {
         ui.search.visibility = if (expanded) View.GONE else View.VISIBLE
         ui.close.visibility = if (expanded) View.VISIBLE else View.GONE
+        (activity as NavigationHandler).setDrawerEnabled(!expanded)
+        (activity as NavigationHandler).setBottomNavigationVisible(!expanded)
+        timer(period = 1900) {
+            cancel()
+            onUiThread {
+                val layoutManager = ui.recyclerView.layoutManager as MyCustomLayoutManager
+                if (expanded) layoutManager.scrollToPositionWithOffset(1, 0)
+                else if (layoutManager.findFirstCompletelyVisibleItemPosition() <= 1)
+                    ui.recyclerView.scrollToPosition(0)
+            }
+        }
     }
 
     override fun onCategoryClick(category: Category) {
@@ -86,10 +100,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
             setGone(menu, search)
             setVisible(back, close)
         }
-        (activity as NavigationHandler).setDrawerEnabled(false)
-        (activity as NavigationHandler).setBottomNavigationVisible(false)
         presenter.addSearchEntity(adapter.items)
-
     }
 
     override fun onCancelSearchClick(): Boolean {
@@ -98,8 +109,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
             setVisible(menu, search)
             setGone(back, close)
         }
-        (activity as NavigationHandler).setDrawerEnabled(true)
-        (activity as NavigationHandler).setBottomNavigationVisible(true)
         presenter.removeSearchEntity(adapter.items)
         return cancelWasVisible
     }

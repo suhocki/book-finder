@@ -7,11 +7,11 @@ import android.view.Window
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.progress.ProgressStep
 import app.suhocki.mybooks.di.DI
+import app.suhocki.mybooks.setGone
+import app.suhocki.mybooks.setVisible
 import app.suhocki.mybooks.ui.background.BackgroundCommand
 import app.suhocki.mybooks.ui.background.BackgroundService
 import app.suhocki.mybooks.ui.main.MainActivity
-import app.suhocki.mybooks.setGone
-import app.suhocki.mybooks.setVisible
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -58,7 +58,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
         ui.textTitle.text =
                 getString(R.string.step_info, step.number, ProgressStep.values().size)
         when (step) {
-            ProgressStep.DOWNLOADING -> showLoading()
+            ProgressStep.DOWNLOADING -> showLoading(step.progress)
 
             ProgressStep.UNZIPPING -> showUnzipping()
 
@@ -82,9 +82,9 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
         }
     }
 
-    private fun showLoading() = with(ui) {
+    private fun showLoading(progress: Int) = with(ui) {
         ivTop.setImageResource(R.drawable.logo)
-        textProgress.text = getString(R.string.percent, 0)
+        textProgress.text = getString(R.string.percent, progress)
         textDescription.textResource = R.string.downloading
         setVisible(btnInBackground, textProgress, progressBar, btnCancel)
         setGone(btnExit, btnRetry, btnDownload, btnContinue)

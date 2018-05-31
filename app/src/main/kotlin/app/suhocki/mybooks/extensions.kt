@@ -68,8 +68,12 @@ fun inDebug(action: () -> Unit) {
     if (BuildConfig.DEBUG) action.invoke()
 }
 
+fun inRelease(action: () -> Unit) {
+    if (!BuildConfig.DEBUG) action.invoke()
+}
+
 fun Activity.inLandscape(action: () -> Unit) {
-    if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
+    if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE)
         action.invoke()
 }
 

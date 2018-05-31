@@ -8,9 +8,9 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 @StateStrategyType(SkipStrategy::class)
 interface BackgroundView : MvpView {
 
-    fun showNotification(notification: Notification)
+    fun showNotification(notification: Notification, isForeground: Boolean)
 
-    fun stopForegroundMode(removeNotification: Boolean)
+    fun stopForegroundMode()
 
     fun stopService()
 

@@ -9,7 +9,7 @@ import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.BackgroundServiceModule
 import app.suhocki.mybooks.isAppInBackground
 import app.suhocki.mybooks.ui.base.MvpService
-import app.suhocki.mybooks.ui.catalog.CatalogFragment
+import app.suhocki.mybooks.ui.main.MainActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.intentFor
@@ -63,14 +63,15 @@ class BackgroundService : MvpService(), BackgroundView {
 
     override fun onBind(intent: Intent): IBinder? = null
 
-    override fun showNotification(notification: Notification) {
+    override fun showNotification(notification: Notification, isForeground: Boolean) {
         if (isAppInBackground()) {
-            startForeground(App.BASE_NOTIFICATION_ID, notification)
+            if (isForeground) startForeground(App.BASE_NOTIFICATION_ID, notification)
+            else notificationManager.notify(App.BASE_NOTIFICATION_ID, notification)
         }
     }
 
-    override fun stopForegroundMode(removeNotification: Boolean) {
-        stopForeground(removeNotification)
+    override fun stopForegroundMode() {
+        stopForeground(false)
     }
 
     override fun stopService() {
@@ -80,7 +81,7 @@ class BackgroundService : MvpService(), BackgroundView {
     }
 
     override fun showCatalogScreen() {
-        intentFor<CatalogFragment>().let {
+        intentFor<MainActivity>().let {
             it.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(it)
         }

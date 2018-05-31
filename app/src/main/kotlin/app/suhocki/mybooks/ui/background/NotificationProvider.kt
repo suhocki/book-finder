@@ -41,9 +41,9 @@ class NotificationProvider @Inject constructor(
             .setShowWhen(false)
             .setContentText(description)
             .setSmallIcon(R.drawable.ic_download)
+            .setProgress(BackgroundService.PROGRESS_MAX, step.progress, step.progress == 0)
             .addAction(NotificationCompat.Action(0, getString(R.string.cancel), pendingIntent))
             .setPriority(NotificationCompat.PRIORITY_MAX)
-            .setProgress(0, 0, true)
             .build()
             .apply { flags = Notification.FLAG_AUTO_CANCEL }
     }

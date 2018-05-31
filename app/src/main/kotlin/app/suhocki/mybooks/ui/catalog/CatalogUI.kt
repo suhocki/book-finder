@@ -2,16 +2,15 @@ package app.suhocki.mybooks.ui.catalog
 
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
-import android.widget.LinearLayout
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.ui.base.DividerItemDecoration
+import app.suhocki.mybooks.ui.base.MyCustomLayoutManager
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
@@ -129,7 +128,7 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
                 id = R.id.id_recycler_catalog
                 clipToPadding = false
                 setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context, LinearLayout.VERTICAL, false)
+                layoutManager = MyCustomLayoutManager(context)
                 backgroundColorResource = R.color.colorGray
                 addItemDecoration(DividerItemDecoration(dip(2)))
             }.lparams(matchParent, matchParent) {

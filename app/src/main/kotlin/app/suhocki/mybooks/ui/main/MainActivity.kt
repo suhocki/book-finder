@@ -16,8 +16,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.setContentView
 import toothpick.Toothpick
 
-class MainActivity : MvpAppCompatActivity(), MainView,
-    NavigationHandler {
+class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
 
     @InjectPresenter
     lateinit var presenter: MainPresenter
@@ -34,6 +33,12 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         TAB_POSITION_CATALOG,
         TAB_POSITION_INFO
     )
+    private val navigationPositions = mapOf(
+        R.id.nav_search to TAB_POSITION_SEARCH,
+        R.id.nav_filter to TAB_POSITION_FILTER,
+        R.id.nav_catalog to TAB_POSITION_CATALOG,
+        R.id.nav_info to TAB_POSITION_INFO
+    )
 
     @ProvidePresenter
     fun providePresenter(): MainPresenter =
@@ -46,23 +51,30 @@ class MainActivity : MvpAppCompatActivity(), MainView,
             Toothpick.inject(this@MainActivity, this)
         }
         setContentView(this@MainActivity)
+        navigationView.menu.getItem(TAB_POSITION_CATALOG).isChecked = true
         navigationView.setNavigationItemSelectedListener { menuItem ->
-            menuItem.isChecked = true
+            val newPosition = navigationPositions[menuItem.itemId]!!
+            bottomBar.setCurrentItem(newPosition, true)
             drawerLayout.closeDrawers()
-            true
-        }
-        bottomBar.setOnTabSelectedListener { position, wasSelected ->
-            if (!wasSelected) {
-                if (position in fragmentTabPositions) {
-                    showTab(position, bottomBar.currentItem)
-                    return@setOnTabSelectedListener true
-                } else {
-                    invokeAction(position)
-                }
-            }
             false
         }
+        bottomBar.setOnTabSelectedListener { position, wasSelected ->
+            handleNavigationClick(position, wasSelected)
+        }
         initFragments(savedInstanceState)
+    }
+
+    private fun handleNavigationClick(position: Int, wasSelected: Boolean): Boolean {
+        if (!wasSelected) {
+            if (position in fragmentTabPositions) {
+                ui.navigationView.menu.getItem(position).isChecked = true
+                showTab(position, ui.bottomBar.currentItem)
+                return true
+            } else {
+                invokeAction(position)
+            }
+        }
+        return false
     }
 
     private fun initFragments(savedInstanceState: Bundle?) {
