@@ -36,6 +36,7 @@
     <string name="availability">Наличие</string>
     <string name="series">Серия</string>
     <string name="description">Описание</string>
+    <string name="hint_search">ISBN, автор, название, издательство, год</string>
     <string name="format">Формат</string>
     <string name="catalog">Каталог</string>
     <string name="search">Поиск</string>

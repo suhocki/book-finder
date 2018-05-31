@@ -4,10 +4,7 @@ import android.support.v7.recyclerview.extensions.AsyncDifferConfig
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.adapter.AdapterListUpdateCallback
-import app.suhocki.mybooks.ui.base.adapter.delegate.BannerAdapterDelegate
-import app.suhocki.mybooks.ui.base.adapter.delegate.CategoryAdapterDelegate
-import app.suhocki.mybooks.ui.base.adapter.delegate.HeaderAdapterDelegate
-import app.suhocki.mybooks.ui.base.adapter.delegate.SearchAdapterDelegate
+import app.suhocki.mybooks.ui.base.adapter.delegate.*
 import app.suhocki.mybooks.ui.base.listener.OnCategoryClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
@@ -27,6 +24,7 @@ class CatalogAdapter(
         delegatesManager.addDelegate(BannerAdapterDelegate())
         delegatesManager.addDelegate(HeaderAdapterDelegate())
         delegatesManager.addDelegate(SearchAdapterDelegate(search))
+        delegatesManager.addDelegate(HintAdapterDelegate())
     }
 
     override fun getItemCount(): Int =

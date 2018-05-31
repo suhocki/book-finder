@@ -98,7 +98,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
             setGone(menu, search)
             setVisible(back, close)
         }
-        presenter.addSearchEntity(adapter.items)
+        presenter.startSearchMode()
     }
 
     override fun onCancelSearchClick(): Boolean {
@@ -108,7 +108,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
             setGone(back, close)
             search.hideKeyboard()
         }
-        presenter.removeSearchEntity(adapter.items)
+        presenter.stopSearchMode()
         return cancelWasVisible
     }
 

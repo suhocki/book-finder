@@ -112,12 +112,8 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
 
                     view {
                         backgroundColorResource = R.color.colorGray
-                        layoutParams = Toolbar.LayoutParams(
-                            dip(1),
-                            matchParent
-                        ).apply {
-                            gravity = Gravity.END
-                        }
+                        layoutParams = Toolbar.LayoutParams(dip(1), matchParent)
+                            .apply { gravity = Gravity.END }
                     }
                 }.lparams(matchParent, matchParent) {
                     scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
