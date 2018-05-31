@@ -10,6 +10,7 @@ import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.setGone
 import app.suhocki.mybooks.setVisible
+import app.suhocki.mybooks.showKeyboard
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.ScrollLayoutManager
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
@@ -69,6 +70,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
                 SEARCH_POSITION -> {
                     (layoutManager as ScrollLayoutManager)
                         .scrollToPositionWithOffset(SEARCH_POSITION, 0)
+                    showKeyboard()
                 }
 
                 BANNER_POSITION -> {

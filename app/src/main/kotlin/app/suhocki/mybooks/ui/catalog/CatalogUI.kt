@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.ImageView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
+import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.base.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.ScrollLayoutManager
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
@@ -131,6 +132,7 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
                 layoutManager = ScrollLayoutManager(context)
                 backgroundColorResource = R.color.colorGray
                 addItemDecoration(DividerItemDecoration(dip(2), 2))
+                setOnTouchListener { _, _ -> hideKeyboard();false }
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
             }

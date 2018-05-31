@@ -30,12 +30,13 @@
             android:launchMode="singleTop"
             android:theme="@style/Dialog" />
 
-        <activity android:name=".ui.main.MainActivity" />
+        <activity
+            android:name=".ui.main.MainActivity"
+            android:windowSoftInputMode="adjustPan" />
 
         <activity
             android:name=".ui.books.BooksActivity"
-            tools:targetApi="jelly_bean">
-        </activity>
+            tools:targetApi="jelly_bean" />
 
         <activity
             android:name=".ui.details.DetailsActivity"
