@@ -22,10 +22,8 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.ctx
-import org.jetbrains.anko.support.v4.onUiThread
 import toothpick.Toothpick
 import toothpick.config.Module
-import kotlin.concurrent.timer
 
 
 class CatalogFragment : BaseFragment(), CatalogView,
@@ -72,7 +70,12 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun showCatalogItems(catalogItems: List<Any>) {
-        adapter.submitList(catalogItems)
+        adapter.submitList(catalogItems, {
+            val layoutManager = ui.recyclerView.layoutManager as MyCustomLayoutManager
+            if (ui.inSearchMode()) layoutManager.scrollToPositionWithOffset(1, 0)
+            else if (layoutManager.findFirstCompletelyVisibleItemPosition() <= 1)
+                ui.recyclerView.scrollToPosition(0)
+        })
     }
 
     override fun showSearchView(expanded: Boolean) {
@@ -80,15 +83,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
         ui.close.visibility = if (expanded) View.VISIBLE else View.GONE
         (activity as NavigationHandler).setDrawerEnabled(!expanded)
         (activity as NavigationHandler).setBottomNavigationVisible(!expanded)
-        timer(period = 1900) {
-            cancel()
-            onUiThread {
-                val layoutManager = ui.recyclerView.layoutManager as MyCustomLayoutManager
-                if (expanded) layoutManager.scrollToPositionWithOffset(1, 0)
-                else if (layoutManager.findFirstCompletelyVisibleItemPosition() <= 1)
-                    ui.recyclerView.scrollToPosition(0)
-            }
-        }
     }
 
     override fun onCategoryClick(category: Category) {

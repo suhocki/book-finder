@@ -136,4 +136,8 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
             }
         }
     }
+
+    fun inSearchMode(): Boolean {
+        return search.visibility != View.VISIBLE
+    }
 }
