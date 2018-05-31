@@ -11,7 +11,7 @@ import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.setGone
 import app.suhocki.mybooks.setVisible
 import app.suhocki.mybooks.ui.base.BaseFragment
-import app.suhocki.mybooks.ui.base.MyCustomLayoutManager
+import app.suhocki.mybooks.ui.base.ScrollLayoutManager
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnCategoryClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
@@ -67,7 +67,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
             stopScroll()
             when (scrollToPosition) {
                 SEARCH_POSITION -> {
-                    (layoutManager as MyCustomLayoutManager)
+                    (layoutManager as ScrollLayoutManager)
                         .scrollToPositionWithOffset(SEARCH_POSITION, 0)
                 }
 

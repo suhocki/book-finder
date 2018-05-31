@@ -29,9 +29,9 @@ class SearchAdapterDelegate(
 
     private inner class ViewHolder(val ui: SearchItemUI) : RecyclerView.ViewHolder(ui.parent) {
         fun bind(search: Search) {
-            with(ui) {
-                editText.hint = parent.resources.getString(search.hintRes)
-                editText.text = search.searchQuery
+            with(ui.editText) {
+                hint = resources.getString(search.hintRes)
+                text = search.searchQuery
             }
         }
     }

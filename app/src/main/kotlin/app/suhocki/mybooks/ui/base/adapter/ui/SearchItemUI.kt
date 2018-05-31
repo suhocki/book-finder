@@ -26,6 +26,7 @@ class SearchItemUI(
         frameLayout {
             this@SearchItemUI.parent = this
             padding = dimen(R.dimen.padding_item_search)
+            isFocusableInTouchMode = true
 
             themedCardView {
                 useCompatPadding = true
@@ -39,9 +40,8 @@ class SearchItemUI(
                         leftPadding = dip(14)
                         rightPadding = dip(14)
                         backgroundColorResource = android.R.color.transparent
-                        textSize = 14f
+                        textSizeDimen = R.dimen.size_text_search
                         maxLines = 1
-                        isFocusable = false
                         inputType = InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE
                         imeOptions = EditorInfo.IME_ACTION_DONE
                         isVerticalScrollBarEnabled = false
@@ -50,7 +50,7 @@ class SearchItemUI(
                                 search.searchQuery = searchQuery.toString()
                             }
                         }
-                    }.lparams(0, wrapContent) {
+                    }.lparams(0, matchParent) {
                         weight = 1f
                         gravity = Gravity.CENTER_VERTICAL
                     }

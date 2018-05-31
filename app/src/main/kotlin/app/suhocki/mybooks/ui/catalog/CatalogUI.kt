@@ -10,7 +10,7 @@ import android.widget.ImageView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.ui.base.DividerItemDecoration
-import app.suhocki.mybooks.ui.base.MyCustomLayoutManager
+import app.suhocki.mybooks.ui.base.ScrollLayoutManager
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
@@ -128,7 +128,7 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
                 id = R.id.id_recycler_catalog
                 clipToPadding = false
                 setHasFixedSize(true)
-                layoutManager = MyCustomLayoutManager(context)
+                layoutManager = ScrollLayoutManager(context)
                 backgroundColorResource = R.color.colorGray
                 addItemDecoration(DividerItemDecoration(dip(2), 2))
             }.lparams(matchParent, matchParent) {

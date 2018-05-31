@@ -3,4 +3,5 @@
     <dimen name="padding_toolbar_icon">12dp</dimen>
     <dimen name="padding_item_search">3dp</dimen>
     <dimen name="height_item_banner">80dp</dimen>
+    <dimen name="size_text_search">12sp</dimen>
 </resources>
