@@ -11,7 +11,6 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.base.ScrollLayoutManager
-import app.suhocki.mybooks.ui.base.adapter.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
@@ -126,7 +125,6 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
                 clipToPadding = false
                 layoutManager = ScrollLayoutManager(context)
                 backgroundColorResource = R.color.colorGray
-                addItemDecoration(DividerItemDecoration(dimen(R.dimen.height_catalog_decorator), 2))
                 setOnTouchListener { _, _ -> hideKeyboard();false }
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()

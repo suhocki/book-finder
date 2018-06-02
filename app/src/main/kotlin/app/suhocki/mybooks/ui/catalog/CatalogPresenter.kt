@@ -1,7 +1,10 @@
 package app.suhocki.mybooks.ui.catalog
 
+import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.error.ErrorHandler
+import app.suhocki.mybooks.di.CategoriesDecoration
+import app.suhocki.mybooks.di.SearchDecoration
 import app.suhocki.mybooks.domain.CategoriesInteractor
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Search
@@ -18,7 +21,9 @@ class CatalogPresenter @Inject constructor(
     private val interactor: CategoriesInteractor,
     private val errorHandler: ErrorHandler,
     private val search: Search,
-    private val header: Header
+    private val header: Header,
+    @SearchDecoration private val searchDecoration: RecyclerView.ItemDecoration,
+    @CategoriesDecoration private val categoriesDecoration: RecyclerView.ItemDecoration
 ) : MvpPresenter<CatalogView>(), AnkoLogger {
 
     override fun onFirstViewAttach() {
@@ -29,7 +34,9 @@ class CatalogPresenter @Inject constructor(
                 add(header)
                 addAll(interactor.getCategories())
             }
-            uiThread { viewState.showCatalogItems(catalogItems) }
+            uiThread {
+                viewState.showCatalogItems(catalogItems, categoriesDecoration)
+            }
         }
     }
 
@@ -42,7 +49,10 @@ class CatalogPresenter @Inject constructor(
             }
             uiThread {
                 viewState.showSearchMode(true)
-                viewState.showCatalogItems(catalogItems, CatalogFragment.SEARCH_POSITION)
+                viewState.showCatalogItems(
+                    catalogItems,
+                    scrollToPosition = CatalogFragment.SEARCH_POSITION
+                )
             }
         }
     }
@@ -57,7 +67,11 @@ class CatalogPresenter @Inject constructor(
             }
             uiThread {
                 viewState.showSearchMode(false)
-                viewState.showCatalogItems(catalogItems, CatalogFragment.BANNER_POSITION)
+                viewState.showCatalogItems(
+                    catalogItems,
+                    categoriesDecoration,
+                    CatalogFragment.BANNER_POSITION
+                )
             }
         }
 
@@ -71,7 +85,7 @@ class CatalogPresenter @Inject constructor(
             })
         }
         uiThread {
-            viewState.showCatalogItems(catalogItems)
+            viewState.showCatalogItems(catalogItems, searchDecoration)
         }
     }
 

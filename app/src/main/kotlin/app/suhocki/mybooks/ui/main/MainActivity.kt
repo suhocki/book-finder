@@ -45,7 +45,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
     @ProvidePresenter
     fun providePresenter(): MainPresenter =
         Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE).apply {
-            installModules(CatalogModule())
+            installModules(CatalogModule(this@MainActivity))
         }.getInstance(MainPresenter::class.java)
 
 

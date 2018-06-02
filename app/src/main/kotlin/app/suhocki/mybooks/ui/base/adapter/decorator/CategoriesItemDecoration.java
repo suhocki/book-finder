@@ -7,20 +7,16 @@ import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.support.v7.widget.RecyclerView.State;
 import android.view.View;
 
-public class DividerItemDecoration extends ItemDecoration {
+import app.suhocki.mybooks.ui.catalog.CatalogFragment;
+
+public class CategoriesItemDecoration extends ItemDecoration {
 
     private int mOffsets;
     private int mStartFromItem;
 
-
-
-    /**
-     * Create new DividerItemDecoration with the specified height and color
-     * without additional offsets
-     */
-    public DividerItemDecoration(int dividerHeight, int startFromItem) {
+    public CategoriesItemDecoration(int dividerHeight) {
         mOffsets = dividerHeight;
-        mStartFromItem = startFromItem;
+        mStartFromItem = CatalogFragment.CATEGORY_POSITION;
     }
 
     @Override
