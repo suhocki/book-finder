@@ -76,6 +76,7 @@ class CatalogPresenter @Inject constructor(
         }
 
     fun search() = doAsync(errorHandler.errorReceiver) {
+        if (search.searchQuery.isBlank()) return@doAsync
         val catalogItems = mutableListOf<Any>().apply {
             add(interactor.getBanner())
             add(search)

@@ -6,6 +6,7 @@ import io.fabric.sdk.android.Fabric
 import toothpick.Toothpick
 import com.squareup.leakcanary.LeakCanary
 import toothpick.configuration.Configuration
+import android.os.StrictMode
 
 
 class AppDebug : App() {
@@ -14,6 +15,7 @@ class AppDebug : App() {
         initToothpick()
         super.onCreate()
         initLeakCanary()
+        enableStrictMode()
     }
 
     private fun initToothpick() {
@@ -24,5 +26,19 @@ class AppDebug : App() {
         if (!LeakCanary.isInAnalyzerProcess(this)) {
             LeakCanary.install(this)
         }
+    }
+
+    private fun enableStrictMode() {
+        StrictMode.setThreadPolicy(
+            StrictMode.ThreadPolicy.Builder()
+                .detectAll()
+                .penaltyLog()
+                .build()
+        )
+        StrictMode.setVmPolicy(
+            StrictMode.VmPolicy.Builder().detectAll()
+                .penaltyLog()
+                .build()
+        )
     }
 }

@@ -1,7 +1,6 @@
 package app.suhocki.mybooks.ui.catalog
 
 import android.os.Bundle
-import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.*
 import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.domain.model.Book
-import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.domain.model.Search
+import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.adapter.decorator.CategoriesItemDecoration
+import app.suhocki.mybooks.ui.base.adapter.decorator.SearchItemDecoration
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnCategoryClickListener
@@ -21,12 +20,10 @@ import app.suhocki.mybooks.ui.books.BooksActivity
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.jetbrains.anko.AnkoContext
-import org.jetbrains.anko.bottomPadding
-import org.jetbrains.anko.dimenAttr
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.dimen
+import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.onUiThread
 import toothpick.Toothpick
 import java.util.*
@@ -70,45 +67,58 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     override fun showCatalogItems(
         catalogItems: List<Any>,
+        itemDecoration: RecyclerView.ItemDecoration?,
         scrollToPosition: Int
-    ) = adapter.submitList(catalogItems, onAnimationEnd = {
-        if (scrollToPosition != UNDEFINED_POSITION) with(ui.recyclerView) {
-            when (scrollToPosition) {
-                SEARCH_POSITION -> {
-                    bottomPadding = getRecyclerPaddingToMoveSearchToTop(this, 0)
-                    (layoutManager as LinearLayoutManager).scrollToPositionWithOffset(
-                        SEARCH_POSITION,
-                        0
-                    )
-                    showKeyboard()
-                }
+    ) {
+        adapter.submitList(catalogItems, onAnimationEnd = {
+            with(ui.recyclerView) {
+                when (scrollToPosition) {
+                    SEARCH_POSITION -> {
+                        itemDecoration?.let { showRecyclerDecoration(it) }
+                        bottomPadding = getRecyclerPadding(this@with, catalogItems)
+                        (layoutManager as LinearLayoutManager)
+                            .scrollToPositionWithOffset(SEARCH_POSITION, 0)
+                        showKeyboard()
+                    }
 
-                BANNER_POSITION -> {
-                    Timer().schedule(200) { onUiThread { bottomPadding = 0 } }
-                    scrollToPosition(BANNER_POSITION)
+                    BANNER_POSITION -> {
+                        Timer().schedule(200) {
+                            onUiThread {
+                                itemDecoration?.let { showRecyclerDecoration(it) }
+                                bottomPadding = 0
+                            }
+                        }
+                        scrollToPosition(BANNER_POSITION)
+                    }
+
+                    else -> with(ui.recyclerView) {
+                        Timer().schedule(200) {
+                            onUiThread {
+                                itemDecoration?.let { showRecyclerDecoration(it) }
+                                bottomPadding = getRecyclerPadding(this@with, catalogItems)
+                            }
+                        }
+                    }
                 }
             }
-        }
-    })
-
-    private fun getRecyclerPaddingToMoveSearchToTop(parent: RecyclerView, itemCount: Int): Int {
-        var topOffset = parent.height - visibleChildHeightWithFooter(parent, itemCount)
-        topOffset -= context!!.dimenAttr(R.attr.actionBarSize) * 2
-        return if (topOffset < 0) 0 else topOffset
+        })
     }
 
-    private fun visibleChildHeightWithFooter(parent: RecyclerView, itemCount: Int): Int {
-        var totalHeight = 0
-        var linesCount = Math.min(parent.childCount, itemCount)
-        if (parent.layoutManager is GridLayoutManager) {
-            linesCount = Math.ceil(
-                (linesCount - 1).toDouble() / dimen(R.dimen.height_catalog_decorator)
-            ).toInt()
+    private fun getRecyclerPadding(parent: RecyclerView, catalogItems: List<Any>): Int {
+        var itemsHeight = 0
+        catalogItems.forEach {
+            when (it) {
+                is Search -> itemsHeight += context!!.dimenAttr(R.attr.actionBarSize)
+
+                is Header -> itemsHeight += context!!.dimenAttr(R.attr.actionBarSize)
+
+                is SearchResult -> itemsHeight += dimen(R.dimen.height_search_result)
+
+                is Category -> itemsHeight += context!!.dimenAttr(R.attr.actionBarSize)
+            }
         }
-        for (i in 0 until linesCount) {
-            totalHeight += parent.getChildAt(i).height + 1
-        }
-        return totalHeight
+        return if (itemsHeight > parent.height) 0
+        else parent.height - itemsHeight
     }
 
     override fun showSearchMode(expanded: Boolean) {
@@ -119,11 +129,18 @@ class CatalogFragment : BaseFragment(), CatalogView,
         ui.menu.visibility = if (expanded) View.GONE else View.VISIBLE
         (activity as NavigationHandler).setDrawerEnabled(!expanded)
         (activity as NavigationHandler).setBottomNavigationVisible(!expanded)
-        if(!expanded) ui.back.hideKeyboard()
+        if (!expanded) ui.back.hideKeyboard()
     }
 
     override fun showBlankSearch() {
         adapter.notifyItemChanged(SEARCH_POSITION)
+    }
+
+    override fun showRecyclerDecoration(decoration: RecyclerView.ItemDecoration) {
+        ui.recyclerView.apply {
+            while (itemDecorationCount > 0) removeItemDecorationAt(0)
+            addItemDecoration(decoration)
+        }
     }
 
     override fun onCategoryClick(category: Category) {
@@ -166,6 +183,8 @@ class CatalogFragment : BaseFragment(), CatalogView,
         const val UNDEFINED_POSITION = -1
         const val BANNER_POSITION = 0
         const val SEARCH_POSITION = 1
+        const val CATEGORY_POSITION = 2
+        const val SEARCH_RESULT_POSITION = 3
 
         fun newInstance() = CatalogFragment()
     }
