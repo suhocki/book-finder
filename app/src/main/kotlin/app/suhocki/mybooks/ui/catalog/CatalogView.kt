@@ -13,4 +13,6 @@ interface CatalogView : MvpView {
     )
 
     fun showSearchMode(expanded: Boolean)
+
+    fun showBlankSearch()
 }

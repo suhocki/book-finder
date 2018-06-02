@@ -8,7 +8,7 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ProgressBar
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.ui.base.ItemDecoratorGrid
+import app.suhocki.mybooks.ui.base.adapter.decorator.ItemDecoratorGrid
 import app.suhocki.mybooks.ui.base.themedAutofitRecyclerView
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import org.jetbrains.anko.*
@@ -45,7 +45,11 @@ class BooksUI : AnkoComponent<BooksActivity> {
                 recyclerView = this
                 setHasFixedSize(true)
                 columnWidth = dip(146)
-                addItemDecoration(ItemDecoratorGrid(dip(4)))
+                addItemDecoration(
+                    ItemDecoratorGrid(
+                        dip(4)
+                    )
+                )
                 padding = dip(4)
                 fastScrollMargin = dip(8)
                 fastScrollThickness = dip(10)

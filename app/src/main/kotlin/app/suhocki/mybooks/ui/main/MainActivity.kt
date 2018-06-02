@@ -6,6 +6,7 @@ import android.view.Gravity
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.CatalogModule
+import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
@@ -72,6 +73,11 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
         initFragments(savedInstanceState)
     }
 
+    override fun onPause() {
+        super.onPause()
+        ui.navigationView.hideKeyboard()
+    }
+
     private fun handleNavigationClick(position: Int, wasSelected: Boolean): Boolean {
         if (!wasSelected) {
             if (position in fragmentTabPositions) {
@@ -128,7 +134,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
 
     private fun expandSearchView() {
         val onSearchClickListener = tabs[tabKeys[TAB_POSITION_CATALOG]] as OnSearchClickListener
-        onSearchClickListener.onSearchClick()
+        onSearchClickListener.onExpandSearchClick()
     }
 
     private fun expandFilterView() {
@@ -176,7 +182,7 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
 
     override fun onBackPressed() {
         val onSearchClickListener = tabs[tabKeys[TAB_POSITION_CATALOG]] as OnSearchClickListener
-        if (!onSearchClickListener.onCancelSearchClick()) {
+        if (!onSearchClickListener.onCollapseSearchClick()) {
             super.onBackPressed()
         }
     }

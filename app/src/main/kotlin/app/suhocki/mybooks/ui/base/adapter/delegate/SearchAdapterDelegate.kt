@@ -4,11 +4,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.adapter.ui.SearchItemUI
+import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 
 class SearchAdapterDelegate(
-    private val search: Search
+    private val search: Search,
+    private val onSearchClickListener: OnSearchClickListener
 ) : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
@@ -28,10 +30,12 @@ class SearchAdapterDelegate(
 
 
     private inner class ViewHolder(val ui: SearchItemUI) : RecyclerView.ViewHolder(ui.parent) {
+
         fun bind(search: Search) {
-            with(ui.editText) {
-                hint = resources.getString(search.hintRes)
-                text = search.searchQuery
+            with(ui) {
+                editText.hint = editText.resources.getString(search.hintRes)
+                editText.text = search.searchQuery
+                startSearch.setOnClickListener { onSearchClickListener.onStartSearchClick() }
             }
         }
     }

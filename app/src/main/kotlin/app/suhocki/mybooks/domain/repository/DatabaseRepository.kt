@@ -14,4 +14,6 @@ interface DatabaseRepository {
     fun saveBooks(books: List<Book>)
 
     fun getBooksBy(category: Category): List<BookEntity>
+
+    fun search(text: String): List<BookEntity>
 }

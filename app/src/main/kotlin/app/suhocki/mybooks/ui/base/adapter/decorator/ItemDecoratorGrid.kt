@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.base
+package app.suhocki.mybooks.ui.base.adapter.decorator
 
 import android.graphics.Rect
 import android.support.v7.widget.RecyclerView

@@ -39,7 +39,12 @@
     <string name="hint_search">ISBN, автор, название, издательство, год</string>
     <string name="format">Формат</string>
     <string name="catalog">Каталог</string>
+    <string name="category">Категория</string>
+    <string name="not_found">Не найдено</string>
+    <string name="name">Название</string>
     <string name="search">Поиск</string>
+    <string name="search_results">Результаты поиска</string>
     <string name="notification_channel_name">Уведомления MyBooks</string>
     <string name="press_back_again">Для выхода, нажмите «Назад» еще раз.</string>
+    <string name="enter_query">Введите запрос</string>
 </resources>

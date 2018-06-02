@@ -1,9 +1,9 @@
 package app.suhocki.mybooks.ui.catalog
 
+import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.domain.CategoriesInteractor
 import app.suhocki.mybooks.domain.model.Header
-import app.suhocki.mybooks.domain.model.Hint
 import app.suhocki.mybooks.domain.model.Search
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -18,8 +18,7 @@ class CatalogPresenter @Inject constructor(
     private val interactor: CategoriesInteractor,
     private val errorHandler: ErrorHandler,
     private val search: Search,
-    private val header: Header,
-    private val hint: Hint
+    private val header: Header
 ) : MvpPresenter<CatalogView>(), AnkoLogger {
 
     override fun onFirstViewAttach() {
@@ -39,11 +38,11 @@ class CatalogPresenter @Inject constructor(
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
                 add(search)
-                add(hint)
+                add(header.apply { titleRes = R.string.enter_query })
             }
             uiThread {
-                viewState.showCatalogItems(catalogItems, CatalogFragment.SEARCH_POSITION)
                 viewState.showSearchMode(true)
+                viewState.showCatalogItems(catalogItems, CatalogFragment.SEARCH_POSITION)
             }
         }
     }
@@ -53,19 +52,36 @@ class CatalogPresenter @Inject constructor(
             search.searchQuery = EMPTY_STRING
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
-                add(header)
+                add(header.apply { titleRes = R.string.catalog })
                 addAll(interactor.getCategories())
             }
             uiThread {
-                viewState.showCatalogItems(catalogItems, CatalogFragment.BANNER_POSITION)
                 viewState.showSearchMode(false)
+                viewState.showCatalogItems(catalogItems, CatalogFragment.BANNER_POSITION)
             }
         }
 
-    fun clearScrollToPositionCommand(catalogItems: List<Any>) =
-        doAsync {
-            uiThread { viewState.showCatalogItems(catalogItems) }
+    fun search() = doAsync(errorHandler.errorReceiver) {
+        val catalogItems = mutableListOf<Any>().apply {
+            add(interactor.getBanner())
+            add(search)
+            add(header.apply { titleRes = R.string.search_results })
+            addAll(interactor.search(search).apply {
+                header.titleRes = if (size > 0) R.string.search_results else R.string.not_found
+            })
         }
+        uiThread {
+            viewState.showCatalogItems(catalogItems)
+        }
+    }
+
+    fun clearSearchQuery() {
+        if (search.searchQuery.isBlank()) stopSearchMode()
+        else {
+            search.searchQuery = EMPTY_STRING
+            viewState.showBlankSearch()
+        }
+    }
 
     companion object {
         const val EMPTY_STRING = ""

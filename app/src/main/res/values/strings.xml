@@ -28,6 +28,7 @@
     <string name="back">Back</string>
     <string name="isbn">ISBN</string>
     <string name="author">Author</string>
+    <string name="name">Name</string>
     <string name="publisher">Publisher</string>
     <string name="year">Year</string>
     <string name="cover">Cover</string>
@@ -39,8 +40,11 @@
     <string name="catalog">Catalog</string>
     <string name="hint_search">ISBN, author, book name, publisher, year</string>
     <string name="search">Search</string>
+    <string name="search_results">Search results</string>
+    <string name="not_found">Not found</string>
     <string name="notification_channel_name">MyBooks notifications</string>
     <string name="press_back_again">Press back button one more time to cancel download and exit app.</string>
+    <string name="enter_query">Type query</string>
 
     <string name="percent" translatable="false">" "(%d%%)</string>
 </resources>

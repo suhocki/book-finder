@@ -20,6 +20,7 @@ class SearchItemUI(
 ) : AnkoComponent<ViewGroup> {
     lateinit var parent: View
     lateinit var editText: TextView
+    lateinit var startSearch: View
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 
@@ -57,6 +58,8 @@ class SearchItemUI(
                     }
 
                     imageView(R.drawable.ic_search) {
+                        startSearch = this
+                        setForegroundCompat(context.attrResource(R.attr.selectableItemBackgroundBorderless))
                         backgroundResource = R.drawable.search_icon_background
                         padding = dip(8)
                     }.lparams(dip(38), matchParent) {

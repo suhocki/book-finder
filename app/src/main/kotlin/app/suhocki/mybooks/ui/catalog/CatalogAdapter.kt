@@ -5,11 +5,15 @@ import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.adapter.AdapterListUpdateCallback
 import app.suhocki.mybooks.ui.base.adapter.delegate.*
+import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnCategoryClickListener
+import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 class CatalogAdapter(
     onCategoryClickListener: OnCategoryClickListener,
+    onSearchClickListener: OnSearchClickListener,
+    onBookClickListener: OnBookClickListener,
     search: Search
 ) : ListDelegationAdapter<MutableList<Any>>() {
 
@@ -20,18 +24,20 @@ class CatalogAdapter(
     private val differ by lazy { AsyncListDiffer(listUpdateCallback, diffConfig) }
 
     init {
-        delegatesManager.addDelegate(CategoryAdapterDelegate(onCategoryClickListener))
-        delegatesManager.addDelegate(BannerAdapterDelegate())
-        delegatesManager.addDelegate(HeaderAdapterDelegate())
-        delegatesManager.addDelegate(SearchAdapterDelegate(search))
-        delegatesManager.addDelegate(HintAdapterDelegate())
+        delegatesManager
+            .addDelegate(CategoryAdapterDelegate(onCategoryClickListener))
+            .addDelegate(BannerAdapterDelegate())
+            .addDelegate(HeaderAdapterDelegate())
+            .addDelegate(SearchAdapterDelegate(search, onSearchClickListener))
+            .addDelegate(HintAdapterDelegate())
+            .addDelegate(SearchResultAdapterDelegate(onBookClickListener))
     }
 
     override fun getItemCount(): Int =
         differ.currentList.size
 
-    fun submitList(list: List<Any>, onAnimationEndAction: () -> Unit) {
-        listUpdateCallback.endAction = onAnimationEndAction
+    fun submitList(list: List<Any>, onAnimationEnd: () -> Unit) {
+        listUpdateCallback.endAction = onAnimationEnd
         mutableListOf<Any>().apply {
             addAll(list)
             items = this

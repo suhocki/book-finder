@@ -1,6 +1,12 @@
 package app.suhocki.mybooks.ui.base.listener
 
 interface OnSearchClickListener {
-    fun onSearchClick()
-    fun onCancelSearchClick(): Boolean
+
+    fun onExpandSearchClick()
+
+    fun onCollapseSearchClick(): Boolean
+
+    fun onClearSearchClick()
+
+    fun onStartSearchClick()
 }

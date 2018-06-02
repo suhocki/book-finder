@@ -17,4 +17,7 @@ interface BookDao {
 
     @Query("SELECT * FROM Books WHERE category=:category")
     fun getAllByCategory(category: String): List<BookEntity>
+
+    @Query("SELECT * FROM Books WHERE productCode like :q or shortName like :q or fullName like :q or author like :q or publisher like :q or year like :q limit 20")
+    fun find(q: String): List<BookEntity>
 }

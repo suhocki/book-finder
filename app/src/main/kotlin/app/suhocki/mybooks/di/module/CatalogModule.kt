@@ -11,11 +11,11 @@ class CatalogModule : Module() {
         bind(Search::class.java).toInstance(object : Search {
             override var searchQuery: String = EMPTY_STRING
 
-            override val hintRes = R.string.search
+            override val hintRes = R.string.hint_search
         })
 
         bind(Header::class.java).toInstance(object : Header {
-            override val titleRes = R.string.catalog
+            override var titleRes = R.string.catalog
         })
 
         bind(Hint::class.java).toInstance(object : Hint {

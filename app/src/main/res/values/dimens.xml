@@ -5,4 +5,6 @@
     <dimen name="height_item_banner">112dp</dimen>
     <dimen name="height_item_hint">68dp</dimen>
     <dimen name="size_text_search">14sp</dimen>
+    <dimen name="height_catalog_decorator">2dp</dimen>
+    <dimen name="width_search_book_image">76dp</dimen>
 </resources>

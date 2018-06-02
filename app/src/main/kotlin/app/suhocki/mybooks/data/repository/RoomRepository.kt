@@ -32,4 +32,8 @@ class RoomRepository @Inject constructor(
     override fun getBooksBy(category: Category): List<BookEntity> {
         return bookDao.getAllByCategory(category.name)
     }
+
+    override fun search(text: String): List<BookEntity> {
+        return bookDao.find("%$text%")
+    }
 }

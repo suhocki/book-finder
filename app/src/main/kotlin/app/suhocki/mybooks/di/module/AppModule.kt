@@ -11,6 +11,7 @@ import app.suhocki.mybooks.data.notifier.ComponentNotifier
 import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.repository.RoomRepository
 import app.suhocki.mybooks.data.repository.SharedPreferencesRepository
+import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.DatabaseFileName
 import app.suhocki.mybooks.di.SharedPreferencesFileName
 import app.suhocki.mybooks.di.provider.BookDaoProvider
@@ -25,6 +26,9 @@ class AppModule(context: Context) : Module() {
     init {
         bind(Context::class.java)
             .toInstance(context)
+
+        bind(ResourceManager::class.java)
+            .singletonInScope()
 
         bind(String::class.java)
             .withName(DatabaseFileName::class.java)
