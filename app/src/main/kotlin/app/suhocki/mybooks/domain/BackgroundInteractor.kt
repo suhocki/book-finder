@@ -4,7 +4,7 @@ import app.suhocki.mybooks.di.DatabaseFileUrl
 import app.suhocki.mybooks.di.DownloadedFileName
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.domain.repository.DatabaseRepository
+import app.suhocki.mybooks.domain.repository.BookDatabaseRepository
 import app.suhocki.mybooks.domain.repository.FileSystemRepository
 import app.suhocki.mybooks.domain.repository.ServerRepository
 import app.suhocki.mybooks.domain.repository.SettingsRepository
@@ -14,7 +14,7 @@ import javax.inject.Inject
 class BackgroundInteractor @Inject constructor(
     private val serverRepository: ServerRepository,
     private val fileSystemRepository: FileSystemRepository,
-    private val databaseRepository: DatabaseRepository,
+    private val databaseRepository: BookDatabaseRepository,
     private val settingsRepository: SettingsRepository,
     @DatabaseFileUrl private val fileUrl: String,
     @DownloadedFileName private val downloadedFileName: String

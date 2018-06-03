@@ -8,11 +8,11 @@ import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.SearchResult
-import app.suhocki.mybooks.domain.repository.DatabaseRepository
+import app.suhocki.mybooks.domain.repository.BookDatabaseRepository
 import javax.inject.Inject
 
 class CategoriesInteractor @Inject constructor(
-    private val databaseRepository: DatabaseRepository,
+    private val databaseRepository: BookDatabaseRepository,
     private val resourceManager: ResourceManager
 ) {
 

@@ -3,6 +3,7 @@ package app.suhocki.mybooks.data.parser
 import app.suhocki.mybooks.checkThreadInterrupt
 import app.suhocki.mybooks.data.database.entity.BookEntity
 import app.suhocki.mybooks.data.database.entity.CategoryEntity
+import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
 import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.progress.ProgressStep
@@ -36,6 +37,7 @@ class XlsParser @Inject constructor(
 
     fun extractPayload(strings: ArrayList<String>): XlsDocumentEntity {
         val booksData = mutableMapOf<CategoryEntity, MutableList<BookEntity>>()
+        val statistics = StatisticsEntity()
         var categoryNamePosition = -1
         val objectFieldsQueue = ArrayDeque<String>()
         var currentCategory: CategoryEntity? = null
@@ -77,8 +79,8 @@ class XlsParser @Inject constructor(
                             pageCount = findValue(KEY_PAGES, shortDescription, fullDescription)
                             series = findValue(KEY_SERIES, shortDescription, fullDescription)
                             year = findValue(KEY_YEAR, shortDescription, fullDescription)
-                            description =
-                                    findValue(KEY_DESCRIPTION, shortDescription, fullDescription)
+                            description = findValue(KEY_DESCR, shortDescription, fullDescription)
+                            statistics.add(this)
                         }
                     ).also {
                         val progress = (index / strings.size.toDouble() * 100).toInt()
@@ -96,12 +98,17 @@ class XlsParser @Inject constructor(
                 POSITION_COLUMN_NAMES_START,
                 POSITION_COLUMN_NAMES_END
             ),
-            data = booksData.apply { forEach { it.key.booksCount = it.value.size } }
+            data = booksData.apply {
+                forEach { category, books ->
+                    category.booksCount = books.size
+                }
+            },
+            statistics = statistics
         ).also { progressListener.onProgress(ProgressStep.PARSING, true) }
     }
 
     private fun findValue(key: String, vararg strings: String): String? {
-        if (key == KEY_DESCRIPTION) {
+        if (key == KEY_DESCR) {
             val lastIndexOfKey = strings[1].lastIndexOfAny(KEYS_SET)
             val answer = if (lastIndexOfKey == -1) null
             else strings[1].substring(lastIndexOfKey)
@@ -174,7 +181,7 @@ class XlsParser @Inject constructor(
         private const val KEY_YEAR = "Год издания: "
         private const val KEY_PAGES = "Страниц.: "
         private const val KEY_COVER = "Обложка: "
-        private const val KEY_DESCRIPTION = "KEY_DESCRIPTION"
+        private const val KEY_DESCR = "KEY_DESCRIPTION"
         private const val FORMAT_LENGTH = 3
         private val KEYS_SET =
             setOf(

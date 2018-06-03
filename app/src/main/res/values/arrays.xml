@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="filter_categories">
-        <item>@string/author</item>
         <item>@string/name</item>
+        <item>@string/author</item>
         <item>@string/publisher</item>
         <item>@string/year</item>
         <item>@string/price</item>

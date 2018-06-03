@@ -4,7 +4,7 @@ import app.suhocki.mybooks.data.database.entity.BookEntity
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 
-interface DatabaseRepository {
+interface BookDatabaseRepository {
     fun getCategories(): List<Category>
 
     fun saveCategories(categories: Set<Category>)
@@ -13,7 +13,7 @@ interface DatabaseRepository {
 
     fun saveBooks(books: List<Book>)
 
-    fun getBooksBy(category: Category): List<BookEntity>
+    fun getBooksFor(category: Category): List<BookEntity>
 
     fun search(text: String): List<BookEntity>
 }
