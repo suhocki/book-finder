@@ -8,4 +8,5 @@
     <dimen name="height_catalog_decorator">2dp</dimen>
     <dimen name="width_search_result_image">82dp</dimen>
     <dimen name="height_search_result">132dp</dimen>
+    <dimen name="navigation_drawer_width">300dp</dimen>
 </resources>

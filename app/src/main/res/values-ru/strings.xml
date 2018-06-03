@@ -31,6 +31,7 @@
     <string name="author">Автор</string>
     <string name="publisher">Издательство</string>
     <string name="year">Год</string>
+    <string name="price">Цена</string>
     <string name="cover">Обложка</string>
     <string name="pages">Страниц</string>
     <string name="availability">Наличие</string>

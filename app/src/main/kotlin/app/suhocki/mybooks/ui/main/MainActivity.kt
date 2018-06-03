@@ -173,9 +173,14 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
     }
 
     override fun onBackPressed() {
-        val onSearchClickListener = tabs[tabKeys[TAB_POSITION_CATALOG]] as OnSearchClickListener
-        if (!onSearchClickListener.onCollapseSearchClick()) {
-            super.onBackPressed()
+        with(ui.drawerLayout) {
+            if (isDrawerOpen(ui.navigationView)) closeDrawer(Gravity.START)
+            else {
+                val onSearchClickListener = tabs[tabKeys[TAB_POSITION_CATALOG]] as OnSearchClickListener
+                if (!onSearchClickListener.onCollapseSearchClick()) {
+                    super.onBackPressed()
+                }
+            }
         }
     }
 

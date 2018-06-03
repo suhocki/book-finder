@@ -31,6 +31,7 @@
     <string name="name">Name</string>
     <string name="publisher">Publisher</string>
     <string name="year">Year</string>
+    <string name="price">Price</string>
     <string name="cover">Cover</string>
     <string name="pages">Pages</string>
     <string name="availability">Availability</string>
