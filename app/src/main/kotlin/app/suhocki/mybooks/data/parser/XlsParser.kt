@@ -7,6 +7,7 @@ import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
 import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.progress.ProgressStep
+import app.suhocki.mybooks.domain.model.Category
 import org.jetbrains.anko.AnkoLogger
 import java.io.BufferedReader
 import java.io.File
@@ -36,8 +37,8 @@ class XlsParser @Inject constructor(
     }
 
     fun extractPayload(strings: ArrayList<String>): XlsDocumentEntity {
+        val statisticsData = mutableMapOf<Category, StatisticsEntity>()
         val booksData = mutableMapOf<CategoryEntity, MutableList<BookEntity>>()
-        val statistics = StatisticsEntity()
         var categoryNamePosition = -1
         val objectFieldsQueue = ArrayDeque<String>()
         var currentCategory: CategoryEntity? = null
@@ -51,6 +52,7 @@ class XlsParser @Inject constructor(
                 categoryNamePosition = index + 1
                 currentCategory = CategoryEntity(strings[categoryNamePosition])
                 booksData[currentCategory] = mutableListOf()
+                statisticsData[currentCategory] = StatisticsEntity()
                 continue
             }
 
@@ -80,7 +82,7 @@ class XlsParser @Inject constructor(
                             series = findValue(KEY_SERIES, shortDescription, fullDescription)
                             year = findValue(KEY_YEAR, shortDescription, fullDescription)
                             description = findValue(KEY_DESCR, shortDescription, fullDescription)
-                            statistics.add(this)
+                            statisticsData[currentCategory]!!.add(this)
                         }
                     ).also {
                         val progress = (index / strings.size.toDouble() * 100).toInt()
@@ -98,12 +100,12 @@ class XlsParser @Inject constructor(
                 POSITION_COLUMN_NAMES_START,
                 POSITION_COLUMN_NAMES_END
             ),
-            data = booksData.apply {
+            booksData = booksData.apply {
                 forEach { category, books ->
                     category.booksCount = books.size
                 }
             },
-            statistics = statistics
+            statisticsData = statisticsData
         ).also { progressListener.onProgress(ProgressStep.PARSING, true) }
     }
 
