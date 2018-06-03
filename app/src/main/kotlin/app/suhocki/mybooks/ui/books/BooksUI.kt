@@ -4,17 +4,23 @@ import android.graphics.Color
 import android.support.design.widget.AppBarLayout
 import android.support.v4.graphics.drawable.DrawableCompat
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.attrResource
+import app.suhocki.mybooks.ui.base.ScrollAwareFABBehavior
 import app.suhocki.mybooks.ui.base.adapter.decorator.ItemDecoratorGrid
 import app.suhocki.mybooks.ui.base.themedAutofitRecyclerView
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.tintedImageView
 import org.jetbrains.anko.design.coordinatorLayout
+import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.design.themedAppBarLayout
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
 class BooksUI : AnkoComponent<BooksActivity> {
@@ -22,6 +28,8 @@ class BooksUI : AnkoComponent<BooksActivity> {
     lateinit var progressBar: ProgressBar
     lateinit var emptyView: View
     lateinit var recyclerView: RecyclerView
+    lateinit var fabFilter: View
+    lateinit var menuFilter: View
 
     override fun createView(ui: AnkoContext<BooksActivity>) = with(ui) {
         coordinatorLayout {
@@ -33,6 +41,21 @@ class BooksUI : AnkoComponent<BooksActivity> {
                     owner.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                     backgroundColorResource = R.color.colorPrimary
                     popupTheme = R.style.ThemeOverlay_AppCompat_Light
+
+                    imageView(R.drawable.ic_horizontal_menu).apply {
+                        menuFilter = this
+                        onClick {  }
+                        padding = dimen(R.dimen.padding_toolbar_icon) + dip(2)
+                        backgroundResource = context
+                            .attrResource(R.attr.selectableItemBackgroundBorderless)
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                        layoutParams = Toolbar.LayoutParams(
+                            dimenAttr(R.attr.actionBarSize),
+                            matchParent
+                        ).apply {
+                            gravity = Gravity.END
+                        }
+                    }
                 }.lparams(matchParent, matchParent) {
                     scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
                 }
@@ -45,11 +68,7 @@ class BooksUI : AnkoComponent<BooksActivity> {
                 recyclerView = this
                 setHasFixedSize(true)
                 columnWidth = dip(146)
-                addItemDecoration(
-                    ItemDecoratorGrid(
-                        dip(4)
-                    )
-                )
+                addItemDecoration(ItemDecoratorGrid(dip(4)))
                 padding = dip(4)
                 fastScrollMargin = dip(8)
                 fastScrollThickness = dip(10)
@@ -95,6 +114,16 @@ class BooksUI : AnkoComponent<BooksActivity> {
                 gravity = Gravity.CENTER
                 rightMargin = dip(56)
                 leftMargin = dip(56)
+            }
+
+            floatingActionButton {
+                fabFilter = this
+                useCompatPadding = true
+                onClick {  }
+                imageResource = R.drawable.ic_filter
+            }.lparams {
+                behavior = ScrollAwareFABBehavior()
+                gravity = Gravity.BOTTOM or Gravity.END
             }
         }
     }

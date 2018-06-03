@@ -15,9 +15,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.cardview.v7.themedCardView
 import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 
-class SearchItemUI(
-    private val search: Search
-) : AnkoComponent<ViewGroup> {
+class SearchItemUI() : AnkoComponent<ViewGroup> {
     lateinit var parent: View
     lateinit var editText: TextView
     lateinit var startSearch: View
@@ -45,13 +43,8 @@ class SearchItemUI(
                         isFocusable = true
                         isFocusableInTouchMode = true
                         inputType = InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE
-                        imeOptions = EditorInfo.IME_ACTION_DONE
+                        imeOptions = EditorInfo.IME_ACTION_SEARCH
                         isVerticalScrollBarEnabled = false
-                        textChangedListener {
-                            onTextChanged { searchQuery, _, _, _ ->
-                                search.searchQuery = searchQuery.toString()
-                            }
-                        }
                     }.lparams(0, matchParent) {
                         weight = 1f
                         gravity = Gravity.CENTER_VERTICAL

@@ -28,7 +28,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
     private val tabKeys = listOf(
         tabIdToTag(R.id.nav_catalog),
         tabIdToTag(R.id.nav_search),
-        tabIdToTag(R.id.nav_filter),
         tabIdToTag(R.id.nav_info)
     )
     private val fragmentTabPositions = arrayOf(
@@ -37,7 +36,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
     )
     private val navigationPositions = mapOf(
         R.id.nav_search to TAB_POSITION_SEARCH,
-        R.id.nav_filter to TAB_POSITION_FILTER,
         R.id.nav_catalog to TAB_POSITION_CATALOG,
         R.id.nav_info to TAB_POSITION_INFO
     )
@@ -120,8 +118,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
         showCatalogTab()
         when (position) {
             TAB_POSITION_SEARCH -> expandSearchView()
-
-            TAB_POSITION_FILTER -> expandFilterView()
         }
     }
 
@@ -135,10 +131,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
     private fun expandSearchView() {
         val onSearchClickListener = tabs[tabKeys[TAB_POSITION_CATALOG]] as OnSearchClickListener
         onSearchClickListener.onExpandSearchClick()
-    }
-
-    private fun expandFilterView() {
-
     }
 
     private fun createNewFragments(): HashMap<String, BaseFragment> = hashMapOf(
@@ -190,7 +182,6 @@ class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
     companion object {
         private const val TAB_POSITION_CATALOG = 0
         private const val TAB_POSITION_SEARCH = 1
-        private const val TAB_POSITION_FILTER = 2
-        private const val TAB_POSITION_INFO = 3
+        private const val TAB_POSITION_INFO = 2
     }
 }

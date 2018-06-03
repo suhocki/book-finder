@@ -86,15 +86,30 @@ class CatalogPresenter @Inject constructor(
             })
         }
         uiThread {
-            viewState.showCatalogItems(catalogItems, searchDecoration)
+            viewState.showCatalogItems(
+                catalogItems,
+                searchDecoration,
+                CatalogFragment.SEARCH_POSITION
+            )
         }
     }
 
-    fun clearSearchQuery() {
+    fun clearSearchQuery() = doAsync(errorHandler.errorReceiver) {
         if (search.searchQuery.isBlank()) stopSearchMode()
         else {
+            val catalogItems = mutableListOf<Any>().apply {
+                add(interactor.getBanner())
+                add(search)
+                add(header.apply { titleRes = R.string.enter_query })
+            }
             search.searchQuery = EMPTY_STRING
-            viewState.showBlankSearch()
+            uiThread {
+                viewState.showCatalogItems(
+                    catalogItems,
+                    scrollToPosition = CatalogFragment.BANNER_POSITION,
+                    updateSearchView = true
+                )
+            }
         }
     }
 

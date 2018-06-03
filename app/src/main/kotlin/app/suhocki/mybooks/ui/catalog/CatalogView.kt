@@ -11,7 +11,8 @@ interface CatalogView : MvpView {
     fun showCatalogItems(
         catalogItems: List<Any>,
         itemDecoration: RecyclerView.ItemDecoration? = null,
-        scrollToPosition: Int = CatalogFragment.UNDEFINED_POSITION
+        scrollToPosition: Int = CatalogFragment.UNDEFINED_POSITION,
+        updateSearchView: Boolean = false
     )
 
     fun showSearchMode(expanded: Boolean)

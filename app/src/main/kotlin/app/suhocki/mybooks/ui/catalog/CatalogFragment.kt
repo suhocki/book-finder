@@ -10,8 +10,6 @@ import app.suhocki.mybooks.*
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.ui.base.BaseFragment
-import app.suhocki.mybooks.ui.base.adapter.decorator.CategoriesItemDecoration
-import app.suhocki.mybooks.ui.base.adapter.decorator.SearchItemDecoration
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnCategoryClickListener
@@ -20,10 +18,12 @@ import app.suhocki.mybooks.ui.books.BooksActivity
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.jetbrains.anko.*
+import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.bottomPadding
+import org.jetbrains.anko.dimenAttr
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.dimen
-import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.onUiThread
 import toothpick.Toothpick
 import java.util.*
@@ -68,14 +68,15 @@ class CatalogFragment : BaseFragment(), CatalogView,
     override fun showCatalogItems(
         catalogItems: List<Any>,
         itemDecoration: RecyclerView.ItemDecoration?,
-        scrollToPosition: Int
+        scrollToPosition: Int,
+        updateSearchView: Boolean
     ) {
+        ui.recyclerView.stopScroll()
         adapter.submitList(catalogItems, onAnimationEnd = {
             with(ui.recyclerView) {
                 when (scrollToPosition) {
                     SEARCH_POSITION -> {
                         itemDecoration?.let { showRecyclerDecoration(it) }
-                        bottomPadding = getRecyclerPadding(this@with, catalogItems)
                         (layoutManager as LinearLayoutManager)
                             .scrollToPositionWithOffset(SEARCH_POSITION, 0)
                         showKeyboard()
@@ -87,6 +88,10 @@ class CatalogFragment : BaseFragment(), CatalogView,
                                 itemDecoration?.let { showRecyclerDecoration(it) }
                                 bottomPadding = 0
                             }
+                        }
+                        if (updateSearchView) {
+                            showBlankSearch()
+                            showKeyboard()
                         }
                         scrollToPosition(BANNER_POSITION)
                     }
@@ -171,6 +176,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun onStartSearchClick() {
+        ui.search.hideKeyboard()
         presenter.search()
     }
 
