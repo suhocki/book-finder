@@ -9,9 +9,9 @@ import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.BooksModule
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.ui.base.listener.DrawerHandler
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
-import app.suhocki.mybooks.ui.base.listener.OnFilterClickListener
+import app.suhocki.mybooks.ui.books.listener.DrawerHandler
+import app.suhocki.mybooks.ui.books.listener.OnFilterClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import app.suhocki.mybooks.ui.filter.FilterFragment
@@ -24,7 +24,8 @@ import toothpick.Toothpick
 
 
 class BooksActivity : MvpAppCompatActivity(), BooksView,
-    OnBookClickListener, OnFilterClickListener, DrawerHandler {
+    OnBookClickListener, OnFilterClickListener,
+    DrawerHandler {
 
     @InjectPresenter
     lateinit var presenter: BooksPresenter

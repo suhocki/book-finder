@@ -10,12 +10,12 @@ import app.suhocki.mybooks.*
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.ui.base.BaseFragment
-import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
-import app.suhocki.mybooks.ui.base.listener.catalog.OnCategoryClickListener
-import app.suhocki.mybooks.ui.base.listener.catalog.OnSearchClickListener
 import app.suhocki.mybooks.ui.books.BooksActivity
+import app.suhocki.mybooks.ui.catalog.listener.OnCategoryClickListener
+import app.suhocki.mybooks.ui.catalog.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.details.DetailsActivity
+import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext

@@ -6,13 +6,11 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
-import android.view.View
 import android.widget.ImageView
-import android.widget.ProgressBar
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
-import app.suhocki.mybooks.ui.base.listener.DrawerHandler
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
+import app.suhocki.mybooks.ui.books.listener.DrawerHandler
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout

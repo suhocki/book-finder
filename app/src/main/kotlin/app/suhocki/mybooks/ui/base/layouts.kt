@@ -6,6 +6,8 @@ import android.content.Context
 import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.Toolbar
 import android.view.ViewManager
+import app.suhocki.mybooks.ui.base.view.AutofitRecyclerView
+import app.suhocki.mybooks.ui.base.view.MultilineCollapsingToolbarLayout
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import org.jetbrains.anko.AnkoViewDslMarker
 import org.jetbrains.anko.custom.ankoView
@@ -26,7 +28,11 @@ inline fun ViewManager.textViewCompat(init: (@AnkoViewDslMarker AppCompatTextVie
 }
 
 inline fun ViewManager.multilineCollapsingToolbarLayout(init: (@AnkoViewDslMarker MultilineCollapsingToolbarLayout).() -> Unit): MultilineCollapsingToolbarLayout {
-    return ankoView({ ctx: Context -> MultilineCollapsingToolbarLayout(ctx) }, theme = 0) { init() }
+    return ankoView({ ctx: Context ->
+        MultilineCollapsingToolbarLayout(
+            ctx
+        )
+    }, theme = 0) { init() }
 }
 
 inline fun ViewManager.themedToolbarCompat(

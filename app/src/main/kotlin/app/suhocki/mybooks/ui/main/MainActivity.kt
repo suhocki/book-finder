@@ -8,17 +8,18 @@ import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.CatalogModule
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.base.BaseFragment
-import app.suhocki.mybooks.ui.base.listener.NavigationHandler
-import app.suhocki.mybooks.ui.base.listener.catalog.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
+import app.suhocki.mybooks.ui.catalog.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.info.InfoFragment
+import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.setContentView
 import toothpick.Toothpick
 
-class MainActivity : MvpAppCompatActivity(), MainView, NavigationHandler {
+class MainActivity : MvpAppCompatActivity(), MainView,
+    NavigationHandler {
 
     @InjectPresenter
     lateinit var presenter: MainPresenter

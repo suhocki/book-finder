@@ -13,11 +13,11 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
-import app.suhocki.mybooks.ui.base.ScrollAwareFABBehavior
-import app.suhocki.mybooks.ui.base.adapter.decorator.ItemDecoratorGrid
-import app.suhocki.mybooks.ui.base.listener.OnFilterClickListener
+import app.suhocki.mybooks.ui.base.decorator.ItemDecoratorGrid
 import app.suhocki.mybooks.ui.base.themedAutofitRecyclerView
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
+import app.suhocki.mybooks.ui.base.view.ScrollAwareFABBehavior
+import app.suhocki.mybooks.ui.books.listener.OnFilterClickListener
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.tintedImageView
 import org.jetbrains.anko.design.coordinatorLayout

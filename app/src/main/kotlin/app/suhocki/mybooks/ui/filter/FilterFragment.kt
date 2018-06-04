@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.ui.base.BaseFragment
-import app.suhocki.mybooks.ui.base.listener.filter.*
+import app.suhocki.mybooks.ui.filter.listener.*
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
@@ -15,8 +15,11 @@ import org.jetbrains.anko.support.v4.ctx
 import toothpick.Toothpick
 
 class FilterFragment : BaseFragment(), FilterView,
-    OnFilterCategoryClickListener, OnFilterAuthorClickListener, OnFilterPublisherClickListener,
-    OnFilterStatusClickListener, OnFilterYearClickListener {
+    OnFilterCategoryClickListener,
+    OnFilterAuthorClickListener,
+    OnFilterPublisherClickListener,
+    OnFilterStatusClickListener,
+    OnFilterYearClickListener {
 
     private val ui by lazy { FilterUI<FilterFragment>() }
 

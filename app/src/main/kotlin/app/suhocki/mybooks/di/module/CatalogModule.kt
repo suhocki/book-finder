@@ -8,8 +8,6 @@ import app.suhocki.mybooks.di.SearchDecoration
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Hint
 import app.suhocki.mybooks.domain.model.Search
-import app.suhocki.mybooks.ui.base.adapter.decorator.CategoriesItemDecoration
-import app.suhocki.mybooks.ui.base.adapter.decorator.SearchItemDecoration
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.dip
 import toothpick.config.Module
@@ -32,11 +30,17 @@ class CatalogModule(context: Context) : Module() {
 
         bind(RecyclerView.ItemDecoration::class.java)
             .withName(CategoriesDecoration::class.java)
-            .toInstance(CategoriesItemDecoration(context.dimen(R.dimen.height_catalog_decorator)))
+            .toInstance(
+                app.suhocki.mybooks.ui.base.decorator.CategoriesItemDecoration(
+                    context.dimen(
+                        R.dimen.height_catalog_decorator
+                    )
+                )
+            )
 
         bind(RecyclerView.ItemDecoration::class.java)
             .withName(SearchDecoration::class.java)
-            .toInstance(SearchItemDecoration(context.dip(4)))
+            .toInstance(app.suhocki.mybooks.ui.base.decorator.SearchItemDecoration(context.dip(4)))
     }
 
     companion object {

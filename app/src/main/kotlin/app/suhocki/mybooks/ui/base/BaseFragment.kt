@@ -25,6 +25,4 @@ abstract class BaseFragment : MvpAppCompatFragment() {
             snackbar.show()
         }
     }
-
-    open fun onBackPressed() {}
 }

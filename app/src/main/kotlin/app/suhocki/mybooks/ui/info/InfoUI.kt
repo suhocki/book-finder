@@ -6,8 +6,8 @@ import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.widget.ImageView
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
+import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
