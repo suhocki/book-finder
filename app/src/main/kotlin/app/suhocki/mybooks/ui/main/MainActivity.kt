@@ -9,7 +9,7 @@ import app.suhocki.mybooks.di.module.CatalogModule
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
-import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
+import app.suhocki.mybooks.ui.base.listener.catalog.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.info.InfoFragment
 import com.arellomobile.mvp.MvpAppCompatActivity

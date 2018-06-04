@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.base.listener
+package app.suhocki.mybooks.ui.base.listener.catalog
 
 import app.suhocki.mybooks.domain.model.Category
 

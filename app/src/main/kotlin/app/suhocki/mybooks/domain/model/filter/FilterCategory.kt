@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.domain.model
+package app.suhocki.mybooks.domain.model.filter
 
 interface FilterCategory {
     val title: String

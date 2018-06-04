@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.base.adapter.ui
+package app.suhocki.mybooks.ui.base.adapter.ui.catalog
 
 import android.graphics.Color
 import android.support.v4.widget.TextViewCompat

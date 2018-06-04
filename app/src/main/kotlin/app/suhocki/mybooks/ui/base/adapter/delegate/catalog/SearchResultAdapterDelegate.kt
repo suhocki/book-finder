@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.base.adapter.delegate
+package app.suhocki.mybooks.ui.base.adapter.delegate.catalog
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
@@ -7,7 +7,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.openLink
-import app.suhocki.mybooks.ui.base.adapter.ui.SearchResultItemUI
+import app.suhocki.mybooks.ui.base.adapter.ui.catalog.SearchResultItemUI
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.squareup.picasso.Picasso

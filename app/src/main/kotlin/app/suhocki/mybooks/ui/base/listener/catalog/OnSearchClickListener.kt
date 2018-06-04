@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.base.listener
+package app.suhocki.mybooks.ui.base.listener.catalog
 
 interface OnSearchClickListener {
 

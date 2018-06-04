@@ -16,13 +16,12 @@ import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
-import org.jetbrains.anko.recyclerview.v7.recyclerView
+import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class FilterUI<in T : Fragment> : AnkoComponent<T> {
 
     lateinit var recyclerView: RecyclerView
-    lateinit var progressBar: ProgressBar
 
     override fun createView(ui: AnkoContext<T>) = with(ui) {
 
@@ -54,24 +53,15 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
                 }
             }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
-            recyclerView {
+            themedRecyclerView(R.style.ScrollbarRecyclerView) {
                 id = R.id.id_recycler_books
                 isVerticalScrollBarEnabled = true
                 clipToPadding = false
                 recyclerView = this
                 setHasFixedSize(true)
-                padding = dip(4)
                 layoutManager = LinearLayoutManager(context)
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
-            }
-
-            themedProgressBar(R.style.ColoredProgressBar) {
-                progressBar = this
-                visibility = View.GONE
-                topPadding = dimenAttr(R.attr.actionBarSize)
-            }.lparams {
-                gravity = Gravity.CENTER
             }
         }
     }

@@ -12,7 +12,7 @@ import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.base.ScrollLayoutManager
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
-import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
+import app.suhocki.mybooks.ui.base.listener.catalog.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout

@@ -1,47 +1,55 @@
-package app.suhocki.mybooks.ui.base.adapter.ui
+package app.suhocki.mybooks.ui.base.adapter.ui.filter
 
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
+import android.widget.CheckBox
 import android.widget.TextView
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.attrResource
+import app.suhocki.mybooks.setForegroundCompat
 import org.jetbrains.anko.*
 
-class FilterCategoryItemUI : AnkoComponent<ViewGroup> {
+class FilterCheckableItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
-    lateinit var title: TextView
-    lateinit var imageState: ImageView
-    lateinit var imageConfigurated: ImageView
+    lateinit var name: TextView
+    lateinit var booksCount: TextView
+    lateinit var checkBox: CheckBox
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 
         frameLayout {
-            this@FilterCategoryItemUI.parent = this
+            this@FilterCheckableItemUI.parent = this
             backgroundResource = R.color.colorWhite
+            setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
 
             linearLayout {
 
                 textView {
-                    this@FilterCategoryItemUI.title = this
-                    horizontalPadding = dip(12)
-                    textAppearance = R.style.TextAppearance_AppCompat_Body2
+                    this@FilterCheckableItemUI.name = this
+                    horizontalPadding = dip(16)
+                    textAppearance = R.style.TextAppearance_AppCompat_Body1
                 }.lparams(wrapContent, wrapContent) {
                     gravity = Gravity.CENTER_VERTICAL
                 }
 
-                imageView(R.drawable.ic_dot) {
-                    imageConfigurated = this
-                }.lparams(dip(8), dip(8)) {
+                textView {
+                    booksCount = this
+                }.lparams(wrapContent, wrapContent) {
                     gravity = Gravity.CENTER_VERTICAL
                 }
 
             }.lparams(wrapContent, dimenAttr(R.attr.actionBarSize))
 
-            imageView {
-                imageState = this
-                padding = dip(14)
+            frameLayout {
+
+                checkBox {
+                    this@FilterCheckableItemUI.checkBox = this
+                }.lparams {
+                    gravity = Gravity.CENTER
+                }
+
             }.lparams(
                 dimenAttr(R.attr.actionBarSize),
                 dimenAttr(R.attr.actionBarSize)

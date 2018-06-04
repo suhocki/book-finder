@@ -1,11 +1,11 @@
-package app.suhocki.mybooks.ui.base.adapter.delegate
+package app.suhocki.mybooks.ui.base.adapter.delegate.catalog
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import app.suhocki.mybooks.domain.model.Search
-import app.suhocki.mybooks.ui.base.adapter.ui.SearchItemUI
-import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
+import app.suhocki.mybooks.ui.base.adapter.ui.catalog.SearchItemUI
+import app.suhocki.mybooks.ui.base.listener.catalog.OnSearchClickListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.sdk25.coroutines.textChangedListener

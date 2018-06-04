@@ -1,16 +1,19 @@
-package app.suhocki.mybooks.ui.base.adapter.delegate
+package app.suhocki.mybooks.ui.base.adapter.delegate.filter
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.domain.model.FilterCategory
-import app.suhocki.mybooks.ui.base.adapter.ui.FilterCategoryItemUI
+import app.suhocki.mybooks.domain.model.filter.FilterCategory
+import app.suhocki.mybooks.ui.base.adapter.ui.filter.FilterCategoryItemUI
+import app.suhocki.mybooks.ui.base.listener.filter.OnFilterCategoryClickListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.imageResource
 
-class FilterCategoryAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
+class FilterCategoryAdapterDelegate(
+    private val onFilterCategoryClickListener: OnFilterCategoryClickListener
+) : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         FilterCategoryItemUI()
@@ -28,9 +31,19 @@ class FilterCategoryAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
     ) = (holder as ViewHolder).bind(items[position] as FilterCategory)
 
 
-    private inner class ViewHolder(val ui: FilterCategoryItemUI) :
-        RecyclerView.ViewHolder(ui.parent) {
+    private inner class ViewHolder(
+        val ui: FilterCategoryItemUI
+    ) : RecyclerView.ViewHolder(ui.parent) {
+        private lateinit var filterCategory: FilterCategory
+
+        init {
+            itemView.setOnClickListener {
+                onFilterCategoryClickListener.onFilterCategoryClick(filterCategory)
+            }
+        }
+
         fun bind(filterCategory: FilterCategory) {
+            this.filterCategory = filterCategory
             with(ui) {
                 imageConfigurated.visibility =
                         if (filterCategory.isConfigurated) View.VISIBLE

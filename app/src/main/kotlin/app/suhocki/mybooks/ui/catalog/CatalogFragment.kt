@@ -12,8 +12,8 @@ import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
-import app.suhocki.mybooks.ui.base.listener.OnCategoryClickListener
-import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
+import app.suhocki.mybooks.ui.base.listener.catalog.OnCategoryClickListener
+import app.suhocki.mybooks.ui.base.listener.catalog.OnSearchClickListener
 import app.suhocki.mybooks.ui.books.BooksActivity
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -32,7 +32,8 @@ import kotlin.concurrent.schedule
 
 
 class CatalogFragment : BaseFragment(), CatalogView,
-    OnCategoryClickListener, OnSearchClickListener, OnBookClickListener {
+    OnCategoryClickListener,
+    OnSearchClickListener, OnBookClickListener {
 
     private val ui by lazy { CatalogUI<CatalogFragment>() }
 

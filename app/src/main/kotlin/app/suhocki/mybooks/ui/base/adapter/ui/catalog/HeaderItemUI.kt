@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.base.adapter.ui
+package app.suhocki.mybooks.ui.base.adapter.ui.catalog
 
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView

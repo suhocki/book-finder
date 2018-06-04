@@ -24,7 +24,7 @@ class StatisticsEntity(
         }
         book.status.let {
             var statusesCount = statuses.getOrDefault(it, 0)
-            years.put(it, ++statusesCount)
+            statuses.put(it, ++statusesCount)
         }
     }
 }

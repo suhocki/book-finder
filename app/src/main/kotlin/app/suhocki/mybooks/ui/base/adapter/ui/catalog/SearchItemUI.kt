@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.base.adapter.ui
+package app.suhocki.mybooks.ui.base.adapter.ui.catalog
 
 import android.support.v7.widget.RecyclerView
 import android.text.InputType
@@ -9,11 +9,9 @@ import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
-import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.setForegroundCompat
 import org.jetbrains.anko.*
 import org.jetbrains.anko.cardview.v7.themedCardView
-import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 
 class SearchItemUI() : AnkoComponent<ViewGroup> {
     lateinit var parent: View
