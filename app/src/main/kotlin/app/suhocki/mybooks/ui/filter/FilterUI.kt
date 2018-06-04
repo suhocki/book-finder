@@ -10,7 +10,7 @@ import android.widget.ImageView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
-import app.suhocki.mybooks.ui.books.listener.DrawerHandler
+import app.suhocki.mybooks.ui.books.listener.OnFilterClickListener
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
@@ -34,7 +34,7 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
                     setTitle(R.string.filter)
 
                     imageView(R.drawable.ic_close).apply {
-                        onClick { (owner.activity as DrawerHandler).setDrawerExpanded(false) }
+                        onClick { (owner.activity as OnFilterClickListener).onFilterCollapseClick() }
                         padding = dimen(R.dimen.padding_toolbar_icon)
                         backgroundResource = context
                             .attrResource(R.attr.selectableItemBackgroundBorderless)
@@ -52,7 +52,7 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
             }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
             themedRecyclerView(R.style.ScrollbarRecyclerView) {
-                id = R.id.id_recycler_books
+                id = R.id.id_recycler_filter
                 isVerticalScrollBarEnabled = true
                 clipToPadding = false
                 recyclerView = this

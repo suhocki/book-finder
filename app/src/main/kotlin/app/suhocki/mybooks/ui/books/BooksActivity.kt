@@ -10,7 +10,6 @@ import app.suhocki.mybooks.di.module.BooksModule
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
-import app.suhocki.mybooks.ui.books.listener.DrawerHandler
 import app.suhocki.mybooks.ui.books.listener.OnFilterClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.details.DetailsActivity
@@ -24,8 +23,7 @@ import toothpick.Toothpick
 
 
 class BooksActivity : MvpAppCompatActivity(), BooksView,
-    OnBookClickListener, OnFilterClickListener,
-    DrawerHandler {
+    OnBookClickListener, OnFilterClickListener {
 
     @InjectPresenter
     lateinit var presenter: BooksPresenter
@@ -49,7 +47,9 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
             setContentView(this@BooksActivity)
             recyclerView.adapter = adapter
         }
-        initFilter()
+        if (savedInstanceState == null) {
+            initFilter()
+        }
     }
 
     private fun initFilter() {
@@ -91,10 +91,14 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
     }
 
     override fun onFilterClick() {
-        setDrawerExpanded(true)
+        presenter.setDrawerExpanded(true)
     }
 
-    override fun setDrawerExpanded(isExpanded: Boolean) {
+    override fun onFilterCollapseClick() {
+        presenter.setDrawerExpanded(false)
+    }
+
+    override fun showDrawerExpanded(isExpanded: Boolean) {
         with(ui.drawerLayout) {
             if (isExpanded) openDrawer(Gravity.END)
             else closeDrawer(Gravity.END)
@@ -103,7 +107,7 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
 
     override fun onBackPressed() {
         with(ui.drawerLayout) {
-            if (isDrawerOpen(Gravity.END)) setDrawerExpanded(false)
+            if (isDrawerOpen(Gravity.END)) presenter.setDrawerExpanded(false)
             else super.onBackPressed()
         }
     }

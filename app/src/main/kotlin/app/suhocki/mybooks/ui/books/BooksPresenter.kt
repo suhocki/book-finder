@@ -1,14 +1,14 @@
 package app.suhocki.mybooks.ui.books
 
-import com.arellomobile.mvp.InjectViewState
-import com.arellomobile.mvp.MvpPresenter
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.error.ErrorListener
 import app.suhocki.mybooks.data.error.ErrorType
 import app.suhocki.mybooks.domain.BooksInteractor
 import app.suhocki.mybooks.domain.model.Category
+import com.arellomobile.mvp.InjectViewState
+import com.arellomobile.mvp.MvpPresenter
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import javax.inject.Inject
 
 @InjectViewState
@@ -36,14 +36,17 @@ class BooksPresenter @Inject constructor(
                 viewState.showTitle(category.name)
                 viewState.showProgressVisible(true)
             }
-            interactor.getBooks(category)
-                .let { books ->
-                    uiThread {
-                        if (books.isNotEmpty()) viewState.showBooks(books)
-                        else viewState.showEmptyScreen()
-                        viewState.showProgressVisible(false)
-                    }
+            interactor.getBooks(category).let { books ->
+                uiThread {
+                    if (books.isNotEmpty()) viewState.showBooks(books)
+                    else viewState.showEmptyScreen()
+                    viewState.showProgressVisible(false)
                 }
+            }
         }
+    }
+
+    fun setDrawerExpanded(isExpanded: Boolean) {
+        viewState.showDrawerExpanded(isExpanded)
     }
 }

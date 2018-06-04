@@ -15,4 +15,6 @@ interface BooksView : MvpView {
     fun showEmptyScreen()
 
     fun showProgressVisible(visible: Boolean)
+
+    fun showDrawerExpanded(isExpanded: Boolean)
 }
