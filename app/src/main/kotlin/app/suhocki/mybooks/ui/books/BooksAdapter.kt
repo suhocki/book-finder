@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.ui.books
 
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
-import app.suhocki.mybooks.ui.base.adapter.delegate.BookAdapterDelegate
+import app.suhocki.mybooks.ui.books.delegate.BookAdapterDelegate
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 

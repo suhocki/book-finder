@@ -1,9 +1,9 @@
-package app.suhocki.mybooks.ui.base.adapter.delegate.catalog
+package app.suhocki.mybooks.ui.catalog.delegate
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.Banner
-import app.suhocki.mybooks.ui.base.adapter.ui.catalog.BannerItemUI
+import app.suhocki.mybooks.ui.catalog.ui.BannerItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.AnkoContext

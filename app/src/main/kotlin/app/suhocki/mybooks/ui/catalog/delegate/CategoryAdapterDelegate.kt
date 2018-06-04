@@ -1,10 +1,10 @@
-package app.suhocki.mybooks.ui.base.adapter.delegate.catalog
+package app.suhocki.mybooks.ui.catalog.delegate
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.ui.base.listener.catalog.OnCategoryClickListener
-import app.suhocki.mybooks.ui.base.adapter.ui.catalog.CategoryItemUI
+import app.suhocki.mybooks.ui.catalog.listener.OnCategoryClickListener
+import app.suhocki.mybooks.ui.catalog.ui.CategoryItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 

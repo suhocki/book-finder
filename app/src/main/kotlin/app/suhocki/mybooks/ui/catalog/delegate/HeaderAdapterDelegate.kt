@@ -1,9 +1,9 @@
-package app.suhocki.mybooks.ui.base.adapter.delegate.catalog
+package app.suhocki.mybooks.ui.catalog.delegate
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.Header
-import app.suhocki.mybooks.ui.base.adapter.ui.catalog.HeaderItemUI
+import app.suhocki.mybooks.ui.catalog.ui.HeaderItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 

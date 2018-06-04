@@ -1,12 +1,12 @@
-package app.suhocki.mybooks.ui.base.adapter.delegate.filter
+package app.suhocki.mybooks.ui.filter.delegate
 
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.filter.FilterCategory
-import app.suhocki.mybooks.ui.base.adapter.ui.filter.FilterCategoryItemUI
-import app.suhocki.mybooks.ui.base.listener.filter.OnFilterCategoryClickListener
+import app.suhocki.mybooks.ui.filter.ui.FilterCategoryItemUI
+import app.suhocki.mybooks.ui.filter.listener.OnFilterCategoryClickListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.imageResource

@@ -1,15 +1,15 @@
-package app.suhocki.mybooks.ui.base.adapter.delegate.filter
+package app.suhocki.mybooks.ui.filter.delegate
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import app.suhocki.mybooks.domain.model.filter.FilterStatus
-import app.suhocki.mybooks.ui.base.adapter.ui.filter.FilterCheckableItemUI
-import app.suhocki.mybooks.ui.base.listener.filter.OnFilterStatusClickListener
+import app.suhocki.mybooks.domain.model.filter.FilterYear
+import app.suhocki.mybooks.ui.filter.ui.FilterCheckableItemUI
+import app.suhocki.mybooks.ui.filter.listener.OnFilterYearClickListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 
-class FilterStatusAdapterDelegate(
-    private val onFilterStatusClickListener: OnFilterStatusClickListener
+class FilterYearAdapterDelegate(
+    private val onFilterYearClickListener: OnFilterYearClickListener
 ) : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
@@ -18,34 +18,34 @@ class FilterStatusAdapterDelegate(
             .let { ViewHolder(it) }
 
     override fun isForViewType(items: MutableList<Any>, position: Int): Boolean =
-        with(items[position]) { this is FilterStatus }
+        with(items[position]) { this is FilterYear }
 
     override fun onBindViewHolder(
         items: MutableList<Any>,
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
-    ) = (holder as ViewHolder).bind(items[position] as FilterStatus)
+    ) = (holder as ViewHolder).bind(items[position] as FilterYear)
 
 
     private inner class ViewHolder(
         val ui: FilterCheckableItemUI
     ) : RecyclerView.ViewHolder(ui.parent) {
 
-        private lateinit var filterStatus: FilterStatus
+        private lateinit var filterYear: FilterYear
 
         init {
             itemView.setOnClickListener {
-                onFilterStatusClickListener.onFilterStatusClickClick(filterStatus)
+                onFilterYearClickListener.onFilterYearClick(filterYear)
             }
         }
 
-        fun bind(filterStatus: FilterStatus) {
-            this.filterStatus = filterStatus
+        fun bind(filterYear: FilterYear) {
+            this.filterYear = filterYear
             with(ui) {
-                checkBox.isChecked = filterStatus.isChecked
-                name.text = filterStatus.status
-                booksCount.text = filterStatus.booksCount.toString()
+                checkBox.isChecked = filterYear.isChecked
+                name.text = filterYear.year
+                booksCount.text = filterYear.booksCount.toString()
             }
         }
     }
