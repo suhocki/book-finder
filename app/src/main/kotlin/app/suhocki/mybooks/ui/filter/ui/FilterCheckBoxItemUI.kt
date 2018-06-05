@@ -8,8 +8,6 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.TextView
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.attrResource
-import app.suhocki.mybooks.setForegroundCompat
 import org.jetbrains.anko.*
 
 class FilterCheckBoxItemUI : AnkoComponent<ViewGroup> {
@@ -23,7 +21,6 @@ class FilterCheckBoxItemUI : AnkoComponent<ViewGroup> {
         frameLayout {
             this@FilterCheckBoxItemUI.parent = this
             backgroundResource = R.color.colorWhite
-            setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
 
             linearLayout {
                 rightPadding = dimenAttr(R.attr.actionBarSize)

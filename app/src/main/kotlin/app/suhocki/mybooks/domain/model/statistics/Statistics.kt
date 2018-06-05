@@ -5,4 +5,5 @@ interface Statistics {
     val publishers: Map<String, Int>
     val years: Map<String, Int>
     val statuses: Map<String, Int>
+    val prices: DoubleArray
 }

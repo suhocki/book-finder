@@ -63,6 +63,10 @@ class AppModule(context: Context) : Module() {
             .toProvider(AuthorStatisticsDaoProvider::class.java)
             .providesSingletonInScope()
 
+        bind(PriceStatisticsDao::class.java)
+            .toProvider(PriceStatisticsDaoProvider::class.java)
+            .providesSingletonInScope()
+
         bind(BookDatabaseRepository::class.java)
             .to(RoomRepository::class.java)
             .singletonInScope()

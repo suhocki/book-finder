@@ -7,7 +7,8 @@ class StatisticsEntity(
     override val authors: MutableMap<String, Int> = mutableMapOf(),
     override val publishers: MutableMap<String, Int> = mutableMapOf(),
     override val years: MutableMap<String, Int> = mutableMapOf(),
-    override val statuses: MutableMap<String, Int> = mutableMapOf()
+    override val statuses: MutableMap<String, Int> = mutableMapOf(),
+    override val prices: DoubleArray = doubleArrayOf(Double.MAX_VALUE, Double.MIN_VALUE)
 ) : Statistics {
     fun add(book: Book) {
         book.author?.let {
@@ -25,6 +26,11 @@ class StatisticsEntity(
         book.status.let {
             var statusesCount = statuses.getOrDefault(it, 0)
             statuses.put(it, ++statusesCount)
+        }
+        book.price.let {
+            val (minPrice, maxPrice) = prices
+            if (minPrice > it) prices[0] = it
+            if (maxPrice < it) prices[1] = it
         }
     }
 }

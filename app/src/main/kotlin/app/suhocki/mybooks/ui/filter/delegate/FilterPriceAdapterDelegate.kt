@@ -2,6 +2,7 @@ package app.suhocki.mybooks.ui.filter.delegate
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.filter.FilterPrice
 import app.suhocki.mybooks.ui.filter.ui.FilterPriceItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
@@ -30,6 +31,12 @@ class FilterPriceAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
     ) : RecyclerView.ViewHolder(ui.parent) {
         fun bind(filterPrice: FilterPrice) {
             with(ui) {
+                from.hint = parent.context.getString(R.string.rubles, filterPrice.hintFrom)
+                    .dropLast(1)
+                    .replace(",", ".")
+                to.hint = parent.context.getString(R.string.rubles, filterPrice.hintTo)
+                    .dropLast(1)
+                    .replace(",", ".")
             }
         }
     }

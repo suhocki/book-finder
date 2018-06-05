@@ -7,11 +7,11 @@ import app.suhocki.mybooks.domain.model.Category
 interface BookDatabaseRepository {
     fun getCategories(): List<Category>
 
-    fun saveCategories(categories: Set<Category>)
+    fun setCategories(categories: Set<Category>)
 
     fun getBooks(): List<Book>
 
-    fun saveBooks(books: List<Book>)
+    fun setBooks(books: List<Book>)
 
     fun getBooksFor(category: Category): List<BookEntity>
 

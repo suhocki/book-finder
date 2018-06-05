@@ -1,8 +1,8 @@
 package app.suhocki.mybooks.domain.model.filter
 
 interface FilterPrice {
-    val from: Double
-    val to: Double
-    val hintFrom: String
-    val hintTo: String
+    val hintFrom: Double
+    val hintTo: Double
+    var from: Double
+    var to: Double
 }

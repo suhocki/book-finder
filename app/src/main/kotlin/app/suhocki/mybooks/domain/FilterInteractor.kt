@@ -77,6 +77,7 @@ class FilterInteractor @Inject constructor(
 
         resourceManager.getString(R.string.price) ->
             mutableListOf<Any>().apply {
+                filterPrice.hintFrom; filterPrice.hintTo
                 add(filterPrice)
                 addAll(filterRepository.getFilterByPriceItems())
             }

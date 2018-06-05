@@ -1,9 +1,6 @@
 package app.suhocki.mybooks.domain
 
-import app.suhocki.mybooks.data.database.entity.AuthorStatisticsEntity
-import app.suhocki.mybooks.data.database.entity.PublisherStatisticsEntity
-import app.suhocki.mybooks.data.database.entity.StatusStatisticsEntity
-import app.suhocki.mybooks.data.database.entity.YearStatisticsEntity
+import app.suhocki.mybooks.data.database.entity.*
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.di.DatabaseFileUrl
 import app.suhocki.mybooks.di.DownloadedFileName
@@ -38,8 +35,8 @@ class BackgroundInteractor @Inject constructor(
         fileSystemRepository.extractXlsDocument(strings)
 
     fun saveBooksData(data: Map<out Category, Collection<Book>>) {
-        bookDatabaseRepository.saveCategories(data.keys)
-        bookDatabaseRepository.saveBooks(data.values.flatMap { books -> books }.toList())
+        bookDatabaseRepository.setCategories(data.keys)
+        bookDatabaseRepository.setBooks(data.values.flatMap { books -> books }.toList())
     }
 
     fun getBooksAndCategoriesCount(): Pair<Int, Int> {
@@ -76,13 +73,19 @@ class BackgroundInteractor @Inject constructor(
                 StatusStatisticsEntity(category.name, status, bookCount)
             }
         }
-
         statisticDatabaseRepository.setStatusStatistics(statusStatistics)
+
         val yearStatistics = statisticsData.entries.flatMap { (category, statistics) ->
             statistics.years.entries.map { (year, bookCount) ->
                 YearStatisticsEntity(category.name, year, bookCount)
             }
         }
         statisticDatabaseRepository.setYearStatistics(yearStatistics)
+
+        val priceStatistics = statisticsData.entries.map { (category, statistics) ->
+            val (minPrice, maxPrice) = statistics.prices
+                PriceStatisticsEntity(category.name, minPrice, maxPrice)
+        }
+        statisticDatabaseRepository.setPriceStatistics(priceStatistics)
     }
 }
