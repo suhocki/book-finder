@@ -12,6 +12,6 @@ interface PublisherStatisticsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(publisherStatistics: List<PublisherStatisticsEntity>)
 
-    @Query("SELECT * FROM PublisherStatistics WHERE category=:category")
+    @Query("SELECT * FROM PublisherStatistics WHERE category=:category ORDER BY count DESC LIMIT 5")
     fun getAllByCategory(category: String): List<PublisherStatisticsEntity>
 }

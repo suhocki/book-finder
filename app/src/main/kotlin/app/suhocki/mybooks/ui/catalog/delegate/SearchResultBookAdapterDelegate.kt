@@ -7,13 +7,13 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.openLink
-import app.suhocki.mybooks.ui.catalog.ui.SearchResultItemUI
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
+import app.suhocki.mybooks.ui.catalog.ui.SearchResultItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.AnkoContext
 
-class SearchResultAdapterDelegate(
+class SearchResultBookAdapterDelegate(
     private val onBookClickListener: OnBookClickListener
 ) : AdapterDelegate<MutableList<Any>>() {
 

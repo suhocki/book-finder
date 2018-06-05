@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.catalog.ui
+package app.suhocki.mybooks.ui.base.search
 
 import android.support.v7.widget.RecyclerView
 import android.text.InputType
@@ -13,7 +13,7 @@ import app.suhocki.mybooks.setForegroundCompat
 import org.jetbrains.anko.*
 import org.jetbrains.anko.cardview.v7.themedCardView
 
-class SearchItemUI() : AnkoComponent<ViewGroup> {
+class SearchItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
     lateinit var editText: TextView
     lateinit var startSearch: View
@@ -26,6 +26,7 @@ class SearchItemUI() : AnkoComponent<ViewGroup> {
 
             themedCardView {
                 useCompatPadding = true
+                maxCardElevation = 1f
 
                 linearLayout {
                     setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))

@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.filter.ui
 
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +12,7 @@ import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
 import org.jetbrains.anko.*
 
-class FilterCheckableItemUI : AnkoComponent<ViewGroup> {
+class FilterCheckBoxItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
     lateinit var name: TextView
     lateinit var booksCount: TextView
@@ -20,24 +21,29 @@ class FilterCheckableItemUI : AnkoComponent<ViewGroup> {
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 
         frameLayout {
-            this@FilterCheckableItemUI.parent = this
+            this@FilterCheckBoxItemUI.parent = this
             backgroundResource = R.color.colorWhite
             setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
 
             linearLayout {
+                rightPadding = dimenAttr(R.attr.actionBarSize)
 
                 textView {
-                    this@FilterCheckableItemUI.name = this
-                    horizontalPadding = dip(16)
+                    this@FilterCheckBoxItemUI.name = this
+                    maxLines = 2
+                    ellipsize = TextUtils.TruncateAt.END
                     textAppearance = R.style.TextAppearance_AppCompat_Body1
                 }.lparams(wrapContent, wrapContent) {
+                    weight = 1f
                     gravity = Gravity.CENTER_VERTICAL
+                    leftPadding = dip(16)
                 }
 
                 textView {
                     booksCount = this
                 }.lparams(wrapContent, wrapContent) {
                     gravity = Gravity.CENTER_VERTICAL
+                    leftMargin = dip(16)
                 }
 
             }.lparams(wrapContent, dimenAttr(R.attr.actionBarSize))
@@ -45,7 +51,7 @@ class FilterCheckableItemUI : AnkoComponent<ViewGroup> {
             frameLayout {
 
                 checkBox {
-                    this@FilterCheckableItemUI.checkBox = this
+                    this@FilterCheckBoxItemUI.checkBox = this
                 }.lparams {
                     gravity = Gravity.CENTER
                 }

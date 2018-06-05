@@ -1,17 +1,14 @@
-package app.suhocki.mybooks.ui.catalog.delegate
+package app.suhocki.mybooks.ui.base.search
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import app.suhocki.mybooks.domain.model.Search
-import app.suhocki.mybooks.ui.catalog.ui.SearchItemUI
-import app.suhocki.mybooks.ui.catalog.listener.OnSearchClickListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 
 class SearchAdapterDelegate(
-    private val search: Search,
     private val onSearchClickListener: OnSearchClickListener
 ) : AdapterDelegate<MutableList<Any>>() {
 
@@ -33,7 +30,20 @@ class SearchAdapterDelegate(
 
     private inner class ViewHolder(val ui: SearchItemUI) : RecyclerView.ViewHolder(ui.parent) {
 
+        private lateinit var search: Search
+
+        init {
+            with(ui) {
+                editText.textChangedListener {
+                    onTextChanged { searchQuery, _, _, _ ->
+                        search.searchQuery = searchQuery.toString()
+                    }
+                }
+            }
+        }
+
         fun bind(search: Search) {
+            this.search = search
             with(ui) {
                 editText.hint = editText.resources.getString(search.hintRes)
                 editText.text = search.searchQuery
@@ -43,11 +53,6 @@ class SearchAdapterDelegate(
                         return@setOnEditorActionListener true
                     }
                     false
-                }
-                editText.textChangedListener {
-                    onTextChanged { searchQuery, _, _, _ ->
-                        this@SearchAdapterDelegate.search.searchQuery = searchQuery.toString()
-                    }
                 }
                 startSearch.setOnClickListener { onSearchClickListener.onStartSearchClick() }
             }

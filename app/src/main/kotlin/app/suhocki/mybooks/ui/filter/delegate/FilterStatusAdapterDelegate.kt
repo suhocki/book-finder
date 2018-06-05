@@ -3,8 +3,8 @@ package app.suhocki.mybooks.ui.filter.delegate
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.filter.FilterStatus
-import app.suhocki.mybooks.ui.filter.ui.FilterCheckableItemUI
 import app.suhocki.mybooks.ui.filter.listener.OnFilterStatusClickListener
+import app.suhocki.mybooks.ui.filter.ui.FilterCheckBoxItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 
@@ -13,7 +13,7 @@ class FilterStatusAdapterDelegate(
 ) : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
-        FilterCheckableItemUI()
+        FilterCheckBoxItemUI()
             .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
             .let { ViewHolder(it) }
 
@@ -29,7 +29,7 @@ class FilterStatusAdapterDelegate(
 
 
     private inner class ViewHolder(
-        val ui: FilterCheckableItemUI
+        val ui: FilterCheckBoxItemUI
     ) : RecyclerView.ViewHolder(ui.parent) {
 
         private lateinit var filterStatus: FilterStatus

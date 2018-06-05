@@ -11,9 +11,9 @@ import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
+import app.suhocki.mybooks.ui.base.search.OnSearchClickListener
 import app.suhocki.mybooks.ui.books.BooksActivity
 import app.suhocki.mybooks.ui.catalog.listener.OnCategoryClickListener
-import app.suhocki.mybooks.ui.catalog.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -27,7 +27,6 @@ import org.jetbrains.anko.support.v4.dimen
 import org.jetbrains.anko.support.v4.onUiThread
 import toothpick.Toothpick
 import java.util.*
-import javax.inject.Inject
 import kotlin.concurrent.schedule
 
 
@@ -37,10 +36,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     private val ui by lazy { CatalogUI<CatalogFragment>() }
 
-    @Inject
-    lateinit var search: Search
-
-    private val adapter by lazy { CatalogAdapter(this, this, this, search) }
+    private val adapter by lazy { CatalogAdapter(this, this, this) }
 
     @InjectPresenter
     lateinit var presenter: CatalogPresenter
@@ -54,12 +50,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE).apply {
-            Toothpick.inject(this@CatalogFragment, this)
-        }
-        return ui.createView(AnkoContext.create(ctx, this@CatalogFragment))
-    }
+    ) = ui.createView(AnkoContext.create(ctx, this@CatalogFragment))
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

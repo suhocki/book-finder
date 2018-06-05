@@ -48,4 +48,6 @@
     <string name="notification_channel_name">Уведомления MyBooks</string>
     <string name="press_back_again">Для выхода, нажмите «Назад» еще раз.</string>
     <string name="enter_query">Введите запрос</string>
+    <string name="hint_search_author">Введите фамилию</string>
+    <string name="hint_search_publisher">Введите издательство</string>
 </resources>

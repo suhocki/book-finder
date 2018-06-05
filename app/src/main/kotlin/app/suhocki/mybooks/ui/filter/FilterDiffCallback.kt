@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.filter
 
 import android.support.v7.util.DiffUtil
+import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.filter.*
 
 internal class FilterDiffCallback : DiffUtil.ItemCallback<Any>() {
@@ -10,6 +11,7 @@ internal class FilterDiffCallback : DiffUtil.ItemCallback<Any>() {
         else if (oldItem is FilterPublisher && newItem is FilterPublisher) oldItem.publisherName == newItem.publisherName
         else if (oldItem is FilterStatus && newItem is FilterStatus) oldItem.status == newItem.status
         else if (oldItem is FilterYear && newItem is FilterYear) oldItem.year == newItem.year
+        else if (oldItem is Search && newItem is Search) oldItem.hintRes == newItem.hintRes
         else false
     }
 

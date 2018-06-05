@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.books
 
 import android.os.Bundle
+import android.support.v4.widget.DrawerLayout
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
@@ -46,6 +47,16 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
         ui.apply {
             setContentView(this@BooksActivity)
             recyclerView.adapter = adapter
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+            drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+                override fun onDrawerClosed(drawerView: View) {
+                    presenter.setDrawerExpanded(false)
+                }
+
+                override fun onDrawerStateChanged(newState: Int) {}
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+                override fun onDrawerOpened(drawerView: View) {}
+            })
         }
         if (savedInstanceState == null) {
             initFilter()

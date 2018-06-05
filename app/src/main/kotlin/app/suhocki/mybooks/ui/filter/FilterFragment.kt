@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.search.OnSearchClickListener
 import app.suhocki.mybooks.ui.filter.listener.*
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -19,11 +20,21 @@ class FilterFragment : BaseFragment(), FilterView,
     OnFilterAuthorClickListener,
     OnFilterPublisherClickListener,
     OnFilterStatusClickListener,
-    OnFilterYearClickListener {
+    OnFilterYearClickListener,
+    OnSearchClickListener {
 
     private val ui by lazy { FilterUI<FilterFragment>() }
 
-    private val adapter by lazy { FilterAdapter(this, this, this, this, this) }
+    private val adapter by lazy {
+        FilterAdapter(
+            this,
+            this,
+            this,
+            this,
+            this,
+            this
+        )
+    }
 
     @InjectPresenter
     lateinit var presenter: FilterPresenter
@@ -39,8 +50,8 @@ class FilterFragment : BaseFragment(), FilterView,
         savedInstanceState: Bundle?
     ): View? = ui.createView(AnkoContext.create(ctx, this@FilterFragment))
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         ui.recyclerView.adapter = adapter
     }
 
@@ -69,6 +80,15 @@ class FilterFragment : BaseFragment(), FilterView,
     override fun onFilterPublisherClick(filterPublisher: FilterPublisher) {
 
     }
+
+
+    override fun onExpandSearchClick() {}
+
+    override fun onCollapseSearchClick() = false
+
+    override fun onClearSearchClick() {}
+
+    override fun onStartSearchClick() {}
 
     companion object {
         fun newInstance() = FilterFragment()

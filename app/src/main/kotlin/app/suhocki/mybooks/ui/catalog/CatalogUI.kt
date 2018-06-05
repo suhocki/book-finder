@@ -10,9 +10,9 @@ import android.widget.ImageView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
+import app.suhocki.mybooks.ui.base.search.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
-import app.suhocki.mybooks.ui.catalog.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout

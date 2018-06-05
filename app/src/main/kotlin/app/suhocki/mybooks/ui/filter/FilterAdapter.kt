@@ -1,6 +1,8 @@
 package app.suhocki.mybooks.ui.filter
 
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
+import app.suhocki.mybooks.ui.base.search.OnSearchClickListener
+import app.suhocki.mybooks.ui.base.search.SearchAdapterDelegate
 import app.suhocki.mybooks.ui.filter.delegate.*
 import app.suhocki.mybooks.ui.filter.listener.*
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
@@ -11,38 +13,20 @@ class FilterAdapter(
     onFilterAuthorClickListener: OnFilterAuthorClickListener,
     onFilterPublisherClickListener: OnFilterPublisherClickListener,
     onFilterStatusClickListener: OnFilterStatusClickListener,
-    onFilterYearClickListener: OnFilterYearClickListener
+    onFilterYearClickListener: OnFilterYearClickListener,
+    onSearchClickListener: OnSearchClickListener
 ) : ListDelegationAdapter<MutableList<Any>>() {
 
     private val differ by lazy { AsyncListDiffer(this, FilterDiffCallback()) }
 
     init {
         delegatesManager
-            .addDelegate(
-                FilterCategoryAdapterDelegate(
-                    onFilterCategoryClickListener
-                )
-            )
-            .addDelegate(
-                FilterAuthorAdapterDelegate(
-                    onFilterAuthorClickListener
-                )
-            )
-            .addDelegate(
-                FilterPublisherAdapterDelegate(
-                    onFilterPublisherClickListener
-                )
-            )
-            .addDelegate(
-                FilterYearAdapterDelegate(
-                    onFilterYearClickListener
-                )
-            )
-            .addDelegate(
-                FilterStatusAdapterDelegate(
-                    onFilterStatusClickListener
-                )
-            )
+            .addDelegate(FilterCategoryAdapterDelegate(onFilterCategoryClickListener))
+            .addDelegate(FilterAuthorAdapterDelegate(onFilterAuthorClickListener))
+            .addDelegate(FilterPublisherAdapterDelegate(onFilterPublisherClickListener))
+            .addDelegate(FilterYearAdapterDelegate(onFilterYearClickListener))
+            .addDelegate(FilterStatusAdapterDelegate(onFilterStatusClickListener))
+            .addDelegate(SearchAdapterDelegate(onSearchClickListener))
     }
 
     override fun getItemCount(): Int =

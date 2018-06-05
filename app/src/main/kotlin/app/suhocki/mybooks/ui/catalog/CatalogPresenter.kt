@@ -20,7 +20,7 @@ import javax.inject.Inject
 class CatalogPresenter @Inject constructor(
     private val interactor: CategoriesInteractor,
     private val errorHandler: ErrorHandler,
-    private val search: Search,
+    private val searchEntity: Search,
     private val header: Header,
     @SearchDecoration private val searchDecoration: RecyclerView.ItemDecoration,
     @CategoriesDecoration private val categoriesDecoration: RecyclerView.ItemDecoration
@@ -44,7 +44,7 @@ class CatalogPresenter @Inject constructor(
         return doAsync(errorHandler.errorReceiver) {
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
-                add(search)
+                add(searchEntity)
                 add(header.apply { titleRes = R.string.enter_query })
             }
             uiThread {
@@ -59,7 +59,7 @@ class CatalogPresenter @Inject constructor(
 
     fun stopSearchMode() =
         doAsync(errorHandler.errorReceiver) {
-            search.searchQuery = EMPTY_STRING
+            searchEntity.searchQuery = EMPTY_STRING
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
                 add(header.apply { titleRes = R.string.catalog })
@@ -76,12 +76,12 @@ class CatalogPresenter @Inject constructor(
         }
 
     fun search() = doAsync(errorHandler.errorReceiver) {
-        if (search.searchQuery.isBlank()) return@doAsync
+        if (searchEntity.searchQuery.isBlank()) return@doAsync
         val catalogItems = mutableListOf<Any>().apply {
             add(interactor.getBanner())
-            add(search)
+            add(searchEntity)
             add(header.apply { titleRes = R.string.search_results })
-            addAll(interactor.search(search).apply {
+            addAll(interactor.search(searchEntity).apply {
                 header.titleRes = if (size > 0) R.string.search_results else R.string.not_found
             })
         }
@@ -95,14 +95,14 @@ class CatalogPresenter @Inject constructor(
     }
 
     fun clearSearchQuery() = doAsync(errorHandler.errorReceiver) {
-        if (search.searchQuery.isBlank()) stopSearchMode()
+        if (searchEntity.searchQuery.isBlank()) stopSearchMode()
         else {
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
-                add(search)
+                add(searchEntity)
                 add(header.apply { titleRes = R.string.enter_query })
             }
-            search.searchQuery = EMPTY_STRING
+            searchEntity.searchQuery = EMPTY_STRING
             uiThread {
                 viewState.showCatalogItems(
                     catalogItems,

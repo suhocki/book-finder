@@ -12,6 +12,6 @@ interface StatusStatisticsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(statusStatistics: List<StatusStatisticsEntity>)
 
-    @Query("SELECT * FROM StatusStatistics WHERE category=:category")
+    @Query("SELECT * FROM StatusStatistics WHERE category=:category ORDER BY count DESC LIMIT 5")
     fun getAllByCategory(category: String): List<StatusStatisticsEntity>
 }

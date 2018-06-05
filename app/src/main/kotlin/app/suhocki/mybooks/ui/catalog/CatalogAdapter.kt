@@ -2,19 +2,21 @@ package app.suhocki.mybooks.ui.catalog
 
 import android.support.v7.recyclerview.extensions.AsyncDifferConfig
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
-import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
+import app.suhocki.mybooks.ui.base.search.OnSearchClickListener
+import app.suhocki.mybooks.ui.base.search.SearchAdapterDelegate
+import app.suhocki.mybooks.ui.catalog.delegate.BannerAdapterDelegate
+import app.suhocki.mybooks.ui.catalog.delegate.CategoryAdapterDelegate
+import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
+import app.suhocki.mybooks.ui.catalog.delegate.SearchResultBookAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.listener.OnCategoryClickListener
-import app.suhocki.mybooks.ui.catalog.listener.OnSearchClickListener
-import app.suhocki.mybooks.ui.catalog.delegate.*
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 class CatalogAdapter(
     onCategoryClickListener: OnCategoryClickListener,
-    onSearchClickListener: OnSearchClickListener,
     onBookClickListener: OnBookClickListener,
-    search: Search
+    onSearchClickListener: OnSearchClickListener
 ) : ListDelegationAdapter<MutableList<Any>>() {
 
     private val listUpdateCallback by lazy {
@@ -30,24 +32,11 @@ class CatalogAdapter(
 
     init {
         delegatesManager
-            .addDelegate(
-                CategoryAdapterDelegate(
-                    onCategoryClickListener
-                )
-            )
+            .addDelegate(CategoryAdapterDelegate(onCategoryClickListener))
             .addDelegate(BannerAdapterDelegate())
             .addDelegate(HeaderAdapterDelegate())
-            .addDelegate(
-                SearchAdapterDelegate(
-                    search,
-                    onSearchClickListener
-                )
-            )
-            .addDelegate(
-                SearchResultAdapterDelegate(
-                    onBookClickListener
-                )
-            )
+            .addDelegate(SearchAdapterDelegate(onSearchClickListener))
+            .addDelegate(SearchResultBookAdapterDelegate(onBookClickListener))
     }
 
     override fun getItemCount(): Int =

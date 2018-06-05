@@ -40,6 +40,8 @@
     <string name="format">Format</string>
     <string name="catalog">Catalog</string>
     <string name="hint_search">ISBN, author, book name, publisher, year</string>
+    <string name="hint_search_author">Type name</string>
+    <string name="hint_search_publisher">Type publisher</string>
     <string name="search">Search</string>
     <string name="search_results">Search results</string>
     <string name="not_found">Not found</string>

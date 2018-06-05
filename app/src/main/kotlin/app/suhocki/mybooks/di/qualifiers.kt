@@ -9,3 +9,5 @@ import javax.inject.Qualifier
 @Qualifier annotation class SharedPreferencesFileName
 @Qualifier annotation class CategoriesDecoration
 @Qualifier annotation class SearchDecoration
+@Qualifier annotation class SearchAuthor
+@Qualifier annotation class SearchPublisher
