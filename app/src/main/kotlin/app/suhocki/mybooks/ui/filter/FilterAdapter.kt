@@ -9,6 +9,8 @@ import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 
 class FilterAdapter(
+    onSortPriceClickListener: OnSortPriceClickListener,
+    onSortNameClickListener: OnSortNameClickListener,
     onFilterCategoryClickListener: OnFilterCategoryClickListener,
     onFilterAuthorClickListener: OnFilterAuthorClickListener,
     onFilterPublisherClickListener: OnFilterPublisherClickListener,
@@ -26,7 +28,10 @@ class FilterAdapter(
             .addDelegate(FilterPublisherAdapterDelegate(onFilterPublisherClickListener))
             .addDelegate(FilterYearAdapterDelegate(onFilterYearClickListener))
             .addDelegate(FilterStatusAdapterDelegate(onFilterStatusClickListener))
+            .addDelegate(FilterPriceAdapterDelegate())
             .addDelegate(SearchAdapterDelegate(onSearchClickListener))
+            .addDelegate(SortNameAdapterDelegate(onSortNameClickListener))
+            .addDelegate(SortPriceAdapterDelegate(onSortPriceClickListener))
     }
 
     override fun getItemCount(): Int =

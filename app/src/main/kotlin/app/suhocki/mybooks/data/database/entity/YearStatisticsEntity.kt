@@ -6,7 +6,7 @@ import app.suhocki.mybooks.domain.model.statistics.YearStatistics
 
 @Entity(
     tableName = "YearStatistics",
-    primaryKeys = ["year"],
+    primaryKeys = ["year", "category"],
     foreignKeys = [
         (ForeignKey(
             entity = CategoryEntity::class,

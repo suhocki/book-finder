@@ -122,6 +122,9 @@ class XlsParser @Inject constructor(
             } else if (answer != null && answer.startsWith(KEY_COVER)) {
                 val startIndex = KEY_COVER.length + FORMAT_LENGTH
                 return if (answer.length > startIndex) answer.substring(startIndex) else null
+            } else if (answer != null && answer.startsWith(KEY_YEAR)) {
+                val startIndex = KEY_YEAR.length + YEAR_LENGTH
+                return if (answer.length > startIndex) answer.substring(startIndex) else null
             }
         }
         strings.forEach {
@@ -136,6 +139,11 @@ class XlsParser @Inject constructor(
                     val endIndex =
                         if (answer.length <= FORMAT_LENGTH) answer.length
                         else FORMAT_LENGTH
+                    return answer.substring(0, endIndex)
+                } else if (key == KEY_YEAR) {
+                    val endIndex =
+                        if (answer.length <= YEAR_LENGTH) answer.length
+                        else YEAR_LENGTH
                     return answer.substring(0, endIndex)
                 }
                 return answer
@@ -185,6 +193,7 @@ class XlsParser @Inject constructor(
         private const val KEY_COVER = "Обложка: "
         private const val KEY_DESCR = "KEY_DESCRIPTION"
         private const val FORMAT_LENGTH = 3
+        private const val YEAR_LENGTH = 4
         private val KEYS_SET =
             setOf(
                 KEY_ISBN,

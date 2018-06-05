@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.filter.ui
 
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
@@ -21,7 +22,9 @@ class FilterCategoryItemUI : AnkoComponent<ViewGroup> {
 
         frameLayout {
             this@FilterCategoryItemUI.parent = this
-            backgroundResource = R.color.colorWhite
+            backgroundResource = R.color.colorGray
+            ViewCompat.setElevation(this, 2f)
+
             setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
 
             linearLayout {

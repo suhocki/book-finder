@@ -21,12 +21,15 @@ class FilterFragment : BaseFragment(), FilterView,
     OnFilterPublisherClickListener,
     OnFilterStatusClickListener,
     OnFilterYearClickListener,
-    OnSearchClickListener {
+    OnSearchClickListener,
+    OnSortNameClickListener, OnSortPriceClickListener {
 
     private val ui by lazy { FilterUI<FilterFragment>() }
 
     private val adapter by lazy {
         FilterAdapter(
+            this,
+            this,
             this,
             this,
             this,
@@ -81,6 +84,12 @@ class FilterFragment : BaseFragment(), FilterView,
 
     }
 
+    override fun onSortNameClick(filterName: SortName) {
+
+    }
+
+    override fun onSortPriceClick(sortPrice: SortPrice) {
+    }
 
     override fun onExpandSearchClick() {}
 

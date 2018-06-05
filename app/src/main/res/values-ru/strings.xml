@@ -50,4 +50,6 @@
     <string name="enter_query">Введите запрос</string>
     <string name="hint_search_author">Введите фамилию</string>
     <string name="hint_search_publisher">Введите издательство</string>
+    <string name="descending">По убыванию</string>
+    <string name="ascending">По возрастанию</string>
 </resources>

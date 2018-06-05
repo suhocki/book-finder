@@ -30,7 +30,7 @@ class FilterCheckBoxItemUI : AnkoComponent<ViewGroup> {
 
                 textView {
                     this@FilterCheckBoxItemUI.name = this
-                    maxLines = 2
+                    maxLines = 1
                     ellipsize = TextUtils.TruncateAt.END
                     textAppearance = R.style.TextAppearance_AppCompat_Body1
                 }.lparams(wrapContent, wrapContent) {

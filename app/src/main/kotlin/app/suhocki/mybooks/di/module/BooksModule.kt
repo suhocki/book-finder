@@ -7,6 +7,7 @@ import app.suhocki.mybooks.di.SearchPublisher
 import app.suhocki.mybooks.di.provider.FilterItemStatisticsProvider
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
+import app.suhocki.mybooks.domain.model.filter.FilterPrice
 import app.suhocki.mybooks.domain.model.statistics.FilterItemStatistics
 import app.suhocki.mybooks.domain.repository.FilterRepository
 import toothpick.config.Module
@@ -32,12 +33,22 @@ class BooksModule(category: Category) : Module() {
         bind(Search::class.java)
             .withName(SearchPublisher::class.java)
             .toInstance(SearchEntity(R.string.hint_search_publisher))
+
+        bind(FilterPrice::class.java)
+            .toInstance(FilterPriceEntity())
     }
 
     internal class SearchEntity(
         override val hintRes: Int,
         override var searchQuery: String = EMPTY_STRING
     ) : Search
+
+    internal class FilterPriceEntity(
+        override val from: Double = Double.MIN_VALUE,
+        override val to: Double = Double.MAX_VALUE,
+        override val hintFrom: String = EMPTY_STRING,
+        override val hintTo: String = EMPTY_STRING
+    ) : FilterPrice
 
     companion object {
         const val EMPTY_STRING = ""
