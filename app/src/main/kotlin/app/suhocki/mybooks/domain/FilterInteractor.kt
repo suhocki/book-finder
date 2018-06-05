@@ -44,7 +44,7 @@ class FilterInteractor @Inject constructor(
         resourceManager.getString(R.string.year) ->
             item is FilterYear
 
-        resourceManager.getString(R.string.availability) ->
+        resourceManager.getString(R.string.status) ->
             item is FilterStatus
 
         else -> throw InvalidKeyException()
@@ -60,7 +60,7 @@ class FilterInteractor @Inject constructor(
         resourceManager.getString(R.string.year) ->
             filterItemStatistics.yearsFilterItems
 
-        resourceManager.getString(R.string.availability) ->
+        resourceManager.getString(R.string.status) ->
             filterItemStatistics.statusesFilterItems
 
         resourceManager.getString(R.string.author) ->

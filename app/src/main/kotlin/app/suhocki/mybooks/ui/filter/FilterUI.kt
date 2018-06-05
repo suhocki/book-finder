@@ -2,7 +2,6 @@ package app.suhocki.mybooks.ui.filter
 
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
@@ -10,6 +9,7 @@ import android.widget.ImageView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
+import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import app.suhocki.mybooks.ui.books.listener.OnFilterClickListener
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
@@ -57,7 +57,7 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
                 clipToPadding = false
                 recyclerView = this
                 setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(context)
+                layoutManager = ScrollLayoutManager(context)
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
             }

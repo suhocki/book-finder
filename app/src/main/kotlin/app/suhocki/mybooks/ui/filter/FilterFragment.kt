@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.filter
 
 import android.os.Bundle
+import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,8 +59,16 @@ class FilterFragment : BaseFragment(), FilterView,
         ui.recyclerView.adapter = adapter
     }
 
-    override fun showFilterItems(filterItems: List<Any>) {
-        adapter.submitList(filterItems)
+    override fun showFilterItems(
+        filterItems: List<Any>,
+        toggledCategoryPosition: Int
+    ) {
+        adapter.submitList(filterItems, onAnimationEnd = {
+            if (toggledCategoryPosition != UNDEFINED_POSITION) {
+                (ui.recyclerView.layoutManager as LinearLayoutManager)
+                    .scrollToPositionWithOffset(toggledCategoryPosition, 0)
+            }
+        })
     }
 
     override fun onFilterCategoryClick(filterCategory: FilterCategory) {
@@ -100,6 +109,8 @@ class FilterFragment : BaseFragment(), FilterView,
     override fun onStartSearchClick() {}
 
     companion object {
+        const val UNDEFINED_POSITION = -1
+
         fun newInstance() = FilterFragment()
     }
 }

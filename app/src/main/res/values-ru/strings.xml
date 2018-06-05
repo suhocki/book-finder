@@ -34,7 +34,7 @@
     <string name="price">Цена</string>
     <string name="cover">Обложка</string>
     <string name="pages">Страниц</string>
-    <string name="availability">Наличие</string>
+    <string name="status">Статус</string>
     <string name="series">Серия</string>
     <string name="description">Описание</string>
     <string name="hint_search">ISBN, автор, название, издательство, год</string>

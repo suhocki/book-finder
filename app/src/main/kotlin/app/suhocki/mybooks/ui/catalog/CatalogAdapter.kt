@@ -19,12 +19,7 @@ class CatalogAdapter(
     onSearchClickListener: OnSearchClickListener
 ) : ListDelegationAdapter<MutableList<Any>>() {
 
-    private val listUpdateCallback by lazy {
-        EndActionAdapterListUpdateCallback(
-            this,
-            null
-        )
-    }
+    private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
 
     private val diffConfig by lazy { AsyncDifferConfig.Builder<Any>(CatalogDiffCallback()).build() }
 

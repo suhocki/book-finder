@@ -62,7 +62,7 @@ class FilterPresenter @Inject constructor(
             )
         }
         uiThread {
-            viewState.showFilterItems(filterItems)
+            viewState.showFilterItems(filterItems, filterCategoryIndex)
         }
     }
 }

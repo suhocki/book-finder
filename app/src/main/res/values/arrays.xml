@@ -6,7 +6,7 @@
         <item>@string/publisher</item>
         <item>@string/year</item>
         <item>@string/price</item>
-        <item>@string/availability</item>
+        <item>@string/status</item>
     </string-array>
 
     <string-array name="sort_by_name">

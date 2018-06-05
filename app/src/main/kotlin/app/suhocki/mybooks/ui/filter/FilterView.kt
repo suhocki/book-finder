@@ -6,5 +6,8 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface FilterView : MvpView {
-    fun showFilterItems(filterItems: List<Any>)
+    fun showFilterItems(
+        filterItems: List<Any>,
+        toggledCategoryPosition: Int = FilterFragment.UNDEFINED_POSITION
+    )
 }

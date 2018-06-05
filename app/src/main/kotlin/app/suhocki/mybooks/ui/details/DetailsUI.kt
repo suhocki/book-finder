@@ -154,7 +154,7 @@ class DetailsUI : AnkoComponent<DetailsActivity>, AnkoLogger {
                     }
 
                     linearLayout {
-                        textView(R.string.availability).lparams(0, matchParent) { weight = 0.5f }
+                        textView(R.string.status).lparams(0, matchParent) { weight = 0.5f }
                         textView { text = book.status }.lparams(0, matchParent) { weight = 0.5f }
                     }
 

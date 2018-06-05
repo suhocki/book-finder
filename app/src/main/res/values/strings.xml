@@ -34,7 +34,7 @@
     <string name="price">Price</string>
     <string name="cover">Cover</string>
     <string name="pages">Pages</string>
-    <string name="availability">Availability</string>
+    <string name="status">Status</string>
     <string name="series">Series</string>
     <string name="description">Description</string>
     <string name="format">Format</string>
