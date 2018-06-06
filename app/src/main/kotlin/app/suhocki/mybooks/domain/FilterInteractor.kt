@@ -5,15 +5,14 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.SearchAuthor
 import app.suhocki.mybooks.di.SearchPublisher
+import app.suhocki.mybooks.di.provider.FilterItemStatisticsProvider
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.domain.model.statistics.FilterItemStatistics
-import app.suhocki.mybooks.domain.repository.FilterRepository
 import java.security.InvalidKeyException
 import javax.inject.Inject
 
 class FilterInteractor @Inject constructor(
-    private val filterRepository: FilterRepository,
     private val filterItemStatistics: FilterItemStatistics,
     private val resourceManager: ResourceManager,
     @SearchAuthor private val authorSearchEntity: Search,
@@ -21,8 +20,7 @@ class FilterInteractor @Inject constructor(
     private val filterPrice: FilterPrice
 ) {
 
-    fun getFilterCategories() =
-        filterRepository.getFilterCategories()
+    fun getFilterCategories() = filterItemStatistics.filterCategories
 
     fun isItemUnderCategory(
         category: FilterCategory,
@@ -56,7 +54,7 @@ class FilterInteractor @Inject constructor(
     ): Collection<Any> = when (filterCategory.title) {
 
         resourceManager.getString(R.string.name) ->
-            filterRepository.getFilterByNameItems()
+            filterItemStatistics.nameSortItems
 
         resourceManager.getString(R.string.year) ->
             filterItemStatistics.yearsFilterItems
@@ -80,7 +78,7 @@ class FilterInteractor @Inject constructor(
             mutableListOf<Any>().apply {
                 filterPrice.hintFrom; filterPrice.hintTo
                 add(filterPrice)
-                addAll(filterRepository.getFilterByPriceItems())
+                addAll(filterItemStatistics.filterByPriceItems)
             }
 
         else -> throw InvalidKeyException()
@@ -95,15 +93,31 @@ class FilterInteractor @Inject constructor(
 
         when (searchKey) {
             resourceManager.getString(R.string.hint_search_author) -> {
-                val searchEntity = items.find {
-                    it is Search && it.hintRes == R.string.hint_search_author
+                filterItem as FilterAuthor
+                if (filterItemStatistics.authorsFilterItems.contains(filterItem)) {
+                    val index = items.indexOf(filterItem)
+                    val oldValue = items[index] as FilterAuthor
+                    val newValue = FilterItemStatisticsProvider.FilterAuthorEntity(
+                        oldValue.authorName,
+                        oldValue.booksCount,
+                        isChecked = true
+                    )
+                    newList[index] = newValue
+
+                    val index1 = filterItemStatistics.authorsFilterItems.indexOf(filterItem)
+                    filterItemStatistics.authorsFilterItems[index1] = newValue
+
+                } else {
+                    filterItemStatistics.authorsFilterItems.add(0, filterItem)
+                    val searchEntity = items.find {
+                        it is Search && it.hintRes == R.string.hint_search_author
+                    }
+                    val indexToInsert = items.indexOf(searchEntity) + 1
+                    newList.add(indexToInsert, filterItem.apply {
+                        isChecked = true
+                        isCheckable = true
+                    })
                 }
-                filterItemStatistics.authorsFilterItems.add(0, filterItem as FilterAuthor)
-                val indexToInsert = items.indexOf(searchEntity) + 1
-                newList.add(indexToInsert, filterItem.apply {
-                    isChecked = true
-                    isCheckable = true
-                })
             }
 
             resourceManager.getString(R.string.hint_search_publisher) -> {

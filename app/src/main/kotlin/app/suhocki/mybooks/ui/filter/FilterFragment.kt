@@ -40,11 +40,6 @@ class FilterFragment : BaseFragment(), FilterView,
         FilterAdapter(
             this,
             this,
-            this,
-            this,
-            this,
-            this,
-            this,
             this
         )
     }
@@ -103,7 +98,6 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onSortNameClick(filterName: SortName) {
-
     }
 
     override fun onSortPriceClick(sortPrice: SortPrice) {

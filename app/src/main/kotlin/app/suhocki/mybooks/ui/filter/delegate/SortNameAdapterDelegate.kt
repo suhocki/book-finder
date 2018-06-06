@@ -4,13 +4,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.filter.SortName
 import app.suhocki.mybooks.ui.base.ui.FilterSubCategoryItemUI
-import app.suhocki.mybooks.ui.filter.listener.OnSortNameClickListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 
-class SortNameAdapterDelegate(
-    private val onFilterNameClickListener: OnSortNameClickListener
-) : AdapterDelegate<MutableList<Any>>() {
+class SortNameAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         FilterSubCategoryItemUI()
@@ -34,9 +31,13 @@ class SortNameAdapterDelegate(
         private lateinit var filterName: SortName
 
         init {
-            itemView.setOnClickListener {
-                onFilterNameClickListener.onSortNameClick(filterName)
-            }
+            itemView.setOnClickListener { invert() }
+            ui.checkBox.setOnClickListener{ invert(false) }
+        }
+
+        private fun invert(invertCheckBox: Boolean = true) {
+            filterName.isChecked = !filterName.isChecked
+            if (invertCheckBox) ui.checkBox.isChecked = !ui.checkBox.isChecked
         }
 
         fun bind(filterName: SortName) {

@@ -34,9 +34,13 @@ class SortPriceAdapterDelegate(
         private lateinit var sortPrice: SortPrice
 
         init {
-            itemView.setOnClickListener {
-                onFilterSortPriceClickListener.onSortPriceClick(sortPrice)
-            }
+            itemView.setOnClickListener { invert() }
+            ui.checkBox.setOnClickListener{ invert(false) }
+        }
+
+        private fun invert(invertCheckBox: Boolean = true) {
+            sortPrice.isChecked = !sortPrice.isChecked
+            if (invertCheckBox) ui.checkBox.isChecked = !ui.checkBox.isChecked
         }
 
         fun bind(sortPrice: SortPrice) {

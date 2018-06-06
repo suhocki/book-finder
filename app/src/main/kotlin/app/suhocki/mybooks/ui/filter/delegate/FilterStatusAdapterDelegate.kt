@@ -4,13 +4,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.filter.FilterStatus
 import app.suhocki.mybooks.ui.base.ui.FilterSubCategoryItemUI
-import app.suhocki.mybooks.ui.filter.listener.OnFilterStatusClickListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 
-class FilterStatusAdapterDelegate(
-    private val onFilterStatusClickListener: OnFilterStatusClickListener
-) : AdapterDelegate<MutableList<Any>>() {
+class FilterStatusAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         FilterSubCategoryItemUI()
@@ -35,9 +32,13 @@ class FilterStatusAdapterDelegate(
         private lateinit var filterStatus: FilterStatus
 
         init {
-            itemView.setOnClickListener {
-                onFilterStatusClickListener.onFilterStatusClickClick(filterStatus)
-            }
+            itemView.setOnClickListener { invert() }
+            ui.checkBox.setOnClickListener{ invert(false) }
+        }
+
+        private fun invert(invertCheckBox: Boolean = true) {
+            filterStatus.isChecked = !filterStatus.isChecked
+            if (invertCheckBox) ui.checkBox.isChecked = !ui.checkBox.isChecked
         }
 
         fun bind(filterStatus: FilterStatus) {

@@ -13,7 +13,7 @@ import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 
 class FilterAuthorAdapterDelegate(
-    private val onFilterAuthorClickListener: OnFilterAuthorClickListener
+    private val onFilterAuthorClickListener: OnFilterAuthorClickListener? = null
 ) : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
@@ -39,8 +39,15 @@ class FilterAuthorAdapterDelegate(
 
         init {
             itemView.setOnClickListener {
-                onFilterAuthorClickListener.onFilterAuthorClick(filterAuthor)
+                invert()
+                onFilterAuthorClickListener?.onFilterAuthorClick(filterAuthor)
             }
+            ui.checkBox.setOnClickListener { invert(false) }
+        }
+
+        private fun invert(invertCheckBox: Boolean = true) {
+            filterAuthor.isChecked = !filterAuthor.isChecked
+            if (invertCheckBox) ui.checkBox.isChecked = !ui.checkBox.isChecked
         }
 
         fun bind(filterAuthor: FilterAuthor) {

@@ -5,16 +5,36 @@ import android.os.Parcelable
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.domain.model.statistics.FilterItemStatistics
+import app.suhocki.mybooks.domain.repository.FilterRepository
 import app.suhocki.mybooks.domain.repository.StatisticDatabaseRepository
 import javax.inject.Inject
 import javax.inject.Provider
 
 class FilterItemStatisticsProvider @Inject constructor(
     private val category: Category,
-    private val statisticsRepository: StatisticDatabaseRepository
+    private val statisticsRepository: StatisticDatabaseRepository,
+    private val filterRepository: FilterRepository
 ) : Provider<FilterItemStatistics> {
 
     override fun get(): FilterItemStatistics = object : FilterItemStatistics {
+
+        override val filterCategories by lazy {
+            mutableListOf<FilterCategory>().apply {
+                addAll(filterRepository.getFilterCategories())
+            }
+        }
+
+        override val nameSortItems by lazy {
+            mutableListOf<SortName>().apply {
+                addAll(filterRepository.getFilterByNameItems())
+            }
+        }
+
+        override val filterByPriceItems by lazy {
+            mutableListOf<SortPrice>().apply {
+                addAll(filterRepository.getFilterByPriceItems())
+            }
+        }
 
         override val authorsFilterItems by lazy {
             mutableListOf<FilterAuthor>().apply {
@@ -163,6 +183,21 @@ class FilterItemStatisticsProvider @Inject constructor(
             return 0
         }
 
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as FilterAuthorEntity
+
+            if (authorName != other.authorName) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return authorName.hashCode()
+        }
+
         companion object CREATOR : Parcelable.Creator<FilterAuthorEntity> {
             override fun createFromParcel(parcel: Parcel): FilterAuthorEntity {
                 return FilterAuthorEntity(parcel)
@@ -172,6 +207,8 @@ class FilterItemStatisticsProvider @Inject constructor(
                 return arrayOfNulls(size)
             }
         }
+
+
 
     }
 
