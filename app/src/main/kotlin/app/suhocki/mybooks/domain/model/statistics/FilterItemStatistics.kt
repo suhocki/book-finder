@@ -11,4 +11,6 @@ interface FilterItemStatistics : Statistics {
     val pricesFilterItem: FilterPrice
     val nameSortItems: MutableList<SortName>
     val filterByPriceItems: Collection<SortPrice>
+    var checkedItemCount: Int
+    var checkedSortByCategory: MutableMap<Int, Int>
 }

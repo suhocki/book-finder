@@ -41,6 +41,7 @@ class FilterRepositoryImpl @Inject constructor(
 
     private inner class FilterNameEntity(
         override val sortName: String,
+        override var isCheckable: Boolean = true,
         override var isChecked: Boolean = false,
         override var groupItem: SortName? = null
     ) : SortName
@@ -48,6 +49,7 @@ class FilterRepositoryImpl @Inject constructor(
     private inner class FilterPriceEntity(
         override val sortName: String,
         override var isChecked: Boolean = false,
+        override var isCheckable: Boolean = true,
         override var groupItem: SortPrice? = null
     ) : SortPrice
 }

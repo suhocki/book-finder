@@ -14,4 +14,6 @@ interface FilterView : MvpView {
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showItem(filterItem: Any)
+
+    fun showBottomButtons(configured: Boolean)
 }

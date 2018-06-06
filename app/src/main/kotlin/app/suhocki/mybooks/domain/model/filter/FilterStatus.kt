@@ -1,7 +1,6 @@
 package app.suhocki.mybooks.domain.model.filter
 
-interface FilterStatus {
+interface FilterStatus : Checkable{
     val status: String
     val booksCount: Int
-    var isChecked: Boolean
 }

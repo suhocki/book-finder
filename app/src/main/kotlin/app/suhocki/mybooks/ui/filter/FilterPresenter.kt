@@ -1,23 +1,23 @@
 package app.suhocki.mybooks.ui.filter
 
 import android.os.Parcelable
+import android.support.annotation.StringRes
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.domain.FilterInteractor
 import app.suhocki.mybooks.domain.model.filter.*
-import app.suhocki.mybooks.domain.model.statistics.FilterItemStatistics
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import java.security.InvalidKeyException
 import javax.inject.Inject
 
 @InjectViewState
 class FilterPresenter @Inject constructor(
     private val interactor: FilterInteractor,
     private val errorHandler: ErrorHandler,
-    private val filterItemStatistics: FilterItemStatistics,
     private val resourceManager: ResourceManager
 ) : MvpPresenter<FilterView>() {
 
@@ -78,63 +78,61 @@ class FilterPresenter @Inject constructor(
         items: MutableList<Any>
     ) = doAsync(errorHandler.errorReceiver) {
         val updatedList = interactor.addFilterItemToList(filterItem, items, searchKey)
+        onItemStateChanged(filterItem, items)
         uiThread { viewState.showFilterItems(updatedList) }
     }
 
-    fun onFilterItemStateChanged(
-        filterItem: Any,
-        items: MutableList<Any>
+    fun onItemStateChanged(
+        item: Any,
+        list: MutableList<Any>
     ) = doAsync(errorHandler.errorReceiver) {
-        var filterCategory: FilterCategory? = null
-        when (filterItem) {
-            is SortName -> {
-                filterCategory = items.find {
-                    it is FilterCategory && it.title == resourceManager.getString(R.string.name)
-                } as FilterCategory
-                if (filterItem.isChecked) filterCategory.checkedCount = 1
-                else filterCategory.checkedCount = 0
-            }
+        val filterCategory = when (item) {
+            is SortName -> countInvolvedSortItems(R.string.name, list, item)
 
-            is SortPrice -> {
-                filterCategory = items.find {
-                    it is FilterCategory && it.title == resourceManager.getString(R.string.price)
-                } as FilterCategory
-                if (filterItem.isChecked) filterCategory.checkedCount = 1
-                else filterCategory.checkedCount = 0
-            }
+            is SortPrice -> countInvolvedSortItems(R.string.price, list, item)
 
-            is FilterYear -> {
-                filterCategory = items.find {
-                    it is FilterCategory && it.title == resourceManager.getString(R.string.year)
-                } as FilterCategory
-                if (filterItem.isChecked) filterCategory.checkedCount++
-                else filterCategory.checkedCount--
-            }
+            is FilterYear -> countInvolvedFilterItems(R.string.year, list, item)
 
-            is FilterAuthor -> {
-                filterCategory = items.find {
-                    it is FilterCategory && it.title == resourceManager.getString(R.string.author)
-                } as FilterCategory
-                if (filterItem.isChecked) filterCategory.checkedCount++
-                else filterCategory.checkedCount--
-            }
+            is FilterAuthor -> countInvolvedFilterItems(R.string.author, list, item)
 
-            is FilterStatus -> {
-                filterCategory = items.find {
-                    it is FilterCategory && it.title == resourceManager.getString(R.string.status)
-                } as FilterCategory
-                if (filterItem.isChecked) filterCategory.checkedCount++
-                else filterCategory.checkedCount--
-            }
+            is FilterStatus -> countInvolvedFilterItems(R.string.status, list, item)
 
-            is FilterPublisher -> {
-                filterCategory = items.find {
-                    it is FilterCategory && it.title == resourceManager.getString(R.string.publisher)
-                } as FilterCategory
-                if (filterItem.isChecked) filterCategory.checkedCount++
-                else filterCategory.checkedCount--
-            }
+            is FilterPublisher -> countInvolvedFilterItems(R.string.publisher, list, item)
+
+            else -> throw InvalidKeyException()
         }
-        uiThread { viewState.showItem(filterCategory!!) }
+        uiThread {
+            viewState.showBottomButtons(interactor.isConfigured())
+            viewState.showItem(filterCategory)
+        }
+    }
+
+    private fun countInvolvedSortItems(
+        @StringRes sortCategoryTitle: Int,
+        items: MutableList<Any>,
+        filterItem: Checkable
+    ): FilterCategory {
+        return (items.find {
+            it is FilterCategory && it.title == resourceManager.getString(sortCategoryTitle)
+        } as FilterCategory).apply {
+            checkedCount = if (filterItem.isChecked) 1 else 0
+            interactor.setSortByCheckedCount(sortCategoryTitle, checkedCount)
+        }
+    }
+
+    private fun countInvolvedFilterItems(
+        @StringRes filterCategoryTitle: Int,
+        items: MutableList<Any>,
+        filterItem: Any
+    ): FilterCategory = (items.find {
+        it is FilterCategory && it.title == resourceManager.getString(filterCategoryTitle)
+    } as FilterCategory).apply {
+        if ((filterItem as Checkable).isChecked) {
+            checkedCount++
+            interactor.incrementCheckedCount()
+        } else {
+            checkedCount--
+            interactor.decrementCheckedCount()
+        }
     }
 }

@@ -4,10 +4,12 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.filter.*
@@ -20,6 +22,8 @@ import app.suhocki.mybooks.ui.search.SearchActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.bottomPadding
+import org.jetbrains.anko.dimenAttr
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.startActivityForResult
 import toothpick.Toothpick
@@ -66,8 +70,8 @@ class FilterFragment : BaseFragment(), FilterView,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         ui.recyclerView.adapter = adapter
-        ui.apply.setOnClickListener {  }
-        ui.reset.setOnClickListener {  }
+        ui.apply.setOnClickListener { }
+        ui.reset.setOnClickListener { }
     }
 
     override fun showFilterItems(
@@ -87,6 +91,20 @@ class FilterFragment : BaseFragment(), FilterView,
         adapter.notifyItemChanged(indexToToggle)
     }
 
+    override fun showBottomButtons(configured: Boolean) {
+        if (configured && ui.bottomPanel.visibility != View.VISIBLE) {
+            ui.bottomPanel.translationY = context!!.dimenAttr(R.attr.actionBarSize).toFloat()
+            ui.bottomPanel.visibility = View.VISIBLE
+            ViewCompat.animate(ui.bottomPanel).translationY(0f).start()
+            ui.recyclerView.bottomPadding = context!!.dimenAttr(R.attr.actionBarSize)
+        } else if (!configured && ui.bottomPanel.visibility == View.VISIBLE){
+            ViewCompat.animate(ui.bottomPanel).translationY((ui.bottomPanel.height).toFloat())
+                .withEndAction { ui.bottomPanel.visibility = View.INVISIBLE }
+                .start()
+            ui.recyclerView.bottomPadding = 0
+        }
+    }
+
     override fun onFilterCategoryClick(filterCategory: FilterCategory) {
         if (filterCategory.isExpanded) {
             presenter.collapseFilterCategory(filterCategory, adapter.items)
@@ -94,19 +112,19 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onFilterAuthorClick(filterAuthor: FilterAuthor) {
-        presenter.onFilterItemStateChanged(filterAuthor, adapter.items)
+        presenter.onItemStateChanged(filterAuthor, adapter.items)
     }
 
     override fun onFilterYearClick(filterYear: FilterYear) {
-        presenter.onFilterItemStateChanged(filterYear, adapter.items)
+        presenter.onItemStateChanged(filterYear, adapter.items)
     }
 
     override fun onFilterStatusClick(filterStatus: FilterStatus) {
-        presenter.onFilterItemStateChanged(filterStatus, adapter.items)
+        presenter.onItemStateChanged(filterStatus, adapter.items)
     }
 
     override fun onFilterPublisherClick(filterPublisher: FilterPublisher) {
-        presenter.onFilterItemStateChanged(filterPublisher, adapter.items)
+        presenter.onItemStateChanged(filterPublisher, adapter.items)
     }
 
     override fun onSortNameToggle(sortName: SortName) {
@@ -115,7 +133,7 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onSortNameClick(sortName: SortName) {
-        presenter.onFilterItemStateChanged(sortName, adapter.items)
+        presenter.onItemStateChanged(sortName, adapter.items)
     }
 
     override fun onSortPriceToggle(sortPrice: SortPrice) {
@@ -124,7 +142,7 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onSortPriceClick(sortPrice: SortPrice) {
-        presenter.onFilterItemStateChanged(sortPrice, adapter.items)
+        presenter.onItemStateChanged(sortPrice, adapter.items)
     }
 
     override fun onExpandSearchClick() {}

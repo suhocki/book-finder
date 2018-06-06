@@ -24,6 +24,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 class FilterUI<in T : Fragment> : AnkoComponent<T> {
 
     lateinit var recyclerView: RecyclerView
+    lateinit var bottomPanel: View
     lateinit var apply: View
     lateinit var reset: View
 
@@ -67,12 +68,13 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
                 setOnTouchListener { _, _ -> hideKeyboard();false }
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
-                bottomMargin = dimenAttr(R.attr.actionBarSize)
             }
 
             frameLayout {
+                bottomPanel = this
                 backgroundColorResource = R.color.colorPrimary
                 ViewCompat.setElevation(this, 50f)
+                visibility = View.GONE
 
                 linearLayout {
 

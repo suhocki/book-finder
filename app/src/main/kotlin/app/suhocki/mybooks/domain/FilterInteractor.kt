@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.domain
 
 import android.os.Parcelable
+import android.support.annotation.StringRes
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.SearchAuthor
@@ -153,4 +154,15 @@ class FilterInteractor @Inject constructor(
 
         return newList
     }
+
+    fun setSortByCheckedCount(@StringRes sortCategoryTitle: Int, checkedCount: Int) {
+        filterItemStatistics.checkedSortByCategory[sortCategoryTitle] = checkedCount
+    }
+
+    fun incrementCheckedCount() = filterItemStatistics.checkedItemCount++
+
+    fun decrementCheckedCount() = filterItemStatistics.checkedItemCount--
+
+    fun isConfigured()  = filterItemStatistics.checkedItemCount > 0 ||
+            filterItemStatistics.checkedSortByCategory.containsValue(1)
 }

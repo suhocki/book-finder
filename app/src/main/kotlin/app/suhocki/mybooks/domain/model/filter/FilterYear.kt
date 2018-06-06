@@ -1,7 +1,6 @@
 package app.suhocki.mybooks.domain.model.filter
 
-interface FilterYear {
+interface FilterYear :  Checkable {
     val year: String
     val booksCount: Int
-    var isChecked: Boolean
 }

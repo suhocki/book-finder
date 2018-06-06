@@ -18,6 +18,10 @@ class FilterItemStatisticsProvider @Inject constructor(
 
     override fun get(): FilterItemStatistics = object : FilterItemStatistics {
 
+        override var checkedItemCount = 0
+
+        override var checkedSortByCategory = mutableMapOf<Int, Int>()
+
         override val filterCategories by lazy {
             mutableListOf<FilterCategory>().apply {
                 addAll(filterRepository.getFilterCategories())
@@ -108,13 +112,15 @@ class FilterItemStatisticsProvider @Inject constructor(
     internal class FilterYearEntity(
         override val year: String,
         override val booksCount: Int,
-        override var isChecked: Boolean = false
+        override var isChecked: Boolean = false,
+        override var isCheckable: Boolean = true
     ) : FilterYear
 
     internal class FilterStatusEntity(
         override val status: String,
         override val booksCount: Int,
-        override var isChecked: Boolean = false
+        override var isChecked: Boolean = false,
+        override var isCheckable: Boolean = true
     ) : FilterStatus
 
     internal class FilterPriceEntity(
@@ -222,7 +228,6 @@ class FilterItemStatisticsProvider @Inject constructor(
                 return arrayOfNulls(size)
             }
         }
-
 
 
     }

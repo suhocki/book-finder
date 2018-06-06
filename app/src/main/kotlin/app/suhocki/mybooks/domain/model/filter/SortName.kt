@@ -1,7 +1,6 @@
 package app.suhocki.mybooks.domain.model.filter
 
-interface SortName {
+interface SortName : Checkable {
     val sortName: String
-    var isChecked: Boolean
     var groupItem: SortName?
 }
