@@ -148,6 +148,21 @@ class FilterItemStatisticsProvider @Inject constructor(
             return 0
         }
 
+        override fun equals(other: Any?): Boolean {
+            if (this === other) return true
+            if (javaClass != other?.javaClass) return false
+
+            other as FilterPublisherEntity
+
+            if (publisherName != other.publisherName) return false
+
+            return true
+        }
+
+        override fun hashCode(): Int {
+            return publisherName.hashCode()
+        }
+
         companion object CREATOR : Parcelable.Creator<FilterPublisherEntity> {
             override fun createFromParcel(parcel: Parcel): FilterPublisherEntity {
                 return FilterPublisherEntity(parcel)

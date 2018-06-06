@@ -31,13 +31,17 @@ class FilterFragment : BaseFragment(), FilterView,
     OnFilterStatusClickListener,
     OnFilterYearClickListener,
     OnSearchClickListener,
-    OnSortNameToggleListener,
-    OnSortPriceToggleListener {
+    SortNameListener,
+    SortPriceListener {
 
     private val ui by lazy { FilterUI<FilterFragment>() }
 
     private val adapter by lazy {
         FilterAdapter(
+            this,
+            this,
+            this,
+            this,
             this,
             this,
             this,
@@ -78,6 +82,11 @@ class FilterFragment : BaseFragment(), FilterView,
         })
     }
 
+    override fun showItem(filterItem: Any) {
+        val indexToToggle = adapter.items.indexOf(filterItem)
+        adapter.notifyItemChanged(indexToToggle)
+    }
+
     override fun onFilterCategoryClick(filterCategory: FilterCategory) {
         if (filterCategory.isExpanded) {
             presenter.collapseFilterCategory(filterCategory, adapter.items)
@@ -85,29 +94,37 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onFilterAuthorClick(filterAuthor: FilterAuthor) {
-
+        presenter.onFilterItemStateChanged(filterAuthor, adapter.items)
     }
 
     override fun onFilterYearClick(filterYear: FilterYear) {
-
+        presenter.onFilterItemStateChanged(filterYear, adapter.items)
     }
 
-    override fun onFilterStatusClickClick(filterStatus: FilterStatus) {
-
+    override fun onFilterStatusClick(filterStatus: FilterStatus) {
+        presenter.onFilterItemStateChanged(filterStatus, adapter.items)
     }
 
     override fun onFilterPublisherClick(filterPublisher: FilterPublisher) {
-
+        presenter.onFilterItemStateChanged(filterPublisher, adapter.items)
     }
 
-    override fun onSortNameToggle(filterName: SortName) {
-        val indexToToggle = adapter.items.indexOf(filterName)
+    override fun onSortNameToggle(sortName: SortName) {
+        val indexToToggle = adapter.items.indexOf(sortName)
         adapter.notifyItemChanged(indexToToggle)
+    }
+
+    override fun onSortNameClick(sortName: SortName) {
+        presenter.onFilterItemStateChanged(sortName, adapter.items)
     }
 
     override fun onSortPriceToggle(sortPrice: SortPrice) {
         val indexToToggle = adapter.items.indexOf(sortPrice)
         adapter.notifyItemChanged(indexToToggle)
+    }
+
+    override fun onSortPriceClick(sortPrice: SortPrice) {
+        presenter.onFilterItemStateChanged(sortPrice, adapter.items)
     }
 
     override fun onExpandSearchClick() {}

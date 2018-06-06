@@ -5,8 +5,8 @@ import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.filter.FilterCategory
-import app.suhocki.mybooks.ui.filter.ui.FilterCategoryItemUI
 import app.suhocki.mybooks.ui.filter.listener.OnFilterCategoryClickListener
+import app.suhocki.mybooks.ui.filter.ui.FilterCategoryItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.imageResource
@@ -46,7 +46,7 @@ class FilterCategoryAdapterDelegate(
             this.filterCategory = filterCategory
             with(ui) {
                 imageConfigurated.visibility =
-                        if (filterCategory.isConfigurated) View.VISIBLE
+                        if (filterCategory.checkedCount > 0) View.VISIBLE
                         else View.GONE
                 imageState.imageResource =
                         if (filterCategory.isExpanded) R.drawable.ic_expand_less

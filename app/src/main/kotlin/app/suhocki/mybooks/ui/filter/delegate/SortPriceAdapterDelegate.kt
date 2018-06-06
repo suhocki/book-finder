@@ -4,12 +4,12 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.filter.SortPrice
 import app.suhocki.mybooks.ui.base.ui.FilterSubCategoryItemUI
-import app.suhocki.mybooks.ui.filter.listener.OnSortPriceToggleListener
+import app.suhocki.mybooks.ui.filter.listener.SortPriceListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 
 class SortPriceAdapterDelegate(
-    private val onSortPriceToggleListener: OnSortPriceToggleListener
+    private val sortPriceListener: SortPriceListener
 ) : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
@@ -42,9 +42,10 @@ class SortPriceAdapterDelegate(
             sortPrice.isChecked = !sortPrice.isChecked
             if (sortPrice.isChecked && sortPrice.groupItem!!.isChecked){
                 sortPrice.groupItem!!.isChecked = false
-                onSortPriceToggleListener.onSortPriceToggle(sortPrice.groupItem!!)
+                sortPriceListener.onSortPriceToggle(sortPrice.groupItem!!)
             }
             if (invertCheckBox) ui.checkBox.isChecked = !ui.checkBox.isChecked
+            sortPriceListener.onSortPriceClick(sortPrice)
         }
 
         fun bind(sortPrice: SortPrice) {

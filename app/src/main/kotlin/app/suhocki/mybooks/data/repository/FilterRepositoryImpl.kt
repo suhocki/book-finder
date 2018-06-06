@@ -36,8 +36,8 @@ class FilterRepositoryImpl @Inject constructor(
     private inner class FilterCategoryEntity(
         override val title: String,
         override var isExpanded: Boolean = false,
-        override var isConfigurated: Boolean = false
-    ) : FilterCategory
+        override var checkedCount: Int = 0
+        ) : FilterCategory
 
     private inner class FilterNameEntity(
         override val sortName: String,

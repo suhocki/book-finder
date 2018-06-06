@@ -38,16 +38,14 @@ class FilterAuthorAdapterDelegate(
         private lateinit var filterAuthor: FilterAuthor
 
         init {
-            itemView.setOnClickListener {
-                invert()
-                onFilterAuthorClickListener?.onFilterAuthorClick(filterAuthor)
-            }
+            itemView.setOnClickListener {invert()}
             ui.checkBox.setOnClickListener { invert(false) }
         }
 
         private fun invert(invertCheckBox: Boolean = true) {
             filterAuthor.isChecked = !filterAuthor.isChecked
             if (invertCheckBox) ui.checkBox.isChecked = !ui.checkBox.isChecked
+            onFilterAuthorClickListener?.onFilterAuthorClick(filterAuthor)
         }
 
         fun bind(filterAuthor: FilterAuthor) {

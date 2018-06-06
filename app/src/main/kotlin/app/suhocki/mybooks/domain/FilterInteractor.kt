@@ -121,15 +121,31 @@ class FilterInteractor @Inject constructor(
             }
 
             resourceManager.getString(R.string.hint_search_publisher) -> {
-                val searchEntity = items.find {
-                    it is Search && it.hintRes == R.string.hint_search_publisher
+                filterItem as FilterPublisher
+                if (filterItemStatistics.publishersFilterItems.contains(filterItem)) {
+                    val index = items.indexOf(filterItem)
+                    val oldValue = items[index] as FilterPublisher
+                    val newValue = FilterItemStatisticsProvider.FilterPublisherEntity(
+                        oldValue.publisherName,
+                        oldValue.booksCount,
+                        isChecked = true
+                    )
+                    newList[index] = newValue
+
+                    val index1 = filterItemStatistics.publishersFilterItems.indexOf(filterItem)
+                    filterItemStatistics.publishersFilterItems[index1] = newValue
+
+                } else {
+                    filterItemStatistics.publishersFilterItems.add(0, filterItem)
+                    val searchEntity = items.find {
+                        it is Search && it.hintRes == R.string.hint_search_publisher
+                    }
+                    val indexToInsert = items.indexOf(searchEntity) + 1
+                    newList.add(indexToInsert, filterItem.apply {
+                        isChecked = true
+                        isCheckable = true
+                    })
                 }
-                filterItemStatistics.publishersFilterItems.add(0, filterItem as FilterPublisher)
-                val indexToInsert = items.indexOf(searchEntity) + 1
-                newList.add(indexToInsert, filterItem.apply {
-                    isChecked = true
-                    isCheckable = true
-                })
             }
 
             else -> throw InvalidKeyException()

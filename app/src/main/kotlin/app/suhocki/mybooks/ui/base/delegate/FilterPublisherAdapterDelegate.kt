@@ -39,16 +39,14 @@ class FilterPublisherAdapterDelegate(
         private lateinit var filterPublisher: FilterPublisher
 
         init {
-            itemView.setOnClickListener {
-                invert()
-                onFilterPublisherClickListener?.onFilterPublisherClick(filterPublisher)
-            }
+            itemView.setOnClickListener {invert()}
             ui.checkBox.setOnClickListener { invert(false) }
         }
 
         private fun invert(invertCheckBox: Boolean = true) {
             filterPublisher.isChecked = !filterPublisher.isChecked
             if (invertCheckBox) ui.checkBox.isChecked = !ui.checkBox.isChecked
+            onFilterPublisherClickListener?.onFilterPublisherClick(filterPublisher)
         }
 
         fun bind(filterPublisher: FilterPublisher) {

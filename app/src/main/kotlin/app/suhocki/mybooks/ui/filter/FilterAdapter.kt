@@ -6,19 +6,23 @@ import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.base.delegate.FilterAuthorAdapterDelegate
 import app.suhocki.mybooks.ui.base.delegate.FilterPublisherAdapterDelegate
 import app.suhocki.mybooks.ui.base.delegate.SearchAdapterDelegate
+import app.suhocki.mybooks.ui.base.listener.OnFilterAuthorClickListener
+import app.suhocki.mybooks.ui.base.listener.OnFilterPublisherClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.filter.delegate.*
-import app.suhocki.mybooks.ui.filter.listener.OnFilterCategoryClickListener
-import app.suhocki.mybooks.ui.filter.listener.OnSortNameToggleListener
-import app.suhocki.mybooks.ui.filter.listener.OnSortPriceToggleListener
+import app.suhocki.mybooks.ui.filter.listener.*
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 
 class FilterAdapter(
-    onSortPriceToggleListener: OnSortPriceToggleListener,
-    onSortNameToggleListener: OnSortNameToggleListener,
+    onSortPriceToggleListener: SortPriceListener,
+    onSortNameToggleListener: SortNameListener,
     onFilterCategoryClickListener: OnFilterCategoryClickListener,
-    onSearchClickListener: OnSearchClickListener
+    onSearchClickListener: OnSearchClickListener,
+    onFilterAuthorClickListener: OnFilterAuthorClickListener,
+    yearClickListener: OnFilterYearClickListener,
+    onFilterStatusClickListener: OnFilterStatusClickListener,
+    onFilterPublisherClickListener: OnFilterPublisherClickListener
 ) : ListDelegationAdapter<MutableList<Any>>() {
 
     private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
@@ -30,10 +34,10 @@ class FilterAdapter(
     init {
         delegatesManager
             .addDelegate(FilterCategoryAdapterDelegate(onFilterCategoryClickListener))
-            .addDelegate(FilterAuthorAdapterDelegate())
-            .addDelegate(FilterPublisherAdapterDelegate())
-            .addDelegate(FilterYearAdapterDelegate())
-            .addDelegate(FilterStatusAdapterDelegate())
+            .addDelegate(FilterAuthorAdapterDelegate(onFilterAuthorClickListener))
+            .addDelegate(FilterPublisherAdapterDelegate(onFilterPublisherClickListener))
+            .addDelegate(FilterYearAdapterDelegate(yearClickListener))
+            .addDelegate(FilterStatusAdapterDelegate(onFilterStatusClickListener))
             .addDelegate(FilterPriceAdapterDelegate())
             .addDelegate(SearchAdapterDelegate(onSearchClickListener))
             .addDelegate(SortNameAdapterDelegate(onSortNameToggleListener))

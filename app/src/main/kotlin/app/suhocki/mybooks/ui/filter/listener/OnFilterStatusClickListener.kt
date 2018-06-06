@@ -4,5 +4,5 @@ import app.suhocki.mybooks.domain.model.filter.FilterStatus
 
 interface OnFilterStatusClickListener {
 
-    fun onFilterStatusClickClick(filterStatus: FilterStatus)
+    fun onFilterStatusClick(filterStatus: FilterStatus)
 }
