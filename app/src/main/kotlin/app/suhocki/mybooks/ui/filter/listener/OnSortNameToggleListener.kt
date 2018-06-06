@@ -2,7 +2,7 @@ package app.suhocki.mybooks.ui.filter.listener
 
 import app.suhocki.mybooks.domain.model.filter.SortName
 
-interface OnSortNameClickListener {
+interface OnSortNameToggleListener {
 
-    fun onSortNameClick(filterName: SortName)
+    fun onSortNameToggle(filterName: SortName)
 }

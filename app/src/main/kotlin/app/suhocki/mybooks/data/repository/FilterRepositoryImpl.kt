@@ -20,10 +20,18 @@ class FilterRepositoryImpl @Inject constructor(
     override fun getFilterByNameItems(): List<SortName> =
         resourceManager.getStringArray(R.array.sort_by_name)
             .map { FilterNameEntity(it) }
+            .apply {
+                this[0].groupItem = this[1]
+                this[1].groupItem = this[0]
+            }
 
     override fun getFilterByPriceItems(): List<SortPrice> =
         resourceManager.getStringArray(R.array.sort_by_name)
             .map { FilterPriceEntity(it) }
+            .apply {
+                this[0].groupItem = this[1]
+                this[1].groupItem = this[0]
+            }
 
     private inner class FilterCategoryEntity(
         override val title: String,
@@ -33,11 +41,13 @@ class FilterRepositoryImpl @Inject constructor(
 
     private inner class FilterNameEntity(
         override val sortName: String,
-        override var isChecked: Boolean = false
+        override var isChecked: Boolean = false,
+        override var groupItem: SortName? = null
     ) : SortName
 
     private inner class FilterPriceEntity(
         override val sortName: String,
-        override var isChecked: Boolean = false
+        override var isChecked: Boolean = false,
+        override var groupItem: SortPrice? = null
     ) : SortPrice
 }

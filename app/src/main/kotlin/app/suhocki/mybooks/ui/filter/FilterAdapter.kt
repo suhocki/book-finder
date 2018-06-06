@@ -9,12 +9,14 @@ import app.suhocki.mybooks.ui.base.delegate.SearchAdapterDelegate
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.filter.delegate.*
 import app.suhocki.mybooks.ui.filter.listener.OnFilterCategoryClickListener
-import app.suhocki.mybooks.ui.filter.listener.OnSortPriceClickListener
+import app.suhocki.mybooks.ui.filter.listener.OnSortNameToggleListener
+import app.suhocki.mybooks.ui.filter.listener.OnSortPriceToggleListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 
 class FilterAdapter(
-    onSortPriceClickListener: OnSortPriceClickListener,
+    onSortPriceToggleListener: OnSortPriceToggleListener,
+    onSortNameToggleListener: OnSortNameToggleListener,
     onFilterCategoryClickListener: OnFilterCategoryClickListener,
     onSearchClickListener: OnSearchClickListener
 ) : ListDelegationAdapter<MutableList<Any>>() {
@@ -34,8 +36,8 @@ class FilterAdapter(
             .addDelegate(FilterStatusAdapterDelegate())
             .addDelegate(FilterPriceAdapterDelegate())
             .addDelegate(SearchAdapterDelegate(onSearchClickListener))
-            .addDelegate(SortNameAdapterDelegate())
-            .addDelegate(SortPriceAdapterDelegate(onSortPriceClickListener))
+            .addDelegate(SortNameAdapterDelegate(onSortNameToggleListener))
+            .addDelegate(SortPriceAdapterDelegate(onSortPriceToggleListener))
     }
 
     override fun getItemCount(): Int =

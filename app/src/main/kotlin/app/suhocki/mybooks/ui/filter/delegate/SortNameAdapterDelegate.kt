@@ -4,10 +4,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.filter.SortName
 import app.suhocki.mybooks.ui.base.ui.FilterSubCategoryItemUI
+import app.suhocki.mybooks.ui.filter.listener.OnSortNameToggleListener
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 
-class SortNameAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
+class SortNameAdapterDelegate(
+    private val sortNameToggleListener: OnSortNameToggleListener
+) : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         FilterSubCategoryItemUI()
@@ -37,6 +40,10 @@ class SortNameAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
 
         private fun invert(invertCheckBox: Boolean = true) {
             filterName.isChecked = !filterName.isChecked
+            if (filterName.isChecked && filterName.groupItem!!.isChecked){
+                filterName.groupItem!!.isChecked = false
+                sortNameToggleListener.onSortNameToggle(filterName.groupItem!!)
+            }
             if (invertCheckBox) ui.checkBox.isChecked = !ui.checkBox.isChecked
         }
 
