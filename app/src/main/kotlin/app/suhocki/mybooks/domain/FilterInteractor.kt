@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.domain
 
+import android.os.Parcelable
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.SearchAuthor
@@ -83,5 +84,43 @@ class FilterInteractor @Inject constructor(
             }
 
         else -> throw InvalidKeyException()
+    }
+
+    fun addFilterItemToList(
+        filterItem: Parcelable,
+        items: MutableList<Any>,
+        searchKey: String
+    ): List<Any> {
+        val newList = mutableListOf<Any>().apply { addAll(items) }
+
+        when (searchKey) {
+            resourceManager.getString(R.string.hint_search_author) -> {
+                val searchEntity = items.find {
+                    it is Search && it.hintRes == R.string.hint_search_author
+                }
+                filterItemStatistics.authorsFilterItems.add(0, filterItem as FilterAuthor)
+                val indexToInsert = items.indexOf(searchEntity) + 1
+                newList.add(indexToInsert, filterItem.apply {
+                    isChecked = true
+                    isCheckable = true
+                })
+            }
+
+            resourceManager.getString(R.string.hint_search_publisher) -> {
+                val searchEntity = items.find {
+                    it is Search && it.hintRes == R.string.hint_search_publisher
+                }
+                filterItemStatistics.publishersFilterItems.add(0, filterItem as FilterPublisher)
+                val indexToInsert = items.indexOf(searchEntity) + 1
+                newList.add(indexToInsert, filterItem.apply {
+                    isChecked = true
+                    isCheckable = true
+                })
+            }
+
+            else -> throw InvalidKeyException()
+        }
+
+        return newList
     }
 }

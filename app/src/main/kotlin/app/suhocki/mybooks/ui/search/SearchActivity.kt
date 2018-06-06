@@ -1,6 +1,9 @@
 package app.suhocki.mybooks.ui.search
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import android.view.Window
 import app.suhocki.mybooks.di.DI
@@ -68,14 +71,26 @@ class SearchActivity : MvpAppCompatActivity(), SearchView,
     }
 
     override fun onFilterPublisherClick(filterPublisher: FilterPublisher) {
-
+        presenter.handleClickedItem(filterPublisher)
     }
 
     override fun onFilterAuthorClick(filterAuthor: FilterAuthor) {
+        presenter.handleClickedItem(filterAuthor)
+    }
 
+    override fun finishWithResult(searchKey: String, parcelable: Parcelable) {
+        setResult(
+            Activity.RESULT_OK,
+            Intent().apply {
+                putExtra(ARG_SEARCH_KEY, searchKey)
+                putExtra(ARG_SEARCH_RESPONSE, parcelable)
+            }
+        )
+        finish()
     }
 
     companion object {
         const val ARG_SEARCH_KEY = "ARG_SEARCH_KEY"
+        const val ARG_SEARCH_RESPONSE = "ARG_SEARCH_RESPONSE"
     }
 }

@@ -1,5 +1,7 @@
 package app.suhocki.mybooks.di.provider
 
+import android.os.Parcel
+import android.os.Parcelable
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.domain.model.statistics.FilterItemStatistics
@@ -83,20 +85,6 @@ class FilterItemStatisticsProvider @Inject constructor(
         }
     }
 
-    internal class FilterAuthorEntity(
-        override val authorName: String,
-        override val booksCount: Int,
-        override var isChecked: Boolean = false,
-        override var isCheckable: Boolean = true
-    ) : FilterAuthor
-
-    internal class FilterPublisherEntity(
-        override val publisherName: String,
-        override val booksCount: Int,
-        override var isChecked: Boolean = false,
-        override var isCheckable: Boolean = true
-    ) : FilterPublisher
-
     internal class FilterYearEntity(
         override val year: String,
         override val booksCount: Int,
@@ -115,4 +103,76 @@ class FilterItemStatisticsProvider @Inject constructor(
         override var from: Double = 0.0,
         override var to: Double = 0.0
     ) : FilterPrice
+
+    internal class FilterPublisherEntity(
+        override val publisherName: String,
+        override val booksCount: Int,
+        override var isChecked: Boolean = false,
+        override var isCheckable: Boolean = true
+    ) : FilterPublisher {
+        constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte()
+        )
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(publisherName)
+            parcel.writeInt(booksCount)
+            parcel.writeByte(if (isChecked) 1 else 0)
+            parcel.writeByte(if (isCheckable) 1 else 0)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<FilterPublisherEntity> {
+            override fun createFromParcel(parcel: Parcel): FilterPublisherEntity {
+                return FilterPublisherEntity(parcel)
+            }
+
+            override fun newArray(size: Int): Array<FilterPublisherEntity?> {
+                return arrayOfNulls(size)
+            }
+        }
+    }
+
+    internal class FilterAuthorEntity(
+        override val authorName: String,
+        override val booksCount: Int,
+        override var isChecked: Boolean = false,
+        override var isCheckable: Boolean = true
+    ) : FilterAuthor {
+        constructor(parcel: Parcel) : this(
+            parcel.readString(),
+            parcel.readInt(),
+            parcel.readByte() != 0.toByte(),
+            parcel.readByte() != 0.toByte()
+        )
+
+        override fun writeToParcel(parcel: Parcel, flags: Int) {
+            parcel.writeString(authorName)
+            parcel.writeInt(booksCount)
+            parcel.writeByte(if (isChecked) 1 else 0)
+            parcel.writeByte(if (isCheckable) 1 else 0)
+        }
+
+        override fun describeContents(): Int {
+            return 0
+        }
+
+        companion object CREATOR : Parcelable.Creator<FilterAuthorEntity> {
+            override fun createFromParcel(parcel: Parcel): FilterAuthorEntity {
+                return FilterAuthorEntity(parcel)
+            }
+
+            override fun newArray(size: Int): Array<FilterAuthorEntity?> {
+                return arrayOfNulls(size)
+            }
+        }
+
+    }
+
 }

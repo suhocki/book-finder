@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.filter
 
+import android.os.Parcelable
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.domain.FilterInteractor
 import app.suhocki.mybooks.domain.model.filter.FilterCategory
@@ -11,14 +12,14 @@ import javax.inject.Inject
 
 @InjectViewState
 class FilterPresenter @Inject constructor(
-    private val filterInteractor: FilterInteractor,
+    private val interactor: FilterInteractor,
     private val errorHandler: ErrorHandler
 ) : MvpPresenter<FilterView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         doAsync(errorHandler.errorReceiver) {
-            val filterItems = filterInteractor.getFilterCategories().toList()
+            val filterItems = interactor.getFilterCategories().toList()
             uiThread {
                 viewState.showFilterItems(filterItems)
             }
@@ -37,7 +38,7 @@ class FilterPresenter @Inject constructor(
                 override var isExpanded = false
                 override var isConfigurated = filterCategory.isConfigurated
             })
-            removeAll { filterInteractor.isItemUnderCategory(filterCategory, it) }
+            removeAll { interactor.isItemUnderCategory(filterCategory, it) }
         }
         uiThread {
             viewState.showFilterItems(filterItems)
@@ -58,11 +59,20 @@ class FilterPresenter @Inject constructor(
             })
             addAll(
                 filterCategoryIndex + 1,
-                filterInteractor.getFilterItemsFor(filterCategory)
+                interactor.getFilterItemsFor(filterCategory)
             )
         }
         uiThread {
             viewState.showFilterItems(filterItems, filterCategoryIndex)
         }
+    }
+
+    fun addFilterItem(
+        filterItem: Parcelable,
+        searchKey: String,
+        items: MutableList<Any>
+    ) = doAsync(errorHandler.errorReceiver) {
+        val updatedList = interactor.addFilterItemToList(filterItem, items, searchKey)
+        uiThread { viewState.showFilterItems(updatedList) }
     }
 }

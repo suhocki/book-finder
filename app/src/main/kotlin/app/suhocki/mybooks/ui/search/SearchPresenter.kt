@@ -1,6 +1,8 @@
 package app.suhocki.mybooks.ui.search
 
+import android.os.Parcelable
 import app.suhocki.mybooks.data.error.ErrorHandler
+import app.suhocki.mybooks.di.SearchKey
 import app.suhocki.mybooks.domain.SearchInteractor
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -11,8 +13,9 @@ import javax.inject.Inject
 @InjectViewState
 class SearchPresenter @Inject constructor(
     private val interactor: SearchInteractor,
-    private val errorHandler: ErrorHandler
-) : MvpPresenter<SearchView>() {
+    private val errorHandler: ErrorHandler,
+    @SearchKey private val searchKey: String
+    ) : MvpPresenter<SearchView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -26,5 +29,9 @@ class SearchPresenter @Inject constructor(
                 if (searchItems.isEmpty()) viewState.showEmptyScreen()
             }
         }
+    }
+
+    fun handleClickedItem(parcelable: Parcelable) {
+        viewState.finishWithResult(searchKey, parcelable)
     }
 }

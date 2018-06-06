@@ -1,8 +1,8 @@
 package app.suhocki.mybooks.domain.model.filter
 
-interface FilterPublisher {
+import android.os.Parcelable
+
+interface FilterPublisher : Parcelable, Checkable {
     val publisherName: String
     val booksCount: Int
-    var isChecked: Boolean
-    var isCheckable: Boolean
 }

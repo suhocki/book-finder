@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.search
 
+import android.os.Parcelable
 import android.support.annotation.StringRes
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
@@ -14,4 +15,6 @@ interface SearchView : MvpView {
     fun showProgressBar(isVisible: Boolean)
 
     fun showEmptyScreen()
+
+    fun finishWithResult(searchKey: String, parcelable: Parcelable)
 }

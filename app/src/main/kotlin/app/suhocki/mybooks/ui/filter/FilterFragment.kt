@@ -1,7 +1,9 @@
 package app.suhocki.mybooks.ui.filter
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
@@ -122,6 +124,13 @@ class FilterFragment : BaseFragment(), FilterView,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK &&
+            requestCode == ACTIVITY_RESULT_SEARCH &&
+            data != null) {
+            val payload = data.getParcelableExtra<Parcelable>(SearchActivity.ARG_SEARCH_RESPONSE)
+            val searchKey = data.getStringExtra(SearchActivity.ARG_SEARCH_KEY)
+            presenter.addFilterItem(payload, searchKey, adapter.items)
+        }
     }
 
     companion object {
