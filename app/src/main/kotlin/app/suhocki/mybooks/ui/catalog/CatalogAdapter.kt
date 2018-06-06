@@ -3,9 +3,9 @@ package app.suhocki.mybooks.ui.catalog
 import android.support.v7.recyclerview.extensions.AsyncDifferConfig
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
+import app.suhocki.mybooks.ui.base.delegate.SearchAdapterDelegate
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
-import app.suhocki.mybooks.ui.base.search.OnSearchClickListener
-import app.suhocki.mybooks.ui.base.search.SearchAdapterDelegate
+import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.delegate.BannerAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.delegate.CategoryAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
@@ -30,7 +30,11 @@ class CatalogAdapter(
             .addDelegate(CategoryAdapterDelegate(onCategoryClickListener))
             .addDelegate(BannerAdapterDelegate())
             .addDelegate(HeaderAdapterDelegate())
-            .addDelegate(SearchAdapterDelegate(onSearchClickListener))
+            .addDelegate(
+                SearchAdapterDelegate(
+                    onSearchClickListener
+                )
+            )
             .addDelegate(SearchResultBookAdapterDelegate(onBookClickListener))
     }
 

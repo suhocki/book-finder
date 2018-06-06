@@ -17,7 +17,6 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.*
 import toothpick.Toothpick
-import javax.inject.Inject
 
 
 class InitialActivity : MvpAppCompatActivity(), InitialView {
@@ -25,8 +24,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
     @InjectPresenter
     lateinit var presenter: InitialPresenter
 
-    @Inject
-    lateinit var ui: InitialUI
+    private val ui by lazy { InitialUI() }
 
     @ProvidePresenter
     fun providePresenter(): InitialPresenter =
@@ -35,9 +33,6 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Toothpick.openScopes(DI.APP_SCOPE).apply {
-            Toothpick.inject(this@InitialActivity, this)
-        }
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         ui.setContentView(this)
     }

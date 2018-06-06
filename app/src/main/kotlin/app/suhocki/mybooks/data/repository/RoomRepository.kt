@@ -40,8 +40,14 @@ class RoomRepository @Inject constructor(
     override fun getAuthorStatisticsFor(category: Category) =
         authorStatisticsDao.getAllByCategory(category.name)
 
+    override fun getAuthorsWithName(searchQuery: String, category: Category) =
+        authorStatisticsDao.getAllByNameAndCategory("%$searchQuery%", category.name)
+
     override fun getPublisherStatisticsFor(category: Category) =
         publisherStatisticsDao.getAllByCategory(category.name)
+
+    override fun getPublishersWithName(searchQuery: String, category: Category) =
+        publisherStatisticsDao.getAllByNameAndCategory("%$searchQuery%", category.name)
 
     override fun getYearStatisticsFor(category: Category): List<YearStatistics> =
         yearStatisticsDao.getAllByCategory(category.name)

@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.base.search
+package app.suhocki.mybooks.ui.base.ui
 
 import android.support.v7.widget.RecyclerView
 import android.text.InputType

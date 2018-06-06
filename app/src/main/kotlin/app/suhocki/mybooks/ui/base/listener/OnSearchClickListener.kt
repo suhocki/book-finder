@@ -1,4 +1,6 @@
-package app.suhocki.mybooks.ui.base.search
+package app.suhocki.mybooks.ui.base.listener
+
+import app.suhocki.mybooks.domain.model.Search
 
 interface OnSearchClickListener {
 
@@ -8,5 +10,5 @@ interface OnSearchClickListener {
 
     fun onClearSearchClick()
 
-    fun onStartSearchClick()
+    fun onStartSearchClick(search: Search)
 }

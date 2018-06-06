@@ -31,6 +31,10 @@
             android:theme="@style/Dialog" />
 
         <activity
+            android:name=".ui.search.SearchActivity"
+            android:theme="@style/Dialog" />
+
+        <activity
             android:name=".ui.main.MainActivity"
             android:windowSoftInputMode="adjustPan" />
 

@@ -1,19 +1,25 @@
 package app.suhocki.mybooks.ui.filter
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.di.DI
+import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.ui.base.BaseFragment
-import app.suhocki.mybooks.ui.base.search.OnSearchClickListener
+import app.suhocki.mybooks.ui.base.listener.OnFilterAuthorClickListener
+import app.suhocki.mybooks.ui.base.listener.OnFilterPublisherClickListener
+import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.filter.listener.*
+import app.suhocki.mybooks.ui.search.SearchActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.support.v4.ctx
+import org.jetbrains.anko.support.v4.startActivityForResult
 import toothpick.Toothpick
 
 class FilterFragment : BaseFragment(), FilterView,
@@ -23,7 +29,8 @@ class FilterFragment : BaseFragment(), FilterView,
     OnFilterStatusClickListener,
     OnFilterYearClickListener,
     OnSearchClickListener,
-    OnSortNameClickListener, OnSortPriceClickListener {
+    OnSortNameClickListener,
+    OnSortPriceClickListener {
 
     private val ui by lazy { FilterUI<FilterFragment>() }
 
@@ -106,10 +113,20 @@ class FilterFragment : BaseFragment(), FilterView,
 
     override fun onClearSearchClick() {}
 
-    override fun onStartSearchClick() {}
+    override fun onStartSearchClick(search: Search) {
+        startActivityForResult<SearchActivity>(
+            ACTIVITY_RESULT_SEARCH,
+            SearchActivity.ARG_SEARCH_KEY to getString(search.hintRes)
+        )
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+    }
 
     companion object {
         const val UNDEFINED_POSITION = -1
+        const val ACTIVITY_RESULT_SEARCH = 1024
 
         fun newInstance() = FilterFragment()
     }

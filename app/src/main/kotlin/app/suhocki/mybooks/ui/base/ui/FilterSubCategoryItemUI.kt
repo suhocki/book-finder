@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.filter.ui
+package app.suhocki.mybooks.ui.base.ui
 
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -10,7 +10,7 @@ import android.widget.TextView
 import app.suhocki.mybooks.R
 import org.jetbrains.anko.*
 
-class FilterCheckBoxItemUI : AnkoComponent<ViewGroup> {
+class FilterSubCategoryItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
     lateinit var name: TextView
     lateinit var booksCount: TextView
@@ -19,14 +19,14 @@ class FilterCheckBoxItemUI : AnkoComponent<ViewGroup> {
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 
         frameLayout {
-            this@FilterCheckBoxItemUI.parent = this
+            this@FilterSubCategoryItemUI.parent = this
             backgroundResource = R.color.colorWhite
 
             linearLayout {
                 rightPadding = dimenAttr(R.attr.actionBarSize)
 
                 textView {
-                    this@FilterCheckBoxItemUI.name = this
+                    this@FilterSubCategoryItemUI.name = this
                     maxLines = 1
                     ellipsize = TextUtils.TruncateAt.END
                     textAppearance = R.style.TextAppearance_AppCompat_Body1
@@ -48,7 +48,7 @@ class FilterCheckBoxItemUI : AnkoComponent<ViewGroup> {
             frameLayout {
 
                 checkBox {
-                    this@FilterCheckBoxItemUI.checkBox = this
+                    this@FilterSubCategoryItemUI.checkBox = this
                 }.lparams {
                     gravity = Gravity.CENTER
                 }

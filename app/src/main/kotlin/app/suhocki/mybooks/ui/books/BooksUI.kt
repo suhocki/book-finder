@@ -111,7 +111,7 @@ class BooksUI : AnkoComponent<BooksActivity> {
                             setImageDrawable(this)
                         }
 
-                        textView(R.string.empty_screen) {
+                        textView(R.string.empty_screen_books) {
                             gravity = Gravity.CENTER
                         }.lparams {
                             topMargin = dip(16)

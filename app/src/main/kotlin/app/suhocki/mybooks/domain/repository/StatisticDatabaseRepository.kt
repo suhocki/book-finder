@@ -6,7 +6,11 @@ import app.suhocki.mybooks.domain.model.statistics.*
 interface StatisticDatabaseRepository {
     fun getAuthorStatisticsFor(category: Category): List<AuthorStatistics>
 
+    fun getAuthorsWithName(searchQuery: String, category: Category): List<AuthorStatistics>
+
     fun getPublisherStatisticsFor(category: Category): List<PublisherStatistics>
+
+    fun getPublishersWithName(searchQuery: String, category: Category): List<PublisherStatistics>
 
     fun getYearStatisticsFor(category: Category): List<YearStatistics>
 

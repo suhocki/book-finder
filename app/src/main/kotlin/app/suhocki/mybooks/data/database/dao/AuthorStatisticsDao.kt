@@ -14,4 +14,7 @@ interface AuthorStatisticsDao {
 
     @Query("SELECT * FROM AuthorStatistics WHERE category=:category ORDER BY count DESC LIMIT 5")
     fun getAllByCategory(category: String): List<AuthorStatisticsEntity>
+
+    @Query("SELECT * FROM AuthorStatistics WHERE category=:category AND author like :searchQuery ORDER BY count DESC")
+    fun getAllByNameAndCategory(searchQuery: String, category: String): List<AuthorStatisticsEntity>
 }

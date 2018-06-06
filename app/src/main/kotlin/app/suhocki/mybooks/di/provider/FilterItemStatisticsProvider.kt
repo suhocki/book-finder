@@ -86,13 +86,15 @@ class FilterItemStatisticsProvider @Inject constructor(
     internal class FilterAuthorEntity(
         override val authorName: String,
         override val booksCount: Int,
-        override var isChecked: Boolean = false
+        override var isChecked: Boolean = false,
+        override var isCheckable: Boolean = true
     ) : FilterAuthor
 
     internal class FilterPublisherEntity(
         override val publisherName: String,
         override val booksCount: Int,
-        override var isChecked: Boolean = false
+        override var isChecked: Boolean = false,
+        override var isCheckable: Boolean = true
     ) : FilterPublisher
 
     internal class FilterYearEntity(

@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.filter.listener
+package app.suhocki.mybooks.ui.base.listener
 
 import app.suhocki.mybooks.domain.model.filter.FilterAuthor
 

@@ -4,4 +4,5 @@ interface FilterPublisher {
     val publisherName: String
     val booksCount: Int
     var isChecked: Boolean
+    var isCheckable: Boolean
 }

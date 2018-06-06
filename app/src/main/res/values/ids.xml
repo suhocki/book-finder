@@ -9,4 +9,5 @@
     <id name="id_search">6</id>
     <id name="id_filter_container">7</id>
     <id name="id_recycler_filter">8</id>
+    <id name="id_recycler_search">9</id>
 </resources>

@@ -11,7 +11,7 @@ import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
-import app.suhocki.mybooks.ui.base.search.OnSearchClickListener
+import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.books.BooksActivity
 import app.suhocki.mybooks.ui.catalog.listener.OnCategoryClickListener
 import app.suhocki.mybooks.ui.details.DetailsActivity
@@ -167,7 +167,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
         presenter.clearSearchQuery()
     }
 
-    override fun onStartSearchClick() {
+    override fun onStartSearchClick(search: Search) {
         ui.search.hideKeyboard()
         presenter.search()
     }

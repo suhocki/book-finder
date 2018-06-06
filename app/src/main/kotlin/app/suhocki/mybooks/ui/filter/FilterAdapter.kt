@@ -3,8 +3,12 @@ package app.suhocki.mybooks.ui.filter
 import android.support.v7.recyclerview.extensions.AsyncDifferConfig
 import android.support.v7.recyclerview.extensions.AsyncListDiffer
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
-import app.suhocki.mybooks.ui.base.search.OnSearchClickListener
-import app.suhocki.mybooks.ui.base.search.SearchAdapterDelegate
+import app.suhocki.mybooks.ui.base.delegate.FilterAuthorAdapterDelegate
+import app.suhocki.mybooks.ui.base.delegate.FilterPublisherAdapterDelegate
+import app.suhocki.mybooks.ui.base.delegate.SearchAdapterDelegate
+import app.suhocki.mybooks.ui.base.listener.OnFilterAuthorClickListener
+import app.suhocki.mybooks.ui.base.listener.OnFilterPublisherClickListener
+import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.filter.delegate.*
 import app.suhocki.mybooks.ui.filter.listener.*
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
@@ -30,12 +34,24 @@ class FilterAdapter(
     init {
         delegatesManager
             .addDelegate(FilterCategoryAdapterDelegate(onFilterCategoryClickListener))
-            .addDelegate(FilterAuthorAdapterDelegate(onFilterAuthorClickListener))
-            .addDelegate(FilterPublisherAdapterDelegate(onFilterPublisherClickListener))
+            .addDelegate(
+                FilterAuthorAdapterDelegate(
+                    onFilterAuthorClickListener
+                )
+            )
+            .addDelegate(
+                FilterPublisherAdapterDelegate(
+                    onFilterPublisherClickListener
+                )
+            )
             .addDelegate(FilterYearAdapterDelegate(onFilterYearClickListener))
             .addDelegate(FilterStatusAdapterDelegate(onFilterStatusClickListener))
             .addDelegate(FilterPriceAdapterDelegate())
-            .addDelegate(SearchAdapterDelegate(onSearchClickListener))
+            .addDelegate(
+                SearchAdapterDelegate(
+                    onSearchClickListener
+                )
+            )
             .addDelegate(SortNameAdapterDelegate(onSortNameClickListener))
             .addDelegate(SortPriceAdapterDelegate(onSortPriceClickListener))
     }

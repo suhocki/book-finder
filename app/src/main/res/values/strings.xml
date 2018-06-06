@@ -24,12 +24,15 @@
     <string name="error">Error</string>
     <string name="categories">Categories</string>
     <string name="rubles">%.2f rub.</string>
-    <string name="empty_screen">The current database does not contains any books on this category</string>
+    <string name="empty_screen_books">The current database does not contains any books on this category</string>
+    <string name="empty_screen_authors">The current database does not contains any suitable authors for this query</string>
     <string name="back">Back</string>
     <string name="isbn">ISBN</string>
     <string name="author">Author</string>
+    <string name="authors">Authors</string>
     <string name="name">Name</string>
     <string name="publisher">Publisher</string>
+    <string name="publishers">Publishers</string>
     <string name="year">Year</string>
     <string name="price">Price</string>
     <string name="cover">Cover</string>

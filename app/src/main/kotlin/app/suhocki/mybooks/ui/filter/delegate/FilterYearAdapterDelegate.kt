@@ -3,8 +3,8 @@ package app.suhocki.mybooks.ui.filter.delegate
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.filter.FilterYear
+import app.suhocki.mybooks.ui.base.ui.FilterSubCategoryItemUI
 import app.suhocki.mybooks.ui.filter.listener.OnFilterYearClickListener
-import app.suhocki.mybooks.ui.filter.ui.FilterCheckBoxItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 
@@ -13,7 +13,7 @@ class FilterYearAdapterDelegate(
 ) : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
-        FilterCheckBoxItemUI()
+        FilterSubCategoryItemUI()
             .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
             .let { ViewHolder(it) }
 
@@ -29,7 +29,7 @@ class FilterYearAdapterDelegate(
 
 
     private inner class ViewHolder(
-        val ui: FilterCheckBoxItemUI
+        val ui: FilterSubCategoryItemUI
     ) : RecyclerView.ViewHolder(ui.parent) {
 
         private lateinit var filterYear: FilterYear

@@ -60,7 +60,7 @@ class FilterPriceItemUI : AnkoComponent<ViewGroup> {
                     leftPadding = dip(8)
                     isFocusableInTouchMode = true
                     inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-                    imeOptions = EditorInfo.IME_ACTION_SEARCH
+                    imeOptions = EditorInfo.IME_ACTION_DONE
                     isVerticalScrollBarEnabled = false
                 }.lparams(matchParent, matchParent)
 

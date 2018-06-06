@@ -25,11 +25,14 @@
     <string name="error">Ошибка</string>
     <string name="categories">Категории</string>
     <string name="rubles">%.2f руб.</string>
-    <string name="empty_screen">Текущая версия базы данных не содержит книг по этой категории</string>
+    <string name="empty_screen_books">Текущая версия базы данных не содержит книг по этой категории</string>
+    <string name="empty_screen_authors">Текущая версия базы данных не содержит авторов, удовлетворяющих этому запросу</string>
     <string name="back">Назад</string>
     <string name="isbn">ISBN</string>
     <string name="author">Автор</string>
+    <string name="authors">Авторы</string>
     <string name="publisher">Издательство</string>
+    <string name="publishers">Издательства</string>
     <string name="year">Год</string>
     <string name="price">Цена</string>
     <string name="cover">Обложка</string>
