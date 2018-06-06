@@ -22,7 +22,7 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
 
         frameLayout {
             this@SearchItemUI.parent = this
-            padding = dimen(R.dimen.padding_item_search)
+            verticalPadding = dimen(R.dimen.padding_item_search)
 
             themedCardView {
                 useCompatPadding = true
@@ -34,8 +34,7 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
                     editText {
                         id = R.id.id_search
                         editText = this
-                        leftPadding = dip(14)
-                        rightPadding = dip(14)
+                        horizontalPadding = dip(12)
                         backgroundColorResource = android.R.color.transparent
                         textSizeDimen = R.dimen.size_text_search
                         maxLines = 1
@@ -54,7 +53,7 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
                         setForegroundCompat(context.attrResource(R.attr.selectableItemBackgroundBorderless))
                         backgroundResource = R.drawable.search_icon_background
                         padding = dip(8)
-                    }.lparams(dip(38), matchParent) {
+                    }.lparams(dimenAttr(R.attr.actionBarSize) - dimen(R.dimen.padding_item_search) - dip(4), matchParent) {
                         gravity = Gravity.CENTER_VERTICAL or Gravity.END
                     }
 
@@ -67,7 +66,9 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
             rootView.layoutParams = RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 dimenAttr(R.attr.actionBarSize)
-            )
+            ).apply {
+                horizontalMargin = dip(4)
+            }
 
         }
     }

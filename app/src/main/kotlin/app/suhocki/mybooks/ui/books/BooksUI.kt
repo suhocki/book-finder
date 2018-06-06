@@ -137,7 +137,6 @@ class BooksUI : AnkoComponent<BooksActivity> {
 
             frameLayout {
                 id = R.id.id_filter_container
-
             }.lparams(dimen(R.dimen.navigation_drawer_width), matchParent) {
                 gravity = Gravity.END
             }

@@ -62,6 +62,8 @@ class FilterFragment : BaseFragment(), FilterView,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         ui.recyclerView.adapter = adapter
+        ui.apply.setOnClickListener {  }
+        ui.reset.setOnClickListener {  }
     }
 
     override fun showFilterItems(

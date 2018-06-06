@@ -28,12 +28,12 @@ class FilterSubCategoryItemUI : AnkoComponent<ViewGroup> {
                 textView {
                     this@FilterSubCategoryItemUI.name = this
                     maxLines = 1
+                    horizontalPadding = dip(16)
                     ellipsize = TextUtils.TruncateAt.END
                     textAppearance = R.style.TextAppearance_AppCompat_Body1
                 }.lparams(wrapContent, wrapContent) {
                     weight = 1f
                     gravity = Gravity.CENTER_VERTICAL
-                    leftPadding = dip(16)
                 }
 
                 textView {

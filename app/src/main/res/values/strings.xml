@@ -53,6 +53,8 @@
     <string name="enter_query">Type query</string>
     <string name="from">From:</string>
     <string name="to">To:</string>
+    <string name="apply">Apply</string>
+    <string name="reset">Reset</string>
 
     <string name="percent" translatable="false">" "(%d%%)</string>
 </resources>

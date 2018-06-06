@@ -2,12 +2,15 @@ package app.suhocki.mybooks.ui.filter
 
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
+import android.support.v4.view.ViewCompat
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
+import android.view.View
 import android.widget.ImageView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
+import app.suhocki.mybooks.setForegroundCompat
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import app.suhocki.mybooks.ui.books.listener.OnFilterClickListener
@@ -20,6 +23,8 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 class FilterUI<in T : Fragment> : AnkoComponent<T> {
 
     lateinit var recyclerView: RecyclerView
+    lateinit var apply: View
+    lateinit var reset: View
 
     override fun createView(ui: AnkoContext<T>) = with(ui) {
 
@@ -55,11 +60,39 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
                 id = R.id.id_recycler_filter
                 isVerticalScrollBarEnabled = true
                 clipToPadding = false
+                backgroundColorResource = R.color.colorGray
                 recyclerView = this
                 setHasFixedSize(true)
                 layoutManager = ScrollLayoutManager(context)
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
+                bottomMargin = dimenAttr(R.attr.actionBarSize)
+            }
+
+            frameLayout {
+                backgroundColorResource = R.color.colorPrimary
+                ViewCompat.setElevation(this, 10f)
+
+                textView(R.string.apply) {
+                    apply = this
+                    textAppearance = R.style.TextAppearance_AppCompat_Title_Inverse
+                    horizontalPadding = dip(16)
+                    gravity = Gravity.CENTER_VERTICAL
+                    setForegroundCompat(context.attrResource(R.attr.selectableItemBackgroundBorderless))
+                }.lparams(height = matchParent) {
+                    gravity = Gravity.START
+                }
+                textView(R.string.reset) {
+                    reset = this
+                    textAppearance = R.style.TextAppearance_AppCompat_Title_Inverse
+                    horizontalPadding = dip(16)
+                    gravity = Gravity.CENTER_VERTICAL
+                    setForegroundCompat(context.attrResource(R.attr.selectableItemBackgroundBorderless))
+                }.lparams(height = matchParent) {
+                    gravity = Gravity.END
+                }
+            }.lparams(matchParent, dimenAttr(R.attr.actionBarSize)) {
+                gravity = Gravity.BOTTOM
             }
         }
     }
