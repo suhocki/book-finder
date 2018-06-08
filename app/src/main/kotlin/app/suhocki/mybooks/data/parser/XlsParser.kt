@@ -101,8 +101,8 @@ class XlsParser @Inject constructor(
                 POSITION_COLUMN_NAMES_END
             ),
             booksData = booksData.apply {
-                forEach { category, books ->
-                    category.booksCount = books.size
+                forEach {
+                    it.key.booksCount = it.value.size
                 }
             },
             statisticsData = statisticsData

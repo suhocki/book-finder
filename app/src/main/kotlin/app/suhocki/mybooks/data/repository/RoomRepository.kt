@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.data.repository
 
+import android.arch.persistence.db.SupportSQLiteQuery
 import app.suhocki.mybooks.data.database.dao.*
 import app.suhocki.mybooks.data.database.entity.*
 import app.suhocki.mybooks.domain.model.Book
@@ -36,6 +37,9 @@ class RoomRepository @Inject constructor(
 
     override fun search(text: String) =
         bookDao.find("%$text%")
+
+    override fun filter(query: SupportSQLiteQuery): List<BookEntity> =
+        bookDao.filter(query)
 
     override fun getAuthorStatisticsFor(category: Category) =
         authorStatisticsDao.getAllByCategory(category.name)

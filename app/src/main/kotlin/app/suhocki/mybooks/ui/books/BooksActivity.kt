@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.books
 
+import android.arch.persistence.db.SupportSQLiteQuery
 import android.os.Bundle
 import android.support.v4.widget.DrawerLayout
 import android.view.Gravity
@@ -11,6 +12,7 @@ import app.suhocki.mybooks.di.module.BooksModule
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
+import app.suhocki.mybooks.ui.base.listener.OnFilterResultListener
 import app.suhocki.mybooks.ui.books.listener.OnFilterClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.details.DetailsActivity
@@ -24,7 +26,7 @@ import toothpick.Toothpick
 
 
 class BooksActivity : MvpAppCompatActivity(), BooksView,
-    OnBookClickListener, OnFilterClickListener {
+    OnBookClickListener, OnFilterClickListener, OnFilterResultListener {
 
     @InjectPresenter
     lateinit var presenter: BooksPresenter
@@ -121,6 +123,15 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
             if (isDrawerOpen(Gravity.END)) presenter.setDrawerExpanded(false)
             else super.onBackPressed()
         }
+    }
+
+    override fun onFilterResult(searchQuery: SupportSQLiteQuery) {
+        presenter.applyFilter(searchQuery)
+        presenter.setDrawerExpanded(false)
+    }
+
+    override fun onFilterReset() {
+        presenter.resetFilter()
     }
 
     companion object {

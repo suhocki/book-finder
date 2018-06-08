@@ -8,7 +8,7 @@ import android.os.Parcelable
 import app.suhocki.mybooks.domain.model.Book
 
 @Entity(
-    tableName = "Books",
+    tableName = BookEntity.TABLE_NAME,
     primaryKeys = ["productCode"],
     foreignKeys = [
         (ForeignKey(
@@ -88,6 +88,9 @@ data class BookEntity(
     }
 
     companion object CREATOR : Parcelable.Creator<BookEntity> {
+        const val FIELD_SHORT_NAME = "shortName"
+        const val FIELD_CATEGORY = "category"
+        const val TABLE_NAME = "Books"
         override fun createFromParcel(parcel: Parcel): BookEntity {
             return BookEntity(parcel)
         }

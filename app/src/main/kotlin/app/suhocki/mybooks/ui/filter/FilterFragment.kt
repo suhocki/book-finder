@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.filter
 
 import android.app.Activity
+import android.arch.persistence.db.SupportSQLiteQuery
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
@@ -16,6 +17,7 @@ import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.OnFilterAuthorClickListener
 import app.suhocki.mybooks.ui.base.listener.OnFilterPublisherClickListener
+import app.suhocki.mybooks.ui.base.listener.OnFilterResultListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.filter.listener.*
 import app.suhocki.mybooks.ui.search.SearchActivity
@@ -27,6 +29,7 @@ import org.jetbrains.anko.dimenAttr
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.startActivityForResult
 import toothpick.Toothpick
+
 
 class FilterFragment : BaseFragment(), FilterView,
     OnFilterCategoryClickListener,
@@ -70,19 +73,24 @@ class FilterFragment : BaseFragment(), FilterView,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         ui.recyclerView.adapter = adapter
-        ui.apply.setOnClickListener { }
-        ui.reset.setOnClickListener { }
+        ui.apply.setOnClickListener { presenter.applyFilter() }
+        ui.reset.setOnClickListener {
+            presenter.resetFilter()
+            (activity as OnFilterResultListener).onFilterReset()
+        }
     }
 
     override fun showFilterItems(
         filterItems: List<Any>,
-        toggledCategoryPosition: Int
+        toggledCategoryPosition: Int,
+        needBottomButtonsUpdate: Boolean
     ) {
         adapter.submitList(filterItems, onAnimationEnd = {
             if (toggledCategoryPosition != UNDEFINED_POSITION) {
                 (ui.recyclerView.layoutManager as LinearLayoutManager)
                     .scrollToPositionWithOffset(toggledCategoryPosition, 0)
             }
+            if (needBottomButtonsUpdate) presenter.updateBottomButtonsVisibility()
         })
     }
 
@@ -91,13 +99,13 @@ class FilterFragment : BaseFragment(), FilterView,
         adapter.notifyItemChanged(indexToToggle)
     }
 
-    override fun showBottomButtons(configured: Boolean) {
+    override fun showBottomButtonsVisible(configured: Boolean) {
         if (configured && ui.bottomPanel.visibility != View.VISIBLE) {
             ui.bottomPanel.translationY = context!!.dimenAttr(R.attr.actionBarSize).toFloat()
             ui.bottomPanel.visibility = View.VISIBLE
             ViewCompat.animate(ui.bottomPanel).translationY(0f).start()
             ui.recyclerView.bottomPadding = context!!.dimenAttr(R.attr.actionBarSize)
-        } else if (!configured && ui.bottomPanel.visibility == View.VISIBLE){
+        } else if (!configured && ui.bottomPanel.visibility == View.VISIBLE) {
             ViewCompat.animate(ui.bottomPanel).translationY((ui.bottomPanel.height).toFloat())
                 .withEndAction { ui.bottomPanel.visibility = View.INVISIBLE }
                 .start()
@@ -112,19 +120,19 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onFilterAuthorClick(filterAuthor: FilterAuthor) {
-        presenter.onItemStateChanged(filterAuthor, adapter.items)
+        presenter.updateBottomButtonsVisibility(filterAuthor, adapter.items)
     }
 
     override fun onFilterYearClick(filterYear: FilterYear) {
-        presenter.onItemStateChanged(filterYear, adapter.items)
+        presenter.updateBottomButtonsVisibility(filterYear, adapter.items)
     }
 
     override fun onFilterStatusClick(filterStatus: FilterStatus) {
-        presenter.onItemStateChanged(filterStatus, adapter.items)
+        presenter.updateBottomButtonsVisibility(filterStatus, adapter.items)
     }
 
     override fun onFilterPublisherClick(filterPublisher: FilterPublisher) {
-        presenter.onItemStateChanged(filterPublisher, adapter.items)
+        presenter.updateBottomButtonsVisibility(filterPublisher, adapter.items)
     }
 
     override fun onSortNameToggle(sortName: SortName) {
@@ -133,7 +141,7 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onSortNameClick(sortName: SortName) {
-        presenter.onItemStateChanged(sortName, adapter.items)
+        presenter.updateBottomButtonsVisibility(sortName, adapter.items)
     }
 
     override fun onSortPriceToggle(sortPrice: SortPrice) {
@@ -142,7 +150,7 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onSortPriceClick(sortPrice: SortPrice) {
-        presenter.onItemStateChanged(sortPrice, adapter.items)
+        presenter.updateBottomButtonsVisibility(sortPrice, adapter.items)
     }
 
     override fun onExpandSearchClick() {}
@@ -156,6 +164,10 @@ class FilterFragment : BaseFragment(), FilterView,
             ACTIVITY_RESULT_SEARCH,
             SearchActivity.ARG_SEARCH_KEY to getString(search.hintRes)
         )
+    }
+
+    override fun showBooks(sqLiteQuery: SupportSQLiteQuery) {
+        (activity as OnFilterResultListener).onFilterResult(sqLiteQuery)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

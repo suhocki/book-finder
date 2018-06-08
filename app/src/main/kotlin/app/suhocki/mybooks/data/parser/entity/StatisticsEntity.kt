@@ -12,19 +12,19 @@ class StatisticsEntity(
 ) : Statistics {
     fun add(book: Book) {
         book.author?.let {
-            var authorsCount = authors.getOrDefault(it, 0)
+            var authorsCount = authors[it] ?: 0
             authors.put(it, ++authorsCount)
         }
         book.publisher?.let {
-            var publishersCount = publishers.getOrDefault(it, 0)
+            var publishersCount = publishers[it] ?: 0
             publishers.put(it, ++publishersCount)
         }
         book.year?.let {
-            var yearsCount = years.getOrDefault(it, 0)
+            var yearsCount = years[it] ?: 0
             years.put(it, ++yearsCount)
         }
         book.status.let {
-            var statusesCount = statuses.getOrDefault(it, 0)
+            var statusesCount = statuses[it] ?: 0
             statuses.put(it, ++statusesCount)
         }
         book.price.let {

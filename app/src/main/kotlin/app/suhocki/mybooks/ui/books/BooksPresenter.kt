@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.books
 
+import android.arch.persistence.db.SupportSQLiteQuery
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.error.ErrorListener
 import app.suhocki.mybooks.data.error.ErrorType
@@ -31,17 +32,17 @@ class BooksPresenter @Inject constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        doAsync(errorHandler.errorReceiver) {
+        viewState.showTitle(category.name)
+        loadInitialState()
+    }
+
+    private fun loadInitialState() = doAsync(errorHandler.errorReceiver) {
+        uiThread { viewState.showProgressVisible(true) }
+        interactor.getBooks(category).let { books ->
             uiThread {
-                viewState.showTitle(category.name)
-                viewState.showProgressVisible(true)
-            }
-            interactor.getBooks(category).let { books ->
-                uiThread {
-                    if (books.isNotEmpty()) viewState.showBooks(books)
-                    else viewState.showEmptyScreen()
-                    viewState.showProgressVisible(false)
-                }
+                if (books.isNotEmpty()) viewState.showBooks(books)
+                else viewState.showEmptyScreen()
+                viewState.showProgressVisible(false)
             }
         }
     }
@@ -49,4 +50,17 @@ class BooksPresenter @Inject constructor(
     fun setDrawerExpanded(isExpanded: Boolean) {
         viewState.showDrawerExpanded(isExpanded)
     }
+
+    fun applyFilter(sqLiteQuery: SupportSQLiteQuery) = doAsync(errorHandler.errorReceiver) {
+        uiThread {
+            viewState.showProgressVisible(true)
+        }
+        val filteredBooks = interactor.filter(sqLiteQuery)
+        uiThread {
+            viewState.showProgressVisible(false)
+            viewState.showBooks(filteredBooks)
+        }
+    }
+
+    fun resetFilter() = loadInitialState()
 }

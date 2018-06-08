@@ -19,7 +19,7 @@ internal class FilterDiffCallback : DiffUtil.ItemCallback<Any>() {
     }
 
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-        return if (oldItem is FilterCategory && newItem is FilterCategory) oldItem.isExpanded == newItem.isExpanded
+        return if (oldItem is FilterCategory && newItem is FilterCategory) false
         else if (oldItem is FilterAuthor && newItem is FilterAuthor) oldItem.isChecked == newItem.isChecked
         else if (oldItem is FilterPublisher && newItem is FilterPublisher) oldItem.isChecked == newItem.isChecked
         else if (oldItem is FilterStatus && newItem is FilterStatus) oldItem.isChecked == newItem.isChecked

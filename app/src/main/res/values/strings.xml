@@ -30,6 +30,9 @@
     <string name="isbn">ISBN</string>
     <string name="author">Author</string>
     <string name="authors">Authors</string>
+    <string name="category">Category</string>
+    <string name="descending">Descending</string>
+    <string name="ascending">Ascending</string>
     <string name="name">Name</string>
     <string name="publisher">Publisher</string>
     <string name="publishers">Publishers</string>

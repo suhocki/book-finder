@@ -1,12 +1,16 @@
 package app.suhocki.mybooks.domain
 
+import android.arch.persistence.db.SupportSQLiteQuery
 import android.os.Parcelable
 import android.support.annotation.StringRes
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.data.database.QueryBuilder
+import app.suhocki.mybooks.data.database.entity.BookEntity
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.SearchAuthor
 import app.suhocki.mybooks.di.SearchPublisher
 import app.suhocki.mybooks.di.provider.FilterItemStatisticsProvider
+import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.domain.model.statistics.FilterItemStatistics
@@ -18,7 +22,8 @@ class FilterInteractor @Inject constructor(
     private val resourceManager: ResourceManager,
     @SearchAuthor private val authorSearchEntity: Search,
     @SearchPublisher private val publisherSearchEntity: Search,
-    private val filterPrice: FilterPrice
+    private val filterPrice: FilterPrice,
+    private val category: Category
 ) {
 
     fun getFilterCategories() = filterItemStatistics.filterCategories
@@ -163,6 +168,48 @@ class FilterInteractor @Inject constructor(
 
     fun decrementCheckedCount() = filterItemStatistics.checkedItemCount--
 
-    fun isConfigured()  = filterItemStatistics.checkedItemCount > 0 ||
+    fun isConfigured() = filterItemStatistics.checkedItemCount > 0 ||
             filterItemStatistics.checkedSortByCategory.containsValue(1)
+
+    fun reset() = with(filterItemStatistics) {
+        filterByPriceItems.forEach { it.isChecked = false }
+        authorsFilterItems.forEach { it.isChecked = false }
+        publishersFilterItems.forEach { it.isChecked = false }
+        yearsFilterItems.forEach { it.isChecked = false }
+        statusesFilterItems.forEach { it.isChecked = false }
+        nameSortItems.forEach { it.isChecked = false }
+        checkedItemCount = 0
+        checkedSortByCategory.clear()
+        filterCategories.forEach {
+            it.checkedCount = 0
+            it.isExpanded = false
+        }
+    }
+
+    fun replaceFilterCategoryItem(old: FilterCategory, new: FilterCategory) {
+        with(filterItemStatistics.filterCategories) {
+            val itemIndex = indexOf(old)
+            set(itemIndex, new)
+        }
+    }
+
+    fun getSearchQuery(): SupportSQLiteQuery {
+        val builder = QueryBuilder.builder(BookEntity.TABLE_NAME)
+            .selection("${BookEntity.FIELD_CATEGORY} = ?", arrayOf(category.name))
+        with(filterItemStatistics) {
+            nameSortItems.find { it.isChecked }?.let {
+                builder.orderBy(BookEntity.FIELD_SHORT_NAME)
+                builder.setOrderType(
+                    when (it.sortName) {
+                        resourceManager.getString(R.string.ascending) -> QueryBuilder.ORDER_TYPE_ASC
+
+                        resourceManager.getString(R.string.descending) -> QueryBuilder.ORDER_TYPE_DESC
+
+                        else -> throw InvalidKeyException()
+                    }
+                )
+            }
+        }
+        return builder.create()
+    }
 }

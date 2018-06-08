@@ -35,14 +35,16 @@ class FilterPresenter @Inject constructor(
         filterCategory: FilterCategory,
         items: MutableList<Any>
     ) = doAsync(errorHandler.errorReceiver) {
+        val collapsedFilterCategory: FilterCategory = object : FilterCategory {
+            override val title = filterCategory.title
+            override var isExpanded = false
+            override var checkedCount = filterCategory.checkedCount
+        }
+        interactor.replaceFilterCategoryItem(filterCategory, collapsedFilterCategory)
         val filterCategoryIndex = items.indexOf(filterCategory)
         val filterItems = mutableListOf<Any>().apply {
             addAll(items)
-            set(filterCategoryIndex, object : FilterCategory {
-                override val title = filterCategory.title
-                override var isExpanded = false
-                override var checkedCount = filterCategory.checkedCount
-            })
+            set(filterCategoryIndex, collapsedFilterCategory)
             removeAll { interactor.isItemUnderCategory(filterCategory, it) }
         }
         uiThread {
@@ -55,13 +57,15 @@ class FilterPresenter @Inject constructor(
         items: MutableList<Any>
     ) = doAsync(errorHandler.errorReceiver) {
         val filterCategoryIndex = items.indexOf(filterCategory)
+        val expandedFilterCategory: FilterCategory = object : FilterCategory {
+            override val title = filterCategory.title
+            override var isExpanded = true
+            override var checkedCount = filterCategory.checkedCount
+        }
+        interactor.replaceFilterCategoryItem(filterCategory, expandedFilterCategory)
         val filterItems = mutableListOf<Any>().apply {
             addAll(items)
-            set(filterCategoryIndex, object : FilterCategory {
-                override val title = filterCategory.title
-                override var isExpanded = true
-                override var checkedCount = filterCategory.checkedCount
-            })
+            set(filterCategoryIndex, expandedFilterCategory)
             addAll(
                 filterCategoryIndex + 1,
                 interactor.getFilterItemsFor(filterCategory)
@@ -78,11 +82,15 @@ class FilterPresenter @Inject constructor(
         items: MutableList<Any>
     ) = doAsync(errorHandler.errorReceiver) {
         val updatedList = interactor.addFilterItemToList(filterItem, items, searchKey)
-        onItemStateChanged(filterItem, items)
+        updateBottomButtonsVisibility(filterItem, items)
         uiThread { viewState.showFilterItems(updatedList) }
     }
 
-    fun onItemStateChanged(
+    fun updateBottomButtonsVisibility() {
+        viewState.showBottomButtonsVisible(interactor.isConfigured())
+    }
+
+    fun updateBottomButtonsVisibility(
         item: Any,
         list: MutableList<Any>
     ) = doAsync(errorHandler.errorReceiver) {
@@ -102,7 +110,7 @@ class FilterPresenter @Inject constructor(
             else -> throw InvalidKeyException()
         }
         uiThread {
-            viewState.showBottomButtons(interactor.isConfigured())
+            viewState.showBottomButtonsVisible(interactor.isConfigured())
             viewState.showItem(filterCategory)
         }
     }
@@ -134,5 +142,18 @@ class FilterPresenter @Inject constructor(
             checkedCount--
             interactor.decrementCheckedCount()
         }
+    }
+
+    fun resetFilter() = doAsync(errorHandler.errorReceiver) {
+        interactor.reset()
+        val filterItems = interactor.getFilterCategories()
+        uiThread {
+            viewState.showFilterItems(filterItems, needBottomButtonsUpdate = true)
+        }
+    }
+
+    fun applyFilter() {
+        val filterQuery = interactor.getSearchQuery()
+        viewState.showBooks(filterQuery)
     }
 }
