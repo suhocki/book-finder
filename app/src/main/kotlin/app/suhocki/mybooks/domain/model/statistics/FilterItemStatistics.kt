@@ -8,7 +8,6 @@ interface FilterItemStatistics : Statistics {
     val publishersFilterItems: MutableList<FilterPublisher>
     val yearsFilterItems: MutableList<FilterYear>
     val statusesFilterItems: MutableList<FilterStatus>
-    val pricesFilterItem: FilterPrice
     val nameSortItems: MutableList<SortName>
     val pricesSortItems: Collection<SortPrice>
     var checkedItemCount: Int

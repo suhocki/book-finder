@@ -27,6 +27,7 @@ import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.bottomPadding
 import org.jetbrains.anko.dimenAttr
 import org.jetbrains.anko.support.v4.ctx
+import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.startActivityForResult
 import toothpick.Toothpick
 
@@ -39,12 +40,14 @@ class FilterFragment : BaseFragment(), FilterView,
     OnFilterYearClickListener,
     OnSearchClickListener,
     SortNameListener,
-    SortPriceListener {
+    SortPriceListener,
+    OnFilterPriceChangeListener{
 
     private val ui by lazy { FilterUI<FilterFragment>() }
 
     private val adapter by lazy {
         FilterAdapter(
+            this,
             this,
             this,
             this,
@@ -168,6 +171,14 @@ class FilterFragment : BaseFragment(), FilterView,
 
     override fun showBooks(sqLiteQuery: SupportSQLiteQuery) {
         (activity as OnFilterResultListener).onFilterResult(sqLiteQuery)
+    }
+
+    override fun showToast(stringRes: Int) {
+        longToast(stringRes)
+    }
+
+    override fun onFilterPriceChange(type: FilterPrice.FilterPriceType) {
+        presenter.updateBottomButtonsVisibility()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

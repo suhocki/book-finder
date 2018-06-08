@@ -10,6 +10,9 @@ class ResourceManager @Inject constructor(private val context: Context) {
     fun getString(@StringRes id: Int) =
         context.getString(id)!!
 
+    fun getString(@StringRes id: Int, double: Double) =
+        context.getString(id, double)!!
+
     fun getStringArray(@ArrayRes id: Int) =
         context.resources.getStringArray(id)!!
 }

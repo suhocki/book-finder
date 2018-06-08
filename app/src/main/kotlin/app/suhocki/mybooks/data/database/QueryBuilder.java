@@ -3,6 +3,8 @@ package app.suhocki.mybooks.data.database;
 import android.arch.persistence.db.SimpleSQLiteQuery;
 import android.arch.persistence.db.SupportSQLiteQuery;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.regex.Pattern;
 
 @SuppressWarnings("unused")
@@ -24,6 +26,9 @@ public final class QueryBuilder {
     private String mFirstOrderType = null;
     private String mSecondOrderType = null;
     private String mLimit = null;
+    private String mFilterFieldName = null;
+    private String mFilterFrom = null;
+    private String mFilterTo = null;
 
     /**
      * Creates a query for the given table name.
@@ -148,6 +153,10 @@ public final class QueryBuilder {
         query.append(" FROM ");
         query.append(mTable);
         appendClause(query, " WHERE ", mSelection);
+        appendClause(query, " AND ", mFilterFieldName);
+        appendClause(query, " >= ", mFilterFrom);
+        appendClause(query, " AND ", mFilterFieldName);
+        appendClause(query, " <= ", mFilterTo);
         appendClause(query, " GROUP BY ", mGroupBy);
         appendClause(query, " HAVING ", mHaving);
         appendClause(query, " ORDER BY ", mFirstOrderBy);
@@ -200,5 +209,11 @@ public final class QueryBuilder {
     public QueryBuilder setSecondOrderType(String orderType) {
         mSecondOrderType = orderType;
         return this;
+    }
+
+    public void filter(@NotNull String fieldName, String from, String to) {
+        mFilterFieldName = fieldName;
+        mFilterFrom = from;
+        mFilterTo = to;
     }
 }

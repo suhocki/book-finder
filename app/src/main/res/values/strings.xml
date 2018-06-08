@@ -22,8 +22,10 @@
     <string name="out_of_memory">Out of memory.</string>
     <string name="corrupted_file">Unfortunately, downloaded file is corrupted. Please, tell the developers about this issue.</string>
     <string name="error">Error</string>
+    <string name="error_filter_price_invalid">Price "from" should be less than price "to".</string>
     <string name="categories">Categories</string>
     <string name="rubles">%.2f rub.</string>
+    <string name="format_two_sign_after_point">%.2f</string>
     <string name="empty_screen_books">The current database does not contains any books on this category</string>
     <string name="empty_screen_authors">The current database does not contains any suitable authors for this query</string>
     <string name="back">Back</string>

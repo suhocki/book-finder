@@ -22,6 +22,6 @@ class FilterPriceEntityProvider @Inject constructor(
 
         override var from: Double = 0.0
 
-        override var to: Double = 0.0
+        override var to: Double = Int.MAX_VALUE.toDouble()
     }
 }

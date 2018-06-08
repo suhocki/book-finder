@@ -5,4 +5,9 @@ interface FilterPrice {
     val hintTo: Double
     var from: Double
     var to: Double
+
+    enum class FilterPriceType {
+        FROM,
+        TO
+    }
 }

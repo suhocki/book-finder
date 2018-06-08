@@ -21,6 +21,7 @@ class FilterAdapter(
     onSearchClickListener: OnSearchClickListener,
     onFilterAuthorClickListener: OnFilterAuthorClickListener,
     yearClickListener: OnFilterYearClickListener,
+    onFilterPriceChangeListener: OnFilterPriceChangeListener,
     onFilterStatusClickListener: OnFilterStatusClickListener,
     onFilterPublisherClickListener: OnFilterPublisherClickListener
 ) : ListDelegationAdapter<MutableList<Any>>() {
@@ -38,7 +39,7 @@ class FilterAdapter(
             .addDelegate(FilterPublisherAdapterDelegate(onFilterPublisherClickListener))
             .addDelegate(FilterYearAdapterDelegate(yearClickListener))
             .addDelegate(FilterStatusAdapterDelegate(onFilterStatusClickListener))
-            .addDelegate(FilterPriceAdapterDelegate())
+            .addDelegate(FilterPriceAdapterDelegate(onFilterPriceChangeListener))
             .addDelegate(SearchAdapterDelegate(onSearchClickListener))
             .addDelegate(SortNameAdapterDelegate(onSortNameToggleListener))
             .addDelegate(SortPriceAdapterDelegate(onSortPriceToggleListener))

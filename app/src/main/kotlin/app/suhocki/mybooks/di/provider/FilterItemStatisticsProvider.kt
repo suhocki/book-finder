@@ -54,13 +54,6 @@ class FilterItemStatisticsProvider @Inject constructor(
             }
         }
 
-        override val pricesFilterItem by lazy {
-            statisticsRepository.getPriceStatisticsFor(category)
-                .let { (_, minPrice, maxPrice) ->
-                    FilterPriceEntity(minPrice, maxPrice)
-                }
-        }
-
         override val yearsFilterItems by lazy {
             mutableListOf<FilterYear>().apply {
                 addAll(statisticsRepository.getYearStatisticsFor(category)
@@ -127,7 +120,7 @@ class FilterItemStatisticsProvider @Inject constructor(
         override val hintFrom: Double,
         override val hintTo: Double,
         override var from: Double = 0.0,
-        override var to: Double = 0.0
+        override var to: Double = Int.MAX_VALUE.toDouble()
     ) : FilterPrice
 
     internal class FilterPublisherEntity(

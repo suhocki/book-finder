@@ -21,4 +21,6 @@ interface FilterView : MvpView {
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun showBooks(sqLiteQuery: SupportSQLiteQuery)
+
+    fun showToast(stringRes: Int)
 }

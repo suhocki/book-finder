@@ -169,9 +169,13 @@ class FilterInteractor @Inject constructor(
     fun decrementCheckedCount() = filterItemStatistics.checkedItemCount--
 
     fun isConfigured() = filterItemStatistics.checkedItemCount > 0 ||
-            filterItemStatistics.checkedSortByCategory.containsValue(1)
+            filterItemStatistics.checkedSortByCategory.containsValue(1) ||
+            filterPrice.from > 0.0 ||
+            filterPrice.to < Integer.MAX_VALUE
 
     fun reset() = with(filterItemStatistics) {
+        filterPrice.from = 0.0
+        filterPrice.to = Integer.MAX_VALUE.toDouble()
         pricesSortItems.forEach { it.isChecked = false }
         authorsFilterItems.forEach { it.isChecked = false }
         publishersFilterItems.forEach { it.isChecked = false }
@@ -209,6 +213,14 @@ class FilterInteractor @Inject constructor(
                 }.let { builder.setFirstOrderType(it) }
             }
 
+            builder.filter(
+                BookEntity.FIELD_PRICE,
+                resourceManager.getString(R.string.format_two_sign_after_point, filterPrice.from)
+                    .replace(",", "."),
+                resourceManager.getString(R.string.format_two_sign_after_point, filterPrice.to)
+                    .replace(",", ".")
+            )
+
             pricesSortItems.find { it.isChecked }?.let {
                 builder.setSecondOrderBy(BookEntity.FIELD_PRICE)
                 when (it.sortName) {
@@ -219,7 +231,10 @@ class FilterInteractor @Inject constructor(
                     else -> throw InvalidKeyException()
                 }.let { builder.setSecondOrderType(it) }
             }
+
         }
         return builder.create()
     }
+
+    fun validatePriceFilter() = filterPrice.from <= filterPrice.to
 }

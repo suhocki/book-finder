@@ -4,11 +4,15 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.filter.FilterPrice
+import app.suhocki.mybooks.ui.filter.listener.OnFilterPriceChangeListener
 import app.suhocki.mybooks.ui.filter.ui.FilterPriceItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 
-class FilterPriceAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
+class FilterPriceAdapterDelegate(
+    private val onFilterPriceChangeListener: OnFilterPriceChangeListener
+) : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         FilterPriceItemUI()
@@ -29,8 +33,34 @@ class FilterPriceAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
     private inner class ViewHolder(
         val ui: FilterPriceItemUI
     ) : RecyclerView.ViewHolder(ui.parent) {
+        private lateinit var filterPrice: FilterPrice
+
+        init {
+            ui.from.textChangedListener {
+                onTextChanged { charSequence, _, _, _ ->
+                    val isBlank = charSequence.isNullOrBlank()
+                    filterPrice.from =
+                            if (isBlank) 0.0
+                            else charSequence.toString().toDouble()
+                    onFilterPriceChangeListener.onFilterPriceChange(FilterPrice.FilterPriceType.FROM)
+                }
+            }
+            ui.to.textChangedListener {
+                onTextChanged { charSequence, _, _, _ ->
+                    val isBlank = charSequence.isNullOrBlank()
+                    filterPrice.to =
+                            if (isBlank) Integer.MAX_VALUE.toDouble()
+                            else charSequence.toString().toDouble()
+                    onFilterPriceChangeListener.onFilterPriceChange(FilterPrice.FilterPriceType.TO)
+                }
+            }
+        }
+
         fun bind(filterPrice: FilterPrice) {
+            this.filterPrice = filterPrice
             with(ui) {
+                if (filterPrice.from == 0.0) from.setText("")
+                if (filterPrice.to == Integer.MAX_VALUE.toDouble()) from.setText("")
                 from.hint = parent.context.getString(R.string.rubles, filterPrice.hintFrom)
                     .dropLast(1)
                     .replace(",", ".")

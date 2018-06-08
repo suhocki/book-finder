@@ -152,8 +152,12 @@ class FilterPresenter @Inject constructor(
         }
     }
 
-    fun applyFilter() {
-        val filterQuery = interactor.getSearchQuery()
-        viewState.showBooks(filterQuery)
+    fun applyFilter() = doAsync(errorHandler.errorReceiver) {
+        if (interactor.validatePriceFilter()) {
+            val filterQuery = interactor.getSearchQuery()
+            uiThread { viewState.showBooks(filterQuery) }
+        } else {
+            uiThread { viewState.showToast(R.string.error_filter_price_invalid) }
+        }
     }
 }
