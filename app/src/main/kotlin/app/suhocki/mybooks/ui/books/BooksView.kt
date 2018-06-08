@@ -10,7 +10,7 @@ interface BooksView : MvpView {
 
     fun showTitle(title: String)
 
-    fun showBooks(books: List<Book>)
+    fun showBooks(books: List<Book>, scrollToTop: Boolean = false)
 
     fun showEmptyScreen()
 

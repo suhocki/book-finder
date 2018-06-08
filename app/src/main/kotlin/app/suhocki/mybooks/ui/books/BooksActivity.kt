@@ -87,8 +87,10 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
         this.title = title
     }
 
-    override fun showBooks(books: List<Book>) {
-        adapter.submitList(books)
+    override fun showBooks(books: List<Book>, scrollToTop: Boolean) {
+        adapter.submitList(books, onAnimationEnd = {
+            if (scrollToTop) ui.recyclerView.scrollToPosition(0)
+        })
     }
 
     override fun showEmptyScreen() {

@@ -10,7 +10,7 @@ interface FilterItemStatistics : Statistics {
     val statusesFilterItems: MutableList<FilterStatus>
     val pricesFilterItem: FilterPrice
     val nameSortItems: MutableList<SortName>
-    val filterByPriceItems: Collection<SortPrice>
+    val pricesSortItems: Collection<SortPrice>
     var checkedItemCount: Int
     var checkedSortByCategory: MutableMap<Int, Int>
 }

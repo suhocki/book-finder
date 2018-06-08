@@ -36,11 +36,11 @@ class BooksPresenter @Inject constructor(
         loadInitialState()
     }
 
-    private fun loadInitialState() = doAsync(errorHandler.errorReceiver) {
+    private fun loadInitialState(scrollToTop: Boolean = false) = doAsync(errorHandler.errorReceiver) {
         uiThread { viewState.showProgressVisible(true) }
         interactor.getBooks(category).let { books ->
             uiThread {
-                if (books.isNotEmpty()) viewState.showBooks(books)
+                if (books.isNotEmpty()) viewState.showBooks(books, scrollToTop)
                 else viewState.showEmptyScreen()
                 viewState.showProgressVisible(false)
             }
@@ -58,9 +58,9 @@ class BooksPresenter @Inject constructor(
         val filteredBooks = interactor.filter(sqLiteQuery)
         uiThread {
             viewState.showProgressVisible(false)
-            viewState.showBooks(filteredBooks)
+            viewState.showBooks(filteredBooks, true)
         }
     }
 
-    fun resetFilter() = loadInitialState()
+    fun resetFilter() = loadInitialState(true)
 }

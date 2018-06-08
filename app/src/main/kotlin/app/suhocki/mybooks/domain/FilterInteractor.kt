@@ -84,7 +84,7 @@ class FilterInteractor @Inject constructor(
             mutableListOf<Any>().apply {
                 filterPrice.hintFrom; filterPrice.hintTo
                 add(filterPrice)
-                addAll(filterItemStatistics.filterByPriceItems)
+                addAll(filterItemStatistics.pricesSortItems)
             }
 
         else -> throw InvalidKeyException()
@@ -172,7 +172,7 @@ class FilterInteractor @Inject constructor(
             filterItemStatistics.checkedSortByCategory.containsValue(1)
 
     fun reset() = with(filterItemStatistics) {
-        filterByPriceItems.forEach { it.isChecked = false }
+        pricesSortItems.forEach { it.isChecked = false }
         authorsFilterItems.forEach { it.isChecked = false }
         publishersFilterItems.forEach { it.isChecked = false }
         yearsFilterItems.forEach { it.isChecked = false }
@@ -197,17 +197,27 @@ class FilterInteractor @Inject constructor(
         val builder = QueryBuilder.builder(BookEntity.TABLE_NAME)
             .selection("${BookEntity.FIELD_CATEGORY} = ?", arrayOf(category.name))
         with(filterItemStatistics) {
+
             nameSortItems.find { it.isChecked }?.let {
-                builder.orderBy(BookEntity.FIELD_SHORT_NAME)
-                builder.setOrderType(
-                    when (it.sortName) {
-                        resourceManager.getString(R.string.ascending) -> QueryBuilder.ORDER_TYPE_ASC
+                builder.setFirstOrderBy(BookEntity.FIELD_SHORT_NAME)
+                when (it.sortName) {
+                    resourceManager.getString(R.string.ascending) -> QueryBuilder.ORDER_TYPE_ASC
 
-                        resourceManager.getString(R.string.descending) -> QueryBuilder.ORDER_TYPE_DESC
+                    resourceManager.getString(R.string.descending) -> QueryBuilder.ORDER_TYPE_DESC
 
-                        else -> throw InvalidKeyException()
-                    }
-                )
+                    else -> throw InvalidKeyException()
+                }.let { builder.setFirstOrderType(it) }
+            }
+
+            pricesSortItems.find { it.isChecked }?.let {
+                builder.setSecondOrderBy(BookEntity.FIELD_PRICE)
+                when (it.sortName) {
+                    resourceManager.getString(R.string.ascending) -> QueryBuilder.ORDER_TYPE_ASC
+
+                    resourceManager.getString(R.string.descending) -> QueryBuilder.ORDER_TYPE_DESC
+
+                    else -> throw InvalidKeyException()
+                }.let { builder.setSecondOrderType(it) }
             }
         }
         return builder.create()

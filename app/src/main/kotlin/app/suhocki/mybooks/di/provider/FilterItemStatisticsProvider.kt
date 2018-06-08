@@ -34,7 +34,7 @@ class FilterItemStatisticsProvider @Inject constructor(
             }
         }
 
-        override val filterByPriceItems by lazy {
+        override val pricesSortItems by lazy {
             mutableListOf<SortPrice>().apply {
                 addAll(filterRepository.getFilterByPriceItems())
             }

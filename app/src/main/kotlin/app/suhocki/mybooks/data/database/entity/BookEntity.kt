@@ -89,6 +89,7 @@ data class BookEntity(
 
     companion object CREATOR : Parcelable.Creator<BookEntity> {
         const val FIELD_SHORT_NAME = "shortName"
+        const val FIELD_PRICE = "price"
         const val FIELD_CATEGORY = "category"
         const val TABLE_NAME = "Books"
         override fun createFromParcel(parcel: Parcel): BookEntity {

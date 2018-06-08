@@ -19,15 +19,16 @@ public final class QueryBuilder {
     private Object[] mBindArgs;
     private String mGroupBy = null;
     private String mHaving = null;
-    private String mOrderBy = null;
-    private String mOrderType = null;
+    private String mFirstOrderBy = null;
+    private String mSecondOrderBy = null;
+    private String mFirstOrderType = null;
+    private String mSecondOrderType = null;
     private String mLimit = null;
 
     /**
      * Creates a query for the given table name.
      *
      * @param tableName The table name(s) to query.
-     *
      * @return A builder to create a query.
      */
     public static QueryBuilder builder(String tableName) {
@@ -52,7 +53,6 @@ public final class QueryBuilder {
      * Sets the given list of columns as the columns that will be returned.
      *
      * @param columns The list of column names that should be returned.
-     *
      * @return this
      */
     public QueryBuilder columns(String[] columns) {
@@ -64,8 +64,7 @@ public final class QueryBuilder {
      * Sets the arguments for the WHERE clause.
      *
      * @param selection The list of selection columns
-     * @param bindArgs The list of bind arguments to match against these columns
-     *
+     * @param bindArgs  The list of bind arguments to match against these columns
      * @return this
      */
     public QueryBuilder selection(String selection, Object[] bindArgs) {
@@ -78,7 +77,6 @@ public final class QueryBuilder {
      * Adds a GROUP BY statement.
      *
      * @param groupBy The value of the GROUP BY statement.
-     *
      * @return this
      */
     @SuppressWarnings("WeakerAccess")
@@ -91,7 +89,6 @@ public final class QueryBuilder {
      * Adds a HAVING statement. You must also provide {@link #groupBy(String)} for this to work.
      *
      * @param having The having clause.
-     *
      * @return this
      */
     public QueryBuilder having(String having) {
@@ -103,11 +100,15 @@ public final class QueryBuilder {
      * Adds an ORDER BY statement.
      *
      * @param orderBy The order clause.
-     *
      * @return this
      */
-    public QueryBuilder orderBy(String orderBy) {
-        mOrderBy = orderBy;
+    public QueryBuilder setFirstOrderBy(String orderBy) {
+        mFirstOrderBy = orderBy;
+        return this;
+    }
+
+    public QueryBuilder setSecondOrderBy(String orderBy) {
+        mSecondOrderBy = orderBy;
         return this;
     }
 
@@ -115,7 +116,6 @@ public final class QueryBuilder {
      * Adds a LIMIT statement.
      *
      * @param limit The limit value.
-     *
      * @return this
      */
     public QueryBuilder limit(String limit) {
@@ -150,8 +150,15 @@ public final class QueryBuilder {
         appendClause(query, " WHERE ", mSelection);
         appendClause(query, " GROUP BY ", mGroupBy);
         appendClause(query, " HAVING ", mHaving);
-        appendClause(query, " ORDER BY ", mOrderBy);
-        appendClause(query, " ", mOrderType);
+        appendClause(query, " ORDER BY ", mFirstOrderBy);
+        appendClause(query, " ", mFirstOrderType);
+        if (mFirstOrderBy != null && mSecondOrderBy != null) {
+            query.append(", ");
+            appendClause(query, "", mSecondOrderBy);
+        } else {
+            appendClause(query, " ORDER BY ", mSecondOrderBy);
+        }
+        appendClause(query, " ", mSecondOrderType);
         appendClause(query, " LIMIT ", mLimit);
 
         return new SimpleSQLiteQuery(query.toString(), mBindArgs);
@@ -185,8 +192,13 @@ public final class QueryBuilder {
         return input == null || input.length() == 0;
     }
 
-    public QueryBuilder setOrderType(String orderType) {
-        mOrderType = orderType;
+    public QueryBuilder setFirstOrderType(String orderType) {
+        mFirstOrderType = orderType;
+        return this;
+    }
+
+    public QueryBuilder setSecondOrderType(String orderType) {
+        mSecondOrderType = orderType;
         return this;
     }
 }
