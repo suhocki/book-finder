@@ -90,6 +90,7 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
     override fun showBooks(books: List<Book>, scrollToTop: Boolean) {
         adapter.submitList(books, onAnimationEnd = {
             if (scrollToTop) ui.recyclerView.scrollToPosition(0)
+            presenter.setProgressInvisible()
         })
     }
 

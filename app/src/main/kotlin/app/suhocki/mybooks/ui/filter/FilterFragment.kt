@@ -93,7 +93,7 @@ class FilterFragment : BaseFragment(), FilterView,
                 (ui.recyclerView.layoutManager as LinearLayoutManager)
                     .scrollToPositionWithOffset(toggledCategoryPosition, 0)
             }
-            if (needBottomButtonsUpdate) presenter.updateBottomButtonsVisibility()
+            if (needBottomButtonsUpdate) presenter.updateBottomButtons()
         })
     }
 
@@ -123,19 +123,19 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onFilterAuthorClick(filterAuthor: FilterAuthor) {
-        presenter.updateBottomButtonsVisibility(filterAuthor, adapter.items)
+        presenter.updateBottomButtons(filterAuthor, adapter.items)
     }
 
     override fun onFilterYearClick(filterYear: FilterYear) {
-        presenter.updateBottomButtonsVisibility(filterYear, adapter.items)
+        presenter.updateBottomButtons(filterYear, adapter.items)
     }
 
     override fun onFilterStatusClick(filterStatus: FilterStatus) {
-        presenter.updateBottomButtonsVisibility(filterStatus, adapter.items)
+        presenter.updateBottomButtons(filterStatus, adapter.items)
     }
 
     override fun onFilterPublisherClick(filterPublisher: FilterPublisher) {
-        presenter.updateBottomButtonsVisibility(filterPublisher, adapter.items)
+        presenter.updateBottomButtons(filterPublisher, adapter.items)
     }
 
     override fun onSortNameToggle(sortName: SortName) {
@@ -144,7 +144,7 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onSortNameClick(sortName: SortName) {
-        presenter.updateBottomButtonsVisibility(sortName, adapter.items)
+        presenter.updateBottomButtons(sortName, adapter.items)
     }
 
     override fun onSortPriceToggle(sortPrice: SortPrice) {
@@ -153,7 +153,7 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onSortPriceClick(sortPrice: SortPrice) {
-        presenter.updateBottomButtonsVisibility(sortPrice, adapter.items)
+        presenter.updateBottomButtons(sortPrice, adapter.items)
     }
 
     override fun onExpandSearchClick() {}
@@ -178,7 +178,7 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun onFilterPriceChange(type: FilterPrice.FilterPriceType) {
-        presenter.updateBottomButtonsVisibility()
+        presenter.updateBottomButtons()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

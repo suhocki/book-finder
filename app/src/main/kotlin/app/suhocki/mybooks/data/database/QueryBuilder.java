@@ -31,6 +31,12 @@ public final class QueryBuilder {
     private String mFilterTo = null;
     private String mFieldStatus = null;
     private String mStatusQuery = null;
+    private String mFieldYear = null;
+    private String mYearQuery = null;
+    private String mFieldAuthor = null;
+    private String mAuthorQuery = null;
+    private String mFieldPublisher = null;
+    private String mPublisherQuery = null;
 
     /**
      * Creates a query for the given table name.
@@ -163,6 +169,18 @@ public final class QueryBuilder {
             appendClause(query, " AND ", mFieldStatus);
             appendClause(query, " IN ", mStatusQuery);
         }
+        if (mFieldYear != null && mYearQuery != null) {
+            appendClause(query, " AND ", mFieldYear);
+            appendClause(query, " IN ", mYearQuery);
+        }
+        if (mFieldAuthor != null && mAuthorQuery != null) {
+            appendClause(query, " AND ", mFieldAuthor);
+            appendClause(query, " IN ", mAuthorQuery);
+        }
+        if (mFieldPublisher != null && mPublisherQuery != null) {
+            appendClause(query, " AND ", mFieldPublisher);
+            appendClause(query, " IN ", mPublisherQuery);
+        }
         appendClause(query, " GROUP BY ", mGroupBy);
         appendClause(query, " HAVING ", mHaving);
         appendClause(query, " ORDER BY ", mFirstOrderBy);
@@ -226,5 +244,20 @@ public final class QueryBuilder {
     public void statusIn(@NotNull String fieldName, @NotNull String query) {
         mFieldStatus = fieldName;
         mStatusQuery = query;
+    }
+
+    public void yearIn(@NotNull String fieldName, @NotNull String query) {
+        mFieldYear = fieldName;
+        mYearQuery = query;
+    }
+
+    public void authorIn(@NotNull String fieldName, @NotNull String query) {
+        mFieldAuthor = fieldName;
+        mAuthorQuery = query;
+    }
+
+    public void publisherIn(@NotNull String fieldName, @NotNull String query) {
+        mFieldPublisher = fieldName;
+        mPublisherQuery = query;
     }
 }

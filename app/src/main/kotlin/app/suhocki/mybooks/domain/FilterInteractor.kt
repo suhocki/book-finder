@@ -243,6 +243,42 @@ class FilterInteractor @Inject constructor(
                 query.append(")")
                 builder.statusIn(BookEntity.FIELD_STATUS, query.toString())
             }
+
+            val checkedYears = yearsFilterItems.filter { it.isChecked }
+            if (checkedYears.isNotEmpty()) {
+                val query = StringBuilder(120)
+                query.append("(")
+                checkedYears.forEachIndexed { index, filterYear ->
+                    query.append("'${filterYear.year}'")
+                    if (checkedYears.lastIndex != index) query.append(", ")
+                }
+                query.append(")")
+                builder.yearIn(BookEntity.FIELD_YEAR, query.toString())
+            }
+
+            val checkedAuthors = authorsFilterItems.filter { it.isChecked }
+            if (checkedAuthors.isNotEmpty()) {
+                val query = StringBuilder(120)
+                query.append("(")
+                checkedAuthors.forEachIndexed { index, filterAuthor ->
+                    query.append("'${filterAuthor.authorName}'")
+                    if (checkedAuthors.lastIndex != index) query.append(", ")
+                }
+                query.append(")")
+                builder.authorIn(BookEntity.FIELD_AUTHOR, query.toString())
+            }
+
+            val checkedPublishers = publishersFilterItems.filter { it.isChecked }
+            if (checkedPublishers.isNotEmpty()) {
+                val query = StringBuilder(120)
+                query.append("(")
+                checkedPublishers.forEachIndexed { index, filterPublisher ->
+                    query.append("'${filterPublisher.publisherName}'")
+                    if (checkedPublishers.lastIndex != index) query.append(", ")
+                }
+                query.append(")")
+                builder.publisherIn(BookEntity.FIELD_PUBLISHER, query.toString())
+            }
         }
         return builder.create()
     }

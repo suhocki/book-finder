@@ -82,15 +82,15 @@ class FilterPresenter @Inject constructor(
         items: MutableList<Any>
     ) = doAsync(errorHandler.errorReceiver) {
         val updatedList = interactor.addFilterItemToList(filterItem, items, searchKey)
-        updateBottomButtonsVisibility(filterItem, items)
+        updateBottomButtons(filterItem, items)
         uiThread { viewState.showFilterItems(updatedList) }
     }
 
-    fun updateBottomButtonsVisibility() {
+    fun updateBottomButtons() {
         viewState.showBottomButtonsVisible(interactor.isConfigured())
     }
 
-    fun updateBottomButtonsVisibility(
+    fun updateBottomButtons(
         item: Any,
         list: MutableList<Any>
     ) = doAsync(errorHandler.errorReceiver) {

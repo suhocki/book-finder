@@ -89,6 +89,9 @@ data class BookEntity(
 
     companion object CREATOR : Parcelable.Creator<BookEntity> {
         const val FIELD_STATUS = "status"
+        const val FIELD_YEAR = "year"
+        const val FIELD_AUTHOR = "author"
+        const val FIELD_PUBLISHER = "publisher"
         const val FIELD_SHORT_NAME = "shortName"
         const val FIELD_PRICE = "price"
         const val FIELD_CATEGORY = "category"
