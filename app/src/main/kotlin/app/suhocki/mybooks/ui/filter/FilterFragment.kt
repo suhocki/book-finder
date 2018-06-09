@@ -9,9 +9,11 @@ import android.support.transition.AutoTransition
 import android.support.transition.TransitionManager
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.Search
@@ -29,6 +31,7 @@ import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.bottomPadding
 import org.jetbrains.anko.dimenAttr
 import org.jetbrains.anko.support.v4.ctx
+import org.jetbrains.anko.support.v4.dimen
 import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.startActivityForResult
 import toothpick.Toothpick
@@ -43,7 +46,7 @@ class FilterFragment : BaseFragment(), FilterView,
     OnSearchClickListener,
     SortNameListener,
     SortPriceListener,
-    OnFilterPriceChangeListener{
+    OnFilterPriceChangeListener {
 
     private val ui by lazy { FilterUI<FilterFragment>() }
 
@@ -112,9 +115,21 @@ class FilterFragment : BaseFragment(), FilterView,
                 TransitionManager.beginDelayedTransition(ui.bottomPanel, AutoTransition())
                 ui.apply.visibility = View.GONE
                 ui.buttonsDivider.visibility = View.GONE
+                ui.reset.layoutParams = FrameLayout.LayoutParams(
+                    dimen(R.dimen.navigation_drawer_width) / 2,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                ).apply {
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }
             }
 
             configured && ui.bottomPanel.visibility != View.VISIBLE -> {
+                ui.reset.layoutParams = FrameLayout.LayoutParams(
+                    dimen(R.dimen.navigation_drawer_width) / 2,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                ).apply {
+                    gravity = Gravity.END
+                }
                 ui.apply.visibility = View.VISIBLE
                 ui.buttonsDivider.visibility = View.VISIBLE
                 ui.bottomPanel.translationY = context!!.dimenAttr(R.attr.actionBarSize).toFloat()
@@ -125,7 +140,9 @@ class FilterFragment : BaseFragment(), FilterView,
 
             !configured && ui.bottomPanel.visibility == View.VISIBLE -> {
                 ViewCompat.animate(ui.bottomPanel).translationY((ui.bottomPanel.height).toFloat())
-                    .withEndAction { ui.bottomPanel.visibility = View.INVISIBLE }
+                    .withEndAction {
+                        ui.bottomPanel.visibility = View.INVISIBLE
+                    }
                     .start()
                 ui.recyclerView.bottomPadding = 0
             }
@@ -134,6 +151,12 @@ class FilterFragment : BaseFragment(), FilterView,
                 TransitionManager.beginDelayedTransition(ui.bottomPanel, AutoTransition())
                 ui.apply.visibility = View.VISIBLE
                 ui.buttonsDivider.visibility = View.VISIBLE
+                ui.reset.layoutParams = FrameLayout.LayoutParams(
+                    dimen(R.dimen.navigation_drawer_width) / 2,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                ).apply {
+                    gravity = Gravity.END
+                }
             }
         }
     }

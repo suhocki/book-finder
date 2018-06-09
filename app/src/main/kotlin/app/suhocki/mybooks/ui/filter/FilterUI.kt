@@ -78,28 +78,25 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
                 ViewCompat.setElevation(this, 50f)
                 visibility = View.GONE
 
-                linearLayout {
+                textView(R.string.apply) {
+                    apply = this
+                    textAppearance = R.style.TextAppearance_AppCompat_Title_Inverse
+                    horizontalPadding = dip(16)
+                    gravity = Gravity.CENTER
+                    setForegroundCompat(context.attrResource(R.attr.selectableItemBackgroundBorderless))
+                }.lparams(dimen(R.dimen.navigation_drawer_width) / 2, matchParent) {
+                    gravity = Gravity.START
+                }
 
-                    textView(R.string.apply) {
-                        apply = this
-                        textAppearance = R.style.TextAppearance_AppCompat_Title_Inverse
-                        horizontalPadding = dip(16)
-                        gravity = Gravity.CENTER
-                        setForegroundCompat(context.attrResource(R.attr.selectableItemBackgroundBorderless))
-                    }.lparams(0, matchParent) {
-                        weight = 0.5f
-                    }
-
-                    textView(R.string.reset) {
-                        reset = this
-                        textAppearance = R.style.TextAppearance_AppCompat_Title_Inverse
-                        horizontalPadding = dip(16)
-                        gravity = Gravity.CENTER
-                        setForegroundCompat(context.attrResource(R.attr.selectableItemBackgroundBorderless))
-                    }.lparams(0, matchParent) {
-                        weight = 0.5f
-                    }
-                }.lparams(matchParent, matchParent)
+                textView(R.string.reset) {
+                    reset = this
+                    textAppearance = R.style.TextAppearance_AppCompat_Title_Inverse
+                    horizontalPadding = dip(16)
+                    gravity = Gravity.CENTER
+                    setForegroundCompat(context.attrResource(R.attr.selectableItemBackgroundBorderless))
+                }.lparams(dimen(R.dimen.navigation_drawer_width) / 2, matchParent) {
+                    gravity = Gravity.END
+                }
 
                 view {
                     buttonsDivider = this
