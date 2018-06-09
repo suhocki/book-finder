@@ -232,6 +232,17 @@ class FilterInteractor @Inject constructor(
                 }.let { builder.setSecondOrderType(it) }
             }
 
+            val checkedStatuses = statusesFilterItems.filter { it.isChecked }
+            if (checkedStatuses.isNotEmpty()) {
+                val query = StringBuilder(120)
+                query.append("(")
+                checkedStatuses.forEachIndexed { index, filterStatus ->
+                    query.append("'${filterStatus.status}'")
+                    if (checkedStatuses.lastIndex != index) query.append(", ")
+                }
+                query.append(")")
+                builder.statusIn(BookEntity.FIELD_STATUS, query.toString())
+            }
         }
         return builder.create()
     }

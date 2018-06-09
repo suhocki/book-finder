@@ -22,7 +22,7 @@
     <string name="out_of_memory">Out of memory.</string>
     <string name="corrupted_file">Unfortunately, downloaded file is corrupted. Please, tell the developers about this issue.</string>
     <string name="error">Error</string>
-    <string name="error_filter_price_invalid">Price "from" should be less than price "to".</string>
+    <string name="error_filter_price_invalid">Price From should be less than price To.</string>
     <string name="categories">Categories</string>
     <string name="rubles">%.2f rub.</string>
     <string name="format_two_sign_after_point">%.2f</string>

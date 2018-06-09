@@ -29,6 +29,8 @@ public final class QueryBuilder {
     private String mFilterFieldName = null;
     private String mFilterFrom = null;
     private String mFilterTo = null;
+    private String mFieldStatus = null;
+    private String mStatusQuery = null;
 
     /**
      * Creates a query for the given table name.
@@ -157,6 +159,10 @@ public final class QueryBuilder {
         appendClause(query, " >= ", mFilterFrom);
         appendClause(query, " AND ", mFilterFieldName);
         appendClause(query, " <= ", mFilterTo);
+        if (mFieldStatus != null && mStatusQuery != null) {
+            appendClause(query, " AND ", mFieldStatus);
+            appendClause(query, " IN ", mStatusQuery);
+        }
         appendClause(query, " GROUP BY ", mGroupBy);
         appendClause(query, " HAVING ", mHaving);
         appendClause(query, " ORDER BY ", mFirstOrderBy);
@@ -215,5 +221,10 @@ public final class QueryBuilder {
         mFilterFieldName = fieldName;
         mFilterFrom = from;
         mFilterTo = to;
+    }
+
+    public void statusIn(@NotNull String fieldName, @NotNull String query) {
+        mFieldStatus = fieldName;
+        mStatusQuery = query;
     }
 }
