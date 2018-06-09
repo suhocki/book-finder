@@ -23,4 +23,6 @@ interface FilterView : MvpView {
     fun showBooks(sqLiteQuery: SupportSQLiteQuery)
 
     fun showToast(stringRes: Int)
+
+    fun setFilterApplied(isFilterApplied: Boolean)
 }

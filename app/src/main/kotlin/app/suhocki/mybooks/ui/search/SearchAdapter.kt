@@ -1,6 +1,8 @@
 package app.suhocki.mybooks.ui.search
 
-import android.support.v7.recyclerview.extensions.AsyncListDiffer
+import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
+import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
+import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.base.delegate.FilterAuthorAdapterDelegate
 import app.suhocki.mybooks.ui.base.delegate.FilterPublisherAdapterDelegate
 import app.suhocki.mybooks.ui.base.listener.OnFilterAuthorClickListener
@@ -13,7 +15,11 @@ class SearchAdapter(
     onFilterPublisherClickListener: OnFilterPublisherClickListener
 ) : ListDelegationAdapter<MutableList<Any>>() {
 
-    private val differ by lazy { AsyncListDiffer(this, SearchDiffCallback()) }
+    private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
+
+    private val diffConfig by lazy { EndActionAsyncDifferConfig.Builder<Any>(SearchDiffCallback()).build() }
+
+    private val differ by lazy { EndActionAsyncListDiffer(listUpdateCallback, diffConfig) }
 
     init {
         delegatesManager

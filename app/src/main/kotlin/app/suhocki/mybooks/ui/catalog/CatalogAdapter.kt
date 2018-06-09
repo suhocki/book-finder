@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.ui.catalog
 
-import android.support.v7.recyclerview.extensions.AsyncDifferConfig
-import android.support.v7.recyclerview.extensions.AsyncListDiffer
+import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
+import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.base.delegate.SearchAdapterDelegate
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
@@ -21,9 +21,9 @@ class CatalogAdapter(
 
     private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
 
-    private val diffConfig by lazy { AsyncDifferConfig.Builder<Any>(CatalogDiffCallback()).build() }
+    private val diffConfig by lazy { EndActionAsyncDifferConfig.Builder<Any>(CatalogDiffCallback()).build() }
 
-    private val differ by lazy { AsyncListDiffer(listUpdateCallback, diffConfig) }
+    private val differ by lazy { EndActionAsyncListDiffer(listUpdateCallback, diffConfig) }
 
     init {
         delegatesManager

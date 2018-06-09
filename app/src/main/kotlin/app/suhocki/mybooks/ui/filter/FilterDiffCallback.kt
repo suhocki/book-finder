@@ -1,10 +1,10 @@
 package app.suhocki.mybooks.ui.filter
 
-import android.support.v7.util.DiffUtil
+import android.support.v7.util.EndActionDiffUtil
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.filter.*
 
-internal class FilterDiffCallback : DiffUtil.ItemCallback<Any>() {
+internal class FilterDiffCallback : EndActionDiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return if (oldItem is FilterCategory && newItem is FilterCategory) oldItem.title == newItem.title
         else if (oldItem is FilterAuthor && newItem is FilterAuthor) oldItem.authorName == newItem.authorName

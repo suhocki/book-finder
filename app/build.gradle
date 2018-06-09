@@ -118,6 +118,7 @@ dependencies {
             "com.android.support:transition:$support_library_version",
             "com.android.support:design:$support_library_version",
             "com.android.support:customtabs:$support_library_version",
+            "com.android.support:transition:$support_library_version",
             "net.opacapp:multiline-collapsingtoolbar:$support_library_version",
             "com.arello-mobile:moxy-compiler:$moxy_version",
             "com.arello-mobile:moxy-app-compat:$moxy_version",

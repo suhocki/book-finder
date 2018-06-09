@@ -5,6 +5,8 @@ import android.arch.persistence.db.SupportSQLiteQuery
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.transition.AutoTransition
+import android.support.transition.TransitionManager
 import android.support.v4.view.ViewCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
@@ -59,6 +61,8 @@ class FilterFragment : BaseFragment(), FilterView,
         )
     }
 
+    private var isFilterApplied = false
+
     @InjectPresenter
     lateinit var presenter: FilterPresenter
 
@@ -103,16 +107,34 @@ class FilterFragment : BaseFragment(), FilterView,
     }
 
     override fun showBottomButtonsVisible(configured: Boolean) {
-        if (configured && ui.bottomPanel.visibility != View.VISIBLE) {
-            ui.bottomPanel.translationY = context!!.dimenAttr(R.attr.actionBarSize).toFloat()
-            ui.bottomPanel.visibility = View.VISIBLE
-            ViewCompat.animate(ui.bottomPanel).translationY(0f).start()
-            ui.recyclerView.bottomPadding = context!!.dimenAttr(R.attr.actionBarSize)
-        } else if (!configured && ui.bottomPanel.visibility == View.VISIBLE) {
-            ViewCompat.animate(ui.bottomPanel).translationY((ui.bottomPanel.height).toFloat())
-                .withEndAction { ui.bottomPanel.visibility = View.INVISIBLE }
-                .start()
-            ui.recyclerView.bottomPadding = 0
+        when {
+            !configured && isFilterApplied -> {
+                TransitionManager.beginDelayedTransition(ui.bottomPanel, AutoTransition())
+                ui.apply.visibility = View.GONE
+                ui.buttonsDivider.visibility = View.GONE
+            }
+
+            configured && ui.bottomPanel.visibility != View.VISIBLE -> {
+                ui.apply.visibility = View.VISIBLE
+                ui.buttonsDivider.visibility = View.VISIBLE
+                ui.bottomPanel.translationY = context!!.dimenAttr(R.attr.actionBarSize).toFloat()
+                ui.bottomPanel.visibility = View.VISIBLE
+                ViewCompat.animate(ui.bottomPanel).translationY(0f).start()
+                ui.recyclerView.bottomPadding = context!!.dimenAttr(R.attr.actionBarSize)
+            }
+
+            !configured && ui.bottomPanel.visibility == View.VISIBLE -> {
+                ViewCompat.animate(ui.bottomPanel).translationY((ui.bottomPanel.height).toFloat())
+                    .withEndAction { ui.bottomPanel.visibility = View.INVISIBLE }
+                    .start()
+                ui.recyclerView.bottomPadding = 0
+            }
+
+            configured && isFilterApplied -> {
+                TransitionManager.beginDelayedTransition(ui.bottomPanel, AutoTransition())
+                ui.apply.visibility = View.VISIBLE
+                ui.buttonsDivider.visibility = View.VISIBLE
+            }
         }
     }
 
@@ -179,6 +201,10 @@ class FilterFragment : BaseFragment(), FilterView,
 
     override fun onFilterPriceChange(type: FilterPrice.FilterPriceType) {
         presenter.updateBottomButtons()
+    }
+
+    override fun setFilterApplied(isFilterApplied: Boolean) {
+        this.isFilterApplied = isFilterApplied
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

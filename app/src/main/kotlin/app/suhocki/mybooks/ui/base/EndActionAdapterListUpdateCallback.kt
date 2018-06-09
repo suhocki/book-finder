@@ -35,4 +35,9 @@ class EndActionAdapterListUpdateCallback(
         endAction?.invoke()
         endAction = null
     }
+
+    fun onLastEvent() {
+        endAction?.invoke()
+        endAction = null
+    }
 }

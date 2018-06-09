@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
@@ -24,9 +25,10 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 class FilterUI<in T : Fragment> : AnkoComponent<T> {
 
     lateinit var recyclerView: RecyclerView
-    lateinit var bottomPanel: View
+    lateinit var bottomPanel: ViewGroup
     lateinit var apply: View
     lateinit var reset: View
+    lateinit var buttonsDivider: View
 
     override fun createView(ui: AnkoContext<T>) = with(ui) {
 
@@ -100,6 +102,7 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
                 }.lparams(matchParent, matchParent)
 
                 view {
+                    buttonsDivider = this
                     backgroundColorResource = R.color.colorWhite
                 }.lparams(dip(2), matchParent) {
                     gravity = Gravity.CENTER_HORIZONTAL

@@ -149,13 +149,17 @@ class FilterPresenter @Inject constructor(
         val filterItems = interactor.getFilterCategories()
         uiThread {
             viewState.showFilterItems(filterItems, needBottomButtonsUpdate = true)
+            viewState.setFilterApplied(false)
         }
     }
 
     fun applyFilter() = doAsync(errorHandler.errorReceiver) {
         if (interactor.validatePriceFilter()) {
             val filterQuery = interactor.getSearchQuery()
-            uiThread { viewState.showBooks(filterQuery) }
+            uiThread {
+                viewState.showBooks(filterQuery)
+                viewState.setFilterApplied(true)
+            }
         } else {
             uiThread { viewState.showToast(R.string.error_filter_price_invalid) }
         }

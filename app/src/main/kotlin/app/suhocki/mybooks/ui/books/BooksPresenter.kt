@@ -40,7 +40,9 @@ class BooksPresenter @Inject constructor(
         uiThread { viewState.showProgressVisible(true) }
         interactor.getBooks(category).let { books ->
             uiThread {
-                if (books.isNotEmpty()) viewState.showBooks(books, scrollToTop)
+                if (books.isNotEmpty()) {
+                    viewState.showBooks(books, scrollToTop)
+                }
                 else {
                     viewState.showEmptyScreen()
                     viewState.showProgressVisible(false)
