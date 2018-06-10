@@ -15,7 +15,7 @@ import app.suhocki.mybooks.data.database.entity.*
         StatusStatisticsEntity::class,
         PriceStatisticsEntity::class
     ],
-    version = 1
+    version = 2
 )
 abstract class BooksDatabase : RoomDatabase() {
     abstract fun booksDao(): BookDao
