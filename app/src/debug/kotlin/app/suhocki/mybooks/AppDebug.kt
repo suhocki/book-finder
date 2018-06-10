@@ -3,6 +3,7 @@ package app.suhocki.mybooks
 import android.app.Application
 import com.crashlytics.android.Crashlytics
 import io.fabric.sdk.android.Fabric
+import com.facebook.stetho.Stetho
 import toothpick.Toothpick
 import com.squareup.leakcanary.LeakCanary
 import toothpick.configuration.Configuration
@@ -15,11 +16,16 @@ class AppDebug : App() {
         initToothpick()
         super.onCreate()
         initLeakCanary()
+        initStetho()
         enableStrictMode()
     }
 
     private fun initToothpick() {
         Toothpick.setConfiguration(Configuration.forDevelopment().preventMultipleRootScopes())
+    }
+
+    private fun initStetho() {
+        Stetho.initializeWithDefaults(this);
     }
 
     private fun initLeakCanary() {

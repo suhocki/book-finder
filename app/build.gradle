@@ -102,6 +102,7 @@ ext {
     leakcanary_version = "1.5.4"
     bottomnavigation_version = "2.1.0"
     adapterdelegates_version = "3.0.1"
+    stetho_version = "1.5.0"
 }
 
 dependencies {
@@ -133,7 +134,9 @@ dependencies {
         transitive = true
     }
     debugImplementation(
-            "com.squareup.leakcanary:leakcanary-android:$leakcanary_version"
+            "com.squareup.leakcanary:leakcanary-android:$leakcanary_version",
+            "com.facebook.stetho:stetho:$stetho_version",
+            "com.facebook.stetho:stetho-okhttp3:$stetho_version",
     )
     testImplementation(
             "junit:junit:$junit_version",
