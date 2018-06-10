@@ -8,6 +8,7 @@ import app.suhocki.mybooks.data.repository.LocalStorageRepository
 import app.suhocki.mybooks.di.DatabaseFileUrl
 import app.suhocki.mybooks.di.DownloadDirectoryPath
 import app.suhocki.mybooks.di.DownloadedFileName
+import app.suhocki.mybooks.di.provider.OkHttpClientProvider
 import app.suhocki.mybooks.di.provider.ApiProvider
 import app.suhocki.mybooks.domain.repository.FileActionsRepository
 import app.suhocki.mybooks.domain.repository.ServerRepository
