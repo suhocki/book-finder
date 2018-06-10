@@ -7,6 +7,7 @@ import android.os.Build
 import android.support.v7.app.AppCompatDelegate
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.AppModule
+import com.google.android.gms.ads.MobileAds
 import org.jetbrains.anko.notificationManager
 import toothpick.Toothpick
 
@@ -18,6 +19,11 @@ open class App : Application() {
         initAppScope()
         initNotificationChannel()
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+        initAds()
+    }
+
+    private fun initAds() {
+        MobileAds.initialize(this, "ca-app-pub-5580850164009775~6716592020")
     }
 
     private fun initAppScope() {

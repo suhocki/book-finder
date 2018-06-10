@@ -25,7 +25,7 @@
     <string name="error_filter_price_invalid">Price From should be less than price To.</string>
     <string name="categories">Categories</string>
     <string name="rubles">%.2f rub.</string>
-    <string name="format_two_sign_after_point">%.2f</string>
+    <string name="format_two_sign_after_point" translatable="false">%.2f</string>
     <string name="empty_screen_books">The current database does not contains any books on this category</string>
     <string name="empty_screen_authors">The current database does not contains any suitable authors for this query</string>
     <string name="back">Back</string>
