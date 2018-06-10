@@ -8,9 +8,13 @@ interface InfoRepository {
 
     fun getOrganizationName(): String
 
-    fun getWebsite(): String
+    fun getWebsite(): Pair<String, String>
 
     fun getVkGroup(): Pair<String, String>
 
     fun getFacebook(): Pair<String, String>
+
+    fun getAddress(): String
+
+    fun getWorkingTime(): String
 }

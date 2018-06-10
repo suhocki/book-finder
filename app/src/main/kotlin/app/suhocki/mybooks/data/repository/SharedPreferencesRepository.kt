@@ -49,11 +49,11 @@ class SharedPreferencesRepository @Inject constructor(
             "mybooksby@gmail.com"
         )
 
-    override fun getWebsite(): String =
+    override fun getWebsite(): Pair<String, String> =
         sharedPreferences.getString(
             PREFERENCE_WEBSITE,
             "mybooks.by"
-        )
+        ) to "http://mybooks.by"
 
     override fun getVkGroup(): Pair<String, String> =
         sharedPreferences.getString(
@@ -73,6 +73,18 @@ class SharedPreferencesRepository @Inject constructor(
             "https://www.facebook.com/groups/mybooks.by/"
         )
 
+    override fun getAddress(): String =
+        sharedPreferences.getString(
+            PREFERENCE_ADDRESS,
+            "Минск, ТЦ Купаловский, пав. 7, (м. Октябрьская)"
+        )
+
+    override fun getWorkingTime(): String =
+        sharedPreferences.getString(
+            PREFERENCE_WORKING_TIME,
+            "ПН-СБ. 11.00 -19.00"
+        )
+
 
     companion object {
         const val PREFERENCE_IS_DATABASE_LOADED = "PREFERENCE_IS_DATABASE_LOADED"
@@ -86,5 +98,7 @@ class SharedPreferencesRepository @Inject constructor(
         const val PREFERENCE_VK_GROUP_WEBSITE = "PREFERENCE_VK_GROUP_WEBSITE"
         const val PREFERENCE_FACEBOOK_NAME = "PREFERENCE_FACEBOOK_NAME"
         const val PREFERENCE_FACEBOOK_WEBSITE = "PREFERENCE_FACEBOOK_WEBSITE"
+        const val PREFERENCE_ADDRESS = "PREFERENCE_ADDRESS"
+        const val PREFERENCE_WORKING_TIME = "PREFERENCE_WORKING_TIME"
     }
 }

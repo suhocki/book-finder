@@ -61,4 +61,6 @@
     <string name="reset">Сброс</string>
     <string name="error_filter_price_invalid">Цена От должна быть меньше цены До.</string>
     <string name="contacts">Контакты</string>
+    <string name="address">Адрес:</string>
+    <string name="working_time">Время работы:</string>
 </resources>

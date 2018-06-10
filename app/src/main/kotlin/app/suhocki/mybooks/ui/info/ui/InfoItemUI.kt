@@ -12,7 +12,7 @@ import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
 import org.jetbrains.anko.*
 
-class ContactItemUI : AnkoComponent<ViewGroup> {
+class InfoItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
     lateinit var name: TextView
     lateinit var icon: ImageView
@@ -20,7 +20,7 @@ class ContactItemUI : AnkoComponent<ViewGroup> {
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 
         frameLayout {
-            this@ContactItemUI.parent = this
+            this@InfoItemUI.parent = this
             setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
             backgroundColor = Color.WHITE
 

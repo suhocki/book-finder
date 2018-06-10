@@ -3,6 +3,8 @@ package app.suhocki.mybooks
 import android.app.Activity
 import android.app.ActivityManager
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
@@ -14,6 +16,8 @@ import android.support.v4.content.res.ResourcesCompat
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+
+
 
 
 fun Context.attrResource(@AttrRes attribute: Int): Int {
@@ -44,6 +48,45 @@ fun Context.openLink(link: String) {
         .launchUrl(this, Uri.parse(link))
 }
 
+fun Context.openMap(address: String) {
+    val uriBuilder = Uri.Builder()
+        .scheme("geo")
+        .path("0,0")
+        .appendQueryParameter("q", address)
+    val intent = Intent(Intent.ACTION_VIEW, uriBuilder.build())
+    if (intent.resolveActivity(packageManager) != null) {
+        startActivity(intent)
+    }
+}
+
+fun Context.openMap(latitude: Long, longitude: Long) {
+    val i = Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?q=loc:$latitude,$longitude"))
+    i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    val mapsPackageName = "com.google.android.apps.maps"
+    if (isPackageExisted(mapsPackageName)) {
+        i.setClassName(mapsPackageName, "com.google.android.maps.MapsActivity")
+        i.`package` = mapsPackageName
+    }
+    startActivity(i)
+}
+
+
+fun Context.isPackageExisted(targetPackage: String): Boolean {
+    val pm = packageManager
+    try {
+        val info = pm.getPackageInfo(targetPackage, PackageManager.GET_META_DATA)
+    } catch (e: PackageManager.NameNotFoundException) {
+        return false
+    }
+
+    return true
+}
+
+fun Context.openCaller(number: String) {
+    val intent = Intent(Intent.ACTION_DIAL)
+    intent.data = Uri.parse("tel:+$number")
+    startActivity(intent)
+}
 @Throws(InterruptedException::class)
 fun checkThreadInterrupt() {
     if (Thread.currentThread().isInterrupted) throw InterruptedException()

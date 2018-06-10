@@ -20,6 +20,10 @@ class InfoPresenter @Inject constructor(
             val items = mutableListOf<Any>().apply {
                 add(infoInteractor.getHeaderOrganization())
                 addAll(infoInteractor.getContacts())
+                add(infoInteractor.getHeaderAddress())
+                add(infoInteractor.getAddress())
+                add(infoInteractor.getHeaderWorkingTime())
+                add(infoInteractor.getWorkingTime())
             }
             uiThread {
                 viewState.showInfoItems(items)

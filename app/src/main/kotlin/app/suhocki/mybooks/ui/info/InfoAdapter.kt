@@ -4,12 +4,12 @@ import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
 import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
-import app.suhocki.mybooks.ui.info.delegate.ContactAdapterDelegate
-import app.suhocki.mybooks.ui.info.listener.OnContactClickListener
+import app.suhocki.mybooks.ui.info.delegate.InfoAdapterDelegate
+import app.suhocki.mybooks.ui.info.listener.OnInfoClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 class InfoAdapter(
-    onContactClickListener: OnContactClickListener
+    onInfoClickListener: OnInfoClickListener
 ) : ListDelegationAdapter<MutableList<Any>>() {
 
     private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this) }
@@ -23,7 +23,7 @@ class InfoAdapter(
     init {
         delegatesManager
             .addDelegate(HeaderAdapterDelegate())
-            .addDelegate(ContactAdapterDelegate(onContactClickListener))
+            .addDelegate(InfoAdapterDelegate(onInfoClickListener))
     }
 
     override fun getItemCount(): Int =

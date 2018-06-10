@@ -1,16 +1,18 @@
 package app.suhocki.mybooks.domain.model
 
-interface Contact {
-    val type: ContactType
+interface Info {
+    val type: InfoType
     val name: String
     val valueForNavigation: String?
     val iconRes: Int
 
-    enum class ContactType {
+    enum class InfoType {
         PHONE,
         EMAIL,
         WEBSITE,
         FACEBOOK,
         VK,
+        WORKING_TIME,
+        ADDRESS,
     }
 }
