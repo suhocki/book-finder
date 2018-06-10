@@ -19,6 +19,7 @@ class CatalogModule(context: Context) : Module() {
 
         bind(Header::class.java).toInstance(
             object : Header {
+                override val inverseColors = false
                 override var title = context.getString(R.string.catalog)
             })
 

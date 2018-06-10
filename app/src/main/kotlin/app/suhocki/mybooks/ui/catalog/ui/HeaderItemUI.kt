@@ -17,12 +17,11 @@ class HeaderItemUI : AnkoComponent<ViewGroup> {
 
         frameLayout {
             this@HeaderItemUI.parent = this
-            backgroundResource = R.color.colorPrimary
 
             textView {
                 this@HeaderItemUI.title = this
                 allCaps = true
-                textAppearance = R.style.TextAppearance_AppCompat_Subhead_Inverse
+                textAppearance = R.style.TextAppearance_AppCompat_Subhead
                 setTypeface(typeface, Typeface.BOLD)
                 leftPadding = dip(18)
                 gravity = Gravity.CENTER_VERTICAL

@@ -14,6 +14,7 @@ class InfoInteractor @Inject constructor(
         infoRepository.getOrganizationName()
             .let {
                 object : Header {
+                    override val inverseColors = true
                     override var title = it
                 }
             }
