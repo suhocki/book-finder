@@ -17,9 +17,10 @@ class CatalogModule(context: Context) : Module() {
     init {
         bind(Search::class.java).toInstance(SearchEntity(R.string.hint_search))
 
-        bind(Header::class.java).toInstance(object : Header {
-            override var titleRes = R.string.catalog
-        })
+        bind(Header::class.java).toInstance(
+            object : Header {
+                override var title = context.getString(R.string.catalog)
+            })
 
         bind(RecyclerView.ItemDecoration::class.java)
             .withName(CategoriesDecoration::class.java)

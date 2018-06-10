@@ -6,8 +6,8 @@ import app.suhocki.mybooks.data.database.entity.*
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.statistics.*
-import app.suhocki.mybooks.domain.repository.BookDatabaseRepository
-import app.suhocki.mybooks.domain.repository.StatisticDatabaseRepository
+import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.domain.repository.StatisticsRepository
 import javax.inject.Inject
 
 class RoomRepository @Inject constructor(
@@ -18,7 +18,7 @@ class RoomRepository @Inject constructor(
     private val statusStatisticsDao: StatusStatisticsDao,
     private val authorStatisticsDao: AuthorStatisticsDao,
     private val priceStatisticsDao: PriceStatisticsDao
-) : BookDatabaseRepository, StatisticDatabaseRepository {
+) : BooksRepository, StatisticsRepository {
     override fun getCategories(): List<Category> {
         return categoryDao.getAll()
     }

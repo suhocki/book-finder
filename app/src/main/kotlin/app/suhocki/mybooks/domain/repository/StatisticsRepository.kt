@@ -3,7 +3,7 @@ package app.suhocki.mybooks.domain.repository
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.statistics.*
 
-interface StatisticDatabaseRepository {
+interface StatisticsRepository {
     fun getAuthorStatisticsFor(category: Category): List<AuthorStatistics>
 
     fun getAuthorsWithName(searchQuery: String, category: Category): List<AuthorStatistics>

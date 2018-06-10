@@ -4,7 +4,7 @@ import app.suhocki.mybooks.checkThreadInterrupt
 import app.suhocki.mybooks.data.parser.XlsParser
 import app.suhocki.mybooks.di.DownloadDirectoryPath
 import app.suhocki.mybooks.domain.model.XlsDocument
-import app.suhocki.mybooks.domain.repository.FileSystemRepository
+import app.suhocki.mybooks.domain.repository.FileActionsRepository
 import java.io.*
 import java.util.*
 import java.util.zip.ZipInputStream
@@ -14,7 +14,7 @@ import javax.inject.Inject
 class LocalStorageRepository @Inject constructor(
     @DownloadDirectoryPath private val downloadDirectoryPath: String,
     private val xlsParser: XlsParser
-) : FileSystemRepository {
+) : FileActionsRepository {
 
     override fun saveFile(fileName: String, data: ByteArray): File {
         val file = File(downloadDirectoryPath, fileName)

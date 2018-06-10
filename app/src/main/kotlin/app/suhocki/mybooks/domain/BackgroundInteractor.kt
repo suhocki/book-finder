@@ -12,9 +12,9 @@ import javax.inject.Inject
 
 class BackgroundInteractor @Inject constructor(
     private val serverRepository: ServerRepository,
-    private val fileSystemRepository: FileSystemRepository,
-    private val bookDatabaseRepository: BookDatabaseRepository,
-    private val statisticDatabaseRepository: StatisticDatabaseRepository,
+    private val fileSystemRepository: FileActionsRepository,
+    private val bookDatabaseRepository: BooksRepository,
+    private val statisticDatabaseRepository: StatisticsRepository,
     private val settingsRepository: SettingsRepository,
     @DatabaseFileUrl private val fileUrl: String,
     @DownloadedFileName private val downloadedFileName: String

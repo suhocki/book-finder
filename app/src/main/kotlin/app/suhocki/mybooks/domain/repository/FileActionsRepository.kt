@@ -3,7 +3,7 @@ package app.suhocki.mybooks.domain.repository
 import app.suhocki.mybooks.domain.model.XlsDocument
 import java.io.File
 
-interface FileSystemRepository {
+interface FileActionsRepository {
     fun saveFile(fileName: String, data: ByteArray): File
 
     fun unzip(fromFile: File, toDirectory: File): File

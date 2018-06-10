@@ -2,13 +2,13 @@ package app.suhocki.mybooks.di.provider
 
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.filter.FilterPrice
-import app.suhocki.mybooks.domain.repository.StatisticDatabaseRepository
+import app.suhocki.mybooks.domain.repository.StatisticsRepository
 import javax.inject.Inject
 import javax.inject.Provider
 
 class FilterPriceEntityProvider @Inject constructor(
     private val category: Category,
-    private val statisticsRepository: StatisticDatabaseRepository
+    private val statisticsRepository: StatisticsRepository
 ) : Provider<FilterPrice> {
 
     override fun get() = object : FilterPrice {

@@ -6,13 +6,13 @@ import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.domain.model.statistics.FilterItemStatistics
 import app.suhocki.mybooks.domain.repository.FilterRepository
-import app.suhocki.mybooks.domain.repository.StatisticDatabaseRepository
+import app.suhocki.mybooks.domain.repository.StatisticsRepository
 import javax.inject.Inject
 import javax.inject.Provider
 
 class FilterItemStatisticsProvider @Inject constructor(
     private val category: Category,
-    private val statisticsRepository: StatisticDatabaseRepository,
+    private val statisticsRepository: StatisticsRepository,
     private val filterRepository: FilterRepository
 ) : Provider<FilterItemStatistics> {
 

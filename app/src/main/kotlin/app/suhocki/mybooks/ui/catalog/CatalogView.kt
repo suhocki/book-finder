@@ -20,4 +20,6 @@ interface CatalogView : MvpView {
     fun showBlankSearch()
 
     fun showRecyclerDecoration(decoration: RecyclerView.ItemDecoration)
+
+    fun showTopRightButton(isClearTextMode: Boolean)
 }

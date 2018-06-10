@@ -6,6 +6,7 @@ import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.base.delegate.SearchAdapterDelegate
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
+import app.suhocki.mybooks.ui.base.listener.OnSearchListener
 import app.suhocki.mybooks.ui.catalog.delegate.BannerAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.delegate.CategoryAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
@@ -16,12 +17,15 @@ import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 class CatalogAdapter(
     onCategoryClickListener: OnCategoryClickListener,
     onBookClickListener: OnBookClickListener,
-    onSearchClickListener: OnSearchClickListener
+    onSearchClickListener: OnSearchClickListener,
+    onSearchListener: OnSearchListener
 ) : ListDelegationAdapter<MutableList<Any>>() {
 
     private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
 
-    private val diffConfig by lazy { EndActionAsyncDifferConfig.Builder<Any>(CatalogDiffCallback()).build() }
+    private val diffConfig by lazy {
+        EndActionAsyncDifferConfig.Builder<Any>(CatalogDiffCallback()).build()
+    }
 
     private val differ by lazy { EndActionAsyncListDiffer(listUpdateCallback, diffConfig) }
 
@@ -30,11 +34,7 @@ class CatalogAdapter(
             .addDelegate(CategoryAdapterDelegate(onCategoryClickListener))
             .addDelegate(BannerAdapterDelegate())
             .addDelegate(HeaderAdapterDelegate())
-            .addDelegate(
-                SearchAdapterDelegate(
-                    onSearchClickListener
-                )
-            )
+            .addDelegate(SearchAdapterDelegate(onSearchClickListener, onSearchListener))
             .addDelegate(SearchResultBookAdapterDelegate(onBookClickListener))
     }
 

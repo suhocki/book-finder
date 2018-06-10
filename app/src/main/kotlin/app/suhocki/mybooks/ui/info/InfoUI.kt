@@ -2,18 +2,24 @@ package app.suhocki.mybooks.ui.info
 
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
+import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.widget.ImageView
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
+import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
+import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class InfoUI<in T : Fragment> : AnkoComponent<T> {
+
+    lateinit var recyclerView: RecyclerView
 
     override fun createView(ui: AnkoContext<T>) = with(ui) {
 
@@ -23,7 +29,7 @@ class InfoUI<in T : Fragment> : AnkoComponent<T> {
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                     backgroundColorResource = R.color.colorPrimary
-                    setContentInsetsRelative(0,0)
+                    setContentInsetsRelative(0, 0)
                     popupTheme = R.style.ThemeOverlay_AppCompat_Light
 
                     imageView(R.drawable.ic_menu).apply {
@@ -40,8 +46,8 @@ class InfoUI<in T : Fragment> : AnkoComponent<T> {
                         }
                     }
 
-                    imageView(R.drawable.logo).apply {
-                        scaleType = ImageView.ScaleType.FIT_CENTER
+                    textView(R.string.contacts) {
+                        textAppearance = R.style.TextAppearance_AppCompat_Title
                         layoutParams = Toolbar.LayoutParams(
                             Toolbar.LayoutParams.WRAP_CONTENT,
                             Toolbar.LayoutParams.WRAP_CONTENT
@@ -55,7 +61,15 @@ class InfoUI<in T : Fragment> : AnkoComponent<T> {
                 }
             }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
-
+            themedRecyclerView(R.style.ScrollbarRecyclerView) {
+                recyclerView = this
+                id = R.id.id_recycler_catalog
+                clipToPadding = false
+                layoutManager = ScrollLayoutManager(context)
+                setOnTouchListener { _, _ -> hideKeyboard();false }
+            }.lparams(matchParent, matchParent) {
+                behavior = AppBarLayout.ScrollingViewBehavior()
+            }
         }
     }
 }

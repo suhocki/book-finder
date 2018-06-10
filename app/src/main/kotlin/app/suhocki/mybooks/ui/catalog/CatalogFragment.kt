@@ -12,16 +12,14 @@ import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
+import app.suhocki.mybooks.ui.base.listener.OnSearchListener
 import app.suhocki.mybooks.ui.books.BooksActivity
 import app.suhocki.mybooks.ui.catalog.listener.OnCategoryClickListener
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.jetbrains.anko.AnkoContext
-import org.jetbrains.anko.bottomPadding
-import org.jetbrains.anko.dimenAttr
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.dimen
 import org.jetbrains.anko.support.v4.onUiThread
@@ -32,11 +30,20 @@ import kotlin.concurrent.schedule
 
 class CatalogFragment : BaseFragment(), CatalogView,
     OnCategoryClickListener,
-    OnSearchClickListener, OnBookClickListener {
+    OnSearchClickListener,
+    OnBookClickListener,
+    OnSearchListener {
 
     private val ui by lazy { CatalogUI<CatalogFragment>() }
 
-    private val adapter by lazy { CatalogAdapter(this, this, this) }
+    private val adapter by lazy {
+        CatalogAdapter(
+            this,
+            this,
+            this,
+            this
+        )
+    }
 
     @InjectPresenter
     lateinit var presenter: CatalogPresenter
@@ -140,6 +147,18 @@ class CatalogFragment : BaseFragment(), CatalogView,
         }
     }
 
+    override fun showTopRightButton(isClearTextMode: Boolean) {
+        with(ui.close) {
+            setImageResource(
+                if (isClearTextMode) R.drawable.ic_clear_text
+                else R.drawable.ic_close
+            )
+            padding =
+                    if (isClearTextMode) dimen(R.dimen.padding_toolbar_icon_big)
+                    else dimen(R.dimen.padding_toolbar_icon)
+        }
+    }
+
     override fun onCategoryClick(category: Category) {
         context!!.startActivity<BooksActivity>(ARG_CATEGORY to category)
     }
@@ -165,6 +184,10 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     override fun onClearSearchClick() {
         presenter.clearSearchQuery()
+    }
+
+    override fun onSearch(search: Search) {
+        presenter.onSearchQueryChange()
     }
 
     override fun onStartSearchClick(search: Search) {

@@ -28,7 +28,7 @@ class HeaderAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
     private inner class ViewHolder(val ui: HeaderItemUI) : RecyclerView.ViewHolder(ui.parent) {
         fun bind(header: Header) {
             with(ui) {
-                title.text = parent.resources.getString(header.titleRes)
+                title.text = header.title
             }
         }
     }

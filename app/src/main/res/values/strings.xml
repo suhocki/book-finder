@@ -60,6 +60,7 @@
     <string name="to">To:</string>
     <string name="apply">Apply</string>
     <string name="reset">Reset</string>
+    <string name="contacts">Contacts</string>
 
     <string name="percent" translatable="false">" "(%d%%)</string>
 </resources>

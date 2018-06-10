@@ -24,7 +24,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 class CatalogUI<in T : Fragment> : AnkoComponent<T> {
     lateinit var recyclerView: RecyclerView
     lateinit var search: View
-    lateinit var close: View
+    lateinit var close: ImageView
     lateinit var menu: View
     lateinit var back: View
 

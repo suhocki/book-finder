@@ -5,7 +5,7 @@ import app.suhocki.mybooks.data.database.entity.BookEntity
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 
-interface BookDatabaseRepository {
+interface BooksRepository {
     fun getCategories(): List<Category>
 
     fun setCategories(categories: Set<Category>)

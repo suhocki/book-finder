@@ -5,7 +5,7 @@ import android.support.v7.widget.RecyclerView
 
 class EndActionAdapterListUpdateCallback(
     private val mAdapter: RecyclerView.Adapter<*>,
-    var endAction: (() -> Unit)?
+    var endAction: (() -> Unit)? = null
 ) : ListUpdateCallback {
 
     /** {@inheritDoc}  */

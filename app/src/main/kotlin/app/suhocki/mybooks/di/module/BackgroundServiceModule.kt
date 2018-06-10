@@ -9,8 +9,7 @@ import app.suhocki.mybooks.di.DatabaseFileUrl
 import app.suhocki.mybooks.di.DownloadDirectoryPath
 import app.suhocki.mybooks.di.DownloadedFileName
 import app.suhocki.mybooks.di.provider.ApiProvider
-import app.suhocki.mybooks.di.provider.OkHttpClientProvider
-import app.suhocki.mybooks.domain.repository.FileSystemRepository
+import app.suhocki.mybooks.domain.repository.FileActionsRepository
 import app.suhocki.mybooks.domain.repository.ServerRepository
 import okhttp3.OkHttpClient
 import toothpick.config.Module
@@ -41,7 +40,7 @@ class BackgroundServiceModule(downloadDirectory: String) : Module() {
             .to(GoogleDriveRepository::class.java)
             .singletonInScope()
 
-        bind(FileSystemRepository::class.java)
+        bind(FileActionsRepository::class.java)
             .to(LocalStorageRepository::class.java)
             .singletonInScope()
 
