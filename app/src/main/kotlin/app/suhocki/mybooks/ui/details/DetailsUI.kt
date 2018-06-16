@@ -3,13 +3,16 @@ package app.suhocki.mybooks.ui.details
 import android.graphics.Point
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CollapsingToolbarLayout
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.res.ResourcesCompat
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import app.suhocki.mybooks.*
+import app.suhocki.mybooks.R
+import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.domain.model.Book
+import app.suhocki.mybooks.setGone
 import app.suhocki.mybooks.ui.base.multilineCollapsingToolbarLayout
 import com.squareup.picasso.Picasso
 import org.jetbrains.anko.*
@@ -17,13 +20,15 @@ import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.design.themedAppBarLayout
-import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.nestedScrollView
+import javax.inject.Inject
 
 
-class DetailsUI : AnkoComponent<DetailsActivity>, AnkoLogger {
+class DetailsUI @Inject constructor(
+    private var book: Book
+) : AnkoComponent<DetailsActivity>, AnkoLogger {
 
-    lateinit var book: Book
+    lateinit var fabBuy: FloatingActionButton
     private var windowHeight = 0
 
     override fun createView(ui: AnkoContext<DetailsActivity>) = with(ui) {
@@ -198,11 +203,8 @@ class DetailsUI : AnkoComponent<DetailsActivity>, AnkoLogger {
             }
 
             floatingActionButton {
+                fabBuy = this
                 id = R.id.id_fab
-                onClick {
-                    Analytics.bookAddedToCart(book)
-                    owner.openLink(book.website)
-                }
                 useCompatPadding = true
                 imageResource = R.drawable.ic_buy
             }.lparams {

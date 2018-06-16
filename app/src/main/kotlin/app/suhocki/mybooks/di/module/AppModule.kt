@@ -3,6 +3,7 @@ package app.suhocki.mybooks.di.module
 import android.content.Context
 import android.content.SharedPreferences
 import app.suhocki.mybooks.BuildConfig
+import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.database.dao.*
 import app.suhocki.mybooks.data.error.ErrorHandler
@@ -15,6 +16,7 @@ import app.suhocki.mybooks.di.DatabaseFileName
 import app.suhocki.mybooks.di.SharedPreferencesFileName
 import app.suhocki.mybooks.di.provider.*
 import app.suhocki.mybooks.domain.repository.*
+import com.google.android.gms.ads.InterstitialAd
 import toothpick.config.Module
 
 class AppModule(context: Context) : Module() {
@@ -89,6 +91,10 @@ class AppModule(context: Context) : Module() {
             .toProvider(SharedPreferencesProvider::class.java)
             .providesSingletonInScope()
 
+        bind(InterstitialAd::class.java)
+            .toProvider(InterstitialAdProvider::class.java)
+            .providesSingletonInScope()
+
         bind(ErrorHandler::class.java)
             .singletonInScope()
 
@@ -100,6 +106,9 @@ class AppModule(context: Context) : Module() {
 
         bind(SettingsRepository::class.java)
             .to(SharedPreferencesRepository::class.java)
+            .singletonInScope()
+
+        bind(AdsManager::class.java)
             .singletonInScope()
     }
 }

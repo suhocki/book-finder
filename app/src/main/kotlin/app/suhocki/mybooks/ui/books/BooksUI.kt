@@ -91,7 +91,7 @@ class BooksUI : AnkoComponent<BooksActivity> {
                     behavior = AppBarLayout.ScrollingViewBehavior()
                 }
 
-                themedProgressBar(R.style.ColoredProgressBar) {
+                themedProgressBar(R.style.AccentProgressBar) {
                     progressBar = this
                     visibility = View.GONE
                     topPadding = dimenAttr(R.attr.actionBarSize)

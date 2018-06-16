@@ -52,7 +52,7 @@ class InitialUI @Inject constructor() : AnkoComponent<InitialActivity> {
 
             linearLayout {
 
-                themedProgressBar(R.style.ColoredProgressBar) {
+                themedProgressBar(R.style.AccentProgressBar) {
                     progressBar = this
                     visibility = View.GONE
                 }.lparams {
