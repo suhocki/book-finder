@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.catalog
 
 import android.os.Bundle
+import android.support.annotation.DrawableRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -201,7 +202,17 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun onBuyBookClick(book: BookEntity) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        presenter.onBuyBookClicked(book)
+    }
+
+    override fun showBuyDrawableForItem(book: BookEntity, @DrawableRes drawableRes: Int) {
+        val indexOfBook = adapter.items.indexOf(book)
+        adapter.notifyItemChanged(indexOfBook, drawableRes)
+    }
+
+    override fun openBookWebsite(book: Book) {
+        Analytics.bookAddedToCart(book)
+        context!!.openLink(book.website)
     }
 
     companion object {

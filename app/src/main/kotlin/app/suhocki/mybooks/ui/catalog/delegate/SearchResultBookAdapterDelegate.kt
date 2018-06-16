@@ -2,11 +2,9 @@ package app.suhocki.mybooks.ui.catalog.delegate
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import app.suhocki.mybooks.Analytics
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.SearchResult
-import app.suhocki.mybooks.openLink
+import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.catalog.ui.SearchResultItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
@@ -30,24 +28,28 @@ class SearchResultBookAdapterDelegate(
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
-    ) = (holder as ViewHolder).bind(items[position] as SearchResult)
+    ) = (holder as ViewHolder).bind(items[position] as SearchResult, payloads)
 
 
-    private inner class ViewHolder(val ui: SearchResultItemUI) : RecyclerView.ViewHolder(ui.parent) {
-        private lateinit var book: Book
+    private inner class ViewHolder(val ui: SearchResultItemUI) :
+        RecyclerView.ViewHolder(ui.parent) {
+        private lateinit var book: BookEntity
 
         init {
             itemView.setOnClickListener { onBookClickListener.onBookClick(book) }
+            ui.buy.setOnClickListener { onBookClickListener.onBuyBookClick(book) }
         }
 
-        fun bind(searchResult: SearchResult) {
-            this.book = searchResult.book
+        fun bind(searchResult: SearchResult, payloads: MutableList<Any>) {
+            this.book = searchResult.book as BookEntity
             with(ui) {
-                price.text = parent.context.getString(R.string.rubles, book.price)
-                buy.setOnClickListener {
-                    Analytics.bookAddedToCart(book)
-                    buy.context.openLink(book.website)
+                if (payloads.isNotEmpty()) {
+                    val drawableRes = payloads.first() as Int
+                    buy.setImageResource(drawableRes)
+                    book.buyDrawableRes = drawableRes
                 }
+                price.text = parent.context.getString(R.string.rubles, book.price)
+                buy.setImageResource(book.buyDrawableRes)
                 foundBy.text = searchResult.foundBy
                 foundBy.text = searchResult.foundBy
                 bookName.text = searchResult.book.shortName

@@ -2,6 +2,7 @@ package app.suhocki.mybooks.ui.catalog
 
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.CategoriesDecoration
@@ -9,6 +10,7 @@ import app.suhocki.mybooks.di.SearchDecoration
 import app.suhocki.mybooks.domain.CatalogInteractor
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Search
+import app.suhocki.mybooks.ui.base.entity.BookEntity
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.AnkoLogger
@@ -21,6 +23,7 @@ import javax.inject.Inject
 class CatalogPresenter @Inject constructor(
     private val interactor: CatalogInteractor,
     private val resourceManager: ResourceManager,
+    private val adsManager: AdsManager,
     private val errorHandler: ErrorHandler,
     private val searchEntity: Search,
     private val header: Header,
@@ -39,6 +42,13 @@ class CatalogPresenter @Inject constructor(
             uiThread {
                 viewState.showCatalogItems(catalogItems, categoriesDecoration)
             }
+        }
+    }
+
+    override fun attachView(view: CatalogView?) {
+        super.attachView(view)
+        if (!adsManager.isInterstitialAdLoaded) {
+            adsManager.loadInterstitialAd()
         }
     }
 
@@ -120,6 +130,31 @@ class CatalogPresenter @Inject constructor(
 
     fun onSearchQueryChange() {
         viewState.showTopRightButton(!searchEntity.searchQuery.isBlank())
+    }
+
+    fun onBuyBookClicked(book: BookEntity) {
+        adsManager.setOnAdShownListener {
+            adsManager.setOnAdShownListener(null)
+            adsManager.loadInterstitialAd()
+            viewState.openBookWebsite(book)
+            viewState.showBuyDrawableForItem(book, R.drawable.ic_buy)
+        }
+
+        when {
+            adsManager.isAdShownFor(book.website) -> viewState.openBookWebsite(book)
+
+            adsManager.isInterstitialAdLoading -> {
+                viewState.showBuyDrawableForItem(book, R.drawable.ic_time_inverse)
+                adsManager.requestShowInterstitialAdFor(book.website)
+            }
+
+            else -> adsManager.showInterstitialAd(book.website)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        adsManager.setOnAdShownListener(null)
     }
 
     companion object {

@@ -9,6 +9,7 @@ import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.ui.base.entity.BookEntity
 import javax.inject.Inject
 
 class CatalogInteractor @Inject constructor(
@@ -28,7 +29,7 @@ class CatalogInteractor @Inject constructor(
             .map {
                 object : SearchResult {
                     override val foundBy = determineFoundBy(search, it)
-                    override val book = it
+                    override val book = BookEntity(it)
                 }
             }
             .toList<SearchResult>()
