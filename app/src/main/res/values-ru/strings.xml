@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MYBOOKS – книжные новинки</string>
-    <string name="database_load_need">Перед использованием данного приложения, необходимо загрузить базу данных.</string>
+    <string name="database_load_need">Перед использованием данного приложения, необходимо обновить базу данных.</string>
     <string name="download">Загрузить</string>
     <string name="cancel">Отмена</string>
     <string name="_continue">Продолжить</string>

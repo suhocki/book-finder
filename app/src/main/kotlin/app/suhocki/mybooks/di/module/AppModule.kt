@@ -14,10 +14,7 @@ import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.DatabaseFileName
 import app.suhocki.mybooks.di.SharedPreferencesFileName
 import app.suhocki.mybooks.di.provider.*
-import app.suhocki.mybooks.domain.repository.BooksRepository
-import app.suhocki.mybooks.domain.repository.InfoRepository
-import app.suhocki.mybooks.domain.repository.SettingsRepository
-import app.suhocki.mybooks.domain.repository.StatisticsRepository
+import app.suhocki.mybooks.domain.repository.*
 import toothpick.config.Module
 
 class AppModule(context: Context) : Module() {
@@ -42,6 +39,10 @@ class AppModule(context: Context) : Module() {
 
         bind(BookDao::class.java)
             .toProvider(BookDaoProvider::class.java)
+            .providesSingletonInScope()
+
+        bind(BannerDao::class.java)
+            .toProvider(BannerDaoProvider::class.java)
             .providesSingletonInScope()
 
         bind(CategoryDao::class.java)
@@ -73,6 +74,10 @@ class AppModule(context: Context) : Module() {
             .singletonInScope()
 
         bind(StatisticsRepository::class.java)
+            .to(RoomRepository::class.java)
+            .singletonInScope()
+
+        bind(BannersRepository::class.java)
             .to(RoomRepository::class.java)
             .singletonInScope()
 

@@ -6,6 +6,10 @@ import javax.inject.Inject
 class SplashInteractor @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
-    fun isDataLoaded() =
-        settingsRepository.databaseLoaded
+    fun isSuitableDatabaseVersion(suitableVersion: Int) =
+        settingsRepository.databaseVersion == suitableVersion
+
+    fun resetDownloadStatistics() {
+        settingsRepository.downloadStatistics = null
+    }
 }

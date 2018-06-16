@@ -9,10 +9,10 @@ class SharedPreferencesRepository @Inject constructor(
     private val sharedPreferences: SharedPreferences
 ) : SettingsRepository, InfoRepository {
 
-    override var databaseLoaded: Boolean
-        get() = sharedPreferences.getBoolean(PREFERENCE_IS_DATABASE_LOADED, false)
-        set(value) = sharedPreferences.edit().putBoolean(
-            PREFERENCE_IS_DATABASE_LOADED,
+    override var databaseVersion: Int
+        get() = sharedPreferences.getInt(PREFERENCE_DATABASE_VERSION, 1)
+        set(value) = sharedPreferences.edit().putInt(
+            PREFERENCE_DATABASE_VERSION,
             value
         ).apply()
 
@@ -37,11 +37,25 @@ class SharedPreferencesRepository @Inject constructor(
             "Книжный интернет-магазин Mybooks.by"
         )
 
+    override fun setOrganizationName(name: String) {
+        sharedPreferences.edit().putString(
+            PREFERENCE_ORGANIZATION_NAME,
+            name
+        ).apply()
+    }
+
     override fun getContactPhones(): Set<String> =
         sharedPreferences.getStringSet(
             PREFERENCE_CONTACT_PHONES,
             setOf("375 (29) 696-52-87", "375 (33) 696-52-89")
         )
+
+    override fun setContactPhones(phones: Set<String>) {
+        sharedPreferences.edit().putStringSet(
+            PREFERENCE_CONTACT_PHONES,
+            phones
+        ).apply()
+    }
 
     override fun getContactEmail(): String =
         sharedPreferences.getString(
@@ -49,11 +63,25 @@ class SharedPreferencesRepository @Inject constructor(
             "mybooksby@gmail.com"
         )
 
+    override fun setContactEmail(email: String) {
+        sharedPreferences.edit().putString(
+            PREFERENCE_CONTACT_EMAIL,
+            email
+        ).apply()
+    }
+
     override fun getWebsite(): Pair<String, String> =
         sharedPreferences.getString(
             PREFERENCE_WEBSITE,
             "mybooks.by"
         ) to "http://mybooks.by"
+
+    override fun setWebsite(website: String) {
+        sharedPreferences.edit().putString(
+            PREFERENCE_WEBSITE,
+            website
+        ).apply()
+    }
 
     override fun getVkGroup(): Pair<String, String> =
         sharedPreferences.getString(
@@ -64,6 +92,13 @@ class SharedPreferencesRepository @Inject constructor(
             "https://vk.com/mybooksby"
         )
 
+    override fun setVkGroup(url: String) {
+        sharedPreferences.edit().putString(
+            PREFERENCE_VK_GROUP_WEBSITE,
+            url
+        ).apply()
+    }
+
     override fun getFacebook(): Pair<String, String> =
         sharedPreferences.getString(
             PREFERENCE_FACEBOOK_NAME,
@@ -73,11 +108,25 @@ class SharedPreferencesRepository @Inject constructor(
             "https://www.facebook.com/groups/mybooks.by/"
         )
 
+    override fun setFacebook(url: String) {
+        sharedPreferences.edit().putString(
+            PREFERENCE_FACEBOOK_WEBSITE,
+            url
+        ).apply()
+    }
+
     override fun getAddress(): String =
         sharedPreferences.getString(
             PREFERENCE_ADDRESS,
             "Минск, ТЦ Купаловский, пав. 7, (м. Октябрьская)"
         )
+
+    override fun setAddress(address: String) {
+        sharedPreferences.edit().putString(
+            PREFERENCE_ADDRESS,
+            address
+        ).apply()
+    }
 
     override fun getWorkingTime(): String =
         sharedPreferences.getString(
@@ -85,9 +134,15 @@ class SharedPreferencesRepository @Inject constructor(
             "ПН-СБ. 11.00 -19.00"
         )
 
+    override fun setWorkingTime(time: String) {
+        sharedPreferences.edit().putString(
+            PREFERENCE_WORKING_TIME,
+            time
+        ).apply()
+    }
 
     companion object {
-        const val PREFERENCE_IS_DATABASE_LOADED = "PREFERENCE_IS_DATABASE_LOADED"
+        const val PREFERENCE_DATABASE_VERSION = "PREFERENCE_DATABASE_VERSION"
         const val PREFERENCE_BOOK_COUNT = "PREFERENCE_BOOK_COUNT"
         const val PREFERENCE_CATEGORIES_COUNT = "PREFERENCE_CATEGORIES_COUNT"
         const val PREFERENCE_ORGANIZATION_NAME = "PREFERENCE_ORGANIZATION_NAME"

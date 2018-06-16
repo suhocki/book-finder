@@ -34,6 +34,7 @@ class BackgroundPresenter @Inject constructor(
     }
 
     fun loadDatabase() = doAsync(errorHandler.errorReceiver) {
+        currentStep?.progress = 0
         errorHandler.clearLastError()
         componentNotifier.addListener(this@BackgroundPresenter)
         componentNotifier.onProgressStep(ProgressStep.DOWNLOADING)
@@ -48,6 +49,8 @@ class BackgroundPresenter @Inject constructor(
         componentNotifier.onProgressStep(ProgressStep.SAVING)
         interactor.saveBooksData(xlsDocument.booksData)
         interactor.saveStatisticsData(xlsDocument.statisticsData)
+        interactor.saveInfosData(xlsDocument.infosData)
+        interactor.saveBannersData(xlsDocument.bannersData)
         val statistics = interactor.getBooksAndCategoriesCount()
         interactor.setDownloadStatistics(statistics)
         componentNotifier.onLoadingComplete(statistics)

@@ -13,12 +13,13 @@ import app.suhocki.mybooks.data.database.entity.*
         PublisherStatisticsEntity::class,
         YearStatisticsEntity::class,
         StatusStatisticsEntity::class,
-        PriceStatisticsEntity::class
+        PriceStatisticsEntity::class,
+        BannerEntity::class
     ],
-    version = 1
+    version = BooksDatabase.DATABASE_VERSION
 )
 abstract class BooksDatabase : RoomDatabase() {
-    abstract fun booksDao(): BookDao
+    abstract fun bookDao(): BookDao
 
     abstract fun categoryDao(): CategoryDao
 
@@ -31,4 +32,10 @@ abstract class BooksDatabase : RoomDatabase() {
     abstract fun yearStatisticsDao(): YearStatisticsDao
 
     abstract fun priceStatisticsDao(): PriceStatisticsDao
+
+    abstract fun bannerDao(): BannerDao
+
+    companion object {
+        const val DATABASE_VERSION = 3
+    }
 }

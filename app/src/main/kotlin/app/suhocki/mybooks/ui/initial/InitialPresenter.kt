@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.initial
 
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.error.ErrorListener
 import app.suhocki.mybooks.data.error.ErrorType
@@ -41,7 +42,7 @@ class InitialPresenter @Inject constructor(
 
     fun flowFinished() =
         doAsync(errorHandler.errorReceiver) {
-            interactor.setDatabaseLoaded()
+            interactor.setDatabaseVersion(BooksDatabase.DATABASE_VERSION)
             uiThread { viewState.showMainScreen() }
         }
 
