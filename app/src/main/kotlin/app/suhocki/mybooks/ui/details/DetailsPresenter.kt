@@ -16,25 +16,19 @@ class DetailsPresenter @Inject constructor(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showFabDrawableRes(R.drawable.ic_buy)
-        initAds()
-    }
-
-    private fun initAds() {
-        if (!adsManager.isInterstitialAdLoaded) {
-            adsManager.loadInterstitialAd()
-        }
-        adsManager.setOnAdShownListener {
-            viewState.openBookWebsite(book)
-            viewState.showFabDrawableRes(R.drawable.ic_buy)
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        adsManager.setOnAdShownListener(null)
+        adsManager.loadInterstitialAd()
     }
 
     fun onBuyBookClicked() {
+        if (adsManager.isInterstitialAdLoading ||
+            adsManager.isInterstitialAdLoaded) {
+            adsManager.onAdFlowFinished {
+                adsManager.loadInterstitialAd()
+                viewState.openBookWebsite(book)
+                viewState.showFabDrawableRes(R.drawable.ic_buy)
+            }
+        }
+
         when {
             adsManager.isAdShownFor(book.website) -> viewState.openBookWebsite(book)
 
@@ -43,7 +37,14 @@ class DetailsPresenter @Inject constructor(
                 adsManager.requestShowInterstitialAdFor(book.website)
             }
 
-            else -> adsManager.showInterstitialAd(book.website)
+            adsManager.isInterstitialAdLoaded -> adsManager.showInterstitialAd(book.website)
+
+            else -> viewState.openBookWebsite(book)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        adsManager.onAdFlowFinished(null)
     }
 }

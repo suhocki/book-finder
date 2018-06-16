@@ -47,9 +47,7 @@ class CatalogPresenter @Inject constructor(
 
     override fun attachView(view: CatalogView?) {
         super.attachView(view)
-        if (!adsManager.isInterstitialAdLoaded) {
-            adsManager.loadInterstitialAd()
-        }
+        adsManager.loadInterstitialAd()
     }
 
     fun startSearchMode(): Future<Unit> {
@@ -133,11 +131,13 @@ class CatalogPresenter @Inject constructor(
     }
 
     fun onBuyBookClicked(book: BookEntity) {
-        adsManager.setOnAdShownListener {
-            adsManager.setOnAdShownListener(null)
-            adsManager.loadInterstitialAd()
-            viewState.openBookWebsite(book)
-            viewState.showBuyDrawableForItem(book, R.drawable.ic_buy)
+        if (adsManager.isInterstitialAdLoading ||
+            adsManager.isInterstitialAdLoaded) {
+            adsManager.onAdFlowFinished {
+                adsManager.loadInterstitialAd()
+                viewState.openBookWebsite(book)
+                viewState.showBuyDrawableForItem(book, R.drawable.ic_buy)
+            }
         }
 
         when {
@@ -148,13 +148,15 @@ class CatalogPresenter @Inject constructor(
                 adsManager.requestShowInterstitialAdFor(book.website)
             }
 
-            else -> adsManager.showInterstitialAd(book.website)
+            adsManager.isInterstitialAdLoaded -> adsManager.showInterstitialAd(book.website)
+
+            else -> viewState.openBookWebsite(book)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        adsManager.setOnAdShownListener(null)
+        adsManager.onAdFlowFinished(null)
     }
 
     companion object {
