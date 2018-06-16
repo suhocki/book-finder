@@ -2,16 +2,16 @@ package app.suhocki.mybooks.ui.details
 
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
+import app.suhocki.mybooks.domain.model.Book
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import javax.inject.Inject
 
 @InjectViewState
 class DetailsPresenter @Inject constructor(
-    private var adsManager: AdsManager
+    private var adsManager: AdsManager,
+    private var book: Book
 ) : MvpPresenter<DetailsView>() {
-
-    private var isBookWebsiteAlreadyOpened = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -20,27 +20,30 @@ class DetailsPresenter @Inject constructor(
     }
 
     private fun initAds() {
-        adsManager.initInterstitialAd(onLoadFailed = {
-            isBookWebsiteAlreadyOpened = true
-            viewState.openBookWebsite()
+        if (!adsManager.isInterstitialAdLoaded) {
+            adsManager.loadInterstitialAd()
+        }
+        adsManager.setOnAdShownListener {
+            viewState.openBookWebsite(book)
             viewState.showFabDrawableRes(R.drawable.ic_buy)
-        }, onAdClosed = {
-            isBookWebsiteAlreadyOpened = true
-            viewState.openBookWebsite()
-            viewState.showFabDrawableRes(R.drawable.ic_buy)
-        })
+        }
     }
 
-    fun onBuyClicked() {
-        when {
-            isBookWebsiteAlreadyOpened -> viewState.openBookWebsite()
+    override fun onDestroy() {
+        super.onDestroy()
+        adsManager.setOnAdShownListener(null)
+    }
 
-            adsManager.isLoadingInterstitialAd -> {
+    fun onBuyBookClicked() {
+        when {
+            adsManager.isAdShownFor(book.website) -> viewState.openBookWebsite(book)
+
+            adsManager.isInterstitialAdLoading -> {
                 viewState.showFabDrawableRes(R.drawable.ic_time_inverse)
-                adsManager.requestShowInterstitialAd()
+                adsManager.requestShowInterstitialAdFor(book.website)
             }
 
-            else -> adsManager.showInterstitialAd()
+            else -> adsManager.showInterstitialAd(book.website)
         }
     }
 }

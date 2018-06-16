@@ -10,6 +10,7 @@ import app.suhocki.mybooks.*
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchListener
@@ -197,6 +198,10 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     override fun onBookClick(book: Book) {
         context!!.startActivity<DetailsActivity>(BooksActivity.ARG_BOOK to book)
+    }
+
+    override fun onBuyBookClick(book: BookEntity) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     companion object {

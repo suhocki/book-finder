@@ -10,17 +10,13 @@ class AdsManager @Inject constructor(
 ) {
 
     private val adRequest by lazy { AdRequest.Builder().build() }
-
+    private val urlsAdShownFor by lazy { mutableSetOf<String>() }
     private var isWaitingForInterstitialAdLoad = false
+    private var onAdShown: (() -> Unit)? = null
+    val isInterstitialAdLoading get() = interstitialAd.isLoading
+    val isInterstitialAdLoaded get() = interstitialAd.isLoaded
 
-    val isLoadingInterstitialAd
-        get() = interstitialAd.isLoading
-
-    fun initInterstitialAd(
-        onLoadFailed: () -> Unit,
-        onAdClosed: () -> Unit
-    ) {
-        isWaitingForInterstitialAdLoad = false
+    init {
         interstitialAd.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 if (isWaitingForInterstitialAdLoad) {
@@ -29,21 +25,33 @@ class AdsManager @Inject constructor(
             }
 
             override fun onAdFailedToLoad(p0: Int) {
-                onLoadFailed.invoke()
+                onAdShown?.invoke()
             }
 
             override fun onAdClosed() {
-                onAdClosed.invoke()
+                onAdShown?.invoke()
             }
         }
-        interstitialAd.loadAd(adRequest)
     }
 
-    fun requestShowInterstitialAd() {
+    fun loadInterstitialAd() =
+        interstitialAd.loadAd(adRequest)
+
+    fun isAdShownFor(url: String) =
+        urlsAdShownFor.contains(url)
+
+    fun setOnAdShownListener(onAdShown: (() -> Unit)?) {
+        isWaitingForInterstitialAdLoad = false
+        this.onAdShown = onAdShown
+    }
+
+    fun requestShowInterstitialAdFor(url: String) {
+        urlsAdShownFor.add(url)
         isWaitingForInterstitialAdLoad = true
     }
 
-    fun showInterstitialAd() {
+    fun showInterstitialAd(url: String) {
+        urlsAdShownFor.add(url)
         interstitialAd.show()
     }
 }

@@ -26,26 +26,24 @@ class DetailsActivity : MvpAppCompatActivity(), DetailsView {
     @Inject
     lateinit var ui: DetailsUI
 
-    @Inject
-    lateinit var book: Book
-
     @ProvidePresenter
     fun providePresenter(): DetailsPresenter =
         Toothpick.openScopes(DI.APP_SCOPE, DI.DETAILS_ACTIVITY_SCOPE)
+            .apply {
+                val book = intent.getParcelableExtra<Book>(BooksActivity.ARG_BOOK)
+                installModules(DetailsModule(book))
+            }
             .getInstance(DetailsPresenter::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.DETAILS_ACTIVITY_SCOPE)
-        scope.installModules(
-            DetailsModule(intent.getParcelableExtra(BooksActivity.ARG_BOOK))
-        )
         Toothpick.inject(this, scope)
         ui.setContentView(this@DetailsActivity)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 
         ui.fabBuy.setOnClickListener {
-            presenter.onBuyClicked()
+            presenter.onBuyBookClicked()
         }
     }
 
@@ -53,7 +51,7 @@ class DetailsActivity : MvpAppCompatActivity(), DetailsView {
         ui.fabBuy.setImageResource(drawableRes)
     }
 
-    override fun openBookWebsite() {
+    override fun openBookWebsite(book: Book) {
         ui.fabBuy.setImageResource(R.drawable.ic_buy)
         Analytics.bookAddedToCart(book)
         openLink(book.website)
