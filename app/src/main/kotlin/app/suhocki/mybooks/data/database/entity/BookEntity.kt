@@ -27,7 +27,7 @@ data class BookEntity(
     override var productLink: String = "",
     override var website: String = "",
     override var productCode: String = "",
-    override var status: String = "",
+    override var status: String? = null,
     override var publisher: String? = null,
     override var author: String? = null,
     override var series: String? = null,

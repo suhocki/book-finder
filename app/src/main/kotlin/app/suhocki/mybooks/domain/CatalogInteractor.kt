@@ -4,32 +4,27 @@ import android.content.res.Resources
 import android.support.annotation.StringRes
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager
-import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.SearchResult
+import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
 import javax.inject.Inject
 
 class CatalogInteractor @Inject constructor(
-    private val databaseRepository: BooksRepository,
+    private val booksRepository: BooksRepository,
+    private val bannersRepository: BannersRepository,
     private val resourceManager: ResourceManager
 ) {
 
     fun getCategories() =
-        databaseRepository.getCategories()
+        booksRepository.getCategories()
 
     fun getBanner() =
-        object : Banner {
-            override val description: String
-                get() = "ТОЛЬКО В КНИГИ МЫ ВЕРИМ"
-
-            override val imageUrl: String
-                get() = "https://mybooks.by/pics/items/3_2.jpg"
-        }
+        bannersRepository.getBanners().first()
 
     fun search(search: Search) =
-        databaseRepository.search(search.searchQuery)
+        booksRepository.search(search.searchQuery)
             .map {
                 object : SearchResult {
                     override val foundBy = determineFoundBy(search, it)

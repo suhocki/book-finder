@@ -154,7 +154,9 @@ class DetailsUI : AnkoComponent<DetailsActivity>, AnkoLogger {
                     }
 
                     linearLayout {
-                        textView(R.string.status).lparams(0, matchParent) { weight = 0.5f }
+                        book.status ?: let { setGone(this) }
+                        textView(R.string.status) { gravity = Gravity.CENTER_VERTICAL }
+                            .lparams(0, matchParent) { weight = 0.5f }
                         textView { text = book.status }.lparams(0, matchParent) { weight = 0.5f }
                     }
 

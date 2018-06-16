@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.domain.repository
 
 interface SettingsRepository {
-    var databaseLoaded: Boolean
+    var databaseVersion: Int
 
     var downloadStatistics: Pair<Int, Int>?
 }
