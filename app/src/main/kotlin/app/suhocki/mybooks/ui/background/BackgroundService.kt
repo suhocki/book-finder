@@ -22,7 +22,6 @@ class BackgroundService : MvpService(), BackgroundView {
     @InjectPresenter
     lateinit var presenter: BackgroundPresenter
 
-
     @ProvidePresenter
     fun providePresenter(): BackgroundPresenter =
         Toothpick.openScope(DI.APP_SCOPE)

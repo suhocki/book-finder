@@ -13,9 +13,7 @@ class BooksDatabaseProvider @Inject constructor(
 ) : Provider<BooksDatabase> {
 
     override fun get(): BooksDatabase =
-        Room.databaseBuilder(
-            context,
-            BooksDatabase::class.java,
-            databaseFileName
-        ).build()
+        Room.databaseBuilder(context, BooksDatabase::class.java, databaseFileName)
+            .fallbackToDestructiveMigration()
+            .build()
 }

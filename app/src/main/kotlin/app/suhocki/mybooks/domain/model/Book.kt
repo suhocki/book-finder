@@ -11,7 +11,7 @@ interface Book: Parcelable {
     val productLink: String
     val productCode: String
     val website: String
-    val status: String
+    val status: String?
     val publisher: String?
     val author: String?
     val series: String?

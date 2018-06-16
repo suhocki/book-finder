@@ -3,12 +3,17 @@ package app.suhocki.mybooks.data.parser
 import app.suhocki.mybooks.checkThreadInterrupt
 import app.suhocki.mybooks.data.database.entity.BookEntity
 import app.suhocki.mybooks.data.database.entity.CategoryEntity
+import app.suhocki.mybooks.data.parser.entity.BannerEntity
+import app.suhocki.mybooks.data.parser.entity.InfoEntity
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
 import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.progress.ProgressStep
+import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.domain.model.Info
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStream
@@ -21,6 +26,10 @@ import javax.inject.Inject
 class XlsParser @Inject constructor(
     private val progressListener: ProgressHandler
 ) : AnkoLogger {
+
+    private lateinit var xlsFileName: String
+    private lateinit var xlsFileCreationDate: String
+    private val xlsFileColumnNames = mutableListOf<String>()
 
     fun parseStructure(xlsFile: File): ArrayList<String> {
         val contentString = getStringFromFile(xlsFile)
@@ -37,57 +46,138 @@ class XlsParser @Inject constructor(
     }
 
     fun extractPayload(strings: ArrayList<String>): XlsDocumentEntity {
-        val statisticsData = mutableMapOf<Category, StatisticsEntity>()
-        val booksData = mutableMapOf<CategoryEntity, MutableList<BookEntity>>()
-        var categoryNamePosition = -1
-        val objectFieldsQueue = ArrayDeque<String>()
-        var currentCategory: CategoryEntity? = null
         val stepParsing = ProgressStep.PARSING
 
-        for (index in POSITION_COLUMN_NAMES_END + 1 until strings.size) {
-            if (index == categoryNamePosition) continue
+        val statisticsData = mutableMapOf<Category, StatisticsEntity>()
+        var currentCategory: CategoryEntity? = null
 
-            if (strings[index] == DATA_DELIMETER) {
-                objectFieldsQueue.clear()
-                categoryNamePosition = index + 1
-                currentCategory = CategoryEntity(strings[categoryNamePosition])
-                booksData[currentCategory] = mutableListOf()
-                statisticsData[currentCategory] = StatisticsEntity()
+        val booksData = mutableMapOf<CategoryEntity, MutableList<BookEntity>>()
+        val bookFieldsQueue = ArrayDeque<String>()
+
+        val banners = mutableListOf<Banner>()
+        val bannerFieldsQueue = ArrayDeque<String>()
+
+        val contacts = mutableListOf<Info>()
+        var contactSearchPosition = 0
+
+        var mergeCount = 0
+        var isHeaderFound = false
+        var currentXlsPage = ""
+
+        xlsFileColumnNames.clear()
+
+        for (index in 0 until strings.size) {
+            checkThreadInterrupt()
+
+            val currentWord = strings[index]
+
+            if (currentWord == LIST_BOOKS) {
+                currentXlsPage = LIST_BOOKS
+                continue
+            } else if (currentWord == LIST_BANNERS) {
+                currentXlsPage = LIST_BANNERS
+                continue
+            } else if (currentWord == LIST_CONTACTS) {
+                currentXlsPage = LIST_CONTACTS
                 continue
             }
 
-            with(objectFieldsQueue) {
-                add(strings[index])
-                if (size == OBJECT_FIELD_COUNT) {
-                    checkThreadInterrupt()
-                    booksData[currentCategory]!!.add(
-                        BookEntity(
-                            category = currentCategory!!.name,
-                            shortName = pop(),
-                            fullName = pop(),
-                            shortDescription = pop(),
-                            fullDescription = pop(),
-                            price = pop().toDouble(),
-                            iconLink = pop().replace(OLD_WEBSITE, NEW_WEBSITE),
-                            productLink = pop().replace(OLD_WEBSITE, NEW_WEBSITE),
-                            website = pop().replace(OLD_WEBSITE, NEW_WEBSITE),
-                            productCode = pop(),
-                            status = pop()
-                        ).apply {
-                            publisher = findValue(KEY_PUBLISHER, shortDescription, fullDescription)
-                            author = findValue(KEY_AUTHOR, shortDescription, fullDescription)
-                            cover = findValue(KEY_COVER, shortDescription, fullDescription)
-                            format = findValue(KEY_FORMAT, shortDescription, fullDescription)
-                            pageCount = findValue(KEY_PAGES, shortDescription, fullDescription)
-                            series = findValue(KEY_SERIES, shortDescription, fullDescription)
-                            year = findValue(KEY_YEAR, shortDescription, fullDescription)
-                            description = findValue(KEY_DESCR, shortDescription, fullDescription)
-                            statisticsData[currentCategory]!!.add(this)
+            if (currentXlsPage == LIST_BOOKS) {
+                if (currentWord == MERGE) {
+                    mergeCount++
+                    isHeaderFound = true
+                    continue
+                } else if (currentWord in STATUS_TYPES &&
+                    index in 1 until strings.lastIndex &&
+                    strings[index - 1] == MERGE && strings[index + 1] == MERGE) {
+                    isHeaderFound = true
+                    continue
+                }
+
+                if (mergeCount == 1) {
+                    xlsFileName = currentWord
+                    continue
+                }
+
+                if (mergeCount == 2) {
+                    xlsFileCreationDate = currentWord
+                    continue
+                }
+
+                if (mergeCount == 3) {
+                    xlsFileColumnNames.add(currentWord)
+                    continue
+                }
+
+                if (currentWord == "&lt;товары отсутствуют&gt;") {
+                    isHeaderFound = false
+                    continue
+                }
+
+                if (strings[index - 1] == currentCategory?.name &&
+                    currentWord in STATUS_TYPES) {
+                    continue
+                }
+
+                if (isHeaderFound) {
+                    isHeaderFound = false
+                    bookFieldsQueue.clear()
+                    currentCategory = CategoryEntity(currentWord)
+                    booksData[currentCategory] = mutableListOf()
+                    statisticsData[currentCategory] = StatisticsEntity()
+                    continue
+                }
+
+                bookFieldsQueue.add(currentWord)
+
+                if (bookFieldsQueue.size == xlsFileColumnNames.size) {
+                    info { bookFieldsQueue.first }
+                    booksData[currentCategory]!!
+                        .add(createBookEntity(currentCategory, bookFieldsQueue, statisticsData))
+                        .also {
+                            val progress = (index / strings.size.toDouble() * 100).toInt()
+                            stepParsing.progress = progress
+                            progressListener.onProgress(stepParsing, false)
                         }
-                    ).also {
-                        val progress = (index / strings.size.toDouble() * 100).toInt()
-                        stepParsing.progress = progress
-                        progressListener.onProgress(stepParsing, false)
+                }
+            } else if (currentXlsPage == LIST_BANNERS) {
+                bannerFieldsQueue.add(currentWord)
+                if (bannerFieldsQueue.size == 2) {
+                    banners.add(BannerEntity(bannerFieldsQueue.pop(), bannerFieldsQueue.pop()))
+                }
+            } else if (currentXlsPage == LIST_CONTACTS) {
+                contactSearchPosition++
+
+                with(contacts) {
+                    when {
+                        currentWord.startsWith("375") ->
+                            add(InfoEntity(Info.InfoType.PHONE, currentWord))
+
+                        currentWord.startsWith("mailto") -> {
+                            val infoEntity = InfoEntity(
+                                Info.InfoType.EMAIL,
+                                currentWord.replace("mailto:", "")
+                            )
+                            add(infoEntity)
+                        }
+
+                        currentWord == "mybooks.by" ->
+                            add(InfoEntity(Info.InfoType.WEBSITE, currentWord))
+
+                        currentWord.startsWith("https://www.facebook.com") ->
+                            add(InfoEntity(Info.InfoType.FACEBOOK, currentWord))
+
+                        currentWord.startsWith("https://vk.com") ->
+                            add(InfoEntity(Info.InfoType.VK, currentWord))
+
+                        contactSearchPosition == 10 ->
+                            add(InfoEntity(Info.InfoType.ADDRESS, currentWord))
+
+                        contactSearchPosition == 11 ->
+                            add(InfoEntity(Info.InfoType.WORKING_TIME, currentWord))
+
+                        else -> {
+                        }
                     }
                 }
             }
@@ -96,17 +186,46 @@ class XlsParser @Inject constructor(
         return XlsDocumentEntity(
             title = strings[POSITION_TITLE],
             creationDate = strings[POSITION_CREATION_DATE],
-            columnNames = strings.subList(
-                POSITION_COLUMN_NAMES_START,
-                POSITION_COLUMN_NAMES_END
-            ),
+            columnNames = xlsFileColumnNames,
             booksData = booksData.apply {
                 forEach {
                     it.key.booksCount = it.value.size
                 }
             },
-            statisticsData = statisticsData
+            statisticsData = statisticsData,
+            bannersData = banners,
+            infosData = contacts
         ).also { progressListener.onProgress(ProgressStep.PARSING, true) }
+    }
+
+    private fun createBookEntity(
+        currentCategory: CategoryEntity?,
+        objectFieldsQueue: ArrayDeque<String>,
+        statisticsData: MutableMap<Category, StatisticsEntity>
+    ): BookEntity {
+        return BookEntity(
+            category = currentCategory!!.name,
+            shortName = objectFieldsQueue.pop(),
+            fullName = objectFieldsQueue.pop(),
+            shortDescription = objectFieldsQueue.pop(),
+            fullDescription = objectFieldsQueue.pop(),
+            price = objectFieldsQueue.pop().let { if (it.isNotBlank()) it else "100" }.toDouble(),
+            iconLink = objectFieldsQueue.pop().replace(OLD_WEBSITE, NEW_WEBSITE),
+            productLink = objectFieldsQueue.pop().replace(OLD_WEBSITE, NEW_WEBSITE),
+            website = objectFieldsQueue.pop().replace(OLD_WEBSITE, NEW_WEBSITE),
+            productCode = objectFieldsQueue.pop(),
+            status = if (objectFieldsQueue.isNotEmpty()) objectFieldsQueue.pop() else null
+        ).apply {
+            publisher = findValue(KEY_PUBLISHER, shortDescription, fullDescription)
+            author = findValue(KEY_AUTHOR, shortDescription, fullDescription)
+            cover = findValue(KEY_COVER, shortDescription, fullDescription)
+            format = findValue(KEY_FORMAT, shortDescription, fullDescription)
+            pageCount = findValue(KEY_PAGES, shortDescription, fullDescription)
+            series = findValue(KEY_SERIES, shortDescription, fullDescription)
+            year = findValue(KEY_YEAR, shortDescription, fullDescription)
+            description = findValue(KEY_DESCR, shortDescription, fullDescription)
+            statisticsData[currentCategory]!!.add(this)
+        }
     }
 
     private fun findValue(key: String, vararg strings: String): String? {
@@ -160,27 +279,26 @@ class XlsParser @Inject constructor(
     }
 
     private fun convertStreamToString(inputStream: InputStream): String {
-        val reader = BufferedReader(InputStreamReader(inputStream, ENCODING))
-        val stringBuilder = StringBuilder()
-        while (reader.readLine()?.let { stringBuilder.append(it).append("\n") } != null) {
+        val reader = BufferedReader(InputStreamReader(inputStream))
+        return reader.readText().apply {
+            reader.close()
         }
-        reader.close()
-        return stringBuilder.toString()
     }
 
     companion object {
+
+        private const val LIST_BOOKS = "Прайс-лист 1"
+        private const val LIST_BANNERS = "Лист2"
+        private const val LIST_CONTACTS = "Лист3"
+
         private const val REGEX_ISBN_NUMBER = "[0-9-]+"
         private const val REGEX_XLS_DATA =
-            "(?s)(?<=<Data ss:Type=\"String\">|<Data ss:Type=\"Number\">).*?(?=<\\/Data>)|section_title_1"
+            "(?s)(?<=<Data ss:Type=\"String\">|<Data ss:Type=\"Number\">).*?(?=<\\/Data>)|section_title_1|(?s)(?<=ss:HRef=\").*?(?=\"><Data)|Merge|Прайс-лист 1|Лист2|Лист3"
         private const val REGEX_XLS_CDATA_START = "<![CDATA["
         private const val REGEX_XLS_CDATA_END = "]]>"
-        private const val ENCODING = "windows-1251"
         private const val POSITION_TITLE = 1
         private const val POSITION_CREATION_DATE = 2
-        private const val POSITION_COLUMN_NAMES_START = 3
-        private const val POSITION_COLUMN_NAMES_END = 12
-        private const val DATA_DELIMETER = "section_title_1"
-        private const val OBJECT_FIELD_COUNT = 10
+        private const val MERGE = "Merge"
         private const val OLD_WEBSITE = "mybooks.shop.by"
         private const val NEW_WEBSITE = "mybooks.by"
         private const val KEY_ISBN = "ISBN: "
@@ -205,5 +323,8 @@ class XlsParser @Inject constructor(
                 KEY_PAGES,
                 KEY_COVER
             )
+        private val STATUS_TYPES = setOf(
+            "Доступен", "Доступно", "В наличии"
+        )
     }
 }

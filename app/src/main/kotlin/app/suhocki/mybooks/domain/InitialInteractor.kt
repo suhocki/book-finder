@@ -6,10 +6,11 @@ import javax.inject.Inject
 class InitialInteractor @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
-    fun setDatabaseLoaded() {
-        settingsRepository.databaseLoaded = true
-    }
 
     fun getDownloadStatistics() =
         settingsRepository.downloadStatistics
+
+    fun setDatabaseVersion(version: Int) {
+        settingsRepository.databaseVersion = version
+    }
 }

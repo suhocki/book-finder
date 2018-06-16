@@ -23,7 +23,7 @@ class StatisticsEntity(
             var yearsCount = years[it] ?: 0
             years.put(it, ++yearsCount)
         }
-        book.status.let {
+        book.status?.let {
             var statusesCount = statuses[it] ?: 0
             statuses.put(it, ++statusesCount)
         }
