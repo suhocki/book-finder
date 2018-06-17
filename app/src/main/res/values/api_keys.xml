@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="admob_api_key" translatable="false">ca-app-pub-5580850164009775~6716592020</string>
+    <string name="interstitial_ad_id" translatable="false">ca-app-pub-5580850164009775/9559469093</string>
+</resources>
