@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.di.provider
+package app.suhocki.mybooks.di.provider.database
 
 import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.database.dao.BannerDao

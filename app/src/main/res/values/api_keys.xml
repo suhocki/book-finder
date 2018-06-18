@@ -2,4 +2,5 @@
 <resources>
     <string name="admob_api_key" translatable="false">ca-app-pub-5580850164009775~6716592020</string>
     <string name="interstitial_ad_id" translatable="false">ca-app-pub-5580850164009775/9559469093</string>
+    <string name="banner_ad_id" translatable="false">ca-app-pub-5580850164009775/4254080210</string>
 </resources>

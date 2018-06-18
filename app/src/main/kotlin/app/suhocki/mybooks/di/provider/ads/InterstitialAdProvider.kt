@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.di.provider
+package app.suhocki.mybooks.di.provider.ads
 
 import android.content.Context
 import app.suhocki.mybooks.R

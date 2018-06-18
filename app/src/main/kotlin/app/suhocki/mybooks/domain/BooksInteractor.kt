@@ -15,5 +15,5 @@ class BooksInteractor @Inject constructor(
             .map { BookEntity(it) }
 
     fun filter(sqLiteQuery: SupportSQLiteQuery) =
-        databaseRepository.filter(sqLiteQuery)
+        databaseRepository.filter(sqLiteQuery).map { BookEntity(it) }
 }

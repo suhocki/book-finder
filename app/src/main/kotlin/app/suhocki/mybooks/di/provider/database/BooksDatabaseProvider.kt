@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.di.provider
+package app.suhocki.mybooks.di.provider.database
 
 import android.arch.persistence.room.Room
 import android.content.Context

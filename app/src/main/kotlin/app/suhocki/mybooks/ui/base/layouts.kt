@@ -9,6 +9,7 @@ import android.view.ViewManager
 import app.suhocki.mybooks.ui.base.view.AutofitRecyclerView
 import app.suhocki.mybooks.ui.base.view.MultilineCollapsingToolbarLayout
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+import com.google.android.gms.ads.AdView
 import org.jetbrains.anko.AnkoViewDslMarker
 import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.internals.AnkoInternals
@@ -25,6 +26,10 @@ inline fun ViewManager.themedAutofitRecyclerView(
 
 inline fun ViewManager.textViewCompat(init: (@AnkoViewDslMarker AppCompatTextView).() -> Unit): AppCompatTextView {
     return ankoView({ ctx: Context -> AppCompatTextView(ctx) }, theme = 0) { init() }
+}
+
+inline fun ViewManager.adView(init: (@AnkoViewDslMarker AdView).() -> Unit): AdView {
+    return ankoView({ ctx: Context -> AdView(ctx) }, theme = 0) { init() }
 }
 
 inline fun ViewManager.multilineCollapsingToolbarLayout(init: (@AnkoViewDslMarker MultilineCollapsingToolbarLayout).() -> Unit): MultilineCollapsingToolbarLayout {
