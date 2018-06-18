@@ -22,7 +22,7 @@ class SearchResultItemUI : AnkoComponent<ViewGroup> {
     lateinit var bookName: TextView
     lateinit var bookImage: ImageView
     lateinit var price: TextView
-    lateinit var buy: View
+    lateinit var buy: ImageView
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 

@@ -66,7 +66,7 @@ class SearchUI : AnkoComponent<SearchActivity> {
                 behavior = AppBarLayout.ScrollingViewBehavior()
             }
 
-            themedProgressBar(R.style.ColoredProgressBar) {
+            themedProgressBar(R.style.AccentProgressBar) {
                 progressBar = this
                 topPadding = dimenAttr(R.attr.actionBarSize)
             }.lparams {

@@ -2,15 +2,19 @@ package app.suhocki.mybooks.ui.books
 
 import android.arch.persistence.db.SupportSQLiteQuery
 import android.os.Bundle
+import android.support.annotation.DrawableRes
 import android.support.v4.widget.DrawerLayout
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
+import app.suhocki.mybooks.Analytics
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.BooksModule
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.openLink
+import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnFilterResultListener
 import app.suhocki.mybooks.ui.books.listener.OnFilterClickListener
@@ -104,6 +108,20 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
 
     override fun onBookClick(book: Book) {
         startActivity<DetailsActivity>(ARG_BOOK to book)
+    }
+
+    override fun onBuyBookClick(book: BookEntity) {
+        presenter.onBuyBookClicked(book)
+    }
+
+    override fun showBuyDrawableForItem(book: BookEntity, @DrawableRes drawableRes: Int) {
+        val indexOfBook = adapter.items.indexOf(book)
+        adapter.notifyItemChanged(indexOfBook, drawableRes)
+    }
+
+    override fun openBookWebsite(book: Book) {
+        Analytics.bookAddedToCart(book)
+        openLink(book.website)
     }
 
     override fun onFilterClick() {

@@ -21,8 +21,12 @@
         <item name="android:windowCloseOnTouchOutside">false</item>
     </style>
 
-    <style name="ColoredProgressBar" parent="AppTheme">
+    <style name="AccentProgressBar" parent="AppTheme">
         <item name="colorControlActivated">@color/colorAccent</item>
+    </style>
+
+    <style name="WhiteProgressBar" parent="AppTheme">
+        <item name="colorControlActivated">@color/colorWhite</item>
     </style>
 
     <style name="ScrollbarRecyclerView" parent="android:Widget">

@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.catalog
 
 import android.os.Bundle
+import android.support.annotation.DrawableRes
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -10,6 +11,7 @@ import app.suhocki.mybooks.*
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchListener
@@ -197,6 +199,20 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     override fun onBookClick(book: Book) {
         context!!.startActivity<DetailsActivity>(BooksActivity.ARG_BOOK to book)
+    }
+
+    override fun onBuyBookClick(book: BookEntity) {
+        presenter.onBuyBookClicked(book)
+    }
+
+    override fun showBuyDrawableForItem(book: BookEntity, @DrawableRes drawableRes: Int) {
+        val indexOfBook = adapter.items.indexOf(book)
+        adapter.notifyItemChanged(indexOfBook, drawableRes)
+    }
+
+    override fun openBookWebsite(book: Book) {
+        Analytics.bookAddedToCart(book)
+        context!!.openLink(book.website)
     }
 
     companion object {

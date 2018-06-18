@@ -7,10 +7,7 @@ import app.suhocki.mybooks.ui.base.delegate.SearchAdapterDelegate
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchListener
-import app.suhocki.mybooks.ui.catalog.delegate.BannerAdapterDelegate
-import app.suhocki.mybooks.ui.catalog.delegate.CategoryAdapterDelegate
-import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
-import app.suhocki.mybooks.ui.catalog.delegate.SearchResultBookAdapterDelegate
+import app.suhocki.mybooks.ui.catalog.delegate.*
 import app.suhocki.mybooks.ui.catalog.listener.OnCategoryClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
@@ -31,6 +28,7 @@ class CatalogAdapter(
 
     init {
         delegatesManager
+            .addDelegate(BannerAdAdapterDelegate())
             .addDelegate(CategoryAdapterDelegate(onCategoryClickListener))
             .addDelegate(BannerAdapterDelegate())
             .addDelegate(HeaderAdapterDelegate())

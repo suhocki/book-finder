@@ -3,6 +3,7 @@ package app.suhocki.mybooks.di.module
 import android.content.Context
 import android.content.SharedPreferences
 import app.suhocki.mybooks.BuildConfig
+import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.database.dao.*
 import app.suhocki.mybooks.data.error.ErrorHandler
@@ -13,8 +14,15 @@ import app.suhocki.mybooks.data.repository.SharedPreferencesRepository
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.DatabaseFileName
 import app.suhocki.mybooks.di.SharedPreferencesFileName
-import app.suhocki.mybooks.di.provider.*
+import app.suhocki.mybooks.di.provider.RemoteConfigProvider
+import app.suhocki.mybooks.di.provider.SharedPreferencesProvider
+import app.suhocki.mybooks.di.provider.ads.BannerAdProvider
+import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
+import app.suhocki.mybooks.di.provider.database.*
+import app.suhocki.mybooks.domain.model.BannerAd
 import app.suhocki.mybooks.domain.repository.*
+import com.google.android.gms.ads.InterstitialAd
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import toothpick.config.Module
 
 class AppModule(context: Context) : Module() {
@@ -89,6 +97,10 @@ class AppModule(context: Context) : Module() {
             .toProvider(SharedPreferencesProvider::class.java)
             .providesSingletonInScope()
 
+        bind(InterstitialAd::class.java)
+            .toProvider(InterstitialAdProvider::class.java)
+            .providesSingletonInScope()
+
         bind(ErrorHandler::class.java)
             .singletonInScope()
 
@@ -100,6 +112,17 @@ class AppModule(context: Context) : Module() {
 
         bind(SettingsRepository::class.java)
             .to(SharedPreferencesRepository::class.java)
+            .singletonInScope()
+
+        bind(FirebaseRemoteConfig::class.java)
+            .toProvider(RemoteConfigProvider::class.java)
+            .singletonInScope()
+
+        bind(BannerAd::class.java)
+            .toProvider(BannerAdProvider::class.java)
+            .providesSingletonInScope()
+
+        bind(AdsManager::class.java)
             .singletonInScope()
     }
 }

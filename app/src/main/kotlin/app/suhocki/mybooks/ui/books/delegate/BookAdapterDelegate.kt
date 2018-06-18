@@ -2,10 +2,9 @@ package app.suhocki.mybooks.ui.books.delegate
 
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
-import app.suhocki.mybooks.Analytics
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.Book
-import app.suhocki.mybooks.openLink
+import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.books.ui.BookItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
@@ -29,25 +28,28 @@ class BookAdapterDelegate(
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
-    ) = (holder as ViewHolder).bind(items[position] as Book)
+    ) = (holder as ViewHolder).bind(items[position] as BookEntity, payloads)
 
 
     private inner class ViewHolder(val ui: BookItemUI) : RecyclerView.ViewHolder(ui.parent) {
-        private lateinit var book: Book
+        private lateinit var book: BookEntity
 
         init {
             itemView.setOnClickListener { onBookClickListener.onBookClick(book) }
+            ui.buy.setOnClickListener { onBookClickListener.onBuyBookClick(book) }
         }
 
-        fun bind(book: Book) {
+        fun bind(book: BookEntity, payloads: MutableList<Any>) {
             this.book = book
             with(ui) {
                 Picasso.get().load(book.iconLink).into(icon)
                 name.text = book.shortName
                 price.text = parent.context.getString(R.string.rubles, book.price)
-                buy.setOnClickListener {
-                    Analytics.bookAddedToCart(book)
-                    buy.context.openLink(book.website)
+                buy.setImageResource(book.buyDrawableRes)
+                if (payloads.isNotEmpty()) {
+                    val drawableRes = payloads.first() as Int
+                    buy.setImageResource(drawableRes)
+                    book.buyDrawableRes = drawableRes
                 }
             }
         }

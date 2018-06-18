@@ -22,10 +22,6 @@ open class App : Application() {
         initAds()
     }
 
-    private fun initAds() {
-        MobileAds.initialize(this, "ca-app-pub-5580850164009775~6716592020")
-    }
-
     private fun initAppScope() {
         val appScope = Toothpick.openScope(DI.APP_SCOPE)
         appScope.installModules(AppModule(this))
@@ -43,6 +39,10 @@ open class App : Application() {
                 notificationManager.createNotificationChannel(it)
             }
         }
+    }
+
+    private fun initAds() {
+        MobileAds.initialize(this, getString(R.string.admob_api_key))
     }
 
     companion object {

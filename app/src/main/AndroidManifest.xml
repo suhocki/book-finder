@@ -58,6 +58,14 @@
             android:name=".ui.background.BackgroundService"
             android:exported="false" />
 
+        <service
+            android:name=".ui.firebase.FireBaseInstanceIdService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
+            </intent-filter>
+        </service>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="f779c23c3f096ce55675eb5a228961f2811e8fa2" />
