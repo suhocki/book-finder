@@ -1,8 +1,10 @@
 package app.suhocki.mybooks.ui.catalog.ui
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.support.v4.widget.TextViewCompat
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -40,7 +42,10 @@ class CategoryItemUI : AnkoComponent<ViewGroup> {
                 textView {
                     name = this
                     gravity = Gravity.CENTER_VERTICAL
-                    textAppearance = R.style.TextAppearance_AppCompat_Body2
+                    setTypeface(typeface, Typeface.BOLD)
+                    textAppearance = R.style.TextAppearance_AppCompat_Subhead
+                    maxLines = 1
+                    ellipsize = TextUtils.TruncateAt.END
                 }.lparams(matchParent, matchParent) {
                     leftMargin = dip(16)
                 }
