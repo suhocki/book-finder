@@ -15,6 +15,7 @@ internal class FilterDiffCallback : EndActionDiffUtil.ItemCallback<Any>() {
         else if (oldItem is SortName && newItem is SortName) oldItem.sortName == newItem.sortName
         else if (oldItem is SortPrice && newItem is SortPrice) oldItem.sortName == newItem.sortName
         else if (oldItem is Search && newItem is Search) oldItem.hintRes == newItem.hintRes
+        else if (oldItem is EmptyCategory && newItem is EmptyCategory) oldItem.categoryTitle == newItem.categoryTitle
         else false
     }
 
@@ -28,6 +29,7 @@ internal class FilterDiffCallback : EndActionDiffUtil.ItemCallback<Any>() {
         else if (oldItem is Search && newItem is Search) true
         else if (oldItem is SortName && newItem is SortName) oldItem.isChecked == newItem.isChecked
         else if (oldItem is SortPrice && newItem is SortPrice) oldItem.isChecked == newItem.isChecked
+        else if (oldItem is EmptyCategory && newItem is EmptyCategory) oldItem.categoryTitle == newItem.categoryTitle
         else false
     }
 }

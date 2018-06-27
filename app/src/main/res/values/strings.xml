@@ -39,6 +39,10 @@
     <string name="publisher">Publisher</string>
     <string name="publishers">Publishers</string>
     <string name="year">Year</string>
+    <string name="year_not_found">Sorry, but there is no any year found in current database for this category.</string>
+    <string name="publisher_not_found">Sorry, but there is no any publisher found in current database for this category.</string>
+    <string name="author_not_found">Sorry, but there is no any author found in current database for this category.</string>
+    <string name="status_not_found">Sorry, but there is no any status found in current database for this category.</string>
     <string name="price">Price</string>
     <string name="cover">Cover</string>
     <string name="pages">Pages</string>

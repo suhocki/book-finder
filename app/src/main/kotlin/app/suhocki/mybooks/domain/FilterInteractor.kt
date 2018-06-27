@@ -14,6 +14,7 @@ import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.domain.model.statistics.FilterItemStatistics
+import app.suhocki.mybooks.ui.filter.entity.EmptyCategoryEntity
 import java.security.InvalidKeyException
 import javax.inject.Inject
 
@@ -47,7 +48,7 @@ class FilterInteractor @Inject constructor(
                     (item is Search && item.hintRes == R.string.hint_search_publisher)
 
         resourceManager.getString(R.string.year) ->
-            item is FilterYear
+            item is FilterYear || (item is EmptyCategory && item.categoryTitle == category.title)
 
         resourceManager.getString(R.string.status) ->
             item is FilterStatus
@@ -88,6 +89,11 @@ class FilterInteractor @Inject constructor(
             }
 
         else -> throw InvalidKeyException()
+    }.let {
+        if (it.isEmpty()) mutableListOf<Any>().apply {
+            add(EmptyCategoryEntity(filterCategory, resourceManager))
+        }
+        else it
     }
 
     fun addFilterItemToList(

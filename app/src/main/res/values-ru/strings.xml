@@ -34,6 +34,10 @@
     <string name="publisher">Издательство</string>
     <string name="publishers">Издательства</string>
     <string name="year">Год</string>
+    <string name="publisher_not_found">Информация об издателях отсутствует для данной категории книг.</string>
+    <string name="year_not_found">Информация по годам отсутствует для данной категории книг.</string>
+    <string name="author_not_found">Информация об авторах отсутствует для данной категории книг.</string>
+    <string name="status_not_found">Информация о статусах отсутствует для данной категории книг.</string>
     <string name="price">Цена</string>
     <string name="cover">Обложка</string>
     <string name="pages">Страниц</string>

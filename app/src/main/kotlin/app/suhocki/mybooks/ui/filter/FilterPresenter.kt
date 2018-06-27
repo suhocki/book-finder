@@ -7,6 +7,7 @@ import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.domain.FilterInteractor
 import app.suhocki.mybooks.domain.model.filter.*
+import app.suhocki.mybooks.ui.filter.entity.FilterCategoryEntity
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.doAsync
@@ -35,11 +36,8 @@ class FilterPresenter @Inject constructor(
         filterCategory: FilterCategory,
         items: MutableList<Any>
     ) = doAsync(errorHandler.errorReceiver) {
-        val collapsedFilterCategory: FilterCategory = object : FilterCategory {
-            override val title = filterCategory.title
-            override var isExpanded = false
-            override var checkedCount = filterCategory.checkedCount
-        }
+        val collapsedFilterCategory =
+            FilterCategoryEntity(filterCategory.title, false, filterCategory.checkedCount)
         interactor.replaceFilterCategoryItem(filterCategory, collapsedFilterCategory)
         val filterCategoryIndex = items.indexOf(filterCategory)
         val filterItems = mutableListOf<Any>().apply {
@@ -57,11 +55,8 @@ class FilterPresenter @Inject constructor(
         items: MutableList<Any>
     ) = doAsync(errorHandler.errorReceiver) {
         val filterCategoryIndex = items.indexOf(filterCategory)
-        val expandedFilterCategory: FilterCategory = object : FilterCategory {
-            override val title = filterCategory.title
-            override var isExpanded = true
-            override var checkedCount = filterCategory.checkedCount
-        }
+        val expandedFilterCategory =
+            FilterCategoryEntity(filterCategory.title, true, filterCategory.checkedCount)
         interactor.replaceFilterCategoryItem(filterCategory, expandedFilterCategory)
         val filterItems = mutableListOf<Any>().apply {
             addAll(items)

@@ -43,6 +43,7 @@ class FilterAdapter(
             .addDelegate(SearchAdapterDelegate(onSearchClickListener))
             .addDelegate(SortNameAdapterDelegate(onSortNameToggleListener))
             .addDelegate(SortPriceAdapterDelegate(onSortPriceToggleListener))
+            .addDelegate(EmptyCategoryAdapterDelegate())
     }
 
     override fun getItemCount(): Int =
