@@ -13,6 +13,7 @@ import app.suhocki.mybooks.ui.books.BooksActivity
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.stfalcon.frescoimageviewer.ImageViewer
 import org.jetbrains.anko.setContentView
 import toothpick.Toothpick
 import javax.inject.Inject
@@ -25,6 +26,9 @@ class DetailsActivity : MvpAppCompatActivity(), DetailsView {
 
     @Inject
     lateinit var ui: DetailsUI
+
+    @Inject
+    lateinit var book: Book
 
     @ProvidePresenter
     fun providePresenter(): DetailsPresenter =
@@ -44,6 +48,12 @@ class DetailsActivity : MvpAppCompatActivity(), DetailsView {
 
         ui.fabBuy.setOnClickListener {
             presenter.onBuyBookClicked()
+        }
+
+        ui.image.setOnClickListener {
+            ImageViewer.Builder(this, listOf(book.productLink))
+                .hideStatusBar(false)
+                .show()
         }
     }
 

@@ -14,7 +14,7 @@ import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.setGone
 import app.suhocki.mybooks.ui.base.multilineCollapsingToolbarLayout
-import com.squareup.picasso.Picasso
+import app.suhocki.mybooks.ui.base.simpleDraweeView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.design.coordinatorLayout
@@ -29,6 +29,7 @@ class DetailsUI @Inject constructor(
 ) : AnkoComponent<DetailsActivity>, AnkoLogger {
 
     lateinit var fabBuy: FloatingActionButton
+    lateinit var image: View
     private var windowHeight = 0
 
     override fun createView(ui: AnkoContext<DetailsActivity>) = with(ui) {
@@ -57,8 +58,9 @@ class DetailsUI @Inject constructor(
                             context.theme
                         )
 
-                        imageView {
-                            Picasso.get().load(book.productLink).into(this)
+                        simpleDraweeView {
+                            this@DetailsUI.image = this
+                            setImageURI(book.productLink)
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }.lparams(matchParent, matchParent)
                     }.lparams(matchParent, matchParent) {

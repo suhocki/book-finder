@@ -12,6 +12,8 @@ import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
+import app.suhocki.mybooks.ui.base.simpleDraweeView
+import com.facebook.drawee.view.SimpleDraweeView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.tintedImageView
 import org.jetbrains.anko.cardview.v7.themedCardView
@@ -20,7 +22,7 @@ class SearchResultItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
     lateinit var foundBy: TextView
     lateinit var bookName: TextView
-    lateinit var bookImage: ImageView
+    lateinit var bookImage: SimpleDraweeView
     lateinit var price: TextView
     lateinit var buy: ImageView
 
@@ -89,7 +91,7 @@ class SearchResultItemUI : AnkoComponent<ViewGroup> {
                         setMargins(dimen(R.dimen.width_search_result_image), dip(8),0,dip(8))
                     }
 
-                    imageView {
+                    simpleDraweeView {
                         bookImage = this
                         scaleType = ImageView.ScaleType.CENTER_CROP
                     }.lparams(dimen(R.dimen.width_search_result_image), matchParent)

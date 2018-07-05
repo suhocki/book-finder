@@ -9,6 +9,7 @@ import android.view.ViewManager
 import app.suhocki.mybooks.ui.base.view.AutofitRecyclerView
 import app.suhocki.mybooks.ui.base.view.MultilineCollapsingToolbarLayout
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
+import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.gms.ads.AdView
 import org.jetbrains.anko.AnkoViewDslMarker
 import org.jetbrains.anko.custom.ankoView
@@ -52,4 +53,12 @@ inline fun ViewManager.bottomNavigation(
     init: (@AnkoViewDslMarker AHBottomNavigation).() -> Unit
 ): AHBottomNavigation {
     return ankoView({ ctx: Context -> AHBottomNavigation(ctx) }, theme) { init() }
+}
+
+
+inline fun ViewManager.simpleDraweeView (
+    theme: Int = 0,
+    init: (@AnkoViewDslMarker SimpleDraweeView).() -> Unit
+): SimpleDraweeView {
+    return ankoView({ ctx: Context -> SimpleDraweeView(ctx) }, theme) { init() }
 }

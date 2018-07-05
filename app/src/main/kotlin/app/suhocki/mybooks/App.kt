@@ -7,6 +7,9 @@ import android.os.Build
 import android.support.v7.app.AppCompatDelegate
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.AppModule
+import com.facebook.drawee.backends.pipeline.Fresco
+import com.facebook.imagepipeline.core.ImagePipelineConfig
+import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.google.android.gms.ads.MobileAds
 import org.jetbrains.anko.notificationManager
 import toothpick.Toothpick
@@ -20,6 +23,7 @@ open class App : Application() {
         initNotificationChannel()
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         initAds()
+        initFresco()
     }
 
     private fun initAppScope() {
@@ -43,6 +47,15 @@ open class App : Application() {
 
     private fun initAds() {
         MobileAds.initialize(this, getString(R.string.admob_api_key))
+    }
+
+    private fun initFresco() {
+        val config = ImagePipelineConfig.newBuilder(this)
+            .setProgressiveJpegConfig(SimpleProgressiveJpegConfig())
+            .setResizeAndRotateEnabledForNetwork(true)
+            .setDownsampleEnabled(true)
+            .build()
+        Fresco.initialize(this, config)
     }
 
     companion object {

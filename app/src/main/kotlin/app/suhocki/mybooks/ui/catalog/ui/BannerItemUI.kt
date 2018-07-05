@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.ui.base.simpleDraweeView
+import com.facebook.drawee.view.SimpleDraweeView
 import org.jetbrains.anko.*
 
 class BannerItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: View
-    lateinit var image: ImageView
+    lateinit var image: SimpleDraweeView
     lateinit var description: TextView
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
@@ -19,7 +21,7 @@ class BannerItemUI : AnkoComponent<ViewGroup> {
         frameLayout {
             this@BannerItemUI.parent = this
 
-            imageView {
+            simpleDraweeView {
                 this@BannerItemUI.image = this
                 scaleType = ImageView.ScaleType.CENTER_CROP
             }.lparams(matchParent, matchParent)

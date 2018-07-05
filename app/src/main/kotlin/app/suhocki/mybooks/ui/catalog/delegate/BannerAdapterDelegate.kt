@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.ui.catalog.ui.BannerItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
-import com.squareup.picasso.Picasso
 import org.jetbrains.anko.AnkoContext
 
 class BannerAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
@@ -29,7 +28,7 @@ class BannerAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
     private inner class ViewHolder(val ui: BannerItemUI) : RecyclerView.ViewHolder(ui.parent) {
         fun bind(banner: Banner) {
             with(ui) {
-                Picasso.get().load(banner.imageUrl).into(image)
+                image.setImageURI(banner.imageUrl)
                 description.text = banner.description
             }
         }

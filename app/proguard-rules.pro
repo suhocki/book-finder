@@ -47,3 +47,6 @@
 #firebase
 -keep class com.google.firebase.** { *; }
 -keep class com.google.android.gms.common.internal.** { *; }
+
+# drawable animations
+-keep class android.support.v7.graphics.** { *; }

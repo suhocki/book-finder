@@ -13,6 +13,9 @@ import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
+import app.suhocki.mybooks.ui.base.simpleDraweeView
+import com.facebook.drawee.drawable.ScalingUtils
+import com.facebook.drawee.view.SimpleDraweeView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.tintedImageView
 import org.jetbrains.anko.cardview.v7.themedCardView
@@ -22,7 +25,7 @@ class BookItemUI : AnkoComponent<ViewGroup> {
     lateinit var parent: ViewGroup
     lateinit var name: TextView
     lateinit var price: TextView
-    lateinit var icon: ImageView
+    lateinit var icon: SimpleDraweeView
     lateinit var buy: ImageView
 
     private var windowHeight = 0
@@ -40,7 +43,8 @@ class BookItemUI : AnkoComponent<ViewGroup> {
                 verticalLayout {
                     setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
 
-                    imageView {
+                    simpleDraweeView {
+                        hierarchy.actualImageScaleType = ScalingUtils.ScaleType.FIT_CENTER
                         icon = this
                     }.lparams(matchParent, dip(112)) {
                         setPadding(0, dip(8), 0, dip(8))

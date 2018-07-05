@@ -68,12 +68,12 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
         ui.toolbar.setNavigationOnClickListener {
             val animatedDrawable = ui.toolbar.navigationIcon as DrawerArrowDrawable
-            val isHamburgerClicked = animatedDrawable.progress == 0f
+            val isArrowVisible = animatedDrawable.progress > 0f
 
-            if (isHamburgerClicked) {
-                (activity as NavigationHandler).setDrawerExpanded(true)
-            } else {
+            if (isArrowVisible) {
                 onCollapseSearchClick()
+            } else {
+                (activity as NavigationHandler).setDrawerExpanded(true)
             }
 
         }
@@ -88,7 +88,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
         val toProgress = if (toArrow) 1f else 0f
 
         ObjectAnimator.ofFloat(animatedDrawable, "progress", fromProgress, toProgress)
-            .setDuration(500)
             .start()
     }
 

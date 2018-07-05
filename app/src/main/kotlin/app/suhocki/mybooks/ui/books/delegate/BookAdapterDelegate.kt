@@ -8,8 +8,9 @@ import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.books.ui.BookItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
-import com.squareup.picasso.Picasso
 import org.jetbrains.anko.AnkoContext
+
+
 
 class BookAdapterDelegate(
     private val onBookClickListener: OnBookClickListener
@@ -42,7 +43,7 @@ class BookAdapterDelegate(
         fun bind(book: BookEntity, payloads: MutableList<Any>) {
             this.book = book
             with(ui) {
-                Picasso.get().load(book.iconLink).into(icon)
+                icon.setImageURI(book.iconLink)
                 name.text = book.shortName
                 price.text = parent.context.getString(R.string.rubles, book.price)
                 buy.setImageResource(book.buyDrawableRes)

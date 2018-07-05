@@ -8,7 +8,6 @@ import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.catalog.ui.SearchResultItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
-import com.squareup.picasso.Picasso
 import org.jetbrains.anko.AnkoContext
 
 class SearchResultBookAdapterDelegate(
@@ -53,7 +52,7 @@ class SearchResultBookAdapterDelegate(
                 foundBy.text = searchResult.foundBy
                 foundBy.text = searchResult.foundBy
                 bookName.text = searchResult.book.shortName
-                Picasso.get().load(searchResult.book.productLink).into(bookImage)
+                bookImage.setImageURI(searchResult.book.productLink)
             }
         }
     }
