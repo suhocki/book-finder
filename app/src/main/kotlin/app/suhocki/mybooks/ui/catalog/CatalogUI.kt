@@ -1,7 +1,9 @@
 package app.suhocki.mybooks.ui.catalog
 
+import android.graphics.Color
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
+import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import android.view.Gravity
@@ -13,7 +15,6 @@ import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
-import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
@@ -25,8 +26,7 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
     lateinit var recyclerView: RecyclerView
     lateinit var search: View
     lateinit var close: ImageView
-    lateinit var menu: View
-    lateinit var back: View
+    lateinit var toolbar: Toolbar
 
     override fun createView(ui: AnkoContext<T>) = with(ui) {
 
@@ -35,35 +35,13 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
+                    toolbar = this
+
+                    navigationIcon = DrawerArrowDrawable(context!!)
+                        .apply { color = Color.WHITE }
+
                     backgroundColorResource = R.color.colorPrimary
                     setContentInsetsRelative(0, 0)
-
-                    imageView(R.drawable.ic_menu).apply {
-                        this@CatalogUI.menu = this
-                        backgroundResource = context
-                            .attrResource(R.attr.selectableItemBackgroundBorderless)
-                        padding = dimen(R.dimen.padding_toolbar_icon)
-                        scaleType = ImageView.ScaleType.FIT_CENTER
-                        layoutParams = Toolbar.LayoutParams(
-                            dimenAttr(R.attr.actionBarSize),
-                            matchParent
-                        ).apply { gravity = Gravity.START }
-                        onClick { (owner.activity as NavigationHandler).setDrawerExpanded(true) }
-                    }
-
-                    imageView(R.drawable.ic_back).apply {
-                        back = this
-                        backgroundResource = context
-                            .attrResource(R.attr.selectableItemBackgroundBorderless)
-                        padding = dimen(R.dimen.padding_toolbar_icon)
-                        scaleType = ImageView.ScaleType.FIT_CENTER
-                        layoutParams = Toolbar.LayoutParams(
-                            dimenAttr(R.attr.actionBarSize),
-                            matchParent
-                        ).apply { gravity = Gravity.START }
-                        onClick { (owner as OnSearchClickListener).onCollapseSearchClick() }
-                        visibility = View.GONE
-                    }
 
                     imageView(R.drawable.logo).apply {
                         scaleType = ImageView.ScaleType.FIT_CENTER

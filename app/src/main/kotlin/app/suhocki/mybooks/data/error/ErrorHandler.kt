@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.data.error
 
 import android.content.Context
+import app.suhocki.mybooks.inDebug
 import app.suhocki.mybooks.isAppOnForeground
 import okhttp3.internal.http2.StreamResetException
 import org.jetbrains.anko.longToast
@@ -25,7 +26,7 @@ class ErrorHandler @Inject constructor(
             it.printStackTrace()
             with(context) {
                 if (isAppOnForeground()) {
-                    runOnUiThread { longToast(it.message.toString()) }
+                    inDebug { runOnUiThread { longToast(it.message.toString()) } }
                 } else {
                     lastError = it
                 }

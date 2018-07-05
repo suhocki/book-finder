@@ -1,7 +1,9 @@
 package app.suhocki.mybooks.ui.catalog
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.support.annotation.DrawableRes
+import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -63,7 +65,31 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        ui.toolbar.setNavigationOnClickListener {
+            val animatedDrawable = ui.toolbar.navigationIcon as DrawerArrowDrawable
+            val isHamburgerClicked = animatedDrawable.progress == 0f
+
+            if (isHamburgerClicked) {
+                (activity as NavigationHandler).setDrawerExpanded(true)
+            } else {
+                onCollapseSearchClick()
+            }
+
+        }
+
         ui.recyclerView.adapter = adapter
+    }
+
+    private fun animateToolbarNavigationButton(toArrow: Boolean) {
+        val animatedDrawable = ui.toolbar.navigationIcon as DrawerArrowDrawable
+
+        val fromProgress = animatedDrawable.progress
+        val toProgress = if (toArrow) 1f else 0f
+
+        ObjectAnimator.ofFloat(animatedDrawable, "progress", fromProgress, toProgress)
+            .setDuration(500)
+            .start()
     }
 
     override fun showCatalogItems(
@@ -131,11 +157,10 @@ class CatalogFragment : BaseFragment(), CatalogView,
         ui.recyclerView.stopScroll()
         ui.search.visibility = if (expanded) View.GONE else View.VISIBLE
         ui.close.visibility = if (expanded) View.VISIBLE else View.GONE
-        ui.back.visibility = if (expanded) View.VISIBLE else View.GONE
-        ui.menu.visibility = if (expanded) View.GONE else View.VISIBLE
+        animateToolbarNavigationButton(expanded)
         (activity as NavigationHandler).setDrawerEnabled(!expanded)
         (activity as NavigationHandler).setBottomNavigationVisible(!expanded)
-        if (!expanded) ui.back.hideKeyboard()
+        if (!expanded) ui.toolbar.hideKeyboard()
     }
 
     override fun showBlankSearch() {
@@ -166,18 +191,20 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun onExpandSearchClick() {
+        animateToolbarNavigationButton(true)
         with(ui) {
-            setGone(menu, search)
-            setVisible(back, close)
+            setGone(search)
+            setVisible(close)
         }
         presenter.startSearchMode()
     }
 
     override fun onCollapseSearchClick(): Boolean {
+        animateToolbarNavigationButton(false)
         val cancelWasVisible = ui.close.visibility == View.VISIBLE
         with(ui) {
-            setVisible(menu, search)
-            setGone(back, close)
+            setVisible(search)
+            setGone(close)
             search.hideKeyboard()
         }
         presenter.stopSearchMode()
