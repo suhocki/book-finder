@@ -41,7 +41,7 @@ class LicensesActivity : MvpAppCompatActivity(), LicensesView, OnLicenseClickLis
 
     override fun onDestroy() {
         super.onDestroy()
-//        if (isFinishing) Toothpick.closeScope(DI.LICENSES_ACTIVITY_SCOPE)
+        if (isFinishing) Toothpick.closeScope(DI.LICENSES_ACTIVITY_SCOPE)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -49,8 +49,8 @@ class LicensesActivity : MvpAppCompatActivity(), LicensesView, OnLicenseClickLis
         return true
     }
 
-    override fun showLicenses(licenses: List<License>) {
-        adapter.submitList(licenses)
+    override fun showLicenses(data: List<Any>) {
+        adapter.submitList(data)
     }
 
     override fun onLicenseClick(license: License) {

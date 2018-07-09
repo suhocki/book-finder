@@ -75,13 +75,15 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
 
             Info.InfoType.ADDRESS -> context!!.openMap(info.name)
 
-            Info.InfoType.ABOUT_DEVELOPER -> TODO()
+            Info.InfoType.ABOUT_DEVELOPER -> context!!.openLink(DEVELOPER_LINK)
 
             Info.InfoType.LICENSES -> startActivity<LicensesActivity>()
         }
     }
 
     companion object {
+        private const val DEVELOPER_LINK = "https://www.linkedin.com/in/suhocki/"
+
         fun newInstance() = InfoFragment()
     }
 }

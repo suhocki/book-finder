@@ -44,7 +44,7 @@ class LicensesUI : AnkoComponent<LicensesActivity> {
                 addItemDecoration(
                     DeviderItemDecoration(
                         context.dimen(R.dimen.height_catalog_decorator),
-                        0
+                        1
                     )
                 )
             }.lparams(matchParent, matchParent) {

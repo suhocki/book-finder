@@ -4,6 +4,7 @@ import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
 import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.books.BooksDiffCallback
+import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
 import app.suhocki.mybooks.ui.licenses.delegate.LicenseAdapterDelegate
 import app.suhocki.mybooks.ui.licenses.listener.OnLicenseClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
@@ -21,6 +22,7 @@ class LicensesAdapter(
 
     init {
         delegatesManager.addDelegate(LicenseAdapterDelegate(onLicenseClickListener))
+        delegatesManager.addDelegate(HeaderAdapterDelegate())
     }
 
     override fun getItemCount(): Int =

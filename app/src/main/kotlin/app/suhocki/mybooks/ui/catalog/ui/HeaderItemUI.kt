@@ -23,9 +23,10 @@ class HeaderItemUI : AnkoComponent<ViewGroup> {
                 allCaps = true
                 textAppearance = R.style.TextAppearance_AppCompat_Subhead
                 setTypeface(typeface, Typeface.BOLD)
-                leftPadding = dip(18)
+                horizontalPadding = dip(18)
                 gravity = Gravity.CENTER_VERTICAL
-            }.lparams(wrapContent, dimenAttr(R.attr.actionBarSize))
+                minHeight = dimenAttr(R.attr.actionBarSize)
+            }.lparams(wrapContent, wrapContent)
         }.apply {
             rootView.layoutParams = RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
