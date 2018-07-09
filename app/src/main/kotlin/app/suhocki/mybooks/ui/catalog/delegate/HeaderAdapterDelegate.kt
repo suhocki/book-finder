@@ -39,7 +39,6 @@ class HeaderAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
                 }
                 title.setAllCaps(header.allCaps)
                 if (!header.allCaps) {
-                    parent.backgroundResource = R.color.colorWhite
                     title.textAppearance = R.style.TextAppearance_AppCompat_Subhead
                     title.setTypeface(title.typeface, Typeface.NORMAL)
                 }

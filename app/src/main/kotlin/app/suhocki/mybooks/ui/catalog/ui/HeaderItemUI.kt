@@ -17,6 +17,7 @@ class HeaderItemUI : AnkoComponent<ViewGroup> {
 
         frameLayout {
             this@HeaderItemUI.parent = this
+            backgroundResource = R.color.colorWhite
 
             textView {
                 this@HeaderItemUI.title = this

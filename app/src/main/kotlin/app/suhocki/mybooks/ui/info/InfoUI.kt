@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.hideKeyboard
+import app.suhocki.mybooks.ui.base.decorator.DeviderItemDecoration
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import org.jetbrains.anko.*
@@ -24,6 +25,7 @@ class InfoUI<in T : Fragment> : AnkoComponent<T> {
 
         coordinatorLayout {
             fitsSystemWindows = false
+            backgroundColorResource = R.color.colorGray
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
@@ -46,6 +48,12 @@ class InfoUI<in T : Fragment> : AnkoComponent<T> {
                 id = R.id.id_recycler_catalog
                 clipToPadding = false
                 layoutManager = ScrollLayoutManager(context)
+                addItemDecoration(
+                    DeviderItemDecoration(
+                        context.dimen(R.dimen.height_catalog_decorator),
+                        true
+                    )
+                )
                 setOnTouchListener { _, _ -> hideKeyboard();false }
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
