@@ -11,11 +11,14 @@ import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.openMap
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.info.listener.OnInfoClickListener
+import app.suhocki.mybooks.ui.licenses.LicensesActivity
+import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.email
+import org.jetbrains.anko.support.v4.startActivity
 import toothpick.Toothpick
 
 
@@ -43,6 +46,11 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        ui.toolbar.setNavigationOnClickListener {
+            (activity as NavigationHandler).setDrawerExpanded(true)
+        }
+
         ui.recyclerView.adapter = adapter
     }
 
@@ -62,9 +70,14 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
 
             Info.InfoType.VK -> context!!.openLink(info.valueForNavigation!!)
 
-            Info.InfoType.WORKING_TIME -> {}
+            Info.InfoType.WORKING_TIME -> {
+            }
 
             Info.InfoType.ADDRESS -> context!!.openMap(info.name)
+
+            Info.InfoType.ABOUT_DEVELOPER -> TODO()
+
+            Info.InfoType.LICENSES -> startActivity<LicensesActivity>()
         }
     }
 

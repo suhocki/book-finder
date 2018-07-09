@@ -1,17 +1,16 @@
 package app.suhocki.mybooks.data.ads
 
-import app.suhocki.mybooks.di.provider.RemoteConfigProvider
+import app.suhocki.mybooks.data.remoteconfig.RemoteConfigurator
 import app.suhocki.mybooks.domain.model.BannerAd
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import javax.inject.Inject
 
 class AdsManager @Inject constructor(
     private val interstitialAd: InterstitialAd,
     private val bannerAd: BannerAd,
-    private val remoteConfig: FirebaseRemoteConfig
+    private val remoteConfigurator: RemoteConfigurator
 ) {
 
     private val adRequest by lazy {
@@ -24,7 +23,6 @@ class AdsManager @Inject constructor(
     private var onAdFlowFinished: (() -> Unit)? = null
     val isInterstitialAdLoading get() = interstitialAd.isLoading
     val isInterstitialAdLoaded get() = interstitialAd.isLoaded
-    val isAdsEnabled get() = remoteConfig.getBoolean(RemoteConfigProvider.KEY_ADS_ENABLED)
 
     init {
         interstitialAd.adListener = object : AdListener() {
@@ -53,7 +51,8 @@ class AdsManager @Inject constructor(
     }
 
     fun isAdShownFor(url: String) =
-        if (isAdsEnabled) urlsAdShownFor.contains(url) else true
+        if (remoteConfigurator.isAdsEnabled) urlsAdShownFor.contains(url)
+        else true
 
     fun onAdFlowFinished(onAdFlowFinished: (() -> Unit)?) {
         isWaitingForInterstitialAdLoad = false

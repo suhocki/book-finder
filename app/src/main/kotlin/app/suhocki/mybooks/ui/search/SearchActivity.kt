@@ -33,7 +33,7 @@ class SearchActivity : MvpAppCompatActivity(), SearchView,
     @ProvidePresenter
     fun providePresenter(): SearchPresenter {
         val scope = Toothpick
-            .openScopes(DI.APP_SCOPE, DI.BOOKS_ACTIVITY_SCOPE, DI.SEARCH_ACTIVITY_SCOPE)
+            .openScopes(DI.APP_SCOPE, DI.BOOKS_ACTIVITY_SCOPE, DI.SEARCH_FILTER_ACTIVITY_SCOPE)
         val searchKey = intent.extras[ARG_SEARCH_KEY] as String
         scope.installModules(object : Module() {
             init {
@@ -43,7 +43,7 @@ class SearchActivity : MvpAppCompatActivity(), SearchView,
             }
         })
         return scope.getInstance(SearchPresenter::class.java).also {
-            Toothpick.closeScope(DI.SEARCH_ACTIVITY_SCOPE)
+            Toothpick.closeScope(DI.SEARCH_FILTER_ACTIVITY_SCOPE)
         }
     }
 

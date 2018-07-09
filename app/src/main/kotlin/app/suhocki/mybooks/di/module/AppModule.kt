@@ -9,12 +9,12 @@ import app.suhocki.mybooks.data.database.dao.*
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.notifier.ComponentNotifier
 import app.suhocki.mybooks.data.progress.ProgressHandler
+import app.suhocki.mybooks.data.remoteconfig.RemoteConfigurator
 import app.suhocki.mybooks.data.repository.RoomRepository
 import app.suhocki.mybooks.data.repository.SharedPreferencesRepository
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.DatabaseFileName
 import app.suhocki.mybooks.di.SharedPreferencesFileName
-import app.suhocki.mybooks.di.provider.RemoteConfigProvider
 import app.suhocki.mybooks.di.provider.SharedPreferencesProvider
 import app.suhocki.mybooks.di.provider.ads.BannerAdProvider
 import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
@@ -114,9 +114,11 @@ class AppModule(context: Context) : Module() {
             .to(SharedPreferencesRepository::class.java)
             .singletonInScope()
 
-        bind(FirebaseRemoteConfig::class.java)
-            .toProvider(RemoteConfigProvider::class.java)
+        bind(RemoteConfigurator::class.java)
             .singletonInScope()
+
+        bind(FirebaseRemoteConfig::class.java)
+            .toInstance(FirebaseRemoteConfig.getInstance())
 
         bind(BannerAd::class.java)
             .toProvider(BannerAdProvider::class.java)

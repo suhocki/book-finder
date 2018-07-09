@@ -14,6 +14,7 @@
     <string name="unzipping">Unzipping</string>
     <string name="filter">Filter</string>
     <string name="info">Info</string>
+    <string name="information">Information</string>
     <string name="success">Success!</string>
     <string name="downloading_statistics">Information about %d books from %d categories was saved successfully.</string>
     <string name="step_info">Step %d of %d</string>
@@ -66,7 +67,16 @@
     <string name="reset">Reset</string>
     <string name="contacts">Contacts</string>
     <string name="address">Address:</string>
+    <string name="about_developer">About developer</string>
+    <string name="licences">Licences</string>
+    <string name="about_this_application">About this application:</string>
     <string name="working_time">Working time:</string>
+
+    <!--License name-->
+    <string name="library_license_MIT">MIT</string>
+    <string name="library_license_APACHE_2">Apache 2.0</string>
+    <string name="library_license_CUSTOM">Custom license</string>
+    <string name="library_license_NONE">None</string>
 
     <string name="percent" translatable="false">" "(%d%%)</string>
 </resources>

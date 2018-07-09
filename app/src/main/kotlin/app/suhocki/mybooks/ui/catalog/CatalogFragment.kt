@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.*
 import app.suhocki.mybooks.di.DI
+import app.suhocki.mybooks.di.module.CatalogModule
 import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.entity.BookEntity
@@ -54,8 +55,9 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     @ProvidePresenter
     fun providePresenter(): CatalogPresenter =
-        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE)
-            .getInstance(CatalogPresenter::class.java)
+        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE).apply {
+            installModules(CatalogModule(activity!!))
+        }.getInstance(CatalogPresenter::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,

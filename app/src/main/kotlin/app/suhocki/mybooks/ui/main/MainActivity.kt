@@ -24,7 +24,8 @@ class MainActivity : MvpAppCompatActivity(), MainView,
     @InjectPresenter
     lateinit var presenter: MainPresenter
 
-    private var ui = MainUI()
+    private val ui by lazy { MainUI() }
+
     private lateinit var tabs: HashMap<String, BaseFragment>
     private val tabKeys = listOf(
         tabIdToTag(R.id.nav_catalog),

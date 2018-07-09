@@ -24,7 +24,7 @@ android {
     defaultConfig {
         applicationId appId
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 23
         versionCode appVersionCode.toInteger()
         versionName appVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -109,16 +109,19 @@ ext {
     firebase_ads_version = "15.0.1"
     firebase_core_version = "16.0.1"
     firebase_config_version = "16.0.0"
+    gson_version = "2.8.5"
 }
 
 dependencies {
     implementation(
+            //Anko
             "org.jetbrains.anko:anko:$anko_version",
             "org.jetbrains.anko:anko-design:$anko_version",
             "org.jetbrains.anko:anko-recyclerview-v7:$anko_version",
             "org.jetbrains.anko:anko-cardview-v7:$anko_version",
             "org.jetbrains.anko:anko-appcompat-v7:$anko_version",
             "org.jetbrains.anko:anko-support-v4:$anko_version",
+            //Support
             "com.android.support:appcompat-v7:$support_library_version",
             "com.android.support:recyclerview-v7:$support_library_version",
             "com.android.support:cardview-v7:$support_library_version",
@@ -126,16 +129,28 @@ dependencies {
             "com.android.support:design:$support_library_version",
             "com.android.support:customtabs:$support_library_version",
             "com.android.support:transition:$support_library_version",
+            //Multiline collapsing toolbar
             "net.opacapp:multiline-collapsingtoolbar:$support_library_version",
+            //MVP Moxy
             "com.arello-mobile:moxy-compiler:$moxy_version",
             "com.arello-mobile:moxy-app-compat:$moxy_version",
+            //Image load and cache
             "com.facebook.fresco:fresco:$fresco_version",
+            //Photo viewer
             "com.github.stfalcon:frescoimageviewer:$frescoimageviewer_version",
+            //Retrofit
             "com.squareup.retrofit2:retrofit:$retrofit_version",
+            //Database
             "android.arch.persistence.room:runtime:$room_version",
+            //Bottom navigation bar
             "com.aurelhubert:ahbottomnavigation:$bottomnavigation_version",
+            //DI
             "com.github.stephanenicolas.toothpick:toothpick-runtime:$toothpick_version",
+            //Adapter simplify
             "com.hannesdorfmann:adapterdelegates3:$adapterdelegates_version",
+            //Gson
+            "com.google.code.gson:gson:$gson_version",
+            //Firebase
             "com.google.firebase:firebase-core:$firebase_core_version",
             "com.google.firebase:firebase-ads:$firebase_ads_version",
             "com.google.firebase:firebase-config:$firebase_config_version",

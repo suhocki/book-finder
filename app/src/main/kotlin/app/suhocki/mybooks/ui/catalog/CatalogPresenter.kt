@@ -6,6 +6,7 @@ import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.CategoriesDecoration
+import app.suhocki.mybooks.di.SearchAll
 import app.suhocki.mybooks.di.SearchDecoration
 import app.suhocki.mybooks.domain.CatalogInteractor
 import app.suhocki.mybooks.domain.model.Header
@@ -25,7 +26,7 @@ class CatalogPresenter @Inject constructor(
     private val resourceManager: ResourceManager,
     private val adsManager: AdsManager,
     private val errorHandler: ErrorHandler,
-    private val searchEntity: Search,
+    @SearchAll private val searchEntity: Search,
     private val header: Header,
     @SearchDecoration private val searchDecoration: RecyclerView.ItemDecoration,
     @CategoriesDecoration private val categoriesDecoration: RecyclerView.ItemDecoration

@@ -14,6 +14,7 @@
     <string name="saving">Сохранение</string>
     <string name="unzipping">Извлечение из архива</string>
     <string name="info">Инфо</string>
+    <string name="information">Информация</string>
     <string name="filter">Фильтр</string>
     <string name="success">Загрузка завершена</string>
     <string name="downloading_statistics">Информация о %d книгах из %d категорий успешно сохранена.</string>
@@ -66,5 +67,14 @@
     <string name="error_filter_price_invalid">Цена От должна быть меньше цены До.</string>
     <string name="contacts">Контакты</string>
     <string name="address">Адрес:</string>
+    <string name="licences">Лицензии</string>
+    <string name="about_developer">О разработчике</string>
+    <string name="about_this_application">Об этом приложении:</string>
     <string name="working_time">Время работы:</string>
+
+    <!--License name-->
+    <string name="library_license_MIT">MIT</string>
+    <string name="library_license_APACHE_2">Apache 2.0</string>
+    <string name="library_license_CUSTOM">Авторская лицензия</string>
+    <string name="library_license_NONE">None</string>
 </resources>

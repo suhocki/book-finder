@@ -12,3 +12,4 @@ import javax.inject.Qualifier
 @Qualifier annotation class SearchAuthor
 @Qualifier annotation class SearchPublisher
 @Qualifier annotation class SearchKey
+@Qualifier annotation class SearchAll

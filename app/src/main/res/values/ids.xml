@@ -11,4 +11,5 @@
     <id name="id_recycler_filter">8</id>
     <id name="id_recycler_search">9</id>
     <id name="id_recycler_info">10</id>
+    <id name="id_recycler_licenses">11</id>
 </resources>

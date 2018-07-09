@@ -40,6 +40,9 @@
             android:windowSoftInputMode="adjustPan" />
 
         <activity
+            android:name=".ui.licenses.LicensesActivity" />
+
+        <activity
             android:name=".ui.books.BooksActivity"
             android:windowSoftInputMode="adjustPan"
             tools:targetApi="jelly_bean" />

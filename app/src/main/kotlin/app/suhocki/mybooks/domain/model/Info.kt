@@ -14,5 +14,7 @@ interface Info {
         VK,
         WORKING_TIME,
         ADDRESS,
+        ABOUT_DEVELOPER,
+        LICENSES,
     }
 }

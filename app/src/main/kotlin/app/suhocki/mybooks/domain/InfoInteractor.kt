@@ -2,9 +2,11 @@ package app.suhocki.mybooks.domain
 
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager
-import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Info
 import app.suhocki.mybooks.domain.repository.InfoRepository
+import app.suhocki.mybooks.ui.info.entity.ContactEntity
+import app.suhocki.mybooks.ui.info.entity.HeaderEntity
+import app.suhocki.mybooks.ui.info.entity.InfoEntity
 import javax.inject.Inject
 
 class InfoInteractor @Inject constructor(
@@ -14,24 +16,17 @@ class InfoInteractor @Inject constructor(
 
     fun getHeaderOrganization() =
         infoRepository.getOrganizationName()
-            .let {
-                object : Header {
-                    override val inverseColors = true
-                    override var title = it
-                }
-            }
+            .let { HeaderEntity(it, true) }
 
-    fun getHeaderAddress() =
-        object : Header {
-            override val inverseColors = true
-            override var title = resourceManager.getString(R.string.address)
-        }
+    fun getHeaderAddress() = HeaderEntity(
+        resourceManager.getString(R.string.address),
+        true
+    )
 
-    fun getHeaderWorkingTime() =
-        object : Header {
-            override val inverseColors = true
-            override var title = resourceManager.getString(R.string.working_time)
-        }
+    fun getHeaderWorkingTime() = HeaderEntity(
+        resourceManager.getString(R.string.working_time),
+        true
+    )
 
     fun getContacts(): List<Info> {
         val phones = infoRepository.getContactPhones()
@@ -65,11 +60,21 @@ class InfoInteractor @Inject constructor(
     fun getAddress(): Info = infoRepository.getAddress()
         .let { ContactEntity(Info.InfoType.ADDRESS, it, R.drawable.ic_address) }
 
-    internal class ContactEntity(
-        override val type: Info.InfoType,
-        override val name: String,
-        override val iconRes: Int,
-        override val valueForNavigation: String? = null
-    ) : Info
+    fun getAboutThisApplication() = listOf(
+        HeaderEntity(
+            resourceManager.getString(R.string.about_this_application),
+            true
+        ),
+        InfoEntity(
+            Info.InfoType.ABOUT_DEVELOPER,
+            resourceManager.getString(R.string.about_developer),
+            iconRes = R.drawable.ic_developer
+        ),
+        InfoEntity(
+            Info.InfoType.LICENSES,
+            resourceManager.getString(R.string.licences),
+            iconRes = R.drawable.ic_copyright
+        )
+    )
 
 }

@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
 import android.support.annotation.AttrRes
@@ -16,8 +17,7 @@ import android.support.v4.content.res.ResourcesCompat
 import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-
-
+import app.suhocki.mybooks.domain.model.License
 
 
 fun Context.attrResource(@AttrRes attribute: Int): Int {
@@ -131,4 +131,11 @@ fun View.hideKeyboard() {
 fun View.showKeyboard() {
     val im = context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     im.showSoftInput(this, InputMethodManager.SHOW_FORCED)
+}
+
+fun License.LicenseType.getHumanName(resources: Resources) = when (this) {
+    License.LicenseType.MIT -> resources.getString(R.string.library_license_MIT)
+    License.LicenseType.APACHE_2 -> resources.getString(R.string.library_license_APACHE_2)
+    License.LicenseType.CUSTOM -> resources.getString(R.string.library_license_CUSTOM)
+    License.LicenseType.NONE -> resources.getString(R.string.library_license_NONE)
 }
