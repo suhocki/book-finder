@@ -26,8 +26,7 @@ class LicensesPresenter @Inject constructor(
             val header = HeaderEntity(resourceManager.getString(R.string.licenses_title))
             val data = mutableListOf<Any>()
             data.add(header)
-            val licenses = licensesInteractor.getLicenses()
-            data.addAll(licenses)
+            data.addAll(licensesInteractor.getLicenses())
             uiThread {
                 viewState.showLicenses(data)
             }

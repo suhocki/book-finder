@@ -1,10 +1,10 @@
 package app.suhocki.mybooks.domain.model
 
-interface License {
-    val name: String
-    val url: String
+data class License(
+    val name: String,
+    val url: String,
     val license: LicenseType
-
+) {
     enum class LicenseType {
         MIT,
         APACHE_2,

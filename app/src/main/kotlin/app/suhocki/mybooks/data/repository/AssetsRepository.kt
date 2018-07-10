@@ -14,20 +14,13 @@ class AssetsRepository @Inject constructor(
     private val gson: Gson
 ) : LicenseRepository {
 
-    override fun getLicenses(): List<LicenseEntity> =
+    override fun getLicenses(): List<License> =
         fromAsset(LICENSES_FILE_NAME)
 
     private inline fun <reified T> fromAsset(pathToAsset: String) =
         assets.open(pathToAsset).use { stream ->
-            gson.fromJson(InputStreamReader(stream), object : TypeToken<T>() {}.type) as T
+            gson.fromJson<T>(InputStreamReader(stream), object : TypeToken<T>() {}.type)
         }
-
-
-    data class LicenseEntity(
-        override val name: String,
-        override val url: String,
-        override val license: License.LicenseType
-    ) : License
 
 
     companion object {

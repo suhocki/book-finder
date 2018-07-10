@@ -42,7 +42,7 @@ public class DeviderItemDecoration extends ItemDecoration {
         if (mIsInfoScreen) {
             List<Object> items = ((InfoAdapter) parent.getAdapter()).getItems();
             if (items.get(itemPosition) instanceof Header) {
-                outRect.bottom = mOffsets;
+                outRect.top = mOffsets;
             }
         } else if (itemPosition > mStartFromItem) {
             outRect.top = mOffsets;

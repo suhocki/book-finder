@@ -8,6 +8,7 @@
 -dontwarn javax.annotation.**
 -dontwarn javax.lang.**
 -dontwarn javax.tools.**
+-keepattributes *Annotation*
 
 # kotlin
 -dontwarn kotlin.reflect.jvm.internal.**
@@ -50,3 +51,11 @@
 
 # drawable animations
 -keep class android.support.v7.graphics.** { *; }
+
+# gson
+-keep class * implements com.google.gson.TypeAdapterFactory
+-keep class * implements com.google.gson.JsonSerializer
+-keep class * implements com.google.gson.JsonDeserializer
+
+# models
+-keep class app.suhocki.mybooks.domain.model.** { *; }

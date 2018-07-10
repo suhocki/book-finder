@@ -68,7 +68,7 @@
     <string name="contacts">Контакты</string>
     <string name="address">Адрес:</string>
     <string name="licences">Лицензии</string>
-    <string name="licenses_title">Библиотеки, используемые при разработке данного приложения:</string>
+    <string name="licenses_title">Библиотеки, использованные в данном приложении:</string>
     <string name="about_developer">О разработчике</string>
     <string name="about_this_application">Об этом приложении:</string>
     <string name="working_time">Время работы:</string>

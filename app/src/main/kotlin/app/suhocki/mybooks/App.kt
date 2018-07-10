@@ -11,6 +11,7 @@ import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
 import com.google.android.gms.ads.MobileAds
+import com.google.firebase.FirebaseApp
 import org.jetbrains.anko.notificationManager
 import toothpick.Toothpick
 
@@ -19,6 +20,7 @@ open class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        FirebaseApp.initializeApp(this)
         initAppScope()
         initNotificationChannel()
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
