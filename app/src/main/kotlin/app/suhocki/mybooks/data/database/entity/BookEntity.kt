@@ -3,11 +3,13 @@ package app.suhocki.mybooks.data.database.entity
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Ignore
+import android.arch.persistence.room.Index
 import android.os.Parcel
 import android.os.Parcelable
 import app.suhocki.mybooks.domain.model.Book
 
 @Entity(
+    indices = [(Index("category"))],
     tableName = BookEntity.TABLE_NAME,
     primaryKeys = ["productCode"],
     foreignKeys = [

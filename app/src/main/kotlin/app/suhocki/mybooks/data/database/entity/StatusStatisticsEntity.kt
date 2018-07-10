@@ -2,10 +2,12 @@ package app.suhocki.mybooks.data.database.entity
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
+import android.arch.persistence.room.Index
 import app.suhocki.mybooks.domain.model.statistics.StatusStatistics
 
 @Entity(
     tableName = "StatusStatistics",
+    indices = [(Index("category"))],
     primaryKeys = ["status", "category"],
     foreignKeys = [
         (ForeignKey(

@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.data.database.entity
 
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Index
 import android.os.Parcel
 import android.os.Parcelable
 import app.suhocki.mybooks.domain.model.Category

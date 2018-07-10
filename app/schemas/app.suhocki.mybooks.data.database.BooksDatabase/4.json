@@ -1,0 +1,471 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 4,
+    "identityHash": "92c2dde5926acfa2a232a6af17a82efe",
+    "entities": [
+      {
+        "tableName": "Books",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category` TEXT NOT NULL, `shortName` TEXT NOT NULL, `fullName` TEXT NOT NULL, `price` REAL NOT NULL, `iconLink` TEXT NOT NULL, `productLink` TEXT NOT NULL, `website` TEXT NOT NULL, `productCode` TEXT NOT NULL, `status` TEXT, `publisher` TEXT, `author` TEXT, `series` TEXT, `format` TEXT, `year` TEXT, `pageCount` TEXT, `cover` TEXT, `description` TEXT, PRIMARY KEY(`productCode`), FOREIGN KEY(`category`) REFERENCES `Categories`(`name`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shortName",
+            "columnName": "shortName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fullName",
+            "columnName": "fullName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "price",
+            "columnName": "price",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "iconLink",
+            "columnName": "iconLink",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "productLink",
+            "columnName": "productLink",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "website",
+            "columnName": "website",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "productCode",
+            "columnName": "productCode",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "publisher",
+            "columnName": "publisher",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "series",
+            "columnName": "series",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "format",
+            "columnName": "format",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "pageCount",
+            "columnName": "pageCount",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "cover",
+            "columnName": "cover",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "productCode"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_Books_category",
+            "unique": false,
+            "columnNames": [
+              "category"
+            ],
+            "createSql": "CREATE  INDEX `index_Books_category` ON `${TABLE_NAME}` (`category`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Categories",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "category"
+            ],
+            "referencedColumns": [
+              "name"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Categories",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `booksCount` INTEGER NOT NULL, PRIMARY KEY(`name`))",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "booksCount",
+            "columnName": "booksCount",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "name"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "AuthorStatistics",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category` TEXT NOT NULL, `author` TEXT NOT NULL, `count` INTEGER NOT NULL, PRIMARY KEY(`author`, `category`), FOREIGN KEY(`category`) REFERENCES `Categories`(`name`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "author",
+            "columnName": "author",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "count",
+            "columnName": "count",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "author",
+            "category"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_AuthorStatistics_category",
+            "unique": false,
+            "columnNames": [
+              "category"
+            ],
+            "createSql": "CREATE  INDEX `index_AuthorStatistics_category` ON `${TABLE_NAME}` (`category`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Categories",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "category"
+            ],
+            "referencedColumns": [
+              "name"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "PublisherStatistics",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category` TEXT NOT NULL, `publisher` TEXT NOT NULL, `count` INTEGER NOT NULL, PRIMARY KEY(`publisher`, `category`), FOREIGN KEY(`category`) REFERENCES `Categories`(`name`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "publisher",
+            "columnName": "publisher",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "count",
+            "columnName": "count",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "publisher",
+            "category"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_PublisherStatistics_category",
+            "unique": false,
+            "columnNames": [
+              "category"
+            ],
+            "createSql": "CREATE  INDEX `index_PublisherStatistics_category` ON `${TABLE_NAME}` (`category`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Categories",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "category"
+            ],
+            "referencedColumns": [
+              "name"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "YearStatistics",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category` TEXT NOT NULL, `year` TEXT NOT NULL, `count` INTEGER NOT NULL, PRIMARY KEY(`year`, `category`), FOREIGN KEY(`category`) REFERENCES `Categories`(`name`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "year",
+            "columnName": "year",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "count",
+            "columnName": "count",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "year",
+            "category"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_YearStatistics_category",
+            "unique": false,
+            "columnNames": [
+              "category"
+            ],
+            "createSql": "CREATE  INDEX `index_YearStatistics_category` ON `${TABLE_NAME}` (`category`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Categories",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "category"
+            ],
+            "referencedColumns": [
+              "name"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "StatusStatistics",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category` TEXT NOT NULL, `status` TEXT NOT NULL, `count` INTEGER NOT NULL, PRIMARY KEY(`status`, `category`), FOREIGN KEY(`category`) REFERENCES `Categories`(`name`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "status",
+            "columnName": "status",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "count",
+            "columnName": "count",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "status",
+            "category"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_StatusStatistics_category",
+            "unique": false,
+            "columnNames": [
+              "category"
+            ],
+            "createSql": "CREATE  INDEX `index_StatusStatistics_category` ON `${TABLE_NAME}` (`category`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Categories",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "category"
+            ],
+            "referencedColumns": [
+              "name"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "PriceStatistics",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`category` TEXT NOT NULL, `minPrice` REAL NOT NULL, `maxPrice` REAL NOT NULL, PRIMARY KEY(`category`), FOREIGN KEY(`category`) REFERENCES `Categories`(`name`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "category",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "minPrice",
+            "columnName": "minPrice",
+            "affinity": "REAL",
+            "notNull": true
+          },
+          {
+            "fieldPath": "maxPrice",
+            "columnName": "maxPrice",
+            "affinity": "REAL",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "category"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [
+          {
+            "name": "index_PriceStatistics_category",
+            "unique": false,
+            "columnNames": [
+              "category"
+            ],
+            "createSql": "CREATE  INDEX `index_PriceStatistics_category` ON `${TABLE_NAME}` (`category`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "Categories",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "category"
+            ],
+            "referencedColumns": [
+              "name"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "Banners",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`imageUrl` TEXT NOT NULL, `description` TEXT NOT NULL, PRIMARY KEY(`imageUrl`))",
+        "fields": [
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "description",
+            "columnName": "description",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "imageUrl"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"92c2dde5926acfa2a232a6af17a82efe\")"
+    ]
+  }
+}
