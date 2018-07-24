@@ -8,7 +8,7 @@ import app.suhocki.mybooks.di.SearchAll
 import app.suhocki.mybooks.di.SearchDecoration
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Search
-import app.suhocki.mybooks.ui.base.decorator.DeviderItemDecoration
+import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.decorator.SearchItemDecoration
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import org.jetbrains.anko.dimen
@@ -31,8 +31,8 @@ class CatalogModule(context: Context) : Module() {
         bind(RecyclerView.ItemDecoration::class.java)
             .withName(CategoriesDecoration::class.java)
             .toInstance(
-                DeviderItemDecoration(
-                    context.dimen(R.dimen.height_catalog_decorator),
+                DividerItemDecoration(
+                    context.dimen(R.dimen.height_divider_decorator),
                     CatalogFragment.CATEGORY_POSITION
                 )
             )

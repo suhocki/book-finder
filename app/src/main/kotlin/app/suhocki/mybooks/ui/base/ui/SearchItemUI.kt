@@ -22,6 +22,7 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
 
         frameLayout {
             this@SearchItemUI.parent = this
+            backgroundColorResource = R.color.colorWhite
             verticalPadding = dimen(R.dimen.padding_item_search)
 
             themedCardView {
@@ -61,15 +62,13 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
 
             }.lparams(matchParent, matchParent) {
                 gravity = Gravity.CENTER_VERTICAL
+                horizontalMargin = dip(4)
             }
         }.apply {
             rootView.layoutParams = RecyclerView.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 dimenAttr(R.attr.actionBarSize)
-            ).apply {
-                horizontalMargin = dip(4)
-            }
-
+            )
         }
     }
 }

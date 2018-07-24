@@ -3,7 +3,7 @@ package app.suhocki.mybooks.ui.licenses
 import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.ui.base.decorator.DeviderItemDecoration
+import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import org.jetbrains.anko.*
@@ -42,8 +42,8 @@ class LicensesUI : AnkoComponent<LicensesActivity> {
                 setHasFixedSize(true)
                 layoutManager = ScrollLayoutManager(context)
                 addItemDecoration(
-                    DeviderItemDecoration(
-                        context.dimen(R.dimen.height_catalog_decorator),
+                    DividerItemDecoration(
+                        context.dimen(R.dimen.height_divider_decorator),
                         1
                     )
                 )

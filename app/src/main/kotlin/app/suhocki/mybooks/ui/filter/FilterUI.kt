@@ -13,13 +13,14 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.setForegroundCompat
+import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import app.suhocki.mybooks.ui.books.listener.OnFilterClickListener
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
-import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
+import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class FilterUI<in T : Fragment> : AnkoComponent<T> {
@@ -34,7 +35,7 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
 
         coordinatorLayout {
             fitsSystemWindows = false
-            backgroundColorResource = R.color.colorWhite
+            backgroundColorResource = R.color.colorGray
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
@@ -60,14 +61,20 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
                 }
             }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
-            themedRecyclerView(R.style.ScrollbarRecyclerView) {
+            recyclerView {
                 id = R.id.id_recycler_filter
                 isVerticalScrollBarEnabled = true
                 clipToPadding = false
-                backgroundColorResource = R.color.colorGray
                 recyclerView = this
                 layoutManager = ScrollLayoutManager(context)
                 setOnTouchListener { _, _ -> hideKeyboard();false }
+                addItemDecoration(
+                    DividerItemDecoration(
+                        context.dimen(R.dimen.height_divider_decorator),
+                        divideOnlyHeaders = true,
+                        divideTopAndBottom = true
+                    )
+                )
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
             }

@@ -71,14 +71,14 @@ class FilterInteractor @Inject constructor(
 
         resourceManager.getString(R.string.author) ->
             mutableListOf<Any>().apply {
-                add(authorSearchEntity)
                 addAll(filterItemStatistics.authorsFilterItems)
+                add(authorSearchEntity)
             }
 
         resourceManager.getString(R.string.publisher) ->
             mutableListOf<Any>().apply {
-                add(publisherSearchEntity)
                 addAll(filterItemStatistics.publishersFilterItems)
+                add(publisherSearchEntity)
             }
 
         resourceManager.getString(R.string.price) ->

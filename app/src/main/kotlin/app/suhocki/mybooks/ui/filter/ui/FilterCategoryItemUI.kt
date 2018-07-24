@@ -21,6 +21,7 @@ class FilterCategoryItemUI : AnkoComponent<ViewGroup> {
 
         frameLayout {
             this@FilterCategoryItemUI.parent = this
+            backgroundResource = R.color.colorWhite
 
             setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
 
