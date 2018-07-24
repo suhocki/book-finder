@@ -15,7 +15,7 @@ interface BooksView : MvpView {
 
     fun showBooks(books: List<Book>, scrollToTop: Boolean = false)
 
-    fun showEmptyScreen()
+    fun showEmptyScreen(isEmpty: Boolean)
 
     fun showProgressVisible(visible: Boolean)
 

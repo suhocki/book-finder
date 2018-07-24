@@ -52,8 +52,9 @@ class BooksPresenter @Inject constructor(
                 uiThread {
                     if (books.isNotEmpty()) {
                         viewState.showBooks(books, scrollToTop)
+                        viewState.showEmptyScreen(false)
                     } else {
-                        viewState.showEmptyScreen()
+                        viewState.showEmptyScreen(true)
                         viewState.showProgressVisible(false)
                     }
                 }
@@ -70,9 +71,11 @@ class BooksPresenter @Inject constructor(
         }
         val books = interactor.filter(sqLiteQuery)
         uiThread {
-            if (books.isNotEmpty()) viewState.showBooks(books, true)
-            else {
-                viewState.showEmptyScreen()
+            if (books.isNotEmpty()) {
+                viewState.showBooks(books, true)
+                viewState.showEmptyScreen(false)
+            } else {
+                viewState.showEmptyScreen(true)
                 viewState.showProgressVisible(false)
             }
         }

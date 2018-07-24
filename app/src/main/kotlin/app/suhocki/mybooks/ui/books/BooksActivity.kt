@@ -98,8 +98,16 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
         })
     }
 
-    override fun showEmptyScreen() {
-        ui.emptyView.visibility = View.VISIBLE
+    override fun showEmptyScreen(isEmpty: Boolean) {
+        with(ui) {
+            if (isEmpty) {
+                recyclerView.visibility = View.GONE
+                emptyView.visibility = View.VISIBLE
+            } else {
+                recyclerView.visibility = View.VISIBLE
+                emptyView.visibility = View.GONE
+            }
+        }
     }
 
     override fun showProgressVisible(visible: Boolean) {

@@ -1,12 +1,10 @@
 package app.suhocki.mybooks.data.repository
 
-import android.content.res.AssetManager
 import app.suhocki.mybooks.checkThreadInterrupt
 import app.suhocki.mybooks.data.parser.XlsParser
 import app.suhocki.mybooks.di.DownloadDirectoryPath
 import app.suhocki.mybooks.domain.model.XlsDocument
 import app.suhocki.mybooks.domain.repository.FileActionsRepository
-import com.google.gson.Gson
 import java.io.*
 import java.util.*
 import java.util.zip.ZipInputStream
@@ -15,9 +13,7 @@ import javax.inject.Inject
 
 class LocalStorageRepository @Inject constructor(
     @DownloadDirectoryPath private val downloadDirectoryPath: String,
-    private val xlsParser: XlsParser,
-    private val assets: AssetManager,
-    private val gson: Gson
+    private val xlsParser: XlsParser
 ) : FileActionsRepository {
 
     override fun saveFile(fileName: String, data: ByteArray): File {

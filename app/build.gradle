@@ -24,7 +24,7 @@ android {
     defaultConfig {
         applicationId appId
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 26
         versionCode appVersionCode.toInteger()
         versionName appVersionName
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -33,6 +33,11 @@ android {
             annotationProcessorOptions {
                 arguments = [toothpick_registry_package_name: appId]
                 includeCompileClasspath = true
+            }
+        }
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas".toString())
             }
         }
         configureApkName()

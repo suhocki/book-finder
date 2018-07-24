@@ -198,7 +198,8 @@ class FilterInteractor @Inject constructor(
 
     fun replaceFilterCategoryItem(old: FilterCategory, new: FilterCategory) {
         with(filterItemStatistics.filterCategories) {
-            val itemIndex = indexOf(old)
+            val oldInList = find { it.title == old.title }
+            val itemIndex = indexOf(oldInList)
             set(itemIndex, new)
         }
     }

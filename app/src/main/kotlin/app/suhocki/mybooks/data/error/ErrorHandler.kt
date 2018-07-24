@@ -11,6 +11,7 @@ import java.io.InterruptedIOException
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.concurrent.CancellationException
 import javax.inject.Inject
 import javax.net.ssl.SSLHandshakeException
 
@@ -22,7 +23,8 @@ class ErrorHandler @Inject constructor(
 
     val errorReceiver: (Throwable) -> Unit = {
         if (it !is InterruptedException &&
-            it !is InterruptedIOException) {
+            it !is InterruptedIOException &&
+            it !is CancellationException) {
             it.printStackTrace()
             with(context) {
                 if (isAppOnForeground()) {

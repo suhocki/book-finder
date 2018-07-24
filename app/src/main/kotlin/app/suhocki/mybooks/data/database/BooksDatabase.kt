@@ -36,6 +36,6 @@ abstract class BooksDatabase : RoomDatabase() {
     abstract fun bannerDao(): BannerDao
 
     companion object {
-        const val DATABASE_VERSION = 3
+        const val DATABASE_VERSION = 4
     }
 }

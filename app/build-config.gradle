@@ -4,6 +4,7 @@ android {
         buildConfigField 'String', 'DATABASE_FILE_URL', "\"$databaseFileUrl\""
         buildConfigField 'String', 'DOWNLOADED_FILE_NAME', "\"$downloadedFileName\""
         buildConfigField 'String', 'SHARED_PREFERENCES_FILE_NAME', "\"$sharedPreferencesFileName\""
+        buildConfigField 'String', 'LICENSES_FILE_NAME', "\"$licensesFileName\""
     }
     flavorDimensions "default"
 }
