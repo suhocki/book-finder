@@ -12,7 +12,9 @@ import android.view.ViewGroup
 import app.suhocki.mybooks.*
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.CatalogModule
-import app.suhocki.mybooks.domain.model.*
+import app.suhocki.mybooks.domain.model.Book
+import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
@@ -24,9 +26,11 @@ import app.suhocki.mybooks.ui.details.DetailsActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.jetbrains.anko.*
+import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.dimen
+import org.jetbrains.anko.padding
+import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.ctx
-import org.jetbrains.anko.support.v4.dimen
 import org.jetbrains.anko.support.v4.onUiThread
 import toothpick.Toothpick
 import java.util.*
@@ -112,10 +116,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
                     BANNER_POSITION -> {
                         Timer().schedule(200) {
-                            onUiThread {
-                                itemDecoration?.let { showRecyclerDecoration(it) }
-                                bottomPadding = 0
-                            }
+                            onUiThread { itemDecoration?.let { showRecyclerDecoration(it) } }
                         }
                         if (updateSearchView) {
                             showBlankSearch()
@@ -126,32 +127,12 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
                     else -> with(ui.recyclerView) {
                         Timer().schedule(200) {
-                            onUiThread {
-                                itemDecoration?.let { showRecyclerDecoration(it) }
-                                bottomPadding = getRecyclerPadding(this@with, catalogItems)
-                            }
+                            onUiThread { itemDecoration?.let { showRecyclerDecoration(it) } }
                         }
                     }
                 }
             }
         })
-    }
-
-    private fun getRecyclerPadding(parent: RecyclerView, catalogItems: List<Any>): Int {
-        var itemsHeight = 0
-        catalogItems.forEach {
-            when (it) {
-                is Search -> itemsHeight += context!!.dimenAttr(R.attr.actionBarSize)
-
-                is Header -> itemsHeight += context!!.dimenAttr(R.attr.actionBarSize)
-
-                is SearchResult -> itemsHeight += dimen(R.dimen.height_search_result)
-
-                is Category -> itemsHeight += context!!.dimenAttr(R.attr.actionBarSize)
-            }
-        }
-        return if (itemsHeight > parent.height) 0
-        else parent.height - itemsHeight
     }
 
     override fun showSearchMode(expanded: Boolean) {

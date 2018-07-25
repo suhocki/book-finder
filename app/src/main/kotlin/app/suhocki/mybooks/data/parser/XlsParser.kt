@@ -220,7 +220,13 @@ class XlsParser @Inject constructor(
             status = if (objectFieldsQueue.isNotEmpty()) objectFieldsQueue.pop() else null
         ).apply {
             publisher = findValue(KEY_PUBLISHER, shortDescription, fullDescription)
-            author = findValue(KEY_AUTHOR, shortDescription, fullDescription)
+            author = if (currentCategory.name == "НОВИНКИ \"ЛАБИРИНТ\"") {
+                val authorWithSpaces = REGEX_ISBN_NUMBER.toRegex().replace(shortDescription, "")
+                    .replace(shortName, "")
+                "^ *".toRegex().replace(authorWithSpaces, "")
+            } else {
+                findValue(KEY_AUTHOR, shortDescription, fullDescription)
+            }
             cover = findValue(KEY_COVER, shortDescription, fullDescription)
             format = findValue(KEY_FORMAT, shortDescription, fullDescription)
             pageCount = findValue(KEY_PAGES, shortDescription, fullDescription)
