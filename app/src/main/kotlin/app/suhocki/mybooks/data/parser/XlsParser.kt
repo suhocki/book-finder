@@ -39,7 +39,10 @@ class XlsParser @Inject constructor(
         while (matcher.find()) {
             checkThreadInterrupt()
             matcher.group().let {
-                allMatches.add(it.removeSurrounding(REGEX_XLS_CDATA_START, REGEX_XLS_CDATA_END))
+                allMatches.add(
+                    it.removeSurrounding(REGEX_XLS_CDATA_START, REGEX_XLS_CDATA_END)
+                        .replace("&quot;", "\"")
+                )
             }
         }
         return allMatches
