@@ -3,6 +3,7 @@ package app.suhocki.mybooks.ui.licenses
 import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
@@ -36,7 +37,7 @@ class LicensesUI : AnkoComponent<LicensesActivity> {
             }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
             themedRecyclerView(R.style.ScrollbarRecyclerView) {
-                id = R.id.id_recycler_licenses
+                id = Ids.recyclerLicenses
                 isVerticalScrollBarEnabled = true
                 recyclerView = this
                 setHasFixedSize(true)

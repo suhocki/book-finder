@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.hideKeyboard
+import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
@@ -45,7 +46,7 @@ class InfoUI<in T : Fragment> : AnkoComponent<T> {
 
             themedRecyclerView(R.style.ScrollbarRecyclerView) {
                 recyclerView = this
-                id = R.id.id_recycler_catalog
+                id = Ids.recyclerInfo
                 clipToPadding = false
                 layoutManager = ScrollLayoutManager(context)
                 addItemDecoration(

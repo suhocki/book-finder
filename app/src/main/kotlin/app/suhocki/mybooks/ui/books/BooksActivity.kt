@@ -14,6 +14,7 @@ import app.suhocki.mybooks.di.module.BooksModule
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.openLink
+import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnFilterResultListener
@@ -72,7 +73,7 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
     private fun initFilter() {
         supportFragmentManager
             .beginTransaction()
-            .replace(R.id.id_filter_container, FilterFragment.newInstance())
+            .replace(Ids.filterContainer, FilterFragment.newInstance())
             .commitNow()
         supportFragmentManager.executePendingTransactions()
     }

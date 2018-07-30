@@ -8,6 +8,7 @@ import android.view.View
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.color
 import app.suhocki.mybooks.inLandscape
+import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.bottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationAdapter
@@ -30,12 +31,12 @@ class MainUI : AnkoComponent<MainActivity> {
             coordinatorLayout {
 
                 frameLayout {
-                    id = R.id.id_main_container
+                    id = Ids.mainContainer
                 }.lparams(matchParent, matchParent)
 
                 bottomNavigation {
                     bottomBar = this
-                    id = R.id.id_bottom_menu
+                    id = Ids.bottomMenu
                     AHBottomNavigationAdapter(owner, R.menu.app_menu).apply {
                         setupWithBottomNavigation(this@bottomNavigation)
                     }

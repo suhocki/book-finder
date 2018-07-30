@@ -13,6 +13,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.setGone
+import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.multilineCollapsingToolbarLayout
 import app.suhocki.mybooks.ui.base.simpleDraweeView
 import org.jetbrains.anko.*
@@ -40,7 +41,7 @@ class DetailsUI @Inject constructor(
             fitsSystemWindows = false
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
-                id = R.id.id_app_bar_details
+                id = Ids.appbarDetails
                 fitsSystemWindows = false
 
                 multilineCollapsingToolbarLayout {
@@ -206,11 +207,11 @@ class DetailsUI @Inject constructor(
 
             floatingActionButton {
                 fabBuy = this
-                id = R.id.id_fab
+                id = Ids.fab
                 useCompatPadding = true
                 imageResource = R.drawable.ic_buy
             }.lparams {
-                anchorId = R.id.id_app_bar_details
+                anchorId = Ids.appbarDetails
                 anchorGravity = Gravity.BOTTOM or Gravity.END
             }
         }

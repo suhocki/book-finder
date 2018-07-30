@@ -13,6 +13,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.setForegroundCompat
+import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
@@ -62,7 +63,7 @@ class FilterUI<in T : Fragment> : AnkoComponent<T> {
             }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
             recyclerView {
-                id = R.id.id_recycler_filter
+                id = Ids.recyclerFilter
                 isVerticalScrollBarEnabled = true
                 clipToPadding = false
                 recyclerView = this

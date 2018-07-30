@@ -12,6 +12,7 @@ import android.widget.ImageView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
+import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
@@ -99,7 +100,7 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
 
             themedRecyclerView(R.style.ScrollbarRecyclerView) {
                 recyclerView = this
-                id = R.id.id_recycler_catalog
+                id = Ids.recyclerCatalog
                 clipToPadding = false
                 layoutManager = ScrollLayoutManager(context)
                 backgroundColorResource = R.color.colorGray

@@ -7,6 +7,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.CatalogModule
 import app.suhocki.mybooks.hideKeyboard
+import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
@@ -28,18 +29,18 @@ class MainActivity : MvpAppCompatActivity(), MainView,
 
     private lateinit var tabs: HashMap<String, BaseFragment>
     private val tabKeys = listOf(
-        tabIdToTag(R.id.nav_catalog),
-        tabIdToTag(R.id.nav_search),
-        tabIdToTag(R.id.nav_info)
+        tabIdToTag(Ids.navCatalog),
+        tabIdToTag(Ids.navSearch),
+        tabIdToTag(Ids.navInfo)
     )
     private val fragmentTabPositions = arrayOf(
         TAB_POSITION_CATALOG,
         TAB_POSITION_INFO
     )
     private val navigationPositions = mapOf(
-        R.id.nav_search to TAB_POSITION_SEARCH,
-        R.id.nav_catalog to TAB_POSITION_CATALOG,
-        R.id.nav_info to TAB_POSITION_INFO
+        Ids.navSearch to TAB_POSITION_SEARCH,
+        Ids.navCatalog to TAB_POSITION_CATALOG,
+        Ids.navInfo to TAB_POSITION_INFO
     )
 
     @ProvidePresenter
@@ -97,8 +98,8 @@ class MainActivity : MvpAppCompatActivity(), MainView,
             val fragmentCatalog = tabs[tabKeys[TAB_POSITION_CATALOG]]
             val fragmentInfo = tabs[tabKeys[TAB_POSITION_INFO]]
             supportFragmentManager.beginTransaction()
-                .add(R.id.id_main_container, fragmentCatalog, tabKeys[TAB_POSITION_CATALOG])
-                .add(R.id.id_main_container, fragmentInfo, tabKeys[TAB_POSITION_INFO])
+                .add(Ids.mainContainer, fragmentCatalog, tabKeys[TAB_POSITION_CATALOG])
+                .add(Ids.mainContainer, fragmentInfo, tabKeys[TAB_POSITION_INFO])
                 .hide(fragmentInfo)
                 .commitNow()
             ui.bottomBar.setCurrentItem(TAB_POSITION_CATALOG, false)

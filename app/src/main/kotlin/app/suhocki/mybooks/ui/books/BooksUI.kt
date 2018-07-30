@@ -13,6 +13,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
+import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.decorator.ItemDecoratorGrid
 import app.suhocki.mybooks.ui.base.themedAutofitRecyclerView
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
@@ -70,7 +71,7 @@ class BooksUI : AnkoComponent<BooksActivity> {
                 }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
                 themedAutofitRecyclerView {
-                    id = R.id.id_recycler_books
+                    id = Ids.recyclerBooks
                     isVerticalScrollBarEnabled = true
                     clipToPadding = false
                     recyclerView = this
@@ -136,7 +137,7 @@ class BooksUI : AnkoComponent<BooksActivity> {
             }
 
             frameLayout {
-                id = R.id.id_filter_container
+                id = Ids.filterContainer
             }.lparams(dimen(R.dimen.navigation_drawer_width), matchParent) {
                 gravity = Gravity.END
             }

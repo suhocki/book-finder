@@ -10,6 +10,7 @@ import android.view.View
 import android.widget.ImageView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
+import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import org.jetbrains.anko.*
@@ -56,7 +57,7 @@ class SearchUI : AnkoComponent<SearchActivity> {
             }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
             themedRecyclerView(R.style.ScrollbarRecyclerView) {
-                id = R.id.id_recycler_search
+                id = Ids.recyclerSearch
                 isVerticalScrollBarEnabled = true
                 clipToPadding = false
                 recyclerView = this

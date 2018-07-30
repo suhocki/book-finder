@@ -10,6 +10,7 @@ import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
+import app.suhocki.mybooks.ui.Ids
 import org.jetbrains.anko.*
 import org.jetbrains.anko.cardview.v7.themedCardView
 
@@ -33,7 +34,7 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
                     setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
 
                     editText {
-                        id = R.id.id_search
+                        id = Ids.search
                         editText = this
                         horizontalPadding = dip(12)
                         backgroundColorResource = android.R.color.transparent

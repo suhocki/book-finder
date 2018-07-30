@@ -17,8 +17,8 @@
     <string name="information">Информация</string>
     <string name="filter">Фильтр</string>
     <string name="success">Загрузка завершена</string>
-    <string name="downloading_statistics">Информация о %d книгах из %d категорий успешно сохранена.</string>
-    <string name="step_info">Шаг %d из %d</string>
+    <string name="downloading_statistics">Информация о %1$d книгах из %2$d категорий успешно сохранена.</string>
+    <string name="step_info">Шаг %1$d из %2$d</string>
     <string name="error_network">Пожалуйста, проверьте Ваше соединение с Интернет.</string>
     <string name="error_unknown">Неизвестная ошибка.</string>
     <string name="out_of_memory">Недостаточно оперативной памяти.</string>
