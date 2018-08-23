@@ -9,12 +9,13 @@ import app.suhocki.mybooks.data.database.dao.*
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.notifier.ComponentNotifier
 import app.suhocki.mybooks.data.progress.ProgressHandler
-import app.suhocki.mybooks.data.remoteconfig.RemoteConfigurator
+import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.repository.RoomRepository
 import app.suhocki.mybooks.data.repository.SharedPreferencesRepository
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.DatabaseFileName
 import app.suhocki.mybooks.di.SharedPreferencesFileName
+import app.suhocki.mybooks.di.VersionName
 import app.suhocki.mybooks.di.provider.SharedPreferencesProvider
 import app.suhocki.mybooks.di.provider.ads.BannerAdProvider
 import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
@@ -36,6 +37,14 @@ class AppModule(context: Context) : Module() {
         bind(String::class.java)
             .withName(DatabaseFileName::class.java)
             .toInstance(BuildConfig.DATABASE_FILE_NAME)
+
+        bind(String::class.java)
+            .withName(VersionName::class.java)
+            .toInstance(
+                context.packageManager
+                    .getPackageInfo(context.packageName, 0)
+                    .versionName!!
+            )
 
         bind(String::class.java)
             .withName(SharedPreferencesFileName::class.java)
@@ -114,7 +123,7 @@ class AppModule(context: Context) : Module() {
             .to(SharedPreferencesRepository::class.java)
             .singletonInScope()
 
-        bind(RemoteConfigurator::class.java)
+        bind(RemoteConfiguration::class.java)
             .singletonInScope()
 
         bind(FirebaseRemoteConfig::class.java)

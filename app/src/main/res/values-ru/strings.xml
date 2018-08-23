@@ -36,7 +36,7 @@
     <string name="publishers">Издательства</string>
     <string name="year">Год</string>
     <string name="publisher_not_found">Информация об издателях отсутствует для данной категории книг.</string>
-    <string name="year_not_found">Информация по годам отсутствует для данной категории книг.</string>
+    <string name="year_not_found">Информация о годах отсутствует для данной категории книг.</string>
     <string name="author_not_found">Информация об авторах отсутствует для данной категории книг.</string>
     <string name="status_not_found">Информация о статусах отсутствует для данной категории книг.</string>
     <string name="price">Цена</string>
@@ -73,9 +73,11 @@
     <string name="about_this_application">Об этом приложении:</string>
     <string name="working_time">Время работы:</string>
 
-    <!--License name-->
+    <!--License names-->
     <string name="library_license_MIT">MIT</string>
     <string name="library_license_APACHE_2">Apache 2.0</string>
     <string name="library_license_CUSTOM">Авторская лицензия</string>
     <string name="library_license_NONE">None</string>
+
+    <string name="version">Версия %s (%d)</string>
 </resources>

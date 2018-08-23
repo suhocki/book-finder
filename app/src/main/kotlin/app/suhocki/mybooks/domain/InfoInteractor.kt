@@ -1,17 +1,21 @@
 package app.suhocki.mybooks.domain
 
+import app.suhocki.mybooks.BuildConfig
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager
+import app.suhocki.mybooks.di.VersionName
 import app.suhocki.mybooks.domain.model.Info
 import app.suhocki.mybooks.domain.repository.InfoRepository
 import app.suhocki.mybooks.ui.info.entity.ContactEntity
 import app.suhocki.mybooks.ui.info.entity.HeaderEntity
 import app.suhocki.mybooks.ui.info.entity.InfoEntity
+import app.suhocki.mybooks.ui.info.entity.VersionEntity
 import javax.inject.Inject
 
 class InfoInteractor @Inject constructor(
     private val infoRepository: InfoRepository,
-    private val resourceManager: ResourceManager
+    private val resourceManager: ResourceManager,
+    @VersionName private val versionName: String
 ) {
 
     fun getHeaderOrganization() =
@@ -74,7 +78,8 @@ class InfoInteractor @Inject constructor(
             Info.InfoType.LICENSES,
             resourceManager.getString(R.string.licences),
             iconRes = R.drawable.ic_copyright
-        )
+        ),
+        VersionEntity(versionName, BuildConfig.VERSION_CODE)
     )
 
 }

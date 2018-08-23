@@ -6,12 +6,18 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class RemoteConfigurator @Inject constructor(
+class RemoteConfiguration @Inject constructor(
     private val remoteConfig: FirebaseRemoteConfig
 ) {
 
-    val isAdsEnabled get() = remoteConfig.getBoolean(KEY_ADS_ENABLED)
-    val isAboutApplicationEnabled get() = remoteConfig.getBoolean(KEY_ABOUT_APPLICATION_ENABLED)
+    val isAdsEnabled
+        get() = remoteConfig.getBoolean(KEY_ADS_ENABLED)
+
+    val isBannerAdEnabled
+        get() = remoteConfig.getBoolean(KEY_BANNER_AD_ENABLED)
+
+    val isAboutApplicationEnabled
+        get() = remoteConfig.getBoolean(KEY_ABOUT_APPLICATION_ENABLED)
 
     private val defaults by lazy {
         mutableMapOf<String, Any>(
@@ -42,6 +48,7 @@ class RemoteConfigurator @Inject constructor(
     companion object {
         private const val UPDATE_TIME_HOURS = 12L
         private const val KEY_ADS_ENABLED = "ads_enabled"
+        private const val KEY_BANNER_AD_ENABLED = "banner_ad_enabled"
         private const val KEY_ABOUT_APPLICATION_ENABLED = "about_application_enabled"
     }
 }

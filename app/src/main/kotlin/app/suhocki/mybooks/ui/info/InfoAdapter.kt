@@ -5,6 +5,7 @@ import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
 import app.suhocki.mybooks.ui.info.delegate.InfoAdapterDelegate
+import app.suhocki.mybooks.ui.info.delegate.VersionAdapterDelegate
 import app.suhocki.mybooks.ui.info.listener.OnInfoClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
@@ -24,6 +25,7 @@ class InfoAdapter(
         delegatesManager
             .addDelegate(HeaderAdapterDelegate())
             .addDelegate(InfoAdapterDelegate(onInfoClickListener))
+            .addDelegate(VersionAdapterDelegate())
     }
 
     override fun getItemCount(): Int =

@@ -11,6 +11,7 @@ import app.suhocki.mybooks.ui.base.view.MultilineCollapsingToolbarLayout
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.facebook.drawee.view.SimpleDraweeView
 import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.formats.NativeContentAdView
 import org.jetbrains.anko.AnkoViewDslMarker
 import org.jetbrains.anko.custom.ankoView
 import org.jetbrains.anko.internals.AnkoInternals
@@ -31,6 +32,10 @@ inline fun ViewManager.textViewCompat(init: (@AnkoViewDslMarker AppCompatTextVie
 
 inline fun ViewManager.adView(init: (@AnkoViewDslMarker AdView).() -> Unit): AdView {
     return ankoView({ ctx: Context -> AdView(ctx) }, theme = 0) { init() }
+}
+
+inline fun ViewManager.nativeContentAdView(init: (@AnkoViewDslMarker NativeContentAdView).() -> Unit): NativeContentAdView {
+    return ankoView({ ctx: Context -> NativeContentAdView(ctx) }, theme = 0) { init() }
 }
 
 inline fun ViewManager.multilineCollapsingToolbarLayout(init: (@AnkoViewDslMarker MultilineCollapsingToolbarLayout).() -> Unit): MultilineCollapsingToolbarLayout {

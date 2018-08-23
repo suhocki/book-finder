@@ -7,6 +7,7 @@ import javax.inject.Qualifier
 @Qualifier annotation class DatabaseFileUrl
 @Qualifier annotation class DatabaseFileName
 @Qualifier annotation class SharedPreferencesFileName
+@Qualifier annotation class VersionName
 @Qualifier annotation class CategoriesDecoration
 @Qualifier annotation class SearchDecoration
 @Qualifier annotation class SearchAuthor

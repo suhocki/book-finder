@@ -1,6 +1,6 @@
 package app.suhocki.mybooks.data.ads
 
-import app.suhocki.mybooks.data.remoteconfig.RemoteConfigurator
+import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.domain.model.BannerAd
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -10,7 +10,7 @@ import javax.inject.Inject
 class AdsManager @Inject constructor(
     private val interstitialAd: InterstitialAd,
     private val bannerAd: BannerAd,
-    private val remoteConfigurator: RemoteConfigurator
+    private val remoteConfigurator: RemoteConfiguration
 ) {
 
     private val adRequest by lazy {

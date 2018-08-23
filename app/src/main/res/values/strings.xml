@@ -73,11 +73,13 @@
     <string name="about_this_application">About this application:</string>
     <string name="working_time">Working time:</string>
 
-    <!--License name-->
+    <!--License names-->
     <string name="library_license_MIT">MIT</string>
     <string name="library_license_APACHE_2">Apache 2.0</string>
     <string name="library_license_CUSTOM">Custom license</string>
     <string name="library_license_NONE">None</string>
 
     <string name="percent" translatable="false">" "(%d%%)</string>
+
+    <string name="version">Version %s (%d)</string>
 </resources>

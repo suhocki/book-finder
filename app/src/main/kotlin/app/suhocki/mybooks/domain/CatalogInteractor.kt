@@ -3,6 +3,8 @@ package app.suhocki.mybooks.domain
 import android.content.res.Resources
 import android.support.annotation.StringRes
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.data.ads.AdsManager
+import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Search
@@ -13,6 +15,8 @@ import app.suhocki.mybooks.ui.base.entity.BookEntity
 import javax.inject.Inject
 
 class CatalogInteractor @Inject constructor(
+    private val remoteConfigurator: RemoteConfiguration,
+    private val adsManager: AdsManager,
     private val booksRepository: BooksRepository,
     private val bannersRepository: BannersRepository,
     private val resourceManager: ResourceManager
@@ -21,8 +25,9 @@ class CatalogInteractor @Inject constructor(
     fun getCategories() =
         booksRepository.getCategories()
 
-    fun getBanner() =
-        bannersRepository.getBanners().first()
+    fun getBanner(): Any =
+        if (remoteConfigurator.isBannerAdEnabled) adsManager.getBannerAd()
+        else bannersRepository.getBanners().first()
 
     fun search(search: Search) =
         booksRepository.search(search.searchQuery)
