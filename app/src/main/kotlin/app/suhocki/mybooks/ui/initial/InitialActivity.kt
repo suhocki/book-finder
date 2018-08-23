@@ -53,7 +53,7 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
         ui.textTitle.text =
                 getString(R.string.step_info, step.number, ProgressStep.values().size)
         when (step) {
-            ProgressStep.DOWNLOADING -> showLoading(step.progress)
+            ProgressStep.DOWNLOADING -> showLoading()
 
             ProgressStep.UNZIPPING -> showUnzipping()
 
@@ -77,9 +77,8 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
         }
     }
 
-    private fun showLoading(progress: Int) = with(ui) {
+    private fun showLoading() = with(ui) {
         ivTop.setImageResource(R.drawable.logo)
-        textProgress.text = getString(R.string.percent, progress)
         textDescription.textResource = R.string.downloading
         setVisible(btnInBackground, textProgress, progressBar, btnCancel)
         setGone(btnExit, btnRetry, btnDownload, btnContinue)
@@ -93,8 +92,8 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
 
     private fun showAnalyzing() = with(ui) {
         ui.textDescription.textResource = R.string.analyzing
-        setVisible(btnInBackground, progressBar, btnCancel)
-        setGone(textProgress, btnExit, btnRetry, btnDownload, btnContinue)
+        setVisible(textProgress, btnInBackground, progressBar, btnCancel)
+        setGone(btnExit, btnRetry, btnDownload, btnContinue)
     }
 
     private fun showParsing() = with(ui) {

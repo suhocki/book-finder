@@ -35,8 +35,14 @@ class XlsParser @Inject constructor(
         val contentString = getStringFromFile(xlsFile)
         val allMatches = ArrayList<String>()
         val matcher = Pattern.compile(REGEX_XLS_DATA).matcher(contentString)
+        val contentStringLength = contentString.length.toFloat()
+        val stepAnalyzing = ProgressStep.ANALYZING
+        var progress: Int
 
         while (matcher.find()) {
+            progress = (matcher.start() / contentStringLength * 100).toInt()
+            stepAnalyzing.progress = progress
+            progressListener.onProgress(stepAnalyzing, false)
             checkThreadInterrupt()
             matcher.group().let {
                 allMatches.add(
@@ -239,21 +245,22 @@ class XlsParser @Inject constructor(
 
     private fun findValue(key: String, vararg strings: String): String? {
         if (key == KEY_DESCR) {
-            val lastIndexOfKey = strings[1].lastIndexOfAny(KEYS_SET)
+            val fullDescription = strings[1]
+            val lastIndexOfKey = fullDescription.lastIndexOfAny(KEYS_SET)
             val answer = if (lastIndexOfKey == -1) null
-            else strings[1].substring(lastIndexOfKey)
-            if (answer != null && answer.startsWith(KEY_ISBN)) {
+            else fullDescription.substring(lastIndexOfKey)
+            return if (answer != null && answer.startsWith(KEY_ISBN)) {
                 val matcher = Pattern.compile(REGEX_ISBN_NUMBER).matcher(answer)
                 matcher.find()
                 val isbnNumber = matcher.group()
-                return answer.removePrefix(KEY_ISBN).removePrefix(isbnNumber)
+                answer.removePrefix(KEY_ISBN).removePrefix(isbnNumber)
             } else if (answer != null && answer.startsWith(KEY_COVER)) {
                 val startIndex = KEY_COVER.length + FORMAT_LENGTH
-                return if (answer.length > startIndex) answer.substring(startIndex) else null
+                if (answer.length > startIndex) answer.substring(startIndex) else null
             } else if (answer != null && answer.startsWith(KEY_YEAR)) {
                 val startIndex = KEY_YEAR.length + YEAR_LENGTH
-                return if (answer.length > startIndex) answer.substring(startIndex) else null
-            }
+                if (answer.length > startIndex) answer.substring(startIndex) else null
+            } else fullDescription
         }
         strings.forEach {
             val keyIndex = it.indexOf(key)
