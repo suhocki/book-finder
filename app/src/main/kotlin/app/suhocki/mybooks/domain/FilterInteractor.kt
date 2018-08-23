@@ -124,7 +124,7 @@ class FilterInteractor @Inject constructor(
                     val searchEntity = items.find {
                         it is Search && it.hintRes == R.string.hint_search_author
                     }
-                    val indexToInsert = items.indexOf(searchEntity) + 1
+                    val indexToInsert = items.indexOf(searchEntity)
                     newList.add(indexToInsert, filterItem.apply {
                         isChecked = true
                         isCheckable = true
@@ -152,7 +152,7 @@ class FilterInteractor @Inject constructor(
                     val searchEntity = items.find {
                         it is Search && it.hintRes == R.string.hint_search_publisher
                     }
-                    val indexToInsert = items.indexOf(searchEntity) + 1
+                    val indexToInsert = items.indexOf(searchEntity)
                     newList.add(indexToInsert, filterItem.apply {
                         isChecked = true
                         isCheckable = true
