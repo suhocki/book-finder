@@ -38,9 +38,9 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         TAB_POSITION_INFO
     )
     private val navigationPositions = mapOf(
-        Ids.navSearch to TAB_POSITION_SEARCH,
-        Ids.navCatalog to TAB_POSITION_CATALOG,
-        Ids.navInfo to TAB_POSITION_INFO
+        R.id.nav_search to TAB_POSITION_SEARCH,
+        R.id.nav_catalog to TAB_POSITION_CATALOG,
+        R.id.nav_info to TAB_POSITION_INFO
     )
 
     @ProvidePresenter
