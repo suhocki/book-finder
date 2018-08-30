@@ -4,12 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import app.suhocki.mybooks.BuildConfig
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.Info
 import app.suhocki.mybooks.openCaller
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.openMap
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.changelog.ChangelogActivity
 import app.suhocki.mybooks.ui.info.listener.OnInfoClickListener
 import app.suhocki.mybooks.ui.licenses.LicensesActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
@@ -75,15 +77,15 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
 
             Info.InfoType.ADDRESS -> context!!.openMap(info.name)
 
-            Info.InfoType.ABOUT_DEVELOPER -> context!!.openLink(DEVELOPER_LINK)
+            Info.InfoType.ABOUT_DEVELOPER -> context!!.openLink(BuildConfig.ABOUT_DEVELOPER_URL)
 
             Info.InfoType.LICENSES -> startActivity<LicensesActivity>()
+
+            Info.InfoType.CHANGELOG -> startActivity<ChangelogActivity>()
         }
     }
 
     companion object {
-        private const val DEVELOPER_LINK = "https://www.linkedin.com/in/suhocki/"
-
         fun newInstance() = InfoFragment()
     }
 }

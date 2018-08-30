@@ -69,9 +69,11 @@
     <string name="address">Address:</string>
     <string name="about_developer">About developer</string>
     <string name="licences">Licences</string>
-    <string name="licenses_title">This application uses the list of libraries below:</string>
+    <string name="licenses_title">Libraries</string>
+    <string name="changelog_title">Versions of this application</string>
     <string name="about_this_application">About this application:</string>
     <string name="working_time">Working time:</string>
+    <string name="changelog">Changelog</string>
 
     <!--License names-->
     <string name="library_license_MIT">MIT</string>
@@ -82,4 +84,5 @@
     <string name="percent" translatable="false">" "(%d%%)</string>
 
     <string name="version">Version %s (%d)</string>
+    <string name="version_changelog">Version %s</string>
 </resources>

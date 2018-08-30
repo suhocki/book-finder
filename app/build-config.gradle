@@ -5,6 +5,8 @@ android {
         buildConfigField 'String', 'DOWNLOADED_FILE_NAME', "\"$downloadedFileName\""
         buildConfigField 'String', 'SHARED_PREFERENCES_FILE_NAME', "\"$sharedPreferencesFileName\""
         buildConfigField 'String', 'LICENSES_FILE_NAME', "\"$licensesFileName\""
+        buildConfigField 'String', 'CHANGELOG_FILE_NAME', "\"$changelogFileName\""
+        buildConfigField 'String', 'ABOUT_DEVELOPER_URL', "\"$aboutDeveloperUrl\""
     }
     flavorDimensions "default"
 }

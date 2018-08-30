@@ -68,10 +68,13 @@
     <string name="contacts">Контакты</string>
     <string name="address">Адрес:</string>
     <string name="licences">Лицензии</string>
-    <string name="licenses_title">Библиотеки, использованные в данном приложении:</string>
+    <string name="licenses_title">Библиотеки</string>
     <string name="about_developer">О разработчике</string>
     <string name="about_this_application">Об этом приложении:</string>
     <string name="working_time">Время работы:</string>
+    <string name="changelog_title">История версий</string>
+    <string name="changelog">Изменения</string>
+    <string name="version_changelog">Версия %s</string>
 
     <!--License names-->
     <string name="library_license_MIT">MIT</string>

@@ -1,0 +1,45 @@
+[
+  {
+    "version": "1.0.0",
+    "date": 1526676000,
+    "link": "https://drive.google.com/uc?id=0Bx61aXc5lH_aVlljMHZmamhGaHJ0ODdTdktPSE0wM2F4WjRz&export=download",
+    "changes": [
+      "• Реализован экран \"Каталог\"",
+      "• Реализован экран \"Книги по категории\"",
+      "• Реализован экран \"Детализация книги\""
+    ]
+  },
+  {
+    "version": "1.0.1",
+    "date": 1528695938,
+    "link": "https://drive.google.com/uc?id=0Bx61aXc5lH_aVXJaLXlFT2dic2R4RHY2RXBqZkdkWXVrLVQw&export=download",
+    "changes": [
+      "• Редизайн приложения."
+    ]
+  },
+  {
+    "version": "1.0.2",
+    "date": 1529905538,
+    "link": "https://drive.google.com/uc?id=1XsxmY3zqNgiSz1GnqOuaKU5A4YnKCfMu&export=download",
+    "changes": [
+      "• Добавлена боковая панель с фильтрами на экране \"Книги по категории\""
+    ]
+  },
+  {
+    "version": "1.0.3",
+    "date": 1535003138,
+    "link": "https://drive.google.com/uc?id=0Bx61aXc5lH_acUZVR1YxSFZNWVhyU3NkSmlfX1dBdEJMMW40&export=download",
+    "changes": [
+      "• Исправлен парсинг описания к книгам",
+      "• Реализован экран \"Фото книги\""
+    ]
+  },
+  {
+    "version": "1.0.4",
+    "date": 1535545156,
+    "link": "https://drive.google.com/uc?id=0Bx61aXc5lH_aVXJaLXlFT2dic2R4RHY2RXBqZkdkWXVrLVQw&export=download",
+    "changes": [
+      "• Фикс краша при нажатии на кнопки в боковом меню"
+    ]
+  }
+]

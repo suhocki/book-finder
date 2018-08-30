@@ -1,27 +1,26 @@
-package app.suhocki.mybooks.ui.licenses
+package app.suhocki.mybooks.ui.changelog
 
 import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
 import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
+import app.suhocki.mybooks.ui.books.BooksDiffCallback
 import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
-import app.suhocki.mybooks.ui.licenses.delegate.LicenseAdapterDelegate
+import app.suhocki.mybooks.ui.changelog.delegate.ChangelogAdapterDelegate
 import app.suhocki.mybooks.ui.changelog.listener.OnDownloadFileClickListener
-import app.suhocki.mybooks.ui.licenses.listener.OnLicenseClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
-
-class LicensesAdapter(
-    onLicenseClickListener: OnLicenseClickListener
-) : ListDelegationAdapter<MutableList<Any>>() {
+class ChangelogAdapter(
+    onDownloadFileClickListener: OnDownloadFileClickListener
+) :  ListDelegationAdapter<MutableList<Any>>() {
 
     private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
 
-    private val diffConfig by lazy { EndActionAsyncDifferConfig.Builder<Any>(LicenseDiffCallback()).build() }
+    private val diffConfig by lazy { EndActionAsyncDifferConfig.Builder<Any>(BooksDiffCallback()).build() }
 
     private val differ by lazy { EndActionAsyncListDiffer(listUpdateCallback, diffConfig) }
 
     init {
-        delegatesManager.addDelegate(LicenseAdapterDelegate(onLicenseClickListener))
+        delegatesManager.addDelegate(ChangelogAdapterDelegate(onDownloadFileClickListener))
         delegatesManager.addDelegate(HeaderAdapterDelegate())
     }
 

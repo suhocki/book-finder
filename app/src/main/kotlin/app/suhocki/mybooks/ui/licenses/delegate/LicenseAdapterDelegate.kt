@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.License
 import app.suhocki.mybooks.getHumanName
+import app.suhocki.mybooks.ui.changelog.listener.OnDownloadFileClickListener
 import app.suhocki.mybooks.ui.licenses.listener.OnLicenseClickListener
 import app.suhocki.mybooks.ui.licenses.ui.LicenseItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate

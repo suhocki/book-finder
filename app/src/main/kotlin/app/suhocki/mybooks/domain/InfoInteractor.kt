@@ -70,14 +70,19 @@ class InfoInteractor @Inject constructor(
             true
         ),
         InfoEntity(
-            Info.InfoType.ABOUT_DEVELOPER,
-            resourceManager.getString(R.string.about_developer),
-            iconRes = R.drawable.ic_developer
-        ),
-        InfoEntity(
             Info.InfoType.LICENSES,
             resourceManager.getString(R.string.licences),
             iconRes = R.drawable.ic_copyright
+        ),
+        InfoEntity(
+            Info.InfoType.CHANGELOG,
+            resourceManager.getString(R.string.changelog),
+            iconRes = R.drawable.ic_changelog
+        ),
+        InfoEntity(
+            Info.InfoType.ABOUT_DEVELOPER,
+            resourceManager.getString(R.string.about_developer),
+            iconRes = R.drawable.ic_developer
         ),
         VersionEntity(versionName, BuildConfig.VERSION_CODE)
     )

@@ -5,5 +5,5 @@ import app.suhocki.mybooks.domain.model.Header
 data class HeaderEntity(
     override var title: String,
     override val inverseColors: Boolean = true,
-    override val allCaps: Boolean = false
+    override val allCaps: Boolean = true
 ) : Header

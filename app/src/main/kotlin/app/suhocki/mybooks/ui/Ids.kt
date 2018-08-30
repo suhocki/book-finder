@@ -19,6 +19,8 @@ object Ids {
     @IdRes
     val recyclerLicenses = View.generateViewId()
     @IdRes
+    val recyclerChangelog = View.generateViewId()
+    @IdRes
     val mainContainer = View.generateViewId()
     @IdRes
     val bottomMenu = View.generateViewId()

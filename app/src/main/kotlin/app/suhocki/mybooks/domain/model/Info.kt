@@ -16,5 +16,6 @@ interface Info {
         ADDRESS,
         ABOUT_DEVELOPER,
         LICENSES,
+        CHANGELOG,
     }
 }
