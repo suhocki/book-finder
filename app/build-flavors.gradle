@@ -11,4 +11,21 @@ android {
         resValue "string", "VERSION", "\"$appVersionName\""
     }
     flavorDimensions "default"
+
+    android.variantFilter { variant ->
+        variant.getFlavors().each { flavor ->
+
+            def isProdDebug = variant.buildType.name == 'debug' &&
+                    flavor.name == 'minSdk15' &&
+                    flavor.dimension == 'default'
+
+            def isPreprodRelease = variant.buildType.name == 'release' &&
+                    flavor.name == 'minSdk23' &&
+                    flavor.dimension == 'default'
+
+            if (isProdDebug || isPreprodRelease) {
+                variant.setIgnore(true)
+            }
+        }
+    }
 }

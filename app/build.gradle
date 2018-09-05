@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply from: "$rootDir/common-methods.gradle"
-apply from: 'build-config.gradle'
+apply from: 'build-flavors.gradle'
 apply plugin: 'io.fabric'
 apply plugin: 'com.getkeepsafe.dexcount'
 
@@ -88,7 +88,6 @@ android {
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }
-    ignoreProductFlavor('minSdk23')
 }
 
 kotlin {

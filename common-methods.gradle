@@ -11,19 +11,6 @@ ext {
         "C:\\Users\\$userName\\GoogleDrive\\dev\\book-finder\\credentials\\"
     }
 
-    ignoreProductFlavor = { flavorName ->
-        android.variantFilter { variant ->
-            variant.getFlavors().each { flavor ->
-                println variant.buildType.name + " " + flavor.name + " " + flavor.dimension
-                if (variant.buildType.name == 'release' &&
-                        flavor.name == flavorName &&
-                        flavor.dimension == 'default') {
-                    variant.setIgnore(true)
-                }
-            }
-        }
-    }
-
     configureApkName = {
         android.applicationVariants.all { variant ->
             variant.outputs.all { output ->
