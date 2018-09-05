@@ -15,12 +15,13 @@ import app.suhocki.mybooks.data.repository.SharedPreferencesRepository
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.DatabaseFileName
 import app.suhocki.mybooks.di.SharedPreferencesFileName
-import app.suhocki.mybooks.di.VersionName
 import app.suhocki.mybooks.di.provider.SharedPreferencesProvider
+import app.suhocki.mybooks.di.provider.VersionProvider
 import app.suhocki.mybooks.di.provider.ads.BannerAdProvider
 import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
 import app.suhocki.mybooks.di.provider.database.*
 import app.suhocki.mybooks.domain.model.BannerAd
+import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.domain.repository.*
 import com.google.android.gms.ads.InterstitialAd
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -38,13 +39,9 @@ class AppModule(context: Context) : Module() {
             .withName(DatabaseFileName::class.java)
             .toInstance(BuildConfig.DATABASE_FILE_NAME)
 
-        bind(String::class.java)
-            .withName(VersionName::class.java)
-            .toInstance(
-                context.packageManager
-                    .getPackageInfo(context.packageName, 0)
-                    .versionName!!
-            )
+        bind(Version::class.java)
+            .toProvider(VersionProvider::class.java)
+            .providesSingletonInScope()
 
         bind(String::class.java)
             .withName(SharedPreferencesFileName::class.java)

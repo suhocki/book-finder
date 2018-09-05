@@ -1,29 +1,46 @@
 package app.suhocki.mybooks.ui.main
 
 import android.os.Bundle
+import android.support.design.internal.NavigationMenu
 import android.support.v4.widget.DrawerLayout
 import android.view.Gravity
+import android.view.MenuItem
+import app.suhocki.mybooks.BuildConfig
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.CatalogModule
+import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.hideKeyboard
+import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
+import app.suhocki.mybooks.ui.changelog.ChangelogActivity
 import app.suhocki.mybooks.ui.info.InfoFragment
+import app.suhocki.mybooks.ui.licenses.LicensesActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import org.jetbrains.anko.itemsSequence
 import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.startActivity
 import toothpick.Toothpick
+import javax.inject.Inject
 
 class MainActivity : MvpAppCompatActivity(), MainView,
     NavigationHandler {
 
     @InjectPresenter
     lateinit var presenter: MainPresenter
+
+    @Inject
+    lateinit var appVersion: Version
+
+    @Inject
+    lateinit var remoteConfiguration: RemoteConfiguration
 
     private val ui by lazy { MainUI() }
 
@@ -61,17 +78,39 @@ class MainActivity : MvpAppCompatActivity(), MainView,
             Toothpick.inject(this@MainActivity, this)
         }
         setContentView(this@MainActivity)
+        navigationView.inflateMenu(
+            if (remoteConfiguration.isAboutApplicationEnabled) R.menu.drawer_menu_with_about
+            else R.menu.drawer_menu
+        )
+
         navigationView.menu.getItem(TAB_POSITION_CATALOG).isChecked = true
-        navigationView.setNavigationItemSelectedListener { menuItem ->
-            val newPosition = navigationPositions[menuItem.itemId]!!
-            bottomBar.setCurrentItem(newPosition, true)
-            drawerLayout.closeDrawers()
-            false
+        (navigationView.menu as NavigationMenu).itemsSequence().forEach {
+            if (it.itemId == R.id.nav_version_number) {
+                it.title = getString(R.string.version, appVersion.version, appVersion.code)
+            }
         }
+        navigationView.setNavigationItemSelectedListener { onDrawerItemClick(it) }
         bottomBar.setOnTabSelectedListener { position, wasSelected ->
             handleNavigationClick(position, wasSelected)
         }
         initFragments(savedInstanceState)
+    }
+
+    private fun MainUI.onDrawerItemClick(menuItem: MenuItem): Boolean {
+        when (menuItem.itemId) {
+            R.id.nav_about_developer -> openLink(BuildConfig.ABOUT_DEVELOPER_URL)
+
+            R.id.nav_licenses -> startActivity<LicensesActivity>()
+
+            R.id.nav_changes -> startActivity<ChangelogActivity>()
+
+            else -> {
+                val newPosition = navigationPositions[menuItem.itemId]!!
+                bottomBar.setCurrentItem(newPosition, true)
+                drawerLayout.closeDrawers()
+            }
+        }
+        return false
     }
 
     override fun onPause() {

@@ -29,9 +29,7 @@ ext {
             variant.outputs.all { output ->
                 def outputFile = output.outputFile
                 if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                    def buildTypeName = variant.buildType.name.toLowerCase()
-                    outputFileName = "mybooks_${variant.versionName}_${buildTypeName}.apk"
-                            .replace("_release.apk", ".apk")
+                    outputFileName = "mybooks_${variant.versionName}.apk"
                 }
             }
         }

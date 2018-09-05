@@ -17,12 +17,13 @@ class RemoteConfiguration @Inject constructor(
         get() = remoteConfig.getBoolean(KEY_BANNER_AD_ENABLED)
 
     val isAboutApplicationEnabled
-        get() = BuildConfig.DEBUG || remoteConfig.getBoolean(KEY_ABOUT_APPLICATION_ENABLED)
+        get() = remoteConfig.getBoolean(KEY_ABOUT_APPLICATION_ENABLED)
 
     private val defaults by lazy {
         mutableMapOf<String, Any>(
             KEY_ADS_ENABLED to false,
-            KEY_ABOUT_APPLICATION_ENABLED to false
+            KEY_BANNER_AD_ENABLED to false,
+            KEY_ABOUT_APPLICATION_ENABLED to true
         )
     }
 

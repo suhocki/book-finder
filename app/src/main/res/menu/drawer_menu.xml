@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <group android:checkableBehavior="single">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
         <item
             android:id="@+id/nav_catalog"
             android:icon="@drawable/ic_books"
@@ -14,4 +16,5 @@
             android:icon="@drawable/ic_info"
             android:title="@string/info" />
     </group>
+
 </menu>

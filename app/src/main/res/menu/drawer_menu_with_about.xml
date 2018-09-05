@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_catalog"
+            android:icon="@drawable/ic_books"
+            android:title="@string/catalog" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_search"
+            android:title="@string/search" />
+        <item
+            android:id="@+id/nav_info"
+            android:icon="@drawable/ic_info"
+            android:title="@string/info" />
+    </group>
+
+    <group android:id="@+id/menu_bottom">
+        <item
+            android:id="@+id/nav_licenses"
+            android:title="@string/licences" />
+        <item
+            android:id="@+id/nav_changes"
+            android:title="@string/changelog" />
+        <item
+            android:id="@+id/nav_about_developer"
+            android:title="@string/about_developer" />
+        <item
+            android:id="@+id/nav_version_number"
+            android:enabled="false"
+            android:title="" />
+    </group>
+
+</menu>

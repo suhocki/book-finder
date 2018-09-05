@@ -37,7 +37,7 @@ class MainUI : AnkoComponent<MainActivity> {
                 bottomNavigation {
                     bottomBar = this
                     id = Ids.bottomMenu
-                    AHBottomNavigationAdapter(owner, R.menu.app_menu).apply {
+                    AHBottomNavigationAdapter(owner, R.menu.bottom_menu).apply {
                         setupWithBottomNavigation(this@bottomNavigation)
                     }
                     titleState = AHBottomNavigation.TitleState.ALWAYS_SHOW
@@ -57,7 +57,6 @@ class MainUI : AnkoComponent<MainActivity> {
             navigationView {
                 navigationView = this
                 fitsSystemWindows = false
-                inflateMenu(R.menu.app_menu)
 
                 object : AnkoComponent<Context> {
                     override fun createView(ui: AnkoContext<Context>): View = with(ui) {
@@ -68,7 +67,7 @@ class MainUI : AnkoComponent<MainActivity> {
                                 .lparams { gravity = Gravity.CENTER }
                         }
                     }
-                }.createView(AnkoContext.Companion.create(ctx))
+                }.createView(AnkoContext.create(ctx))
                     .let { addHeaderView(it) }
             }.lparams(wrapContent, matchParent) {
                 gravity = Gravity.START

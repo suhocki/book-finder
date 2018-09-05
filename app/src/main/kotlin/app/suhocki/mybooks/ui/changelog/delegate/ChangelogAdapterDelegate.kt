@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.changelog.delegate
 
 import android.support.v7.widget.RecyclerView
+import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.Changelog
@@ -40,15 +41,21 @@ class ChangelogAdapterDelegate(
         init {
             ui.download.setOnClickListener {
                 val url = changelog.link
-                onDownloadFileClickListener.onDownloadFile(url)
+                url?.let { onDownloadFileClickListener.onDownloadFile(url) }
             }
         }
 
         fun bind(changelog: Changelog) {
             this.changelog = changelog
-            ui.version.text = formatter.format(Date(changelog.date * 1000L))
-            ui.date.text = ui.parent.resources.getString(R.string.version_changelog, changelog.version)
-            ui.setChanges(changelog.changes)
+            with(ui) {
+                version.text = formatter.format(Date(changelog.date * 1000L))
+                date.text =
+                        ui.parent.resources.getString(R.string.version_changelog, changelog.version)
+                setChanges(changelog.changes)
+                download.visibility =
+                        if (changelog.link == null) View.GONE
+                        else View.VISIBLE
+            }
         }
     }
 

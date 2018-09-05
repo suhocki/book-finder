@@ -68,9 +68,10 @@
     <string name="contacts">Contacts</string>
     <string name="address">Address:</string>
     <string name="about_developer">About developer</string>
+    <string name="about">About</string>
     <string name="licences">Licences</string>
     <string name="licenses_title">Libraries</string>
-    <string name="changelog_title">Versions of this application</string>
+    <string name="changelog_title">Version history</string>
     <string name="about_this_application">About this application:</string>
     <string name="working_time">Working time:</string>
     <string name="changelog">Changelog</string>
