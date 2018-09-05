@@ -45,8 +45,16 @@
   {
     "version": "1.0.5",
     "date": 1536123014,
+    "link": "https://drive.google.com/uc?id=1fYqqhwC2b3oDmb5RmaX5bG9Y-0O0N8zv&export=download",
     "changes": [
       "• Реализован экран \"Список изменений\""
+    ]
+  },
+  {
+    "version": "1.0.6",
+    "date": 1536131068,
+    "changes": [
+      "• Исправлено фоновое поведение после успешной загрузки базы данных"
     ]
   }
 ]

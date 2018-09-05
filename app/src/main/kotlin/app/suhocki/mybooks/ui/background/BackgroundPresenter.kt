@@ -52,6 +52,7 @@ class BackgroundPresenter @Inject constructor(
         interactor.saveInfosData(xlsDocument.infosData)
         interactor.saveBannersData(xlsDocument.bannersData)
         val statistics = interactor.getBooksAndCategoriesCount()
+        interactor.setDatabaseLoaded()
         interactor.setDownloadStatistics(statistics)
         componentNotifier.onLoadingComplete(statistics)
         componentNotifier.removeListener(this@BackgroundPresenter)
