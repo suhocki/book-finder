@@ -15,10 +15,17 @@ ext {
         android.applicationVariants.all { variant ->
             variant.outputs.all { output ->
                 def outputFile = output.outputFile
+                if (currentBranchName == "master") branch = ""
+                else branch = "_${currentBranchName}"
+
                 if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                    outputFileName = "mybooks_${variant.versionName}.apk"
+                    outputFileName = "mybooks_${variant.versionName}${branch}.apk"
                 }
             }
         }
     }
+
+    currentBranchCommitCount = "git rev-list HEAD --count".execute().text.toInteger()
+
+    currentBranchName = "git rev-parse --abbrev-ref HEAD".execute().text.trim().replace('/', '\\')
 }

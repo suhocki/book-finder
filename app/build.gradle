@@ -60,13 +60,14 @@ android {
         release {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            versionNameSuffix ".${currentBranchCommitCount}"
             shrinkResources true
             minifyEnabled true
             debuggable false
         }
         debug {
             applicationIdSuffix ".debug"
-            versionNameSuffix "-debug"
+            versionNameSuffix ".${currentBranchCommitCount}-debug"
             debuggable true
         }
     }
@@ -160,9 +161,10 @@ dependencies {
             "com.google.firebase:firebase-ads:$firebase_ads_version",
             "com.google.firebase:firebase-config:$firebase_config_version",
     )
-    implementation('com.crashlytics.sdk.android:crashlytics:2.9.2@aar') {
-        transitive = true
-    }
+    implementation(
+            //Crash logging
+            "com.crashlytics.sdk.android:crashlytics:2.9.2@aar"
+    ) { transitive = true }
     debugImplementation(
             "com.squareup.leakcanary:leakcanary-android:$leakcanary_version",
             "com.facebook.stetho:stetho:$stetho_version",
