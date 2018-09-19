@@ -40,6 +40,9 @@ class CatalogAdapter(
         differ.currentList.size
 
     fun submitList(list: List<Any>, onAnimationEnd: () -> Unit) {
+        if (items != null && items.size == list.size && items.containsAll(list)) {
+            return
+        }
         listUpdateCallback.endAction = onAnimationEnd
         mutableListOf<Any>().apply {
             addAll(list)

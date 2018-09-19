@@ -39,9 +39,8 @@ data class CategoryEntity(
     }
 
     override fun equals(other: Any?): Boolean {
-        if (other == null) return false
-        if (other == this) return true
         if (other !is Category) return false
+        if (System.identityHashCode(other) == System.identityHashCode(this)) return true
         return other.name == name
     }
 

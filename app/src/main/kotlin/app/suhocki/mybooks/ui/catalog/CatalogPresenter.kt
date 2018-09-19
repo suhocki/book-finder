@@ -26,8 +26,8 @@ class CatalogPresenter @Inject constructor(
     private val resourceManager: ResourceManager,
     private val adsManager: AdsManager,
     private val errorHandler: ErrorHandler,
-    @SearchAll private val searchEntity: Search,
     private val header: Header,
+    @SearchAll private val searchEntity: Search,
     @SearchDecoration private val searchDecoration: RecyclerView.ItemDecoration,
     @CategoriesDecoration private val categoriesDecoration: RecyclerView.ItemDecoration
 ) : MvpPresenter<CatalogView>(), AnkoLogger {
@@ -86,6 +86,17 @@ class CatalogPresenter @Inject constructor(
             }
         }
 
+    fun removeScrollCommand(
+        catalogItems: List<Any>,
+        itemDecoration: RecyclerView.ItemDecoration?
+    ) {
+        viewState.showCatalogItems(
+            catalogItems,
+            itemDecoration,
+            CatalogFragment.UNDEFINED_POSITION
+        )
+    }
+
     fun search() = doAsync(errorHandler.errorReceiver) {
         if (searchEntity.searchQuery.isBlank()) return@doAsync
         val catalogItems = mutableListOf<Any>().apply {
@@ -133,7 +144,8 @@ class CatalogPresenter @Inject constructor(
 
     fun onBuyBookClicked(book: BookEntity) {
         if (adsManager.isInterstitialAdLoading ||
-            adsManager.isInterstitialAdLoaded) {
+            adsManager.isInterstitialAdLoaded
+        ) {
             adsManager.onAdFlowFinished {
                 adsManager.loadInterstitialAd()
                 viewState.openBookWebsite(book)

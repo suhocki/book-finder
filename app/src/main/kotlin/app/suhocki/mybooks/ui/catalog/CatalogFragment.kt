@@ -102,38 +102,37 @@ class CatalogFragment : BaseFragment(), CatalogView,
         itemDecoration: RecyclerView.ItemDecoration?,
         scrollToPosition: Int,
         updateSearchView: Boolean
-    ) {
-        ui.recyclerView.stopScroll()
-        adapter.submitList(catalogItems, onAnimationEnd = {
-            with(ui.recyclerView) {
-                when (scrollToPosition) {
-                    SEARCH_POSITION -> {
-                        itemDecoration?.let { showRecyclerDecoration(it) }
-                        (layoutManager as LinearLayoutManager)
-                            .scrollToPositionWithOffset(SEARCH_POSITION, 0)
+    ) = adapter.submitList(catalogItems, onAnimationEnd = {
+        with(ui.recyclerView) {
+            when (scrollToPosition) {
+                SEARCH_POSITION -> {
+                    itemDecoration?.let { showRecyclerDecoration(it) }
+                    (layoutManager as LinearLayoutManager)
+                        .scrollToPositionWithOffset(SEARCH_POSITION, 0)
+                    showKeyboard()
+                    presenter.removeScrollCommand(catalogItems, itemDecoration)
+                }
+
+                BANNER_POSITION -> {
+                    Timer().schedule(200) {
+                        onUiThread { itemDecoration?.let { showRecyclerDecoration(it) } }
+                    }
+                    if (updateSearchView) {
+                        showBlankSearch()
                         showKeyboard()
                     }
+                    scrollToPosition(BANNER_POSITION)
+                    presenter.removeScrollCommand(catalogItems, itemDecoration)
+                }
 
-                    BANNER_POSITION -> {
-                        Timer().schedule(200) {
-                            onUiThread { itemDecoration?.let { showRecyclerDecoration(it) } }
-                        }
-                        if (updateSearchView) {
-                            showBlankSearch()
-                            showKeyboard()
-                        }
-                        scrollToPosition(BANNER_POSITION)
-                    }
-
-                    else -> with(ui.recyclerView) {
-                        Timer().schedule(200) {
-                            onUiThread { itemDecoration?.let { showRecyclerDecoration(it) } }
-                        }
+                else -> with(ui.recyclerView) {
+                    Timer().schedule(200) {
+                        onUiThread { itemDecoration?.let { showRecyclerDecoration(it) } }
                     }
                 }
             }
-        })
-    }
+        }
+    })
 
     override fun showSearchMode(expanded: Boolean) {
         ui.recyclerView.stopScroll()
@@ -175,6 +174,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
     override fun onExpandSearchClick() {
         animateToolbarNavigationButton(true)
         with(ui) {
+            recyclerView.stopScroll()
             setGone(search)
             setVisible(close)
         }

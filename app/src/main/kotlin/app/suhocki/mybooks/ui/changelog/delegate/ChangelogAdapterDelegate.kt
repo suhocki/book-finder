@@ -53,7 +53,7 @@ class ChangelogAdapterDelegate(
                         ui.parent.resources.getString(R.string.version_changelog, changelog.version)
                 setChanges(changelog.changes)
                 download.visibility =
-                        if (changelog.link == null) View.GONE
+                        if (changelog.link == null) View.INVISIBLE
                         else View.VISIBLE
             }
         }
