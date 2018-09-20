@@ -59,9 +59,8 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     @ProvidePresenter
     fun providePresenter(): CatalogPresenter =
-        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE).apply {
-            installModules(CatalogModule(activity!!))
-        }.getInstance(CatalogPresenter::class.java)
+        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE)
+            .getInstance(CatalogPresenter::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -194,6 +193,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun onClearSearchClick() {
+        ui.recyclerView.stopScroll()
         presenter.clearSearchQuery()
     }
 

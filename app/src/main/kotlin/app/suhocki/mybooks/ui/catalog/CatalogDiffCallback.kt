@@ -15,7 +15,7 @@ internal class CatalogDiffCallback : EndActionDiffUtil.ItemCallback<Any>() {
 
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
         return if (oldItem is Category && newItem is Category) oldItem.name == newItem.name
-        else if (oldItem is Header && newItem is Header) false
-        else true
+        else if (oldItem is Header && newItem is Header) oldItem.title == newItem.title
+        else !(oldItem is Header && newItem is Header)
     }
 }

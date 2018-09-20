@@ -1,45 +1,37 @@
 package app.suhocki.mybooks.di.module
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.CategoriesDecoration
 import app.suhocki.mybooks.di.SearchAll
 import app.suhocki.mybooks.di.SearchDecoration
-import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.decorator.SearchItemDecoration
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
-import org.jetbrains.anko.dimen
-import org.jetbrains.anko.dip
 import toothpick.config.Module
 
-class CatalogModule(context: Context) : Module() {
+class CatalogModule(
+    categoriesDividerOffset: Int,
+    searchDividerOffset: Int
+) : Module() {
     init {
         bind(Search::class.java)
             .withName(SearchAll::class.java)
             .toInstance(SearchEntity(R.string.hint_search))
 
-        bind(Header::class.java).toInstance(
-            object : Header {
-                override val inverseColors = false
-                override var title = context.getString(R.string.catalog)
-                override val allCaps = true
-            })
-
         bind(RecyclerView.ItemDecoration::class.java)
             .withName(CategoriesDecoration::class.java)
             .toInstance(
                 DividerItemDecoration(
-                    context.dimen(R.dimen.height_divider_decorator),
+                    categoriesDividerOffset,
                     CatalogFragment.CATEGORY_POSITION
                 )
             )
 
         bind(RecyclerView.ItemDecoration::class.java)
             .withName(SearchDecoration::class.java)
-            .toInstance(SearchItemDecoration(context.dip(4)))
+            .toInstance(SearchItemDecoration(searchDividerOffset))
     }
 
     internal class SearchEntity(

@@ -24,9 +24,7 @@ import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.jetbrains.anko.itemsSequence
-import org.jetbrains.anko.setContentView
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.*
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -63,7 +61,8 @@ class MainActivity : MvpAppCompatActivity(), MainView,
     @ProvidePresenter
     fun providePresenter(): MainPresenter =
         Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE).apply {
-            installModules(CatalogModule(this@MainActivity))
+            val catalogModule = CatalogModule(dimen(R.dimen.height_divider_decorator), dip(4))
+            installModules(catalogModule)
         }.getInstance(MainPresenter::class.java)
 
 

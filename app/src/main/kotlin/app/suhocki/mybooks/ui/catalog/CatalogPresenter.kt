@@ -9,9 +9,9 @@ import app.suhocki.mybooks.di.CategoriesDecoration
 import app.suhocki.mybooks.di.SearchAll
 import app.suhocki.mybooks.di.SearchDecoration
 import app.suhocki.mybooks.domain.CatalogInteractor
-import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.catalog.entity.HeaderEntity
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.AnkoLogger
@@ -26,7 +26,6 @@ class CatalogPresenter @Inject constructor(
     private val resourceManager: ResourceManager,
     private val adsManager: AdsManager,
     private val errorHandler: ErrorHandler,
-    private val header: Header,
     @SearchAll private val searchEntity: Search,
     @SearchDecoration private val searchDecoration: RecyclerView.ItemDecoration,
     @CategoriesDecoration private val categoriesDecoration: RecyclerView.ItemDecoration
@@ -37,7 +36,7 @@ class CatalogPresenter @Inject constructor(
         doAsync(errorHandler.errorReceiver) {
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
-                add(header)
+                add(HeaderEntity(title = resourceManager.getString(R.string.catalog)))
                 addAll(interactor.getCategories())
             }
             uiThread {
@@ -56,7 +55,7 @@ class CatalogPresenter @Inject constructor(
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
                 add(searchEntity)
-                add(header.apply { title = resourceManager.getString(R.string.enter_query) })
+                add(HeaderEntity(title = resourceManager.getString(R.string.enter_query)))
             }
             uiThread {
                 viewState.showSearchMode(true)
@@ -73,7 +72,7 @@ class CatalogPresenter @Inject constructor(
             searchEntity.searchQuery = EMPTY_STRING
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
-                add(header.apply { title = resourceManager.getString(R.string.catalog) })
+                add(HeaderEntity(title = resourceManager.getString(R.string.catalog)))
                 addAll(interactor.getCategories())
             }
             uiThread {
@@ -102,13 +101,13 @@ class CatalogPresenter @Inject constructor(
         val catalogItems = mutableListOf<Any>().apply {
             add(interactor.getBanner())
             add(searchEntity)
-            add(header.apply { title = resourceManager.getString(R.string.search_results) })
-            addAll(interactor.search(searchEntity).apply {
-                header.title = resourceManager.getString(
-                    if (size > 0) R.string.search_results
-                    else R.string.not_found
-                )
-            })
+            val searchResults = interactor.search(searchEntity)
+            val title = resourceManager.getString(
+                if (searchResults.isNotEmpty()) R.string.search_results
+                else R.string.not_found
+            )
+            add(HeaderEntity(title = title))
+            addAll(searchResults)
         }
         uiThread {
             viewState.showCatalogItems(
@@ -125,7 +124,7 @@ class CatalogPresenter @Inject constructor(
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
                 add(searchEntity)
-                add(header.apply { title = resourceManager.getString(R.string.enter_query) })
+                add(HeaderEntity(title = resourceManager.getString(R.string.enter_query)))
             }
             searchEntity.searchQuery = EMPTY_STRING
             uiThread {
