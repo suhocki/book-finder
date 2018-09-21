@@ -5,6 +5,7 @@ import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.domain.model.Info
 import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.domain.repository.InfoRepository
+import app.suhocki.mybooks.domain.repository.SettingsRepository
 import app.suhocki.mybooks.ui.info.entity.ContactEntity
 import app.suhocki.mybooks.ui.info.entity.HeaderEntity
 import app.suhocki.mybooks.ui.info.entity.InfoEntity
@@ -12,9 +13,15 @@ import javax.inject.Inject
 
 class InfoInteractor @Inject constructor(
     private val infoRepository: InfoRepository,
+    private val settingsRepository: SettingsRepository,
     private val resourceManager: ResourceManager,
     private val appVersion: Version
 ) {
+
+    fun toogleAdminMode(): Boolean {
+        settingsRepository.isAdminModeEnabled = !settingsRepository.isAdminModeEnabled
+        return settingsRepository.isAdminModeEnabled
+    }
 
     fun getHeaderOrganization() =
         infoRepository.getOrganizationName()

@@ -14,6 +14,7 @@
     <string name="saving">Сохранение</string>
     <string name="unzipping">Извлечение из архива</string>
     <string name="info">Инфо</string>
+    <string name="admin">Админ</string>
     <string name="information">Информация</string>
     <string name="filter">Фильтр</string>
     <string name="success">Загрузка завершена</string>
@@ -76,6 +77,8 @@
     <string name="changelog_title">История версий</string>
     <string name="changelog">Изменения</string>
     <string name="version_changelog">Версия %s</string>
+    <string name="admin_mode_enabled">Режим администратора активирован</string>
+    <string name="admin_mode_disabled">Режим администратора отключён</string>
 
     <!--License names-->
     <string name="library_license_MIT">MIT</string>

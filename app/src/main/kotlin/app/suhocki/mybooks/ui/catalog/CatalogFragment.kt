@@ -26,11 +26,10 @@ import app.suhocki.mybooks.ui.details.DetailsActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.jetbrains.anko.AnkoContext
-import org.jetbrains.anko.dimen
-import org.jetbrains.anko.padding
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.ctx
+import org.jetbrains.anko.support.v4.dimen
+import org.jetbrains.anko.support.v4.dip
 import org.jetbrains.anko.support.v4.onUiThread
 import toothpick.Toothpick
 import java.util.*
@@ -58,9 +57,14 @@ class CatalogFragment : BaseFragment(), CatalogView,
     lateinit var presenter: CatalogPresenter
 
     @ProvidePresenter
-    fun providePresenter(): CatalogPresenter =
-        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE)
-            .getInstance(CatalogPresenter::class.java)
+    fun providePresenter(): CatalogPresenter {
+        val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE)
+        val catalogModule = CatalogModule(dimen(R.dimen.height_divider_decorator), dip(4))
+        scope.installModules(catalogModule)
+
+        return scope.getInstance(CatalogPresenter::class.java)
+
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,

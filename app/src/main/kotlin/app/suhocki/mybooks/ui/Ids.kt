@@ -36,4 +36,6 @@ object Ids {
     val navSearch = View.generateViewId()
     @IdRes
     val navInfo = View.generateViewId()
+    @IdRes
+    val navAdmin = View.generateViewId()
 }

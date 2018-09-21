@@ -14,6 +14,7 @@
     <string name="unzipping">Unzipping</string>
     <string name="filter">Filter</string>
     <string name="info">Info</string>
+    <string name="admin">Admin</string>
     <string name="information">Information</string>
     <string name="success">Success!</string>
     <string name="downloading_statistics">Information about %1$d books from %2$d categories was saved successfully.</string>
@@ -75,6 +76,8 @@
     <string name="about_this_application">About this application:</string>
     <string name="working_time">Working time:</string>
     <string name="changelog">Changelog</string>
+    <string name="admin_mode_enabled">Admin mode enabled</string>
+    <string name="admin_mode_disabled">Admin mode disabled</string>
 
     <!--License names-->
     <string name="library_license_MIT">MIT</string>

@@ -19,8 +19,8 @@ class InfoPresenter @Inject constructor(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         doAsync(errorHandler.errorReceiver) {
-            val items = mutableListOf<Any>().apply {
 
+            val items = mutableListOf<Any>().apply {
                 add(infoInteractor.getHeaderOrganization())
                 addAll(infoInteractor.getContacts())
                 add(infoInteractor.getHeaderAddress())
@@ -36,5 +36,10 @@ class InfoPresenter @Inject constructor(
                 viewState.showInfoItems(items)
             }
         }
+    }
+
+    fun toogleAdminMode() {
+        val mode = infoInteractor.toogleAdminMode()
+        viewState.showAdminMode(mode)
     }
 }

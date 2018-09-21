@@ -11,6 +11,7 @@ import app.suhocki.mybooks.openCaller
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.openMap
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.listener.AdminModeEnabler
 import app.suhocki.mybooks.ui.changelog.ChangelogActivity
 import app.suhocki.mybooks.ui.info.listener.OnInfoClickListener
 import app.suhocki.mybooks.ui.licenses.LicensesActivity
@@ -29,7 +30,7 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
     private val ui by lazy { InfoUI<InfoFragment>() }
 
     private val adapter by lazy {
-        InfoAdapter(this)
+        InfoAdapter(this, presenter::toogleAdminMode)
     }
 
     @InjectPresenter
@@ -84,6 +85,9 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
             Info.InfoType.CHANGELOG -> startActivity<ChangelogActivity>()
         }
     }
+
+    override fun showAdminMode(enabled: Boolean) =
+        (activity as AdminModeEnabler).toogleAdminMode(enabled, true)
 
     companion object {
         fun newInstance() = InfoFragment()

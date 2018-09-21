@@ -45,9 +45,6 @@ class MainUI : AnkoComponent<MainActivity> {
                     accentColor = context.color(R.color.colorWhite)
                     inactiveColor = context.color(R.color.colorGray)
                     isBehaviorTranslationEnabled = true
-                    owner.inLandscape {
-                        titleState = AHBottomNavigation.TitleState.ALWAYS_HIDE
-                    }
                 }.lparams(matchParent, dimenAttr(R.attr.actionBarSize)) {
                     gravity = Gravity.BOTTOM
                 }

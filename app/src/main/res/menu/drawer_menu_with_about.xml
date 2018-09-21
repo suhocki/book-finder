@@ -15,6 +15,10 @@
             android:id="@+id/nav_info"
             android:icon="@drawable/ic_info"
             android:title="@string/info" />
+        <item
+            android:id="@+id/nav_admin"
+            android:icon="@drawable/ic_admin"
+            android:title="@string/admin" />
     </group>
 
     <group android:id="@+id/menu_bottom">
@@ -29,7 +33,6 @@
             android:title="@string/about_developer" />
         <item
             android:id="@+id/nav_version_number"
-            android:enabled="false"
             android:title="" />
     </group>
 

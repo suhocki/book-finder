@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.info.ui
 
 import android.graphics.Color
+import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
@@ -26,9 +27,10 @@ class VersionItemUI : AnkoComponent<ViewGroup> {
             textView {
                 versionName = this
                 gravity = Gravity.CENTER
-                textAppearance = R.style.TextAppearance_AppCompat_Caption
+                textColorResource = R.color.colorDarkGray
+                typeface = Typeface.DEFAULT_BOLD
+                setPadding(0, 0, 0, dip(16))
             }.lparams(matchParent, matchParent) {
-                bottomMargin = dip(16)
             }
         }.apply {
             rootView.layoutParams = RecyclerView.LayoutParams(

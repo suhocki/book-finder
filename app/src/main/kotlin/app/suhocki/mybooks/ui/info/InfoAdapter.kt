@@ -10,7 +10,8 @@ import app.suhocki.mybooks.ui.info.listener.OnInfoClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 class InfoAdapter(
-    onInfoClickListener: OnInfoClickListener
+    onInfoClickListener: OnInfoClickListener,
+    onVersionLongClick: () -> Unit
 ) : ListDelegationAdapter<MutableList<Any>>() {
 
     private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this) }
@@ -25,7 +26,7 @@ class InfoAdapter(
         delegatesManager
             .addDelegate(HeaderAdapterDelegate())
             .addDelegate(InfoAdapterDelegate(onInfoClickListener))
-            .addDelegate(VersionAdapterDelegate())
+            .addDelegate(VersionAdapterDelegate(onVersionLongClick))
     }
 
     override fun getItemCount(): Int =

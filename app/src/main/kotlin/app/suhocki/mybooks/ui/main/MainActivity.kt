@@ -1,20 +1,21 @@
 package app.suhocki.mybooks.ui.main
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.design.internal.NavigationMenu
+import android.support.design.internal.NavigationMenuItemView
 import android.support.v4.widget.DrawerLayout
-import android.view.Gravity
-import android.view.MenuItem
+import android.view.*
 import app.suhocki.mybooks.BuildConfig
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.di.module.CatalogModule
 import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.listener.AdminModeEnabler
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.changelog.ChangelogActivity
@@ -24,12 +25,17 @@ import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import org.jetbrains.anko.*
+import org.jetbrains.anko.sdk25.coroutines.onLongClick
 import toothpick.Toothpick
 import javax.inject.Inject
+import android.content.res.ColorStateList
+import android.support.v4.content.res.ResourcesCompat
+
 
 class MainActivity : MvpAppCompatActivity(), MainView,
-    NavigationHandler {
+    NavigationHandler, AdminModeEnabler {
 
     @InjectPresenter
     lateinit var presenter: MainPresenter
@@ -43,27 +49,39 @@ class MainActivity : MvpAppCompatActivity(), MainView,
     private val ui by lazy { MainUI() }
 
     private lateinit var tabs: HashMap<String, BaseFragment>
+
     private val tabKeys = listOf(
         tabIdToTag(Ids.navCatalog),
         tabIdToTag(Ids.navSearch),
-        tabIdToTag(Ids.navInfo)
+        tabIdToTag(Ids.navInfo),
+        tabIdToTag(Ids.navAdmin)
     )
+
     private val fragmentTabPositions = arrayOf(
         TAB_POSITION_CATALOG,
-        TAB_POSITION_INFO
+        TAB_POSITION_INFO,
+        TAB_POSITION_ADMIN
     )
+
     private val navigationPositions = mapOf(
         R.id.nav_search to TAB_POSITION_SEARCH,
         R.id.nav_catalog to TAB_POSITION_CATALOG,
-        R.id.nav_info to TAB_POSITION_INFO
+        R.id.nav_info to TAB_POSITION_INFO,
+        R.id.nav_admin to TAB_POSITION_ADMIN
     )
+
+    private val onToogleAdminMode = View.OnLongClickListener {
+        it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+        presenter.toogleAdminMode()
+        true
+    }
+
+    private lateinit var versionNavDrawerView: View
 
     @ProvidePresenter
     fun providePresenter(): MainPresenter =
-        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE).apply {
-            val catalogModule = CatalogModule(dimen(R.dimen.height_divider_decorator), dip(4))
-            installModules(catalogModule)
-        }.getInstance(MainPresenter::class.java)
+        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE)
+            .getInstance(MainPresenter::class.java)
 
 
     override fun onDestroy() {
@@ -81,7 +99,6 @@ class MainActivity : MvpAppCompatActivity(), MainView,
             if (remoteConfiguration.isAboutApplicationEnabled) R.menu.drawer_menu_with_about
             else R.menu.drawer_menu
         )
-
         navigationView.menu.getItem(TAB_POSITION_CATALOG).isChecked = true
         (navigationView.menu as NavigationMenu).itemsSequence().forEach {
             if (it.itemId == R.id.nav_version_number) {
@@ -97,6 +114,8 @@ class MainActivity : MvpAppCompatActivity(), MainView,
 
     private fun MainUI.onDrawerItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
+            R.id.nav_version_number -> setVersionLongClickListener()
+
             R.id.nav_about_developer -> openLink(BuildConfig.ABOUT_DEVELOPER_URL)
 
             R.id.nav_licenses -> startActivity<LicensesActivity>()
@@ -109,6 +128,7 @@ class MainActivity : MvpAppCompatActivity(), MainView,
                 drawerLayout.closeDrawers()
             }
         }
+        setVersionLongClickListener()
         return false
     }
 
@@ -121,6 +141,7 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         if (!wasSelected) {
             if (position in fragmentTabPositions) {
                 ui.navigationView.menu.getItem(position).isChecked = true
+                setVersionLongClickListener()
                 showTab(position, ui.bottomBar.currentItem)
                 return true
             } else {
@@ -228,9 +249,49 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         }
     }
 
+    override fun toogleAdminMode(enabled: Boolean, withToast: Boolean) {
+        if (enabled) {
+            if (withToast) toast(R.string.admin_mode_enabled)
+            ui.bottomBar.addItem(AHBottomNavigationItem(R.string.admin, R.drawable.ic_admin, 0))
+            ui.bottomBar.restoreBottomNavigation()
+            ui.navigationView.menu.getItem(TAB_POSITION_ADMIN).isVisible = true
+        } else {
+            if (withToast) toast(R.string.admin_mode_disabled)
+            ui.bottomBar.removeItemAtIndex(TAB_POSITION_ADMIN)
+            ui.navigationView.menu.getItem(TAB_POSITION_ADMIN).isVisible = false
+        }
+        setVersionLongClickListener()
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun setVersionLongClickListener() {
+        ui.navigationView.post {
+            (ui.navigationView.childrenSequence().first { it is ViewGroup } as ViewGroup)
+                .childrenSequence().first {
+                    it is ViewGroup && it is NavigationMenuItemView &&
+                            it.itemData.itemId == R.id.nav_version_number
+                }.apply {
+                    if (::versionNavDrawerView.isInitialized)
+                        versionNavDrawerView.setOnLongClickListener(null)
+
+                    val textColor = ColorStateList.valueOf(
+                        ResourcesCompat.getColor(resources, R.color.colorDarkGray, theme)
+                    )
+                    (this as NavigationMenuItemView).setTextColor(textColor)
+                    versionNavDrawerView = this
+                    setOnLongClickListener(onToogleAdminMode)
+                }
+        }
+    }
+
+    override fun showAdminMode(enabled: Boolean, withToast: Boolean) {
+        toogleAdminMode(enabled, withToast)
+    }
+
     companion object {
         private const val TAB_POSITION_CATALOG = 0
         private const val TAB_POSITION_SEARCH = 1
         private const val TAB_POSITION_INFO = 2
+        private const val TAB_POSITION_ADMIN = 3
     }
 }

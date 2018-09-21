@@ -7,4 +7,6 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface InfoView : MvpView {
     fun showInfoItems(items: MutableList<Any>)
+
+    fun showAdminMode(enabled: Boolean)
 }

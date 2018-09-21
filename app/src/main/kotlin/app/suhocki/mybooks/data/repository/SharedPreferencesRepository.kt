@@ -11,10 +11,7 @@ class SharedPreferencesRepository @Inject constructor(
 
     override var databaseVersion: Int
         get() = sharedPreferences.getInt(PREFERENCE_DATABASE_VERSION, 1)
-        set(value) = sharedPreferences.edit().putInt(
-            PREFERENCE_DATABASE_VERSION,
-            value
-        ).apply()
+        set(value) = sharedPreferences.edit().putInt(PREFERENCE_DATABASE_VERSION, value).apply()
 
     override var downloadStatistics: Pair<Int, Int>?
         get() = with(sharedPreferences) {
@@ -30,6 +27,10 @@ class SharedPreferencesRepository @Inject constructor(
                     .remove(PREFERENCE_CATEGORIES_COUNT).apply()
             }
         }
+
+    override var isAdminModeEnabled: Boolean
+        get() = sharedPreferences.getBoolean(PREFERENCE_IS_ADMIN_ENABLED, false)
+        set(value) = sharedPreferences.edit().putBoolean(PREFERENCE_IS_ADMIN_ENABLED, value).apply()
 
     override fun getOrganizationName(): String =
         sharedPreferences.getString(
@@ -143,6 +144,7 @@ class SharedPreferencesRepository @Inject constructor(
 
     companion object {
         const val PREFERENCE_DATABASE_VERSION = "PREFERENCE_DATABASE_VERSION"
+        const val PREFERENCE_IS_ADMIN_ENABLED = "PREFERENCE_IS_ADMIN_ENABLED"
         const val PREFERENCE_BOOK_COUNT = "PREFERENCE_BOOK_COUNT"
         const val PREFERENCE_CATEGORIES_COUNT = "PREFERENCE_CATEGORIES_COUNT"
         const val PREFERENCE_ORGANIZATION_NAME = "PREFERENCE_ORGANIZATION_NAME"
