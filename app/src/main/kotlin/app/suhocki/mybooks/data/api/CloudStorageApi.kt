@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.data.network
+package app.suhocki.mybooks.data.api
 
 import okhttp3.ResponseBody
 import retrofit2.Call

@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.data.network.interceptor
+package app.suhocki.mybooks.data.api.interceptor
 
 import okhttp3.MediaType
 import okhttp3.ResponseBody

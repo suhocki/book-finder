@@ -1,5 +1,5 @@
 package app.suhocki.mybooks.domain.repository
 
-interface ServerRepository {
+interface CloudStorageRepository {
     fun getFile(fileUrl: String): ByteArray
 }

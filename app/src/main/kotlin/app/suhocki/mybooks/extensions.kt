@@ -18,6 +18,8 @@ import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import app.suhocki.mybooks.domain.model.License
+import retrofit2.HttpException
+import retrofit2.Response
 
 
 fun Context.attrResource(@AttrRes attribute: Int): Int {
@@ -74,6 +76,7 @@ fun Context.openMap(latitude: Long, longitude: Long) {
 fun Context.isPackageExisted(targetPackage: String): Boolean {
     val pm = packageManager
     try {
+        @Suppress("UNUSED_VARIABLE")
         val info = pm.getPackageInfo(targetPackage, PackageManager.GET_META_DATA)
     } catch (e: PackageManager.NameNotFoundException) {
         return false
@@ -139,3 +142,8 @@ fun License.LicenseType.getHumanName(resources: Resources) = when (this) {
     License.LicenseType.CUSTOM -> resources.getString(R.string.library_license_CUSTOM)
     License.LicenseType.NONE -> resources.getString(R.string.library_license_NONE)
 }
+
+@Throws(HttpException::class)
+fun <T> Response<T>.getResponse(): T =
+    if (isSuccessful) body()!!
+    else throw HttpException(this)

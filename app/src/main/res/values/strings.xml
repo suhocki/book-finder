@@ -16,6 +16,7 @@
     <string name="info">Info</string>
     <string name="admin">Admin</string>
     <string name="information">Information</string>
+    <string name="control_panel">Control panel</string>
     <string name="success">Success!</string>
     <string name="downloading_statistics">Information about %1$d books from %2$d categories was saved successfully.</string>
     <string name="step_info">Step %1$d of %2$d</string>

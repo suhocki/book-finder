@@ -1,9 +1,11 @@
 package app.suhocki.mybooks.ui.main
 
 import android.annotation.SuppressLint
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.design.internal.NavigationMenu
 import android.support.design.internal.NavigationMenuItemView
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.widget.DrawerLayout
 import android.view.*
 import app.suhocki.mybooks.BuildConfig
@@ -14,6 +16,7 @@ import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.ui.Ids
+import app.suhocki.mybooks.ui.admin.AdminFragment
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.AdminModeEnabler
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
@@ -27,11 +30,8 @@ import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import org.jetbrains.anko.*
-import org.jetbrains.anko.sdk25.coroutines.onLongClick
 import toothpick.Toothpick
 import javax.inject.Inject
-import android.content.res.ColorStateList
-import android.support.v4.content.res.ResourcesCompat
 
 
 class MainActivity : MvpAppCompatActivity(), MainView,
@@ -156,9 +156,12 @@ class MainActivity : MvpAppCompatActivity(), MainView,
             tabs = createNewFragments()
             val fragmentCatalog = tabs[tabKeys[TAB_POSITION_CATALOG]]
             val fragmentInfo = tabs[tabKeys[TAB_POSITION_INFO]]
+            val fragmentAdmin = tabs[tabKeys[TAB_POSITION_ADMIN]]
             supportFragmentManager.beginTransaction()
                 .add(Ids.mainContainer, fragmentCatalog, tabKeys[TAB_POSITION_CATALOG])
                 .add(Ids.mainContainer, fragmentInfo, tabKeys[TAB_POSITION_INFO])
+                .add(Ids.mainContainer, fragmentAdmin, tabKeys[TAB_POSITION_ADMIN])
+                .hide(fragmentAdmin)
                 .hide(fragmentInfo)
                 .commitNow()
             ui.bottomBar.setCurrentItem(TAB_POSITION_CATALOG, false)
@@ -197,7 +200,8 @@ class MainActivity : MvpAppCompatActivity(), MainView,
 
     private fun createNewFragments(): HashMap<String, BaseFragment> = hashMapOf(
         tabKeys[TAB_POSITION_CATALOG] to CatalogFragment.newInstance(),
-        tabKeys[TAB_POSITION_INFO] to InfoFragment.newInstance()
+        tabKeys[TAB_POSITION_INFO] to InfoFragment.newInstance(),
+        tabKeys[TAB_POSITION_ADMIN] to AdminFragment.newInstance()
     )
 
     private fun findFragments(): HashMap<String, BaseFragment> = hashMapOf(
@@ -205,7 +209,10 @@ class MainActivity : MvpAppCompatActivity(), MainView,
             .findFragmentByTag(tabKeys[TAB_POSITION_CATALOG]) as BaseFragment,
 
         tabKeys[TAB_POSITION_INFO] to supportFragmentManager
-            .findFragmentByTag(tabKeys[TAB_POSITION_INFO]) as BaseFragment
+            .findFragmentByTag(tabKeys[TAB_POSITION_INFO]) as BaseFragment,
+
+        tabKeys[TAB_POSITION_ADMIN] to supportFragmentManager
+            .findFragmentByTag(tabKeys[TAB_POSITION_ADMIN]) as BaseFragment
     )
 
     override fun setDrawerExpanded(isExpanded: Boolean) {

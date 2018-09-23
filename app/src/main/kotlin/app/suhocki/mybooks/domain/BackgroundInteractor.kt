@@ -14,7 +14,7 @@ import java.io.File
 import javax.inject.Inject
 
 class BackgroundInteractor @Inject constructor(
-    private val serverRepository: ServerRepository,
+    private val serverRepository: CloudStorageRepository,
     private val fileSystemRepository: FileActionsRepository,
     private val bookDatabaseRepository: BooksRepository,
     private val bannersRepository: BannersRepository,

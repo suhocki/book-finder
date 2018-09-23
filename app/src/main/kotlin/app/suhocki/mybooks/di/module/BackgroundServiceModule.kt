@@ -1,17 +1,17 @@
 package app.suhocki.mybooks.di.module
 
 import app.suhocki.mybooks.BuildConfig
-import app.suhocki.mybooks.data.network.CloudStorageApi
+import app.suhocki.mybooks.data.api.CloudStorageApi
 import app.suhocki.mybooks.data.parser.XlsParser
-import app.suhocki.mybooks.data.repository.GoogleDriveRepository
+import app.suhocki.mybooks.data.repository.CloudStorageRepositoryImpl
 import app.suhocki.mybooks.data.repository.LocalStorageRepository
 import app.suhocki.mybooks.di.DatabaseFileUrl
 import app.suhocki.mybooks.di.DownloadDirectoryPath
 import app.suhocki.mybooks.di.DownloadedFileName
-import app.suhocki.mybooks.di.provider.OkHttpClientProvider
-import app.suhocki.mybooks.di.provider.ApiProvider
+import app.suhocki.mybooks.di.provider.CloudStorageOkHttpProvider
+import app.suhocki.mybooks.di.provider.CloudStorageApiProvider
 import app.suhocki.mybooks.domain.repository.FileActionsRepository
-import app.suhocki.mybooks.domain.repository.ServerRepository
+import app.suhocki.mybooks.domain.repository.CloudStorageRepository
 import okhttp3.OkHttpClient
 import toothpick.config.Module
 
@@ -30,15 +30,15 @@ class BackgroundServiceModule(downloadDirectory: String) : Module() {
             .toInstance(BuildConfig.DATABASE_FILE_URL)
 
         bind(OkHttpClient::class.java)
-            .toProvider(OkHttpClientProvider::class.java)
+            .toProvider(CloudStorageOkHttpProvider::class.java)
             .providesSingletonInScope()
 
         bind(CloudStorageApi::class.java)
-            .toProvider(ApiProvider::class.java)
+            .toProvider(CloudStorageApiProvider::class.java)
             .providesSingletonInScope()
 
-        bind(ServerRepository::class.java)
-            .to(GoogleDriveRepository::class.java)
+        bind(CloudStorageRepository::class.java)
+            .to(CloudStorageRepositoryImpl::class.java)
             .singletonInScope()
 
         bind(FileActionsRepository::class.java)

@@ -7,6 +7,8 @@ android {
         buildConfigField 'String', 'LICENSES_FILE_NAME', "\"$licensesFileName\""
         buildConfigField 'String', 'CHANGELOG_FILE_NAME', "\"$changelogFileName\""
         buildConfigField 'String', 'ABOUT_DEVELOPER_URL', "\"$aboutDeveloperUrl\""
+        buildConfigField 'String', 'GOOGLE_DRIVE_API_URL', "\"$googleDriveApiUrl\""
+        buildConfigField 'String', 'DATABASES_FOLDER_ID', "\"$databasesFolderId\""
 
         resValue "string", "VERSION", "\"$appVersionName\""
     }
