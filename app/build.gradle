@@ -116,6 +116,7 @@ ext {
     firebase_core_version = "16.0.1"
     firebase_config_version = "16.0.0"
     gson_version = "2.8.5"
+    eventbus_version = "3.1.1"
 }
 
 dependencies {
@@ -161,6 +162,8 @@ dependencies {
             "com.google.firebase:firebase-core:$firebase_core_version",
             "com.google.firebase:firebase-ads:$firebase_ads_version",
             "com.google.firebase:firebase-config:$firebase_config_version",
+            //EventBus
+            "org.greenrobot:eventbus:$eventbus_version",
     )
     implementation(
             //Crash logging
