@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
+import android.widget.ProgressBar
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
@@ -27,6 +28,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 class AdminUI<in T : Fragment> : AnkoComponent<T> {
     lateinit var recyclerView: RecyclerView
     lateinit var toolbar: Toolbar
+    lateinit var progressBar: ProgressBar
 
     override fun createView(ui: AnkoContext<T>) = with(ui) {
 
@@ -56,14 +58,18 @@ class AdminUI<in T : Fragment> : AnkoComponent<T> {
                 clipToPadding = false
                 layoutManager = ScrollLayoutManager(context)
                 addItemDecoration(
-                    DividerItemDecoration(
-                        context.dimen(R.dimen.height_divider_decorator),
-                        divideOnlyHeaders = true
-                    )
+                    DividerItemDecoration(context.dimen(R.dimen.height_divider_decorator), 1)
                 )
                 setOnTouchListener { _, _ -> hideKeyboard();false }
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
+            }
+
+            themedProgressBar(R.style.AccentProgressBar) {
+                progressBar = this
+                visibility = View.GONE
+            }.lparams {
+                gravity = Gravity.CENTER
             }
         }
     }

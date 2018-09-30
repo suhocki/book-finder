@@ -89,6 +89,13 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
     override fun showAdminMode(enabled: Boolean) =
         (activity as AdminModeEnabler).toogleAdminMode(enabled, true)
 
+    override fun showProgress(isVisible: Boolean) {
+        ui.progressBar.visibility =
+                if (isVisible) View.VISIBLE
+                else View.GONE
+    }
+
+
     companion object {
         fun newInstance() = InfoFragment()
     }

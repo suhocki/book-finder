@@ -7,11 +7,11 @@ import app.suhocki.mybooks.data.parser.entity.BannerEntity
 import app.suhocki.mybooks.data.parser.entity.InfoEntity
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
-import app.suhocki.mybooks.data.progress.ProgressHandler
-import app.suhocki.mybooks.data.progress.ProgressStep
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Info
+import app.suhocki.mybooks.ui.admin.eventbus.ProgressEvent
+import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import java.io.BufferedReader
@@ -23,9 +23,7 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 
-class XlsParser @Inject constructor(
-    private val progressListener: ProgressHandler
-) : AnkoLogger {
+class XlsParser @Inject constructor() : AnkoLogger {
 
     private lateinit var xlsFileName: String
     private lateinit var xlsFileCreationDate: String
@@ -36,13 +34,11 @@ class XlsParser @Inject constructor(
         val allMatches = ArrayList<String>()
         val matcher = Pattern.compile(REGEX_XLS_DATA).matcher(contentString)
         val contentStringLength = contentString.length.toFloat()
-        val stepAnalyzing = ProgressStep.ANALYZING
         var progress: Int
 
         while (matcher.find()) {
             progress = (matcher.start() / contentStringLength * 100).toInt()
-            stepAnalyzing.progress = progress
-            progressListener.onProgress(stepAnalyzing, false)
+            EventBus.getDefault().postSticky(ProgressEvent(progress))
             checkThreadInterrupt()
             matcher.group().let {
                 allMatches.add(
@@ -55,8 +51,6 @@ class XlsParser @Inject constructor(
     }
 
     fun extractPayload(strings: ArrayList<String>): XlsDocumentEntity {
-        val stepParsing = ProgressStep.PARSING
-
         val statisticsData = mutableMapOf<Category, StatisticsEntity>()
         var currentCategory: CategoryEntity? = null
 
@@ -98,7 +92,8 @@ class XlsParser @Inject constructor(
                     continue
                 } else if (currentWord in STATUS_TYPES &&
                     index in 1 until strings.lastIndex &&
-                    strings[index - 1] == MERGE && strings[index + 1] == MERGE) {
+                    strings[index - 1] == MERGE && strings[index + 1] == MERGE
+                ) {
                     isHeaderFound = true
                     continue
                 }
@@ -124,7 +119,8 @@ class XlsParser @Inject constructor(
                 }
 
                 if (strings[index - 1] == currentCategory?.name &&
-                    currentWord in STATUS_TYPES) {
+                    currentWord in STATUS_TYPES
+                ) {
                     continue
                 }
 
@@ -145,8 +141,7 @@ class XlsParser @Inject constructor(
                         .add(createBookEntity(currentCategory, bookFieldsQueue, statisticsData))
                         .also {
                             val progress = (index / strings.size.toDouble() * 100).toInt()
-                            stepParsing.progress = progress
-                            progressListener.onProgress(stepParsing, false)
+                            EventBus.getDefault().postSticky(ProgressEvent(progress))
                         }
                 }
             } else if (currentXlsPage == LIST_BANNERS) {
@@ -155,40 +150,40 @@ class XlsParser @Inject constructor(
                     banners.add(BannerEntity(bannerFieldsQueue.pop(), bannerFieldsQueue.pop()))
                 }
             } else if (currentXlsPage == LIST_CONTACTS) {
-                contactSearchPosition++
 
-                with(contacts) {
-                    when {
-                        currentWord.startsWith("375") ->
-                            add(InfoEntity(Info.InfoType.PHONE, currentWord))
+                when {
+                    currentWord.startsWith("375") ->
+                        contacts.add(InfoEntity(Info.InfoType.PHONE, currentWord))
 
-                        currentWord.startsWith("mailto") -> {
-                            val infoEntity = InfoEntity(
-                                Info.InfoType.EMAIL,
-                                currentWord.replace("mailto:", "")
-                            )
-                            add(infoEntity)
-                        }
-
-                        currentWord == "mybooks.by" ->
-                            add(InfoEntity(Info.InfoType.WEBSITE, currentWord))
-
-                        currentWord.startsWith("https://www.facebook.com") ->
-                            add(InfoEntity(Info.InfoType.FACEBOOK, currentWord))
-
-                        currentWord.startsWith("https://vk.com") ->
-                            add(InfoEntity(Info.InfoType.VK, currentWord))
-
-                        contactSearchPosition == 10 ->
-                            add(InfoEntity(Info.InfoType.ADDRESS, currentWord))
-
-                        contactSearchPosition == 11 ->
-                            add(InfoEntity(Info.InfoType.WORKING_TIME, currentWord))
-
-                        else -> {
-                        }
+                    currentWord.startsWith("mailto") -> {
+                        val infoEntity = InfoEntity(
+                            Info.InfoType.EMAIL,
+                            currentWord.replace("mailto:", "")
+                        )
+                        contacts.add(infoEntity)
                     }
+
+                    currentWord == "mybooks.by" ->
+                        contacts.add(InfoEntity(Info.InfoType.WEBSITE, currentWord))
+
+                    currentWord.startsWith("https://www.facebook.com") ->
+                        contacts.add(InfoEntity(Info.InfoType.FACEBOOK, currentWord))
+
+                    currentWord.startsWith("https://vk.com") ->
+                        contacts.add(InfoEntity(Info.InfoType.VK, currentWord))
+
+                    contactSearchPosition == CONTACT_POSITION_ORGANIZATION ->
+                        contacts.add(InfoEntity(Info.InfoType.ORGANIZATION, currentWord))
+
+                    contactSearchPosition == CONTACT_POSITION_ADDRESS ->
+                        contacts.add(InfoEntity(Info.InfoType.ADDRESS, currentWord))
+
+                    contactSearchPosition == CONTACT_POSITION_WORKING_TIME ->
+                        contacts.add(InfoEntity(Info.InfoType.WORKING_TIME, currentWord))
+
                 }
+
+                contactSearchPosition++
             }
         }
 
@@ -204,7 +199,7 @@ class XlsParser @Inject constructor(
             statisticsData = statisticsData,
             bannersData = banners,
             infosData = contacts
-        ).also { progressListener.onProgress(ProgressStep.PARSING, true) }
+        )
     }
 
     private fun createBookEntity(
@@ -328,17 +323,19 @@ class XlsParser @Inject constructor(
         private const val KEY_DESCR = "KEY_DESCRIPTION"
         private const val FORMAT_LENGTH = 3
         private const val YEAR_LENGTH = 4
-        private val KEYS_SET =
-            setOf(
-                KEY_ISBN,
-                KEY_AUTHOR,
-                KEY_PUBLISHER,
-                KEY_SERIES,
-                KEY_FORMAT,
-                KEY_YEAR,
-                KEY_PAGES,
-                KEY_COVER
-            )
+        private const val CONTACT_POSITION_ORGANIZATION = 0
+        private const val CONTACT_POSITION_ADDRESS = 11
+        private const val CONTACT_POSITION_WORKING_TIME = 12
+        private val KEYS_SET = setOf(
+            KEY_ISBN,
+            KEY_AUTHOR,
+            KEY_PUBLISHER,
+            KEY_SERIES,
+            KEY_FORMAT,
+            KEY_YEAR,
+            KEY_PAGES,
+            KEY_COVER
+        )
         private val STATUS_TYPES = setOf(
             "Доступен", "Доступно", "В наличии"
         )

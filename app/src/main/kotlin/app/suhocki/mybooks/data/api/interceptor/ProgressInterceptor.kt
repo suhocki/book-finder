@@ -6,13 +6,12 @@ import app.suhocki.mybooks.data.progress.ProgressHandler
 import javax.inject.Inject
 
 class ProgressInterceptor @Inject constructor(
-    private val progressEmitter: ProgressHandler
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalResponse = chain.proceed(chain.request())
         return originalResponse.newBuilder()
-            .body(ProgressResponseBody(originalResponse.body()!!, progressEmitter))
+            .body(ProgressResponseBody(originalResponse.body()!!))
             .build()
     }
 }

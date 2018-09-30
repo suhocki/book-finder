@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.data.repository
+package app.suhocki.mybooks.data.filter
 
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager

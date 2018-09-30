@@ -19,7 +19,7 @@ class DividerItemDecoration(
         outRect: Rect,
         view: View,
         parent: RecyclerView,
-        state: State?
+        state: State
     ) {
         parent.layoutManager ?: throw RuntimeException("LayoutManager not found")
         val layoutParams = view.layoutParams as RecyclerView.LayoutParams

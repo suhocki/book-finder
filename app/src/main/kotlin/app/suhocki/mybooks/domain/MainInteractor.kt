@@ -7,11 +7,6 @@ class MainInteractor @Inject constructor(
     private val settingsRepository: SettingsRepository
 ) {
 
-    fun toogleAdminMode(): Boolean {
-        settingsRepository.isAdminModeEnabled = !settingsRepository.isAdminModeEnabled
-        return settingsRepository.isAdminModeEnabled
-    }
-
     fun isAdminModeEnabled() =
         settingsRepository.isAdminModeEnabled
 }

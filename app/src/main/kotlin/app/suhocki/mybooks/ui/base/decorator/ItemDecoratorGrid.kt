@@ -11,7 +11,7 @@ class ItemDecoratorGrid(private val offset: Int) : RecyclerView.ItemDecoration()
         outRect: Rect,
         view: View,
         parent: RecyclerView,
-        state: RecyclerView.State?
+        state: RecyclerView.State
     ) {
         with(outRect) {
             right = offset

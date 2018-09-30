@@ -80,6 +80,7 @@
     <string name="version_changelog">Версия %s</string>
     <string name="admin_mode_enabled">Режим администратора активирован</string>
     <string name="admin_mode_disabled">Режим администратора отключён</string>
+    <string name="choose_file">Выберите файл</string>
 
     <!--License names-->
     <string name="library_license_MIT">MIT</string>
@@ -88,4 +89,12 @@
     <string name="library_license_NONE">None</string>
 
     <string name="version">Версия %s (%d)</string>
+
+    <!--Upload steps-->
+    <string name="step_downloading">Загрузка .zip архива</string>
+    <string name="step_unzipping">Извлечение .xml файла</string>
+    <string name="step_string_analysing">Разбор строк</string>
+    <string name="step_book_construct">Сборка книг</string>
+    <string name="step_saving_to_local">Сохранение в локальную базу данных</string>
+    <string name="step_saving_to_remote">Загрузка книг на удалённый сервер</string>
 </resources>

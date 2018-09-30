@@ -2,16 +2,17 @@ package app.suhocki.mybooks.di.module
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.os.Build
 import app.suhocki.mybooks.BuildConfig
 import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.database.BooksDatabase
+import app.suhocki.mybooks.data.database.RoomRepository
 import app.suhocki.mybooks.data.database.dao.*
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.notifier.ComponentNotifier
+import app.suhocki.mybooks.data.preferences.SharedPreferencesRepository
 import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
-import app.suhocki.mybooks.data.repository.RoomRepository
-import app.suhocki.mybooks.data.repository.SharedPreferencesRepository
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.DatabaseFileName
 import app.suhocki.mybooks.di.SharedPreferencesFileName
@@ -25,7 +26,9 @@ import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.domain.repository.*
 import com.google.android.gms.ads.InterstitialAd
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import org.jetbrains.anko.configuration
 import toothpick.config.Module
+import java.util.*
 
 class AppModule(context: Context) : Module() {
     init {
@@ -132,5 +135,12 @@ class AppModule(context: Context) : Module() {
 
         bind(AdsManager::class.java)
             .singletonInScope()
+
+        bind(Locale::class.java)
+            .toInstance(
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+                    context.configuration.locales.get(0)
+                else context.configuration.locale
+            )
     }
 }

@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.di.module
 
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.data.repository.FilterRepositoryImpl
+import app.suhocki.mybooks.data.filter.FilterRepositoryImpl
 import app.suhocki.mybooks.di.SearchAuthor
 import app.suhocki.mybooks.di.SearchPublisher
 import app.suhocki.mybooks.di.provider.FilterItemStatisticsProvider

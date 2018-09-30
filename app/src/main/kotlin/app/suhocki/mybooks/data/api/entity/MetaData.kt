@@ -1,10 +1,14 @@
 package app.suhocki.mybooks.data.api.entity
 
+import com.google.gson.annotations.SerializedName
+
 data class MetaData(
-    val items: List<Item>
+    @SerializedName("items") val items: List<Item>
 ) {
     data class Item(
-        val title: String,
-        val id: String
+        @SerializedName("title") val title: String,
+        @SerializedName("fileSize") val size: Long,
+        @SerializedName("id") val id: String,
+        @SerializedName("modifiedDate") val date: String
     )
 }

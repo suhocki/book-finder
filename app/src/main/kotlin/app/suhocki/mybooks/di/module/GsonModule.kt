@@ -2,8 +2,6 @@ package app.suhocki.mybooks.di.module
 
 import android.content.Context
 import android.content.res.AssetManager
-import app.suhocki.mybooks.data.repository.AssetsRepository
-import app.suhocki.mybooks.domain.repository.LicenseRepository
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import toothpick.config.Module

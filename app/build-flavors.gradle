@@ -1,13 +1,12 @@
 android {
     defaultConfig {
         buildConfigField 'String', 'DATABASE_FILE_NAME', "\"$databaseFileName\""
-        buildConfigField 'String', 'DATABASE_FILE_URL', "\"$databaseFileUrl\""
-        buildConfigField 'String', 'DOWNLOADED_FILE_NAME', "\"$downloadedFileName\""
         buildConfigField 'String', 'SHARED_PREFERENCES_FILE_NAME', "\"$sharedPreferencesFileName\""
         buildConfigField 'String', 'LICENSES_FILE_NAME', "\"$licensesFileName\""
         buildConfigField 'String', 'CHANGELOG_FILE_NAME', "\"$changelogFileName\""
         buildConfigField 'String', 'ABOUT_DEVELOPER_URL', "\"$aboutDeveloperUrl\""
         buildConfigField 'String', 'GOOGLE_DRIVE_API_URL', "\"$googleDriveApiUrl\""
+        buildConfigField 'String', 'GOOGLE_DRIVE_FILE_DOWNLOAD_URL', "\"$googleDriveFileDownloadUrl\""
         buildConfigField 'String', 'DATABASES_FOLDER_ID', "\"$databasesFolderId\""
 
         resValue "string", "VERSION", "\"$appVersionName\""

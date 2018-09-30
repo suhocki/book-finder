@@ -9,4 +9,6 @@ interface InfoView : MvpView {
     fun showInfoItems(items: MutableList<Any>)
 
     fun showAdminMode(enabled: Boolean)
+
+    fun showProgress(isVisible: Boolean)
 }

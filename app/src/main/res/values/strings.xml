@@ -79,6 +79,7 @@
     <string name="changelog">Changelog</string>
     <string name="admin_mode_enabled">Admin mode enabled</string>
     <string name="admin_mode_disabled">Admin mode disabled</string>
+    <string name="choose_file">Choose file</string>
 
     <!--License names-->
     <string name="library_license_MIT">MIT</string>
@@ -86,8 +87,19 @@
     <string name="library_license_CUSTOM">Custom license</string>
     <string name="library_license_NONE">None</string>
 
-    <string name="percent" translatable="false">" "(%d%%)</string>
+    <string name="percent" translatable="false">%d%%</string>
 
     <string name="version">Version %s (%d)</string>
     <string name="version_changelog">Version %s</string>
+
+    <!--Url`s-->
+    <string name="website_url" translatable="false">https://mybooks.by</string>
+
+    <!--Upload steps-->
+    <string name="step_downloading">Downloading .zip archive</string>
+    <string name="step_unzipping">Unzipping an .xml file</string>
+    <string name="step_string_analysing">String analysing</string>
+    <string name="step_book_construct">Building books</string>
+    <string name="step_saving_to_local">Saving to local database</string>
+    <string name="step_saving_to_remote">Downloading books to a remote server</string>
 </resources>

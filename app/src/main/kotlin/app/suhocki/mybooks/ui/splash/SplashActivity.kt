@@ -24,9 +24,4 @@ class SplashActivity : MvpAppCompatActivity(), SplashView {
         startActivity<MainActivity>()
         finish()
     }
-
-    override fun showInitializationScreen() {
-        startActivity<InitialActivity>()
-        finish()
-    }
 }

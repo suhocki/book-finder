@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.data.repository
+package app.suhocki.mybooks.data.assets
 
 import android.content.res.AssetManager
 import app.suhocki.mybooks.BuildConfig

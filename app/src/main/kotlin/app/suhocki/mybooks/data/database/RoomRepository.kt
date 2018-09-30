@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.data.repository
+package app.suhocki.mybooks.data.database
 
 import android.arch.persistence.db.SupportSQLiteQuery
 import app.suhocki.mybooks.data.database.dao.*

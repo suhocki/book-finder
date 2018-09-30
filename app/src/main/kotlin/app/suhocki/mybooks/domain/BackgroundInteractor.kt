@@ -3,8 +3,6 @@ package app.suhocki.mybooks.domain
 import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.database.entity.*
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
-import app.suhocki.mybooks.di.DatabaseFileUrl
-import app.suhocki.mybooks.di.DownloadedFileName
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
@@ -14,30 +12,31 @@ import java.io.File
 import javax.inject.Inject
 
 class BackgroundInteractor @Inject constructor(
-    private val serverRepository: CloudStorageRepository,
-    private val fileSystemRepository: FileActionsRepository,
+    private val googleDriveRepository: GoogleDriveRepository,
+    private val fileActionsRepository: FileActionsRepository,
     private val bookDatabaseRepository: BooksRepository,
     private val bannersRepository: BannersRepository,
     private val statisticDatabaseRepository: StatisticsRepository,
     private val settingsRepository: SettingsRepository,
-    private val infoRepository: InfoRepository,
-    @DatabaseFileUrl private val fileUrl: String,
-    @DownloadedFileName private val downloadedFileName: String
+    private val infoRepository: InfoRepository
 ) {
-    fun downloadDatabaseFile() =
-        serverRepository.getFile(fileUrl)
+    fun getDownloadedFile(fileId: String) =
+            fileActionsRepository.getDownloadedFile(fileId)
 
-    fun saveDatabaseFile(bytes: ByteArray) =
-        fileSystemRepository.saveFile(downloadedFileName, bytes)
+    fun downloadFile(fileId: String) =
+        googleDriveRepository.downloadFile(fileId)
 
-    fun unzip(fromFile: File, toDirectory: File) =
-        fileSystemRepository.unzip(fromFile, toDirectory)
+    fun saveFile(folder: String, fileName: String, bytes: ByteArray) =
+        fileActionsRepository.saveFile(folder, fileName, bytes)
+
+    fun unzip(file: File) =
+        fileActionsRepository.unzip(file)
 
     fun parseXlsStructure(xlsFile: File) =
-        fileSystemRepository.parseXlsStructure(xlsFile)
+        fileActionsRepository.parseXlsStructure(xlsFile)
 
     fun extractXlsDocument(strings: ArrayList<String>) =
-        fileSystemRepository.extractXlsDocument(strings)
+        fileActionsRepository.extractXlsDocument(strings)
 
     fun saveBooksData(data: Map<out Category, Collection<Book>>) {
         bookDatabaseRepository.setCategories(data.keys)
@@ -89,15 +88,17 @@ class BackgroundInteractor @Inject constructor(
 
         val priceStatistics = statisticsData.entries.map { (category, statistics) ->
             val (minPrice, maxPrice) = statistics.prices
-                PriceStatisticsEntity(category.name, minPrice, maxPrice)
+            PriceStatisticsEntity(category.name, minPrice, maxPrice)
         }
         statisticDatabaseRepository.setPriceStatistics(priceStatistics)
     }
 
     @Suppress("NON_EXHAUSTIVE_WHEN")
-    fun saveInfosData(contactsData: List<Info>) {
+    fun saveInfoData(contactsData: List<Info>) {
         contactsData.forEach {
             when (it.type) {
+                Info.InfoType.ORGANIZATION -> infoRepository.setOrganizationName(it.name)
+
                 Info.InfoType.EMAIL -> infoRepository.setContactEmail(it.name)
 
                 Info.InfoType.WEBSITE -> infoRepository.setWebsite(it.name)
@@ -120,4 +121,7 @@ class BackgroundInteractor @Inject constructor(
     fun saveBannersData(bannersData: List<Banner>) {
         bannersRepository.setBanners(bannersData)
     }
+
+    fun getUnzippedFile(fileId: String): File? =
+            fileActionsRepository.getUnzippedFile(fileId)
 }

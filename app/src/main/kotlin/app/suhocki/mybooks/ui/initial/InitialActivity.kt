@@ -151,7 +151,9 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
 
     fun startDownloading() {
         startService<BackgroundService>(
-            BackgroundService.COMMAND to BackgroundCommand.START
+            BackgroundService.COMMAND to BackgroundCommand.START,
+            BackgroundService.DATABASE_URL to intent.getStringExtra(FILE_ID),
+            BackgroundService.DATABASE_NAME to intent.getStringExtra(FILE_NAME)
         )
     }
 
@@ -172,5 +174,11 @@ class InitialActivity : MvpAppCompatActivity(), InitialView {
 
     override fun onBackPressed() {
         presenter.onBackPressed()
+    }
+
+
+    companion object {
+        const val FILE_ID = "FILE_ID"
+        const val FILE_NAME = "FILE_NAME"
     }
 }

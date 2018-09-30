@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
+import android.support.annotation.ArrayRes
 import android.support.annotation.AttrRes
 import android.support.annotation.DrawableRes
 import android.support.customtabs.CustomTabsIntent
@@ -20,6 +21,8 @@ import android.view.inputmethod.InputMethodManager
 import app.suhocki.mybooks.domain.model.License
 import retrofit2.HttpException
 import retrofit2.Response
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 fun Context.attrResource(@AttrRes attribute: Int): Int {
@@ -34,7 +37,8 @@ fun Context.isAppOnForeground(): Boolean {
     val packageName = this.packageName
     for (appProcess in appProcesses) {
         if (appProcess.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND &&
-            appProcess.processName == packageName) {
+            appProcess.processName == packageName
+        ) {
             return true
         }
     }
@@ -62,7 +66,10 @@ fun Context.openMap(address: String) {
 }
 
 fun Context.openMap(latitude: Long, longitude: Long) {
-    val i = Intent(Intent.ACTION_VIEW, Uri.parse("http://maps.google.com/maps?q=loc:$latitude,$longitude"))
+    val i = Intent(
+        Intent.ACTION_VIEW,
+        Uri.parse("http://maps.google.com/maps?q=loc:$latitude,$longitude")
+    )
     i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     val mapsPackageName = "com.google.android.apps.maps"
     if (isPackageExisted(mapsPackageName)) {
@@ -90,6 +97,7 @@ fun Context.openCaller(number: String) {
     intent.data = Uri.parse("tel:+$number")
     startActivity(intent)
 }
+
 @Throws(InterruptedException::class)
 fun checkThreadInterrupt() {
     if (Thread.currentThread().isInterrupted) throw InterruptedException()
@@ -147,3 +155,40 @@ fun License.LicenseType.getHumanName(resources: Resources) = when (this) {
 fun <T> Response<T>.getResponse(): T =
     if (isSuccessful) body()!!
     else throw HttpException(this)
+
+
+fun Resources.getStringArrayIdentifiers(@ArrayRes arrayRes: Int): IntArray {
+    val typedArray = obtainTypedArray(arrayRes)
+    val idsArray = IntArray(typedArray.length())
+    repeat(typedArray.length()) {
+        idsArray[it] = typedArray.getResourceId(it, 0)
+    }
+    typedArray.recycle()
+    return idsArray
+}
+
+fun String.toHumanDate(locale: Locale): String {
+    val simpleDateFormat = SimpleDateFormat("d MMM", locale)
+    val currentDateString = simpleDateFormat.format(Date())
+    simpleDateFormat.timeZone = TimeZone.getTimeZone("GMT+0")
+    simpleDateFormat.applyPattern("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    val shultzTime = simpleDateFormat.parse(this)
+    simpleDateFormat.applyPattern("d MMM")
+    simpleDateFormat.timeZone = TimeZone.getDefault()
+    val shultzDateString = simpleDateFormat.format(shultzTime)
+    simpleDateFormat.applyPattern("HH:mm")
+    return if (shultzDateString == currentDateString) simpleDateFormat.format(shultzTime)
+    else shultzDateString.replace(".", "")
+}
+
+fun Long.toHumanFileSize() = when (Math.round(toString().length.toFloat() / 3)) {
+    1 -> "$this B"
+
+    2 -> "${Math.round(this / 1000f)} KB"
+
+    3 -> "${Math.round(this / 1000_000f)} MB"
+
+    4 -> "${Math.round(this / 1000_000_000f)} GB"
+
+    else -> "$this bytes"
+}

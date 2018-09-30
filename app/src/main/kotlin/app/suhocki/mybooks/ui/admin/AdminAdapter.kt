@@ -2,12 +2,23 @@ package app.suhocki.mybooks.ui.admin
 
 import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
 import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
+import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.ui.admin.delegate.FileAdapterDelegate
+import app.suhocki.mybooks.ui.admin.delegate.UploadControlAdapterDelegate
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
+import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 
-class AdminAdapter : ListDelegationAdapter<MutableList<Any>>() {
+class AdminAdapter(
+    onFileClick: (File) -> Unit
+) : ListDelegationAdapter<MutableList<Any>>() {
+
+    init {
+        delegatesManager.addDelegate(FileAdapterDelegate(onFileClick))
+        delegatesManager.addDelegate(UploadControlAdapterDelegate())
+        delegatesManager.addDelegate(HeaderAdapterDelegate())
+    }
 
     private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
 
@@ -17,18 +28,15 @@ class AdminAdapter : ListDelegationAdapter<MutableList<Any>>() {
 
     private val differ by lazy { EndActionAsyncListDiffer(listUpdateCallback, diffConfig) }
 
-    init {
-        delegatesManager.addDelegate(FileAdapterDelegate())
-    }
-
     override fun getItemCount(): Int =
         differ.currentList.size
 
-    fun submitList(list: List<Any>) {
+    fun submitList(list: List<Any>, withAnimation: Boolean) {
         mutableListOf<Any>().apply {
             addAll(list)
             items = this
-            differ.submitList(this)
+            if (withAnimation) differ.submitList(this)
+            else notifyDataSetChanged()
         }
     }
 }

@@ -7,6 +7,7 @@ interface Info {
     val iconRes: Int
 
     enum class InfoType {
+        ORGANIZATION,
         PHONE,
         EMAIL,
         WEBSITE,

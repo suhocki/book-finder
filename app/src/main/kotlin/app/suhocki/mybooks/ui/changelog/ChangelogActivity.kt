@@ -26,6 +26,7 @@ class ChangelogActivity : MvpAppCompatActivity(), ChangelogView, OnDownloadFileC
     fun providePresenter(): ChangelogPresenter {
         val scope = Toothpick.openScopes(
             DI.APP_SCOPE,
+            DI.MAIN_ACTIVITY_SCOPE,
             DI.GSON_SCOPE,
             DI.CHANGELOG_ACTIVITY_SCOPE
         )

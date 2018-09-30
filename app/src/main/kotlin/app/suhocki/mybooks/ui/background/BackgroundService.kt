@@ -6,7 +6,7 @@ import android.os.Environment
 import android.os.IBinder
 import app.suhocki.mybooks.App
 import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.di.module.BackgroundServiceModule
+import app.suhocki.mybooks.di.module.BackgroundModule
 import app.suhocki.mybooks.isAppInBackground
 import app.suhocki.mybooks.ui.base.MvpService
 import app.suhocki.mybooks.ui.main.MainActivity
@@ -24,27 +24,29 @@ class BackgroundService : MvpService(), BackgroundView {
 
     @ProvidePresenter
     fun providePresenter(): BackgroundPresenter =
-        Toothpick.openScope(DI.APP_SCOPE)
-            .apply {
-                val downloadDirectory = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).path
-                installModules(BackgroundServiceModule(downloadDirectory))
-            }
-            .getInstance(BackgroundPresenter::class.java)
+        Toothpick.openScope(DI.APP_SCOPE).apply {
+            val downloadDirectory = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).path
+            installModules(BackgroundModule(downloadDirectory))
+        }.getInstance(BackgroundPresenter::class.java)
 
     override fun onCreate() {
         super.onCreate()
-        Toothpick.openScopes(DI.APP_SCOPE, DI.BACKGROUND_SERVICE_SCOPE)
+        Toothpick.openScopes(DI.APP_SCOPE, DI.BACKGROUND_SCOPE)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        Toothpick.closeScope(DI.BACKGROUND_SERVICE_SCOPE)
+        Toothpick.closeScope(DI.BACKGROUND_SCOPE)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent == null) return super.onStartCommand(intent, flags, startId)
         when (intent.getSerializableExtra(COMMAND) as BackgroundCommand) {
-            BackgroundCommand.START -> presenter.loadDatabase()
+            BackgroundCommand.START -> {
+                val fileName = intent.getStringExtra(DATABASE_NAME)
+                val fileUrl = intent.getStringExtra(DATABASE_URL)
+                presenter.loadDatabase(fileName, fileUrl)
+            }
 
             BackgroundCommand.CANCEL -> presenter.stopDatabaseLoading()
 
@@ -88,6 +90,8 @@ class BackgroundService : MvpService(), BackgroundView {
 
     companion object {
         const val COMMAND = "COMMAND"
+        const val DATABASE_URL = "DATABASE_URL"
+        const val DATABASE_NAME = "DATABASE_NAME"
         const val PROGRESS_MAX = 100
     }
 }

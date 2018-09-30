@@ -9,4 +9,5 @@
     <color name="colorDescriptionBackground">#88FFFFFF</color>
     <color name="colorDarkerGray">#616161</color>
     <color name="colorBlack">#212121</color>
+    <color name="colorGreen">#00C853</color>
 </resources>

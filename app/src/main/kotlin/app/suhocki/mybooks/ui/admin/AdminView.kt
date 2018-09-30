@@ -6,5 +6,7 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface AdminView  : MvpView {
-    fun showData(data: List<Any>)
+    fun showData(data: List<Any>, withAnimation: Boolean = true)
+
+    fun showProgress(isVisible: Boolean)
 }

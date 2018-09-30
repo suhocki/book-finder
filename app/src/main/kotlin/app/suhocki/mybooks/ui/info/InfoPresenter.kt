@@ -18,21 +18,27 @@ class InfoPresenter @Inject constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        viewState.showProgress(true)
+
         doAsync(errorHandler.errorReceiver) {
 
             val items = mutableListOf<Any>().apply {
-                add(infoInteractor.getHeaderOrganization())
+                infoInteractor.getHeaderOrganization()?.let { add(it) }
                 addAll(infoInteractor.getContacts())
-                add(infoInteractor.getHeaderAddress())
-                add(infoInteractor.getAddress())
-                add(infoInteractor.getHeaderWorkingTime())
-                add(infoInteractor.getWorkingTime())
-
+                infoInteractor.getAddress()?.let {
+                    add(infoInteractor.getHeaderAddress())
+                    add(it)
+                }
+                infoInteractor.getWorkingTime()?.let {
+                    add(infoInteractor.getHeaderWorkingTime())
+                    add(it)
+                }
                 if (remoteConfigurator.isAboutApplicationEnabled) {
                     addAll(infoInteractor.getAboutThisApplication())
                 }
             }
             uiThread {
+                viewState.showProgress(false)
                 viewState.showInfoItems(items)
             }
         }

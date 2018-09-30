@@ -15,9 +15,4 @@ class MainPresenter @Inject constructor(
         val mode = mainInteractor.isAdminModeEnabled()
         viewState.showAdminMode(mode)
     }
-
-    fun toogleAdminMode() {
-        val mode = mainInteractor.toogleAdminMode()
-        viewState.showAdminMode(mode, true)
-    }
 }

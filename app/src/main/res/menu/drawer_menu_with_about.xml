@@ -33,6 +33,7 @@
             android:title="@string/about_developer" />
         <item
             android:id="@+id/nav_version_number"
+            android:enabled="false"
             android:title="" />
     </group>
 

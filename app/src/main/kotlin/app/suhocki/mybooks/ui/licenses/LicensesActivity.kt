@@ -28,6 +28,7 @@ class LicensesActivity : MvpAppCompatActivity(), LicensesView, OnLicenseClickLis
     fun providePresenter(): LicensesPresenter {
         val scope = Toothpick.openScopes(
             DI.APP_SCOPE,
+            DI.MAIN_ACTIVITY_SCOPE,
             DI.GSON_SCOPE,
             DI.LICENSES_ACTIVITY_SCOPE
         )

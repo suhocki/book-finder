@@ -6,6 +6,8 @@ import android.support.v4.app.Fragment
 import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
+import android.view.Gravity
+import android.view.View
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.Ids
@@ -21,6 +23,7 @@ class InfoUI<in T : Fragment> : AnkoComponent<T> {
 
     lateinit var recyclerView: RecyclerView
     lateinit var toolbar: Toolbar
+    lateinit var progressBar: View
 
     override fun createView(ui: AnkoContext<T>) = with(ui) {
 
@@ -58,6 +61,13 @@ class InfoUI<in T : Fragment> : AnkoComponent<T> {
                 setOnTouchListener { _, _ -> hideKeyboard();false }
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
+            }
+
+            themedProgressBar(R.style.AccentProgressBar) {
+                progressBar = this
+                visibility = View.GONE
+            }.lparams {
+                gravity = Gravity.CENTER
             }
         }
     }

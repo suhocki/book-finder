@@ -1,13 +1,10 @@
 package app.suhocki.mybooks.ui.main
 
-import android.annotation.SuppressLint
-import android.content.res.ColorStateList
 import android.os.Bundle
 import android.support.design.internal.NavigationMenu
-import android.support.design.internal.NavigationMenuItemView
-import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.widget.DrawerLayout
-import android.view.*
+import android.view.Gravity
+import android.view.MenuItem
 import app.suhocki.mybooks.BuildConfig
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
@@ -29,7 +26,10 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
-import org.jetbrains.anko.*
+import org.jetbrains.anko.itemsSequence
+import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.toast
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -70,14 +70,6 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         R.id.nav_admin to TAB_POSITION_ADMIN
     )
 
-    private val onToogleAdminMode = View.OnLongClickListener {
-        it.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-        presenter.toogleAdminMode()
-        true
-    }
-
-    private lateinit var versionNavDrawerView: View
-
     @ProvidePresenter
     fun providePresenter(): MainPresenter =
         Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE)
@@ -114,8 +106,6 @@ class MainActivity : MvpAppCompatActivity(), MainView,
 
     private fun MainUI.onDrawerItemClick(menuItem: MenuItem): Boolean {
         when (menuItem.itemId) {
-            R.id.nav_version_number -> setVersionLongClickListener()
-
             R.id.nav_about_developer -> openLink(BuildConfig.ABOUT_DEVELOPER_URL)
 
             R.id.nav_licenses -> startActivity<LicensesActivity>()
@@ -128,7 +118,6 @@ class MainActivity : MvpAppCompatActivity(), MainView,
                 drawerLayout.closeDrawers()
             }
         }
-        setVersionLongClickListener()
         return false
     }
 
@@ -141,7 +130,6 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         if (!wasSelected) {
             if (position in fragmentTabPositions) {
                 ui.navigationView.menu.getItem(position).isChecked = true
-                setVersionLongClickListener()
                 showTab(position, ui.bottomBar.currentItem)
                 return true
             } else {
@@ -154,15 +142,9 @@ class MainActivity : MvpAppCompatActivity(), MainView,
     private fun initFragments(savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             tabs = createNewFragments()
-            val fragmentCatalog = tabs[tabKeys[TAB_POSITION_CATALOG]]
-            val fragmentInfo = tabs[tabKeys[TAB_POSITION_INFO]]
-            val fragmentAdmin = tabs[tabKeys[TAB_POSITION_ADMIN]]
+            val fragmentCatalog = tabs[tabKeys[TAB_POSITION_CATALOG]]!!
             supportFragmentManager.beginTransaction()
                 .add(Ids.mainContainer, fragmentCatalog, tabKeys[TAB_POSITION_CATALOG])
-                .add(Ids.mainContainer, fragmentInfo, tabKeys[TAB_POSITION_INFO])
-                .add(Ids.mainContainer, fragmentAdmin, tabKeys[TAB_POSITION_ADMIN])
-                .hide(fragmentAdmin)
-                .hide(fragmentInfo)
                 .commitNow()
             ui.bottomBar.setCurrentItem(TAB_POSITION_CATALOG, false)
         } else {
@@ -173,10 +155,15 @@ class MainActivity : MvpAppCompatActivity(), MainView,
     private fun tabIdToTag(id: Int) = "tab_$id"
 
     private fun showTab(newPosition: Int, oldPosition: Int) {
-        supportFragmentManager.beginTransaction()
-            .hide(tabs[tabKeys[oldPosition]])
-            .show(tabs[tabKeys[newPosition]])
-            .commit()
+        val newFragment = supportFragmentManager.findFragmentByTag(tabKeys[newPosition])
+
+        supportFragmentManager.beginTransaction().apply {
+            if (newFragment == null)
+                add(Ids.mainContainer, tabs[tabKeys[newPosition]]!!, tabKeys[newPosition])
+
+            hide(tabs[tabKeys[oldPosition]]!!)
+            show(tabs[tabKeys[newPosition]]!!)
+        }.commitNow()
     }
 
     private fun invokeAction(position: Int) {
@@ -189,7 +176,7 @@ class MainActivity : MvpAppCompatActivity(), MainView,
     private fun showCatalogTab() {
         ui.bottomBar.currentItem = TAB_POSITION_CATALOG
         supportFragmentManager.beginTransaction()
-            .show(tabs[tabKeys[TAB_POSITION_CATALOG]])
+            .show(tabs[tabKeys[TAB_POSITION_CATALOG]]!!)
             .commit()
     }
 
@@ -200,19 +187,24 @@ class MainActivity : MvpAppCompatActivity(), MainView,
 
     private fun createNewFragments(): HashMap<String, BaseFragment> = hashMapOf(
         tabKeys[TAB_POSITION_CATALOG] to CatalogFragment.newInstance(),
+
         tabKeys[TAB_POSITION_INFO] to InfoFragment.newInstance(),
+
         tabKeys[TAB_POSITION_ADMIN] to AdminFragment.newInstance()
     )
 
     private fun findFragments(): HashMap<String, BaseFragment> = hashMapOf(
-        tabKeys[TAB_POSITION_CATALOG] to supportFragmentManager
-            .findFragmentByTag(tabKeys[TAB_POSITION_CATALOG]) as BaseFragment,
+        tabKeys[TAB_POSITION_CATALOG] to (supportFragmentManager
+            .findFragmentByTag(tabKeys[TAB_POSITION_CATALOG])?.let { it as BaseFragment }
+            ?: CatalogFragment.newInstance()),
 
-        tabKeys[TAB_POSITION_INFO] to supportFragmentManager
-            .findFragmentByTag(tabKeys[TAB_POSITION_INFO]) as BaseFragment,
+        tabKeys[TAB_POSITION_INFO] to (supportFragmentManager
+            .findFragmentByTag(tabKeys[TAB_POSITION_INFO])?.let { it as BaseFragment }
+            ?: InfoFragment.newInstance()),
 
-        tabKeys[TAB_POSITION_ADMIN] to supportFragmentManager
-            .findFragmentByTag(tabKeys[TAB_POSITION_ADMIN]) as BaseFragment
+        tabKeys[TAB_POSITION_ADMIN] to (supportFragmentManager
+            .findFragmentByTag(tabKeys[TAB_POSITION_ADMIN])?.let { it as BaseFragment }
+            ?: AdminFragment.newInstance())
     )
 
     override fun setDrawerExpanded(isExpanded: Boolean) {
@@ -266,28 +258,6 @@ class MainActivity : MvpAppCompatActivity(), MainView,
             if (withToast) toast(R.string.admin_mode_disabled)
             ui.bottomBar.removeItemAtIndex(TAB_POSITION_ADMIN)
             ui.navigationView.menu.getItem(TAB_POSITION_ADMIN).isVisible = false
-        }
-        setVersionLongClickListener()
-    }
-
-    @SuppressLint("RestrictedApi")
-    private fun setVersionLongClickListener() {
-        ui.navigationView.post {
-            (ui.navigationView.childrenSequence().first { it is ViewGroup } as ViewGroup)
-                .childrenSequence().first {
-                    it is ViewGroup && it is NavigationMenuItemView &&
-                            it.itemData.itemId == R.id.nav_version_number
-                }.apply {
-                    if (::versionNavDrawerView.isInitialized)
-                        versionNavDrawerView.setOnLongClickListener(null)
-
-                    val textColor = ColorStateList.valueOf(
-                        ResourcesCompat.getColor(resources, R.color.colorDarkGray, theme)
-                    )
-                    (this as NavigationMenuItemView).setTextColor(textColor)
-                    versionNavDrawerView = this
-                    setOnLongClickListener(onToogleAdminMode)
-                }
         }
     }
 

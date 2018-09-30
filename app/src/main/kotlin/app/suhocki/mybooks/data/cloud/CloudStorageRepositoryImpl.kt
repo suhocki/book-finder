@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.data.repository
+package app.suhocki.mybooks.data.cloud
 
 import app.suhocki.mybooks.data.api.CloudStorageApi
 import app.suhocki.mybooks.domain.repository.CloudStorageRepository

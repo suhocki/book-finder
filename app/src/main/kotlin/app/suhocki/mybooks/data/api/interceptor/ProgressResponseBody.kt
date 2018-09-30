@@ -1,15 +1,14 @@
 package app.suhocki.mybooks.data.api.interceptor
 
+import app.suhocki.mybooks.ui.admin.eventbus.ProgressEvent
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
-import app.suhocki.mybooks.data.progress.ProgressHandler
-import app.suhocki.mybooks.data.progress.ProgressStep
+import org.greenrobot.eventbus.EventBus
 import java.io.IOException
 
 internal class ProgressResponseBody(
-    private val responseBody: ResponseBody,
-    private val progressEmitter: ProgressHandler
+    private val responseBody: ResponseBody
 ) : ResponseBody() {
     private var bufferedSource: BufferedSource? = null
 
@@ -31,7 +30,7 @@ internal class ProgressResponseBody(
 
     private fun source(source: Source): Source {
         return object : ForwardingSource(source) {
-            internal var totalBytesRead = 0L
+            var totalBytesRead = 0L
 
             @Throws(IOException::class)
             override fun read(sink: Buffer, byteCount: Long): Long {
@@ -39,11 +38,8 @@ internal class ProgressResponseBody(
                 val bytesRead = super.read(sink, byteCount)
                 // read() returns the number of bytes read, or -1 if this source is exhausted.
                 totalBytesRead += if (bytesRead != -1L) bytesRead else 0
-                val downloadedPercent = (totalBytesRead / contentLength.toDouble() * 100).toInt()
-                progressEmitter.onProgress(
-                    ProgressStep.DOWNLOADING.apply { this.progress = downloadedPercent },
-                    bytesRead == -1L
-                )
+                EventBus.getDefault().postSticky(ProgressEvent(bytes = totalBytesRead))
+
                 return bytesRead
             }
         }

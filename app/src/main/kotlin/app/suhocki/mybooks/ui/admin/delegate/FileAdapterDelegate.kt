@@ -6,14 +6,17 @@ import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.ui.admin.ui.FileItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
-class FileAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
+class FileAdapterDelegate(
+    private val onFileClick: (File) -> Unit
+) : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
-        FileItemUI()
-            .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
-            .let { ViewHolder(it) }
+        ViewHolder(FileItemUI().apply {
+            createView(AnkoContext.createReusable(parent.context, parent, false))
+        })
 
     override fun isForViewType(items: MutableList<Any>, position: Int): Boolean =
         with(items[position]) { this is File }
@@ -30,11 +33,14 @@ class FileAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
         private lateinit var file: File
 
         init {
+            ui.parent.onClick { onFileClick(file) }
         }
 
         fun bind(file: File) {
             this.file = file
             ui.name.text = file.name
+            ui.size.text = file.humanFileSize
+            ui.date.text = file.date
         }
     }
 }
