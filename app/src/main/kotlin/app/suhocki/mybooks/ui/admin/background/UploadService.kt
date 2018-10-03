@@ -10,6 +10,7 @@ import app.suhocki.mybooks.domain.model.XlsDocument
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.domain.model.admin.UploadControl
 import app.suhocki.mybooks.domain.repository.FileActionsRepository
+import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
 import app.suhocki.mybooks.ui.admin.eventbus.UploadServiceEvent
 import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.AnkoLogger
@@ -100,6 +101,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
 
         R.string.step_saving_to_remote to {
             EventBus.getDefault().postSticky(UploadServiceEvent(uploadControl))
+            EventBus.getDefault().postSticky(DatabaseUpdatedEvent())
 
 
         }

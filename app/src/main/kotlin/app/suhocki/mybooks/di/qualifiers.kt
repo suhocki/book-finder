@@ -2,6 +2,7 @@ package app.suhocki.mybooks.di
 
 import javax.inject.Qualifier
 
+@Qualifier annotation class ErrorReceiver
 @Qualifier annotation class DownloadDirectoryPath
 @Qualifier annotation class DatabaseFileName
 @Qualifier annotation class SharedPreferencesFileName

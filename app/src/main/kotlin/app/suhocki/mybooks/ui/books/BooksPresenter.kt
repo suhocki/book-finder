@@ -3,9 +3,7 @@ package app.suhocki.mybooks.ui.books
 import android.arch.persistence.db.SupportSQLiteQuery
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
-import app.suhocki.mybooks.data.error.ErrorHandler
-import app.suhocki.mybooks.data.error.ErrorListener
-import app.suhocki.mybooks.data.error.ErrorType
+import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.BooksInteractor
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.ui.base.entity.BookEntity
@@ -17,22 +15,11 @@ import javax.inject.Inject
 
 @InjectViewState
 class BooksPresenter @Inject constructor(
+    @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val interactor: BooksInteractor,
-    private val errorHandler: ErrorHandler,
     private val category: Category,
     private val adsManager: AdsManager
-) : MvpPresenter<BooksView>(), ErrorListener {
-
-    init {
-        errorHandler.addListener(this)
-    }
-
-    override fun onError(error: ErrorType) =
-        doAsync {
-            uiThread {
-                viewState.showProgressVisible(false)
-            }
-        }
+) : MvpPresenter<BooksView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -46,7 +33,7 @@ class BooksPresenter @Inject constructor(
     }
 
     private fun loadInitialState(scrollToTop: Boolean = false) =
-        doAsync(errorHandler.errorReceiver) {
+        doAsync(errorReceiver) {
             uiThread { viewState.showProgressVisible(true) }
             interactor.getBooks(category).let { books ->
                 uiThread {
@@ -65,7 +52,7 @@ class BooksPresenter @Inject constructor(
         viewState.showDrawerExpanded(isExpanded)
     }
 
-    fun applyFilter(sqLiteQuery: SupportSQLiteQuery) = doAsync(errorHandler.errorReceiver) {
+    fun applyFilter(sqLiteQuery: SupportSQLiteQuery) = doAsync(errorReceiver) {
         uiThread {
             viewState.showProgressVisible(true)
         }

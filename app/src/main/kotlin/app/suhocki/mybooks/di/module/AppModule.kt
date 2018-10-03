@@ -8,14 +8,16 @@ import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.database.RoomRepository
 import app.suhocki.mybooks.data.database.dao.*
-import app.suhocki.mybooks.data.error.ErrorHandler
+import app.suhocki.mybooks.data.dialog.DialogManager
 import app.suhocki.mybooks.data.notifier.ComponentNotifier
 import app.suhocki.mybooks.data.preferences.SharedPreferencesRepository
 import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.DatabaseFileName
+import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.SharedPreferencesFileName
+import app.suhocki.mybooks.di.provider.ErrorReceiverProvider
 import app.suhocki.mybooks.di.provider.SharedPreferencesProvider
 import app.suhocki.mybooks.di.provider.VersionProvider
 import app.suhocki.mybooks.di.provider.ads.BannerAdProvider
@@ -110,7 +112,9 @@ class AppModule(context: Context) : Module() {
             .toProvider(InterstitialAdProvider::class.java)
             .providesSingletonInScope()
 
-        bind(ErrorHandler::class.java)
+        bind(Function1::class.java)
+            .withName(ErrorReceiver::class.java)
+            .toProvider(ErrorReceiverProvider::class.java)
             .singletonInScope()
 
         bind(ProgressHandler::class.java)
@@ -136,6 +140,7 @@ class AppModule(context: Context) : Module() {
         bind(AdsManager::class.java)
             .singletonInScope()
 
+        @Suppress("DEPRECATION")
         bind(Locale::class.java)
             .toInstance(
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)

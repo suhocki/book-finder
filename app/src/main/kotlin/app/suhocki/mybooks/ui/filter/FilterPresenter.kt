@@ -5,6 +5,7 @@ import android.support.annotation.StringRes
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.resources.ResourceManager
+import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.FilterInteractor
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.ui.filter.entity.FilterCategoryEntity
@@ -17,14 +18,14 @@ import javax.inject.Inject
 
 @InjectViewState
 class FilterPresenter @Inject constructor(
+    @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val interactor: FilterInteractor,
-    private val errorHandler: ErrorHandler,
     private val resourceManager: ResourceManager
 ) : MvpPresenter<FilterView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        doAsync(errorHandler.errorReceiver) {
+        doAsync(errorReceiver) {
             val filterItems = interactor.getFilterCategories()
             uiThread {
                 viewState.showFilterItems(filterItems)
@@ -35,7 +36,7 @@ class FilterPresenter @Inject constructor(
     fun collapseFilterCategory(
         filterCategory: FilterCategory,
         items: MutableList<Any>
-    ) = doAsync(errorHandler.errorReceiver) {
+    ) = doAsync(errorReceiver) {
         val collapsedFilterCategory =
             FilterCategoryEntity(filterCategory.title, false, filterCategory.checkedCount)
         interactor.replaceFilterCategoryItem(filterCategory, collapsedFilterCategory)
@@ -53,7 +54,7 @@ class FilterPresenter @Inject constructor(
     fun expandFilterCategory(
         filterCategory: FilterCategory,
         items: MutableList<Any>
-    ) = doAsync(errorHandler.errorReceiver) {
+    ) = doAsync(errorReceiver) {
         val filterCategoryIndex = items.indexOf(filterCategory)
         val expandedFilterCategory =
             FilterCategoryEntity(filterCategory.title, true, filterCategory.checkedCount)
@@ -75,7 +76,7 @@ class FilterPresenter @Inject constructor(
         filterItem: Parcelable,
         searchKey: String,
         items: MutableList<Any>
-    ) = doAsync(errorHandler.errorReceiver) {
+    ) = doAsync(errorReceiver) {
         val updatedList = interactor.addFilterItemToList(filterItem, items, searchKey)
         updateBottomButtons(filterItem, items)
         uiThread { viewState.showFilterItems(updatedList) }
@@ -88,7 +89,7 @@ class FilterPresenter @Inject constructor(
     fun updateBottomButtons(
         item: Any,
         list: MutableList<Any>
-    ) = doAsync(errorHandler.errorReceiver) {
+    ) = doAsync(errorReceiver) {
         val filterCategory = when (item) {
             is SortName -> countInvolvedSortItems(R.string.name, list, item)
 
@@ -139,7 +140,7 @@ class FilterPresenter @Inject constructor(
         }
     }
 
-    fun resetFilter() = doAsync(errorHandler.errorReceiver) {
+    fun resetFilter() = doAsync(errorReceiver) {
         interactor.reset()
         val filterItems = interactor.getFilterCategories()
         uiThread {
@@ -148,7 +149,7 @@ class FilterPresenter @Inject constructor(
         }
     }
 
-    fun applyFilter() = doAsync(errorHandler.errorReceiver) {
+    fun applyFilter() = doAsync(errorReceiver) {
         if (interactor.validatePriceFilter()) {
             val filterQuery = interactor.getSearchQuery()
             uiThread {

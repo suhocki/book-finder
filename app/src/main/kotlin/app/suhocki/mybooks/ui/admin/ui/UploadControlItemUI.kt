@@ -11,6 +11,7 @@ import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
+import app.suhocki.mybooks.ui.base.materialButton
 import org.jetbrains.anko.*
 
 class UploadControlItemUI : AnkoComponent<ViewGroup> {
@@ -61,6 +62,12 @@ class UploadControlItemUI : AnkoComponent<ViewGroup> {
                         gravity = Gravity.CENTER_VERTICAL
                     }
                 }
+            }
+
+            materialButton {
+                text = resources.getString(R.string.cancel)
+                setTextAppearance(android.R.style.TextAppearance_Material_Button)
+                includeFontPadding = true
             }
         }
     }.apply {

@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.admin.delegate
 
+import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +19,9 @@ import org.jetbrains.anko.childrenSequence
 class UploadControlAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
-        UploadControlItemUI()
-            .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
-            .let { ViewHolder(it) }
+        ViewHolder(UploadControlItemUI().apply {
+            createView(AnkoContext.createReusable(parent.context, parent, false))
+        })
 
     override fun isForViewType(items: MutableList<Any>, position: Int): Boolean =
         with(items[position]) { this is UploadControl }
@@ -30,18 +31,21 @@ class UploadControlAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
-    ) = (holder as ViewHolder).bind(items[position] as UploadControl)
+    ) = (holder as ViewHolder).bind(items[position] as UploadControl, payloads)
 
 
     private inner class ViewHolder(
         val ui: UploadControlItemUI
     ) : RecyclerView.ViewHolder(ui.parent) {
 
-        fun bind(uploadControl: UploadControl) {
+        fun bind(
+            uploadControl: UploadControl,
+            payloads: MutableList<Any>
+        ) {
             var isStepItemFound = false
             val stepHumanName = ui.parent.resources.getString(uploadControl.stepRes)
 
-            ui.parent.childrenSequence().forEach { view ->
+            ui.parent.childrenSequence().filterNot { it is MaterialButton }.forEach { view ->
                 val progressBar = view.childrenRecursiveSequence()
                     .find { it is ProgressBar }!!
 
@@ -54,23 +58,23 @@ class UploadControlAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
                 val progressText = view.childrenRecursiveSequence()
                     .findLast { it is TextView } as TextView
 
-                progressBar.visibility = View.INVISIBLE
-                progressText.visibility = View.INVISIBLE
-                imageSuccess.visibility =
-                        if (isStepItemFound) View.INVISIBLE
-                        else View.VISIBLE
-
                 if (stepText.text == stepHumanName) {
                     isStepItemFound = true
                     imageSuccess.visibility = View.INVISIBLE
                     if (uploadControl.progress > 0) {
+                        progressBar.visibility = View.INVISIBLE
                         progressText.visibility = View.VISIBLE
-                        progressText.text = progressText.resources.getString(
-                            R.string.percent, uploadControl.progress
-                        )
+                        progressText.text = progressText.resources
+                            .getString(R.string.percent, uploadControl.progress)
                     } else {
                         progressBar.visibility = View.VISIBLE
                     }
+                } else {
+                    progressBar.visibility = View.INVISIBLE
+                    progressText.visibility = View.INVISIBLE
+                    imageSuccess.visibility =
+                            if (isStepItemFound) View.INVISIBLE
+                            else View.VISIBLE
                 }
             }
         }

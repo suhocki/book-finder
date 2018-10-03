@@ -6,8 +6,9 @@ import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.toHumanDate
 import app.suhocki.mybooks.toHumanFileSize
 import java.util.*
+import javax.inject.Inject
 
-class MetaDataItemToFile(
+class MetaDataItemToFile @Inject constructor(
     private val locale: Locale
 ) : BaseConverter<MetaData.Item, File>(
     MetaData.Item::class.java,

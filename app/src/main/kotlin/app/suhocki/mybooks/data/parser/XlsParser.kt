@@ -324,8 +324,8 @@ class XlsParser @Inject constructor() : AnkoLogger {
         private const val FORMAT_LENGTH = 3
         private const val YEAR_LENGTH = 4
         private const val CONTACT_POSITION_ORGANIZATION = 0
-        private const val CONTACT_POSITION_ADDRESS = 11
-        private const val CONTACT_POSITION_WORKING_TIME = 12
+        private const val CONTACT_POSITION_ADDRESS = 9
+        private const val CONTACT_POSITION_WORKING_TIME = 10
         private val KEYS_SET = setOf(
             KEY_ISBN,
             KEY_AUTHOR,

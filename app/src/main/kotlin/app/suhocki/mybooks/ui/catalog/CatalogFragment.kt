@@ -15,8 +15,10 @@ import app.suhocki.mybooks.di.module.CatalogModule
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
+import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchListener
@@ -26,6 +28,9 @@ import app.suhocki.mybooks.ui.details.DetailsActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.*
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.dimen
@@ -88,6 +93,16 @@ class CatalogFragment : BaseFragment(), CatalogView,
         }
 
         ui.recyclerView.adapter = adapter
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
     }
 
     private fun animateToolbarNavigationButton(toArrow: Boolean) {
@@ -227,6 +242,12 @@ class CatalogFragment : BaseFragment(), CatalogView,
         Analytics.bookAddedToCart(book)
         context!!.openLink(book.website)
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onDatabaseUpdated(event: DatabaseUpdatedEvent) {
+        presenter.loadData()
+    }
+
 
     companion object {
         const val ARG_CATEGORY = "ARG_CATEGORY"

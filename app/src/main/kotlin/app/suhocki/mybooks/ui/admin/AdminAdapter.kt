@@ -31,12 +31,20 @@ class AdminAdapter(
     override fun getItemCount(): Int =
         differ.currentList.size
 
-    fun submitList(list: List<Any>, withAnimation: Boolean) {
-        mutableListOf<Any>().apply {
-            addAll(list)
-            items = this
-            if (withAnimation) differ.submitList(this)
-            else notifyDataSetChanged()
-        }
+    fun submitList(
+        list: List<Any>,
+        changedPosition: Int = UNDEFINED,
+        payload: Any? = null
+    ) = mutableListOf<Any>().apply {
+        addAll(list)
+        items = this
+        if (changedPosition != UNDEFINED) {
+            notifyItemChanged(changedPosition, payload)
+        } else differ.submitList(this)
+    }
+
+
+    companion object {
+        const val UNDEFINED = -1
     }
 }

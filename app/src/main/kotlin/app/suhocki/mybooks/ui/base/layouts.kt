@@ -3,6 +3,7 @@
 package app.suhocki.mybooks.ui.base
 
 import android.content.Context
+import android.support.design.button.MaterialButton
 import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.Toolbar
 import android.view.ViewManager
@@ -34,36 +35,37 @@ inline fun ViewManager.adView(init: (@AnkoViewDslMarker AdView).() -> Unit): AdV
     return ankoView({ ctx: Context -> AdView(ctx) }, theme = 0) { init() }
 }
 
-inline fun ViewManager.nativeContentAdView(init: (@AnkoViewDslMarker NativeContentAdView).() -> Unit): NativeContentAdView {
-    return ankoView({ ctx: Context -> NativeContentAdView(ctx) }, theme = 0) { init() }
-}
+inline fun ViewManager.nativeContentAdView(
+    init: (@AnkoViewDslMarker NativeContentAdView).() -> Unit
+) =
+    ankoView({ ctx: Context -> NativeContentAdView(ctx) }, theme = 0) { init() }
 
-inline fun ViewManager.multilineCollapsingToolbarLayout(init: (@AnkoViewDslMarker MultilineCollapsingToolbarLayout).() -> Unit): MultilineCollapsingToolbarLayout {
-    return ankoView({ ctx: Context ->
-        MultilineCollapsingToolbarLayout(
-            ctx
-        )
-    }, theme = 0) { init() }
+inline fun ViewManager.multilineCollapsingToolbarLayout(
+    init: (@AnkoViewDslMarker MultilineCollapsingToolbarLayout).() -> Unit
+) = ankoView({ ctx: Context ->
+    MultilineCollapsingToolbarLayout(
+        ctx
+    )
+}, theme = 0) {
+    init()
 }
 
 inline fun ViewManager.themedToolbarCompat(
     theme: Int = 0,
     init: (@AnkoViewDslMarker Toolbar).() -> Unit
-): Toolbar {
-    return ankoView({ ctx: Context -> Toolbar(ctx) }, theme) { init() }
-}
+) = ankoView({ ctx: Context -> Toolbar(ctx) }, theme) { init() }
 
 inline fun ViewManager.bottomNavigation(
     theme: Int = 0,
     init: (@AnkoViewDslMarker AHBottomNavigation).() -> Unit
-): AHBottomNavigation {
-    return ankoView({ ctx: Context -> AHBottomNavigation(ctx) }, theme) { init() }
-}
+) = ankoView({ ctx: Context -> AHBottomNavigation(ctx) }, theme) { init() }
 
-
-inline fun ViewManager.simpleDraweeView (
+inline fun ViewManager.simpleDraweeView(
     theme: Int = 0,
     init: (@AnkoViewDslMarker SimpleDraweeView).() -> Unit
-): SimpleDraweeView {
-    return ankoView({ ctx: Context -> SimpleDraweeView(ctx) }, theme) { init() }
-}
+) = ankoView({ ctx: Context -> SimpleDraweeView(ctx) }, theme) { init() }
+
+inline fun ViewManager.materialButton(
+    theme: Int = 0,
+    init: (@AnkoViewDslMarker MaterialButton).() -> Unit
+) = ankoView({ ctx: Context -> MaterialButton(ctx) }, theme) { init() }

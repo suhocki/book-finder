@@ -1,15 +1,19 @@
 package app.suhocki.mybooks.data.mapper
 
 import app.suhocki.mybooks.data.mapper.converter.MetaDataItemToFile
-import java.util.*
+import app.suhocki.mybooks.data.mapper.converter.StringToResponseKind
 import javax.inject.Inject
 
 class Mapper @Inject constructor(
-    locale: Locale
+    metaDataItemToFile: MetaDataItemToFile,
+    stringToResponseKind: StringToResponseKind
 ) {
-    private val converters = mutableListOf<Converter<*, *>>(
-        MetaDataItemToFile(locale)
-    )
+    private val converters by lazy {
+        mutableListOf<Converter<*, *>>(
+            metaDataItemToFile,
+            stringToResponseKind
+        )
+    }
 
     fun <FROM : Any, TO> map(value: FROM, toClass: Class<TO>): TO {
 

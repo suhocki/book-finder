@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.ui.info
 
-import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
+import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.InfoInteractor
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -11,17 +11,19 @@ import javax.inject.Inject
 
 @InjectViewState
 class InfoPresenter @Inject constructor(
+    @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val infoInteractor: InfoInteractor,
-    private val errorHandler: ErrorHandler,
     private val remoteConfigurator: RemoteConfiguration
 ) : MvpPresenter<InfoView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        loadData()
+    }
+
+    fun loadData() {
         viewState.showProgress(true)
-
-        doAsync(errorHandler.errorReceiver) {
-
+        doAsync(errorReceiver) {
             val items = mutableListOf<Any>().apply {
                 infoInteractor.getHeaderOrganization()?.let { add(it) }
                 addAll(infoInteractor.getContacts())

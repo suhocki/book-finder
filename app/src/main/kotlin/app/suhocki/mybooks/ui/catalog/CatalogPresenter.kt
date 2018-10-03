@@ -6,6 +6,7 @@ import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.CategoriesDecoration
+import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.SearchAll
 import app.suhocki.mybooks.di.SearchDecoration
 import app.suhocki.mybooks.domain.CatalogInteractor
@@ -22,10 +23,10 @@ import javax.inject.Inject
 
 @InjectViewState
 class CatalogPresenter @Inject constructor(
+    @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val interactor: CatalogInteractor,
     private val resourceManager: ResourceManager,
     private val adsManager: AdsManager,
-    private val errorHandler: ErrorHandler,
     @SearchAll private val searchEntity: Search,
     @SearchDecoration private val searchDecoration: RecyclerView.ItemDecoration,
     @CategoriesDecoration private val categoriesDecoration: RecyclerView.ItemDecoration
@@ -33,7 +34,11 @@ class CatalogPresenter @Inject constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        doAsync(errorHandler.errorReceiver) {
+        loadData()
+    }
+
+    fun loadData() {
+        doAsync(errorReceiver) {
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
                 add(HeaderEntity(title = resourceManager.getString(R.string.catalog)))
@@ -51,7 +56,7 @@ class CatalogPresenter @Inject constructor(
     }
 
     fun startSearchMode(): Future<Unit> {
-        return doAsync(errorHandler.errorReceiver) {
+        return doAsync(errorReceiver) {
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
                 add(searchEntity)
@@ -68,7 +73,7 @@ class CatalogPresenter @Inject constructor(
     }
 
     fun stopSearchMode() =
-        doAsync(errorHandler.errorReceiver) {
+        doAsync(errorReceiver) {
             searchEntity.searchQuery = EMPTY_STRING
             val catalogItems = mutableListOf<Any>().apply {
                 add(interactor.getBanner())
@@ -96,7 +101,7 @@ class CatalogPresenter @Inject constructor(
         )
     }
 
-    fun search() = doAsync(errorHandler.errorReceiver) {
+    fun search() = doAsync(errorReceiver) {
         if (searchEntity.searchQuery.isBlank()) return@doAsync
         val catalogItems = mutableListOf<Any>().apply {
             add(interactor.getBanner())
@@ -118,7 +123,7 @@ class CatalogPresenter @Inject constructor(
         }
     }
 
-    fun clearSearchQuery() = doAsync(errorHandler.errorReceiver) {
+    fun clearSearchQuery() = doAsync(errorReceiver) {
         if (searchEntity.searchQuery.isBlank()) stopSearchMode()
         else {
             val catalogItems = mutableListOf<Any>().apply {

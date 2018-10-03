@@ -5,11 +5,15 @@ import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
 import org.greenrobot.eventbus.EventBus
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
 import java.io.IOException
 
 internal class ProgressResponseBody(
+    private val url: String,
+    private val contentLength: Long?,
     private val responseBody: ResponseBody
-) : ResponseBody() {
+) : ResponseBody(), AnkoLogger {
     private var bufferedSource: BufferedSource? = null
 
     override fun contentType(): MediaType? {
@@ -34,11 +38,21 @@ internal class ProgressResponseBody(
 
             @Throws(IOException::class)
             override fun read(sink: Buffer, byteCount: Long): Long {
-                val contentLength = responseBody.contentLength()
                 val bytesRead = super.read(sink, byteCount)
-                // read() returns the number of bytes read, or -1 if this source is exhausted.
-                totalBytesRead += if (bytesRead != -1L) bytesRead else 0
-                EventBus.getDefault().postSticky(ProgressEvent(bytes = totalBytesRead))
+                if (bytesRead != -1L) totalBytesRead += bytesRead
+
+                val realContentLength =
+                    if (contentLength != null && contentLength > contentLength()) contentLength
+                    else contentLength()
+
+                val progress = (totalBytesRead / realContentLength.toDouble() * 100).toInt()
+                val progressEvent = ProgressEvent(
+                    downloadUrl = url,
+                    bytes = totalBytesRead,
+                    progress = progress
+                )
+                info { "read: $totalBytesRead; $progress%" }
+                EventBus.getDefault().postSticky(progressEvent)
 
                 return bytesRead
             }

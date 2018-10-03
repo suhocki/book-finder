@@ -10,6 +10,7 @@ import app.suhocki.mybooks.domain.model.Info
 import app.suhocki.mybooks.openCaller
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.openMap
+import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.AdminModeEnabler
 import app.suhocki.mybooks.ui.changelog.ChangelogActivity
@@ -18,6 +19,9 @@ import app.suhocki.mybooks.ui.licenses.LicensesActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.email
@@ -57,10 +61,21 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
         ui.recyclerView.adapter = adapter
     }
 
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
     override fun showInfoItems(items: MutableList<Any>) {
         adapter.submitList(items)
     }
 
+    @Suppress("NON_EXHAUSTIVE_WHEN")
     override fun onInfoClick(info: Info) {
         when (info.type) {
             Info.InfoType.PHONE -> context!!.openCaller(info.name)
@@ -72,9 +87,6 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
             Info.InfoType.FACEBOOK -> context!!.openLink(info.valueForNavigation!!)
 
             Info.InfoType.VK -> context!!.openLink(info.valueForNavigation!!)
-
-            Info.InfoType.WORKING_TIME -> {
-            }
 
             Info.InfoType.ADDRESS -> context!!.openMap(info.name)
 
@@ -93,6 +105,11 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
         ui.progressBar.visibility =
                 if (isVisible) View.VISIBLE
                 else View.GONE
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onDatabaseUpdated(event: DatabaseUpdatedEvent) {
+        presenter.loadData()
     }
 
 

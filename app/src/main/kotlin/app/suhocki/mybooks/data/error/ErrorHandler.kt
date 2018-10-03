@@ -1,11 +1,8 @@
 package app.suhocki.mybooks.data.error
 
-import android.content.Context
-import app.suhocki.mybooks.inDebug
-import app.suhocki.mybooks.isAppOnForeground
+import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
 import okhttp3.internal.http2.StreamResetException
-import org.jetbrains.anko.longToast
-import org.jetbrains.anko.runOnUiThread
+import org.greenrobot.eventbus.EventBus
 import retrofit2.HttpException
 import java.io.InterruptedIOException
 import java.net.ConnectException
@@ -15,35 +12,17 @@ import java.util.concurrent.CancellationException
 import javax.inject.Inject
 import javax.net.ssl.SSLHandshakeException
 
-class ErrorHandler @Inject constructor(
-    private val context: Context
-) {
-    private val listeners = mutableListOf<ErrorListener>()
-    private var lastError: Throwable? = null
+class ErrorHandler @Inject constructor() {
 
-    val errorReceiver: (Throwable) -> Unit = {
-        if (it !is InterruptedException &&
-            it !is InterruptedIOException &&
-            it !is CancellationException) {
-            it.printStackTrace()
-            with(context) {
-                if (isAppOnForeground()) {
-                    inDebug { runOnUiThread { longToast(it.message.toString()) } }
-                } else {
-                    lastError = it
-                }
-            }
-            val errorType = getErrorType(it)
-            listeners.forEach { it.onError(errorType) }
+    fun handleError(throwable: Throwable) {
+        if (throwable !is InterruptedException &&
+            throwable !is InterruptedIOException &&
+            throwable !is CancellationException
+        ) {
+            throwable.printStackTrace()
+            val errorType = getErrorType(throwable)
+            EventBus.getDefault().postSticky(ErrorEvent(errorType.descriptionRes))
         }
-    }
-
-    fun addListener(listener: ErrorListener) {
-        listeners.add(listener)
-    }
-
-    fun removeListener(listener: ErrorListener) {
-        listeners.remove(listener)
     }
 
     private fun getErrorType(throwable: Throwable): ErrorType {
@@ -76,17 +55,6 @@ class ErrorHandler @Inject constructor(
 
             else -> ErrorType.UNKNOWN
         }
-    }
-
-    fun invokeLastError() {
-        lastError?.let {
-            errorReceiver.invoke(it)
-            lastError = null
-        }
-    }
-
-    fun clearLastError() {
-        lastError = null
     }
 
     companion object {

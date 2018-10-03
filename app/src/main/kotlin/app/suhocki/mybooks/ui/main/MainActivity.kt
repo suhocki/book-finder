@@ -72,8 +72,10 @@ class MainActivity : MvpAppCompatActivity(), MainView,
 
     @ProvidePresenter
     fun providePresenter(): MainPresenter =
-        Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE)
-            .getInstance(MainPresenter::class.java)
+        Toothpick.openScopes(
+            DI.APP_SCOPE,
+            DI.MAIN_ACTIVITY_SCOPE
+        ).getInstance(MainPresenter::class.java)
 
 
     override fun onDestroy() {

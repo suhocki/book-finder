@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.di.module
 
+import android.content.Context
 import app.suhocki.mybooks.data.api.GoogleDriveApi
 import app.suhocki.mybooks.data.googledrive.GoogleDriveRepositoryImpl
 import app.suhocki.mybooks.data.localstorage.LocalStorageRepository
@@ -14,9 +15,15 @@ import app.suhocki.mybooks.domain.repository.GoogleDriveRepository
 import okhttp3.OkHttpClient
 import toothpick.config.Module
 
-class AdminModule(downloadDirectory: String) : Module() {
+class AdminModule(
+    context: Context,
+    downloadDirectory: String
+) : Module() {
 
     init {
+        bind(Context::class.java)
+            .toInstance(context)
+
         bind(OkHttpClient::class.java)
             .toProvider(GoogleDriveOkHttpProvider::class.java)
             .providesSingletonInScope()

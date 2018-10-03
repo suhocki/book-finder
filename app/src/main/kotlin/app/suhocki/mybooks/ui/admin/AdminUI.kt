@@ -10,12 +10,12 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.ProgressBar
+import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
-import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import org.jetbrains.anko.*
@@ -25,10 +25,16 @@ import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
-class AdminUI<in T : Fragment> : AnkoComponent<T> {
+class AdminUI<in T : Fragment>(
+    private val onRetryClick: () -> Unit
+) : AnkoComponent<T> {
     lateinit var recyclerView: RecyclerView
     lateinit var toolbar: Toolbar
     lateinit var progressBar: ProgressBar
+    lateinit var progressText: TextView
+    lateinit var errorView: View
+    lateinit var retry: View
+    lateinit var errorText: TextView
 
     override fun createView(ui: AnkoContext<T>) = with(ui) {
 
@@ -47,6 +53,26 @@ class AdminUI<in T : Fragment> : AnkoComponent<T> {
                     navigationIcon = DrawerArrowDrawable(context!!)
                         .apply { color = Color.WHITE }
 
+                    imageView(R.drawable.ic_refresh).apply {
+                        retry = this
+                        onClick { onRetryClick() }
+                        padding = dimen(R.dimen.padding_toolbar_icon)
+                        backgroundResource = context
+                            .attrResource(R.attr.selectableItemBackgroundBorderless)
+                        scaleType = ImageView.ScaleType.FIT_CENTER
+                        layoutParams = Toolbar.LayoutParams(
+                            dimenAttr(R.attr.actionBarSize),
+                            matchParent
+                        ).apply {
+                            gravity = Gravity.END
+                        }
+                    }
+
+                    view {
+                        backgroundColorResource = R.color.colorGray
+                        layoutParams = Toolbar.LayoutParams(dip(1), matchParent)
+                            .apply { gravity = Gravity.END }
+                    }
                 }.lparams(matchParent, matchParent) {
                     scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
                 }
@@ -68,6 +94,29 @@ class AdminUI<in T : Fragment> : AnkoComponent<T> {
             themedProgressBar(R.style.AccentProgressBar) {
                 progressBar = this
                 visibility = View.GONE
+            }.lparams {
+                gravity = Gravity.CENTER
+            }
+
+            textView {
+                progressText = this
+            }.lparams {
+                gravity = Gravity.CENTER
+            }
+
+            verticalLayout {
+                errorView = this
+                visibility = View.GONE
+
+                imageView(R.drawable.ic_error).lparams {
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }
+
+                textView {
+                    errorText = this
+                }.lparams {
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }
             }.lparams {
                 gravity = Gravity.CENTER
             }
