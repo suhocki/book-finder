@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.base.ui
 
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.RecyclerView
 import android.text.InputType
 import android.view.Gravity
@@ -11,6 +12,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
 import app.suhocki.mybooks.ui.Ids
+import app.suhocki.mybooks.ui.base.materialCardView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.cardview.v7.themedCardView
 
@@ -26,9 +28,13 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
             backgroundColorResource = R.color.colorWhite
             verticalPadding = dimen(R.dimen.padding_item_search)
 
-            themedCardView {
-                useCompatPadding = true
-                maxCardElevation = 1f
+            materialCardView {
+                strokeColor = ResourcesCompat.getColor(
+                    resources, R.color.colorDarkGray, context.theme
+                )
+                strokeWidth = dip(1)
+                radius = dip(10).toFloat()
+                cardElevation = 0f
 
                 linearLayout {
                     setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
@@ -59,7 +65,7 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
                         gravity = Gravity.CENTER_VERTICAL or Gravity.END
                     }
 
-                }.lparams(matchParent, matchParent)
+                }
 
             }.lparams(matchParent, matchParent) {
                 gravity = Gravity.CENTER_VERTICAL

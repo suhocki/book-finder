@@ -30,6 +30,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.bottomPadding
 import org.jetbrains.anko.dimenAttr
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.dimen
 import org.jetbrains.anko.support.v4.longToast
@@ -83,8 +84,8 @@ class FilterFragment : BaseFragment(), FilterView,
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         ui.recyclerView.adapter = adapter
-        ui.apply.setOnClickListener { presenter.applyFilter() }
-        ui.reset.setOnClickListener {
+        ui.apply.onClick { presenter.applyFilter() }
+        ui.reset.onClick {
             presenter.resetFilter()
             (activity as OnFilterResultListener).onFilterReset()
         }

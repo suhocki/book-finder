@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Point
 import android.graphics.PorterDuff
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.Gravity
@@ -13,6 +14,7 @@ import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
+import app.suhocki.mybooks.ui.base.materialCardView
 import app.suhocki.mybooks.ui.base.simpleDraweeView
 import com.facebook.drawee.drawable.ScalingUtils
 import com.facebook.drawee.view.SimpleDraweeView
@@ -37,8 +39,13 @@ class BookItemUI : AnkoComponent<ViewGroup> {
         frameLayout {
             this@BookItemUI.parent = this
 
-            themedCardView {
-                useCompatPadding = true
+            materialCardView {
+                strokeColor = ResourcesCompat.getColor(
+                    resources, R.color.colorDarkGray, context.theme
+                )
+                strokeWidth = dip(1)
+                radius = dip(10).toFloat()
+                cardElevation = 0f
 
                 verticalLayout {
                     setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))

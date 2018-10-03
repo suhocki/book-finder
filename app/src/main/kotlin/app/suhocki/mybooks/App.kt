@@ -1,5 +1,6 @@
 package app.suhocki.mybooks
 
+import android.annotation.SuppressLint
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
@@ -16,6 +17,8 @@ import org.jetbrains.anko.notificationManager
 import toothpick.Toothpick
 
 
+@Suppress("unused")
+@SuppressLint("Registered")
 open class App : Application() {
 
     override fun onCreate() {

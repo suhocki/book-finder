@@ -2,6 +2,7 @@ package app.suhocki.mybooks.ui.catalog.ui
 
 import android.graphics.PorterDuff
 import android.support.v4.content.ContextCompat
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.Gravity
@@ -12,6 +13,7 @@ import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.setForegroundCompat
+import app.suhocki.mybooks.ui.base.materialCardView
 import app.suhocki.mybooks.ui.base.simpleDraweeView
 import com.facebook.drawee.view.SimpleDraweeView
 import org.jetbrains.anko.*
@@ -32,8 +34,13 @@ class SearchResultItemUI : AnkoComponent<ViewGroup> {
             this@SearchResultItemUI.parent = this
             horizontalPadding = dimen(R.dimen.padding_item_search)
 
-            themedCardView {
-                useCompatPadding = true
+            materialCardView {
+                strokeColor = ResourcesCompat.getColor(
+                    resources, R.color.colorDarkGray, context.theme
+                )
+                strokeWidth = dip(1)
+                radius = dip(10).toFloat()
+                cardElevation = 0f
 
                 frameLayout {
                     setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
@@ -88,7 +95,7 @@ class SearchResultItemUI : AnkoComponent<ViewGroup> {
                         }
 
                     }.lparams(matchParent, matchParent) {
-                        setMargins(dimen(R.dimen.width_search_result_image), dip(8),0,dip(8))
+                        setMargins(dimen(R.dimen.width_search_result_image), dip(8), 0, dip(8))
                     }
 
                     simpleDraweeView {
@@ -96,7 +103,7 @@ class SearchResultItemUI : AnkoComponent<ViewGroup> {
                         scaleType = ImageView.ScaleType.CENTER_CROP
                     }.lparams(dimen(R.dimen.width_search_result_image), matchParent)
 
-                }.lparams(matchParent, matchParent)
+                }
 
             }.lparams(matchParent, matchParent) {
                 gravity = Gravity.CENTER_VERTICAL

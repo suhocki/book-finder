@@ -1,8 +1,10 @@
 package app.suhocki.mybooks.ui.admin
 
 import android.graphics.Color
+import android.graphics.PorterDuff
 import android.support.design.widget.AppBarLayout
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -19,10 +21,12 @@ import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import org.jetbrains.anko.*
+import org.jetbrains.anko.appcompat.v7.themedTintedImageView
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.appcompat.v7.tintedImageView
 
 
 class AdminUI<in T : Fragment>(
@@ -108,16 +112,25 @@ class AdminUI<in T : Fragment>(
                 errorView = this
                 visibility = View.GONE
 
-                imageView(R.drawable.ic_error).lparams {
+                tintedImageView(R.drawable.ic_error) {
+                    setColorFilter(
+                        ContextCompat.getColor(context, R.color.colorDarkerGray),
+                        PorterDuff.Mode.SRC_IN
+                    )
+                }.lparams {
+                    bottomMargin = dip(8)
                     gravity = Gravity.CENTER_HORIZONTAL
                 }
 
                 textView {
                     errorText = this
+                    gravity = Gravity.CENTER_HORIZONTAL
                 }.lparams {
+                    topMargin = dip(8)
                     gravity = Gravity.CENTER_HORIZONTAL
                 }
             }.lparams {
+                margin = dip(32)
                 gravity = Gravity.CENTER
             }
         }

@@ -4,6 +4,7 @@ package app.suhocki.mybooks.ui.base
 
 import android.content.Context
 import android.support.design.button.MaterialButton
+import android.support.design.card.MaterialCardView
 import android.support.v7.widget.AppCompatTextView
 import android.support.v7.widget.Toolbar
 import android.view.ViewManager
@@ -69,3 +70,10 @@ inline fun ViewManager.materialButton(
     theme: Int = 0,
     init: (@AnkoViewDslMarker MaterialButton).() -> Unit
 ) = ankoView({ ctx: Context -> MaterialButton(ctx) }, theme) { init() }
+
+inline fun ViewManager.materialCardView(
+    theme: Int = 0,
+    init: (@AnkoViewDslMarker MaterialCardView).() -> Unit
+) = ankoView({ ctx: Context -> MaterialCardView(ctx) }, theme) { init() }
+
+
