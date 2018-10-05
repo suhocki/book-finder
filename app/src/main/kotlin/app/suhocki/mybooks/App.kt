@@ -8,6 +8,7 @@ import android.os.Build
 import android.support.v7.app.AppCompatDelegate
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.AppModule
+import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
 import com.facebook.imagepipeline.decoder.SimpleProgressiveJpegConfig
@@ -29,6 +30,7 @@ open class App : Application() {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
         initAds()
         initFresco()
+        MPEventBus.init(applicationContext)
     }
 
     private fun initAppScope() {

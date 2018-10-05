@@ -15,8 +15,4 @@ interface GoogleDriveApi {
         @Query("q") query: String,
         @Query("maxResults") maxResults: Int
     ): Call<MetaData>
-
-    @Streaming
-    @GET
-    fun downloadFile(@Url fileUrl: String): Call<ResponseBody>
 }

@@ -13,13 +13,13 @@ import app.suhocki.mybooks.openMap
 import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.listener.AdminModeEnabler
+import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import app.suhocki.mybooks.ui.changelog.ChangelogActivity
 import app.suhocki.mybooks.ui.info.listener.OnInfoClickListener
 import app.suhocki.mybooks.ui.licenses.LicensesActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.AnkoContext
@@ -63,12 +63,12 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
 
     override fun onStart() {
         super.onStart()
-        EventBus.getDefault().register(this)
+        MPEventBus.getDefault().register(this)
     }
 
     override fun onStop() {
         super.onStop()
-        EventBus.getDefault().unregister(this)
+        MPEventBus.getDefault().unregister(this)
     }
 
     override fun showInfoItems(items: MutableList<Any>) {

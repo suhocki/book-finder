@@ -1,24 +1,19 @@
-package app.suhocki.mybooks.ui.admin.entity
+package app.suhocki.mybooks.ui.admin.background
 
 import android.os.Parcel
 import android.os.Parcelable
 import app.suhocki.mybooks.domain.model.admin.UploadControl
 
 class UploadControlEntity(
-    override var fileName: String,
+    override var fileName: String = "",
     override var stepRes: Int,
-    override var progress: Int
+    override var progress: Int = 0
 ) : UploadControl {
+
     constructor(parcel: Parcel) : this(
         parcel.readString(),
         parcel.readInt(),
         parcel.readInt()
-    )
-
-    constructor(uploadControl: UploadControl) : this(
-        uploadControl.fileName,
-        uploadControl.stepRes,
-        uploadControl.progress
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {

@@ -1,22 +1,20 @@
 package app.suhocki.mybooks.ui.admin.ui
 
+import android.graphics.Typeface
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
-import app.suhocki.mybooks.setForegroundCompat
-import app.suhocki.mybooks.ui.base.materialButton
 import org.jetbrains.anko.*
 
 class UploadControlItemUI : AnkoComponent<ViewGroup> {
 
     lateinit var parent: ViewGroup
+    lateinit var cancel: View
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
 
@@ -64,10 +62,17 @@ class UploadControlItemUI : AnkoComponent<ViewGroup> {
                 }
             }
 
-            materialButton {
-                text = resources.getString(R.string.cancel)
-                setTextAppearance(android.R.style.TextAppearance_Material_Button)
-                includeFontPadding = true
+            textView(R.string.cancel) {
+                cancel = this
+                textAppearance = R.style.TextAppearance_AppCompat_Body2
+                typeface = Typeface.DEFAULT_BOLD
+                padding = dip(8)
+                backgroundResource = context
+                    .attrResource(R.attr.selectableItemBackgroundBorderless)
+                textColorResource = R.color.colorDarkerGray
+            }.lparams(wrapContent, wrapContent) {
+                topMargin = dip(8)
+                gravity = Gravity.CENTER_HORIZONTAL
             }
         }
     }.apply {

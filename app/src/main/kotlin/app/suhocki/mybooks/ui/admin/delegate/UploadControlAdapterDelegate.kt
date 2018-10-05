@@ -1,6 +1,5 @@
 package app.suhocki.mybooks.ui.admin.delegate
 
-import android.support.design.button.MaterialButton
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -14,14 +13,20 @@ import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.childrenSequence
+import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
-class UploadControlAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
+class UploadControlAdapterDelegate(
+    private val cancelUpload: () -> Unit
+) : AdapterDelegate<MutableList<Any>>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
-        ViewHolder(UploadControlItemUI().apply {
+    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
+        val ui = UploadControlItemUI().apply {
             createView(AnkoContext.createReusable(parent.context, parent, false))
-        })
+        }
+        ui.cancel.onClick { cancelUpload() }
+        return ViewHolder(ui)
+    }
 
     override fun isForViewType(items: MutableList<Any>, position: Int): Boolean =
         with(items[position]) { this is UploadControl }
@@ -31,21 +36,18 @@ class UploadControlAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
-    ) = (holder as ViewHolder).bind(items[position] as UploadControl, payloads)
+    ) = (holder as ViewHolder).bind(items[position] as UploadControl)
 
 
     private inner class ViewHolder(
         val ui: UploadControlItemUI
     ) : RecyclerView.ViewHolder(ui.parent) {
 
-        fun bind(
-            uploadControl: UploadControl,
-            payloads: MutableList<Any>
-        ) {
+        fun bind(uploadControl: UploadControl) {
             var isStepItemFound = false
             val stepHumanName = ui.parent.resources.getString(uploadControl.stepRes)
 
-            ui.parent.childrenSequence().filterNot { it is MaterialButton }.forEach { view ->
+            ui.parent.childrenSequence().filterNot { it is TextView }.forEach { view ->
                 val progressBar = view.childrenRecursiveSequence()
                     .find { it is ProgressBar }!!
 

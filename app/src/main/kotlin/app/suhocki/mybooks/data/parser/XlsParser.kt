@@ -11,6 +11,7 @@ import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Info
 import app.suhocki.mybooks.ui.admin.eventbus.ProgressEvent
+import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
@@ -38,7 +39,7 @@ class XlsParser @Inject constructor() : AnkoLogger {
 
         while (matcher.find()) {
             progress = (matcher.start() / contentStringLength * 100).toInt()
-            EventBus.getDefault().postSticky(ProgressEvent(progress))
+            MPEventBus.getDefault().postToAll(ProgressEvent(progress))
             checkThreadInterrupt()
             matcher.group().let {
                 allMatches.add(
@@ -141,7 +142,7 @@ class XlsParser @Inject constructor() : AnkoLogger {
                         .add(createBookEntity(currentCategory, bookFieldsQueue, statisticsData))
                         .also {
                             val progress = (index / strings.size.toDouble() * 100).toInt()
-                            EventBus.getDefault().postSticky(ProgressEvent(progress))
+                            MPEventBus.getDefault().postToAll(ProgressEvent(progress))
                         }
                 }
             } else if (currentXlsPage == LIST_BANNERS) {

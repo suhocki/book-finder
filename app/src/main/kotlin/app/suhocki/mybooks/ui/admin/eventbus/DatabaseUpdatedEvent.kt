@@ -1,3 +1,5 @@
 package app.suhocki.mybooks.ui.admin.eventbus
 
-class DatabaseUpdatedEvent
+import java.io.Serializable
+
+class DatabaseUpdatedEvent : Serializable

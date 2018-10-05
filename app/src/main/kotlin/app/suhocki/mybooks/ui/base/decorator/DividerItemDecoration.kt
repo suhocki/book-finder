@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.base.decorator
 
 import android.graphics.Rect
+import android.support.annotation.DimenRes
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.RecyclerView.ItemDecoration
 import android.support.v7.widget.RecyclerView.State

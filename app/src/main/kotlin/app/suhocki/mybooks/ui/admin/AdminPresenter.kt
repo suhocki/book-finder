@@ -1,14 +1,10 @@
 package app.suhocki.mybooks.ui.admin
 
-import android.content.Context
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.data.dialog.DialogManager
-import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.AdminInteractor
 import app.suhocki.mybooks.domain.model.Header
-import app.suhocki.mybooks.domain.model.ResponseKind
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.domain.model.admin.UploadControl
 import app.suhocki.mybooks.ui.admin.entity.UploadControlEntity
@@ -17,8 +13,6 @@ import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
 import app.suhocki.mybooks.ui.licenses.entity.HeaderEntity
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.run
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import javax.inject.Inject
@@ -27,9 +21,7 @@ import javax.inject.Inject
 class AdminPresenter @Inject constructor(
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val interactor: AdminInteractor,
-    private val resourceManager: ResourceManager,
-    private val mapper: Mapper,
-    private val dialogManager: DialogManager
+    private val resourceManager: ResourceManager
 ) : MvpPresenter<AdminView>() {
 
 
@@ -41,9 +33,9 @@ class AdminPresenter @Inject constructor(
     fun loadFiles() {
         viewState.showData(listOf())
         viewState.showError(isVisible = false)
-        viewState.showJsonProgress(true)
+        viewState.showProgress(true)
         doAsync({ throwable ->
-            doAsync { uiThread { viewState.showJsonProgress(false) } }
+            doAsync { uiThread { viewState.showProgress(false) } }
             errorReceiver(throwable)
         }) {
             val data = mutableListOf<Any>().apply {
@@ -51,7 +43,7 @@ class AdminPresenter @Inject constructor(
                 addAll(interactor.getAvailableFiles())
             }
             uiThread {
-                viewState.showJsonProgress(false)
+                viewState.showProgress(false)
                 viewState.showData(data)
             }
         }
@@ -75,22 +67,7 @@ class AdminPresenter @Inject constructor(
         viewState.showData(this)
     }
 
-    fun onDownloadProgress(data: List<Any>?, event: ProgressEvent) {
-        if (event.downloadUrl != null) {
-            when (mapper.map(event.downloadUrl!!, ResponseKind::class.java)) {
-                ResponseKind.JSON -> onJsonDownloadProgress(event)
-
-                ResponseKind.FILE -> onFileDownloadProgress(data!!, event)
-            }
-        } else {
-            onFileDownloadProgress(data!!, event)
-        }
-    }
-
-    private fun onJsonDownloadProgress(event: ProgressEvent) =
-        doAsync { uiThread { viewState.showJsonProgress(true, event.progress) } }
-
-    private fun onFileDownloadProgress(
+    fun onFileDownloadProgress(
         data: List<Any>,
         event: ProgressEvent
     ) {
@@ -119,9 +96,9 @@ class AdminPresenter @Inject constructor(
         }
     }
 
-    fun onError(context: Context, errorEvent: ErrorEvent) {
+    fun onError(errorEvent: ErrorEvent) {
         viewState.showError(errorEvent.messageRes)
-        dialogManager.showErrorDialog(context, errorEvent.messageRes) { loadFiles() }
+        viewState.showErrorDialog(errorEvent.messageRes)
     }
 
 

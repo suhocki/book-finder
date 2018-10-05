@@ -8,7 +8,6 @@ import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import app.suhocki.mybooks.Analytics
-import app.suhocki.mybooks.R
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.BooksModule
 import app.suhocki.mybooks.domain.model.Book
@@ -42,7 +41,7 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
 
     @ProvidePresenter
     fun providePresenter(): BooksPresenter {
-        val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_ACTIVITY_SCOPE)
+        val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_SCOPE)
         val category = intent.getParcelableExtra<Category>(CatalogFragment.ARG_CATEGORY)
         scope.installModules(BooksModule(category))
 
@@ -85,7 +84,7 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
 
     override fun onDestroy() {
         super.onDestroy()
-        if (isFinishing) Toothpick.closeScope(DI.BOOKS_ACTIVITY_SCOPE)
+        if (isFinishing) Toothpick.closeScope(DI.BOOKS_SCOPE)
     }
 
     override fun showTitle(title: String) {

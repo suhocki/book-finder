@@ -32,7 +32,7 @@ class LicensesActivity : MvpAppCompatActivity(), LicensesView, OnLicenseClickLis
             DI.GSON_SCOPE,
             DI.LICENSES_ACTIVITY_SCOPE
         )
-        scope.installModules(GsonModule(this), LicensesModule())
+        scope.installModules(GsonModule(), LicensesModule())
 
         return scope.getInstance(LicensesPresenter::class.java)
     }

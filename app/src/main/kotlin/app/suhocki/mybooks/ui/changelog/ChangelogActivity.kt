@@ -30,7 +30,7 @@ class ChangelogActivity : MvpAppCompatActivity(), ChangelogView, OnDownloadFileC
             DI.GSON_SCOPE,
             DI.CHANGELOG_ACTIVITY_SCOPE
         )
-        scope.installModules(GsonModule(this), ChangelogModule())
+        scope.installModules(GsonModule(), ChangelogModule())
 
         return scope.getInstance(ChangelogPresenter::class.java)
     }

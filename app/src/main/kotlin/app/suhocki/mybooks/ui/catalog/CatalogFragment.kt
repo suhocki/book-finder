@@ -22,6 +22,7 @@ import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchListener
+import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import app.suhocki.mybooks.ui.books.BooksActivity
 import app.suhocki.mybooks.ui.catalog.listener.OnCategoryClickListener
 import app.suhocki.mybooks.ui.details.DetailsActivity
@@ -97,12 +98,12 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     override fun onStart() {
         super.onStart()
-        EventBus.getDefault().register(this)
+        MPEventBus.getDefault().register(this)
     }
 
     override fun onStop() {
         super.onStop()
-        EventBus.getDefault().unregister(this)
+        MPEventBus.getDefault().unregister(this)
     }
 
     private fun animateToolbarNavigationButton(toArrow: Boolean) {

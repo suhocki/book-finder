@@ -11,12 +11,13 @@ import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 
 class AdminAdapter(
-    onFileClick: (File) -> Unit
+    onFileClick: (File) -> Unit,
+    cancelUpload: () -> Unit
 ) : ListDelegationAdapter<MutableList<Any>>() {
 
     init {
         delegatesManager.addDelegate(FileAdapterDelegate(onFileClick))
-        delegatesManager.addDelegate(UploadControlAdapterDelegate())
+        delegatesManager.addDelegate(UploadControlAdapterDelegate(cancelUpload))
         delegatesManager.addDelegate(HeaderAdapterDelegate())
     }
 

@@ -2,6 +2,8 @@ package app.suhocki.mybooks.domain
 
 import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.database.entity.*
+import app.suhocki.mybooks.data.googledrive.RemoteFilesRepository
+import app.suhocki.mybooks.data.localstorage.LocalFilesRepository
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
@@ -12,8 +14,8 @@ import java.io.File
 import javax.inject.Inject
 
 class BackgroundInteractor @Inject constructor(
-    private val googleDriveRepository: GoogleDriveRepository,
-    private val fileActionsRepository: FileActionsRepository,
+    private val remoteFilesRepository: RemoteFilesRepository,
+    private val localFilesRepository: LocalFilesRepository,
     private val bookDatabaseRepository: BooksRepository,
     private val bannersRepository: BannersRepository,
     private val statisticDatabaseRepository: StatisticsRepository,
@@ -21,22 +23,22 @@ class BackgroundInteractor @Inject constructor(
     private val infoRepository: InfoRepository
 ) {
     fun getDownloadedFile(fileId: String) =
-            fileActionsRepository.getDownloadedFile(fileId)
+            localFilesRepository.getDownloadedFile(fileId)
 
     fun downloadFile(fileId: String) =
-        googleDriveRepository.downloadFile(fileId)
+        remoteFilesRepository.downloadFile(fileId)
 
     fun saveFile(folder: String, fileName: String, bytes: ByteArray) =
-        fileActionsRepository.saveFile(folder, fileName, bytes)
+        localFilesRepository.saveFile(folder, fileName, bytes)
 
     fun unzip(file: File) =
-        fileActionsRepository.unzip(file)
+        localFilesRepository.unzip(file)
 
     fun parseXlsStructure(xlsFile: File) =
-        fileActionsRepository.parseXlsStructure(xlsFile)
+        localFilesRepository.parseXlsStructure(xlsFile)
 
     fun extractXlsDocument(strings: ArrayList<String>) =
-        fileActionsRepository.extractXlsDocument(strings)
+        localFilesRepository.extractXlsDocument(strings)
 
     fun saveBooksData(data: Map<out Category, Collection<Book>>) {
         bookDatabaseRepository.setCategories(data.keys)
@@ -123,5 +125,5 @@ class BackgroundInteractor @Inject constructor(
     }
 
     fun getUnzippedFile(fileId: String): File? =
-            fileActionsRepository.getUnzippedFile(fileId)
+            localFilesRepository.getUnzippedFile(fileId)
 }

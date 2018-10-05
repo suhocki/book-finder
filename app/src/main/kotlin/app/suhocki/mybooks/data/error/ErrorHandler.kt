@@ -1,8 +1,8 @@
 package app.suhocki.mybooks.data.error
 
 import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
+import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import okhttp3.internal.http2.StreamResetException
-import org.greenrobot.eventbus.EventBus
 import retrofit2.HttpException
 import java.io.InterruptedIOException
 import java.net.ConnectException
@@ -21,7 +21,7 @@ class ErrorHandler @Inject constructor() {
         ) {
             throwable.printStackTrace()
             val errorType = getErrorType(throwable)
-            EventBus.getDefault().postSticky(ErrorEvent(errorType.descriptionRes))
+            MPEventBus.getDefault().postToAll(ErrorEvent(errorType.descriptionRes))
         }
     }
 

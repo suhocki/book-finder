@@ -72,7 +72,7 @@ class FilterFragment : BaseFragment(), FilterView,
 
     @ProvidePresenter
     fun providePresenter(): FilterPresenter =
-        Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_ACTIVITY_SCOPE)
+        Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_SCOPE)
             .getInstance(FilterPresenter::class.java)
 
     override fun onCreateView(

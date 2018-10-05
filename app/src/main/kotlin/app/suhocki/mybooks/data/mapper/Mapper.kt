@@ -1,17 +1,14 @@
 package app.suhocki.mybooks.data.mapper
 
 import app.suhocki.mybooks.data.mapper.converter.MetaDataItemToFile
-import app.suhocki.mybooks.data.mapper.converter.StringToResponseKind
 import javax.inject.Inject
 
 class Mapper @Inject constructor(
-    metaDataItemToFile: MetaDataItemToFile,
-    stringToResponseKind: StringToResponseKind
+    metaDataItemToFile: MetaDataItemToFile
 ) {
     private val converters by lazy {
         mutableListOf<Converter<*, *>>(
-            metaDataItemToFile,
-            stringToResponseKind
+            metaDataItemToFile
         )
     }
 

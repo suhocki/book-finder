@@ -59,9 +59,13 @@ class SearchItemUI : AnkoComponent<ViewGroup> {
                     imageView(R.drawable.ic_search) {
                         startSearch = this
                         setForegroundCompat(context.attrResource(R.attr.selectableItemBackgroundBorderless))
-                        backgroundResource = R.drawable.search_icon_background
+                        backgroundColorResource = R.color.colorPrimary
                         padding = dip(8)
-                    }.lparams(dimenAttr(R.attr.actionBarSize) - dimen(R.dimen.padding_item_search) - dip(4), matchParent) {
+                    }.lparams(
+                        dimenAttr(R.attr.actionBarSize) - dimen(R.dimen.padding_item_search) - dip(
+                            4
+                        ), matchParent
+                    ) {
                         gravity = Gravity.CENTER_VERTICAL or Gravity.END
                     }
 

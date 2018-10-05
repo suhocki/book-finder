@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.data.api.interceptor
 
 import app.suhocki.mybooks.ui.admin.eventbus.ProgressEvent
+import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
@@ -52,7 +53,7 @@ internal class ProgressResponseBody(
                     progress = progress
                 )
                 info { "read: $totalBytesRead; $progress%" }
-                EventBus.getDefault().postSticky(progressEvent)
+                MPEventBus.getDefault().postToAll(progressEvent)
 
                 return bytesRead
             }

@@ -59,7 +59,8 @@
 
         <service
             android:name=".ui.admin.background.UploadService"
-            android:exported="false" />
+            android:exported="false"
+            android:process=":upload_service" />
 
         <service
             android:name=".ui.firebase.FireBaseInstanceIdService"
@@ -72,6 +73,15 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="f779c23c3f096ce55675eb5a228961f2811e8fa2" />
-    </application>
 
+        <receiver
+            android:name="app.suhocki.mybooks.ui.base.mpeventbus.MPEventReceiver"
+            android:exported="false"
+            android:process="upload_service">
+            <intent-filter>
+                <action android:name="multi_process_event" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+    </application>
 </manifest>

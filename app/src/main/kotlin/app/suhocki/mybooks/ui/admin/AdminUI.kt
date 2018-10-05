@@ -35,7 +35,6 @@ class AdminUI<in T : Fragment>(
     lateinit var recyclerView: RecyclerView
     lateinit var toolbar: Toolbar
     lateinit var progressBar: ProgressBar
-    lateinit var progressText: TextView
     lateinit var errorView: View
     lateinit var retry: View
     lateinit var errorText: TextView
@@ -98,12 +97,6 @@ class AdminUI<in T : Fragment>(
             themedProgressBar(R.style.AccentProgressBar) {
                 progressBar = this
                 visibility = View.GONE
-            }.lparams {
-                gravity = Gravity.CENTER
-            }
-
-            textView {
-                progressText = this
             }.lparams {
                 gravity = Gravity.CENTER
             }
