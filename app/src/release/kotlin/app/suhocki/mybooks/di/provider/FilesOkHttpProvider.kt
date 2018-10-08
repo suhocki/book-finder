@@ -1,14 +1,15 @@
 package app.suhocki.mybooks.di.provider
 
-import okhttp3.OkHttpClient
 import app.suhocki.mybooks.data.api.interceptor.ProgressInterceptor
+import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Provider
 
-class CloudStorageOkHttpProvider @Inject constructor(
+
+class FilesOkHttpProvider @Inject constructor(
     private val progressInterceptor: ProgressInterceptor
-): Provider<OkHttpClient> {
+) : Provider<OkHttpClient> {
 
     override fun get(): OkHttpClient =
         OkHttpClient.Builder()

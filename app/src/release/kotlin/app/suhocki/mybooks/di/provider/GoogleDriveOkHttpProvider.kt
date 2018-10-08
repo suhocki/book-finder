@@ -10,14 +10,12 @@ import app.suhocki.mybooks.data.api.interceptor.ProgressInterceptor
 
 
 class GoogleDriveOkHttpProvider @Inject constructor(
-    private val googleDriveAuthorizationInterceptor: GoogleDriveAuthorizationInterceptor,
-    private val progressInterceptor: ProgressInterceptor
+    private val googleDriveAuthorizationInterceptor: GoogleDriveAuthorizationInterceptor
 ) : Provider<OkHttpClient> {
 
     override fun get(): OkHttpClient =
         OkHttpClient.Builder()
             .readTimeout(7, TimeUnit.SECONDS)
-            .addInterceptor(progressInterceptor)
             .addInterceptor(googleDriveAuthorizationInterceptor)
             .build()
 }

@@ -60,7 +60,7 @@
         <service
             android:name=".ui.admin.background.UploadService"
             android:exported="false"
-            android:process=":upload_service" />
+            android:process=":UploadService" />
 
         <service
             android:name=".ui.firebase.FireBaseInstanceIdService"
@@ -77,7 +77,7 @@
         <receiver
             android:name="app.suhocki.mybooks.ui.base.mpeventbus.MPEventReceiver"
             android:exported="false"
-            android:process="upload_service">
+            android:process=":UploadService">
             <intent-filter>
                 <action android:name="multi_process_event" />
                 <category android:name="android.intent.category.DEFAULT" />
