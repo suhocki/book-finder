@@ -120,6 +120,7 @@ ext {
     firebase_config_version = "16.0.0"
     gson_version = "2.8.5"
     eventbus_version = "3.1.1"
+    tray_version = "0.12.0"
 }
 
 dependencies {
@@ -167,6 +168,8 @@ dependencies {
             "com.google.firebase:firebase-config:$firebase_config_version",
             //EventBus
             "org.greenrobot:eventbus:$eventbus_version",
+            //Multi-process shared preferences
+            "net.grandcentrix.tray:tray:$tray_version",
     )
     implementation(
             //Crash logging

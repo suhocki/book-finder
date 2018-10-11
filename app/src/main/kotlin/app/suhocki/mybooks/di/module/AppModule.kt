@@ -1,6 +1,5 @@
 package app.suhocki.mybooks.di.module
 
-import android.content.SharedPreferences
 import android.os.Build
 import app.suhocki.mybooks.App
 import app.suhocki.mybooks.data.ads.AdsManager
@@ -9,13 +8,13 @@ import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.database.RoomRepository
 import app.suhocki.mybooks.data.database.dao.*
 import app.suhocki.mybooks.data.notifier.ComponentNotifier
-import app.suhocki.mybooks.data.preferences.SharedPreferencesRepository
+import app.suhocki.mybooks.data.preferences.AppPreferencesRepository
 import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.ErrorReceiver
+import app.suhocki.mybooks.di.provider.AppPreferencesProvider
 import app.suhocki.mybooks.di.provider.ErrorReceiverProvider
-import app.suhocki.mybooks.di.provider.SharedPreferencesProvider
 import app.suhocki.mybooks.di.provider.VersionProvider
 import app.suhocki.mybooks.di.provider.ads.BannerAdProvider
 import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
@@ -25,6 +24,7 @@ import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.domain.repository.*
 import com.google.android.gms.ads.InterstitialAd
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import net.grandcentrix.tray.AppPreferences
 import org.jetbrains.anko.configuration
 import toothpick.config.Module
 import java.util.*
@@ -93,11 +93,11 @@ class AppModule(app: App) : Module() {
             .singletonInScope()
 
         bind(InfoRepository::class.java)
-            .to(SharedPreferencesRepository::class.java)
+            .to(AppPreferencesRepository::class.java)
             .singletonInScope()
 
-        bind(SharedPreferences::class.java)
-            .toProvider(SharedPreferencesProvider::class.java)
+        bind(AppPreferences::class.java)
+            .toProvider(AppPreferencesProvider::class.java)
             .providesSingletonInScope()
 
         bind(InterstitialAd::class.java)
@@ -116,7 +116,7 @@ class AppModule(app: App) : Module() {
             .singletonInScope()
 
         bind(SettingsRepository::class.java)
-            .to(SharedPreferencesRepository::class.java)
+            .to(AppPreferencesRepository::class.java)
             .singletonInScope()
 
         bind(RemoteConfiguration::class.java)
