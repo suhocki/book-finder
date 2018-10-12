@@ -1,10 +1,13 @@
 package app.suhocki.mybooks.data.api.interceptor
 
+import app.suhocki.mybooks.di.module.UploadServiceModule
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
 
-class ProgressInterceptor @Inject constructor() : Interceptor {
+class ProgressInterceptor @Inject constructor(
+    private val uploadControl: UploadServiceModule.UploadControlEntity
+) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val originalResponse = chain.proceed(chain.request())
@@ -13,9 +16,9 @@ class ProgressInterceptor @Inject constructor() : Interceptor {
             originalResponse.networkResponse()?.header(HEADER_CONTENT_LENGTH, null)?.toLong()
 
         val originalResponseBody = originalResponse.body()!!
-        val url = originalResponse.request().url().toString()
 
-        val progressResponseBody = ProgressResponseBody(url, contentLength, originalResponseBody)
+        val progressResponseBody =
+            ProgressResponseBody(contentLength, originalResponseBody, uploadControl)
 
         return originalResponse.newBuilder()
             .body(progressResponseBody)

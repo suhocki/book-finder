@@ -27,7 +27,7 @@ class ServiceHandler @Inject constructor(
         val processId = activityManager.runningAppProcesses.find {
             it.processName == contextManager.currentContext.packageName +
                     resourceManager.getString(R.string.upload_service_name)
-        }!!.pid
-        Process.killProcess(processId)
+        }?.pid
+        processId?.let { Process.killProcess(it) }
     }
 }

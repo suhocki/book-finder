@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Environment
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.localstorage.LocalFilesRepository
+import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.UploadServiceModule
@@ -13,7 +14,6 @@ import app.suhocki.mybooks.domain.model.XlsDocument
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
 import app.suhocki.mybooks.ui.admin.eventbus.ServiceKilledEvent
-import app.suhocki.mybooks.ui.admin.eventbus.UploadServiceEvent
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import org.jetbrains.anko.AnkoLogger
 import toothpick.Toothpick
@@ -25,13 +25,13 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
     lateinit var interactor: BackgroundInteractor
 
     @Inject
+    lateinit var notificationHelper: NotificationHelper
+
+    @Inject
     lateinit var resourceManager: ResourceManager
 
-    private val uploadControl by lazy {
-        val firstStepId = resourceManager
-            .getStringArrayIdentifiers(R.array.database_upload_steps).first()
-        UploadControlEntity(stepRes = firstStepId)
-    }
+    @Inject
+    lateinit var uploadControl: UploadServiceModule.UploadControlEntity
 
     private lateinit var file: File
     private lateinit var strings: ArrayList<String>
@@ -60,14 +60,14 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
 
         taskIds.forEach {
             uploadControl.stepRes = it
+            uploadControl.sendProgress(0)
+            notificationHelper.showProgressNotification(it, 0)
             tasks[it]!!.invoke()
         }
     }
 
     private val tasks = mapOf(
         R.string.step_downloading to {
-            MPEventBus.getDefault().postToAll(UploadServiceEvent(uploadControl))
-
             if (interactor.getDownloadedFile(file.id) == null) {
                 val bytes = interactor.downloadFile(file.id)
                 interactor.saveFile(file.id, file.name, bytes)
@@ -75,7 +75,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         },
 
         R.string.step_unzipping to {
-            MPEventBus.getDefault().postToAll(UploadServiceEvent(uploadControl))
+            uploadControl.sendProgress(0)
 
             if (interactor.getUnzippedFile(file.id) == null) {
                 val zipped = interactor.getDownloadedFile(file.id)!!
@@ -86,21 +86,15 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         },
 
         R.string.step_string_analysing to {
-            MPEventBus.getDefault().postToAll(UploadServiceEvent(uploadControl))
-
             val unzipped = interactor.getUnzippedFile(file.id)!!
             strings = interactor.parseXlsStructure(unzipped)
         },
 
         R.string.step_book_construct to {
-            MPEventBus.getDefault().postToAll(UploadServiceEvent(uploadControl))
-
             document = interactor.extractXlsDocument(strings)
         },
 
         R.string.step_saving_to_local to {
-            MPEventBus.getDefault().postToAll(UploadServiceEvent(uploadControl))
-
             interactor.saveBooksData(document.booksData)
             interactor.saveStatisticsData(document.statisticsData)
             interactor.saveInfoData(document.infosData)
@@ -110,7 +104,6 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         },
 
         R.string.step_saving_to_remote to {
-            MPEventBus.getDefault().postToAll(UploadServiceEvent(uploadControl))
         }
     )
 
@@ -118,7 +111,10 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         super.onDestroy()
         MPEventBus.getDefault().postToAll(ServiceKilledEvent())
     }
+
     companion object {
         const val ARG_FILE = "ARG_FILE"
+        const val COMMAND = "COMMAND"
+        const val PROGRESS_MAX = 100
     }
 }

@@ -10,7 +10,6 @@ import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.domain.model.admin.UploadControl
 import app.suhocki.mybooks.ui.admin.entity.Progress
 import app.suhocki.mybooks.ui.admin.entity.UploadControlEntity
-import app.suhocki.mybooks.ui.admin.eventbus.ProgressEvent
 import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
 import app.suhocki.mybooks.ui.licenses.entity.HeaderEntity
 import com.arellomobile.mvp.InjectViewState
@@ -59,35 +58,6 @@ class AdminPresenter @Inject constructor(
         removeAll { it is UploadControl || it is Progress || it is Header }
         add(UPLOAD_CONTROL_POSITION, UploadControlEntity(uploadControl))
         viewState.showData(this)
-    }
-
-    fun onFileDownloadProgress(
-        data: List<Any>,
-        event: ProgressEvent
-    ) {
-        val oldUploadControl = data.find { it is UploadControl } as UploadControl
-        val file = data.find { it is File && it.name == oldUploadControl.fileName } as File
-        event.bytes?.let {
-            event.progress = (Math.abs(event.bytes) / file.fileSize.toDouble() * 100).toInt()
-        }
-
-        val newUploadControl = UploadControlEntity(oldUploadControl)
-            .apply { this.progress = event.progress }
-
-        val changedPosition = data.indexOf(oldUploadControl)
-
-        val newData = mutableListOf<Any>().apply {
-            addAll(data)
-            set(changedPosition, newUploadControl)
-        }
-
-        if (newUploadControl.progress != oldUploadControl.progress) {
-            doAsync {
-                uiThread {
-                    viewState.showData(newData, changedPosition, newUploadControl.progress)
-                }
-            }
-        }
     }
 
     fun onError(errorEvent: ErrorEvent) {

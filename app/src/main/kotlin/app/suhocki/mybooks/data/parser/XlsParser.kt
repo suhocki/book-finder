@@ -1,17 +1,15 @@
 package app.suhocki.mybooks.data.parser
 
-import app.suhocki.mybooks.checkThreadInterrupt
 import app.suhocki.mybooks.data.database.entity.BookEntity
 import app.suhocki.mybooks.data.database.entity.CategoryEntity
 import app.suhocki.mybooks.data.parser.entity.BannerEntity
 import app.suhocki.mybooks.data.parser.entity.InfoEntity
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
+import app.suhocki.mybooks.di.module.UploadServiceModule
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Info
-import app.suhocki.mybooks.ui.admin.eventbus.ProgressEvent
-import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import java.io.BufferedReader
@@ -23,7 +21,9 @@ import java.util.regex.Pattern
 import javax.inject.Inject
 
 
-class XlsParser @Inject constructor() : AnkoLogger {
+class XlsParser @Inject constructor(
+    private val uploadControl: UploadServiceModule.UploadControlEntity
+) : AnkoLogger {
 
     private lateinit var xlsFileName: String
     private lateinit var xlsFileCreationDate: String
@@ -38,8 +38,8 @@ class XlsParser @Inject constructor() : AnkoLogger {
 
         while (matcher.find()) {
             progress = (matcher.start() / contentStringLength * 100).toInt()
-            MPEventBus.getDefault().postToAll(ProgressEvent(progress))
-            checkThreadInterrupt()
+
+            uploadControl.sendProgress(progress)
             matcher.group().let {
                 allMatches.add(
                     it.removeSurrounding(REGEX_XLS_CDATA_START, REGEX_XLS_CDATA_END)
@@ -70,8 +70,6 @@ class XlsParser @Inject constructor() : AnkoLogger {
         xlsFileColumnNames.clear()
 
         for (index in 0 until strings.size) {
-            checkThreadInterrupt()
-
             val currentWord = strings[index]
 
             if (currentWord == LIST_BOOKS) {
@@ -141,7 +139,7 @@ class XlsParser @Inject constructor() : AnkoLogger {
                         .add(createBookEntity(currentCategory, bookFieldsQueue, statisticsData))
                         .also {
                             val progress = (index / strings.size.toDouble() * 100).toInt()
-                            MPEventBus.getDefault().postToAll(ProgressEvent(progress))
+                            uploadControl.sendProgress(progress)
                         }
                 }
             } else if (currentXlsPage == LIST_BANNERS) {

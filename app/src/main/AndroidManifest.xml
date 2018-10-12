@@ -76,7 +76,7 @@
 
         <receiver
             android:name="app.suhocki.mybooks.ui.base.mpeventbus.MPEventReceiver"
-            android:exported="true"
+            android:exported="false"
             android:process="@string/upload_service_name">
             <intent-filter>
                 <action android:name="multi_process_event" />

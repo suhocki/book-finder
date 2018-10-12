@@ -36,21 +36,12 @@ class AdminAdapter(
 
     fun submitList(
         list: List<Any>,
-        changedPosition: Int = UNDEFINED,
-        payload: Any? = null,
         onAnimationEnd: (() -> Unit)? = null
     ) = mutableListOf<Any>().apply {
         addAll(list)
         items = this
         listUpdateCallback.endAction = onAnimationEnd
 
-        if (changedPosition != UNDEFINED) {
-            notifyItemChanged(changedPosition, payload)
-        } else differ.submitList(this)
-    }
-
-
-    companion object {
-        const val UNDEFINED = -1
+        differ.submitList(this)
     }
 }

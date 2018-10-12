@@ -4,6 +4,5 @@ import java.io.Serializable
 
 data class ProgressEvent(
     var progress: Int,
-    val bytes: Long? = null,
-    var downloadUrl: String? = null
+    var bytes: Long? = null
 ) : Serializable

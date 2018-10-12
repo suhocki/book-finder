@@ -9,9 +9,8 @@ import app.suhocki.mybooks.data.dialog.DialogManager
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.AdminModule
 import app.suhocki.mybooks.di.module.GsonModule
-import app.suhocki.mybooks.ui.admin.eventbus.ProgressEvent
+import app.suhocki.mybooks.domain.model.admin.UploadControl
 import app.suhocki.mybooks.ui.admin.eventbus.ServiceKilledEvent
-import app.suhocki.mybooks.ui.admin.eventbus.UploadServiceEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
@@ -21,6 +20,7 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.AnkoContext
+import org.jetbrains.anko.info
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.textResource
 import toothpick.Toothpick
@@ -87,8 +87,12 @@ class AdminFragment : BaseFragment(), AdminView {
         MPEventBus.getDefault().unregister(this)
     }
 
-    override fun showData(data: List<Any>, changedPosition: Int, payload: Any?) {
-        adapter.submitList(data, changedPosition, payload) {
+    override fun showData(data: List<Any>) {
+        val any = data[1]
+        val stepres = if (any is UploadControl) {any.stepRes} else null
+        val progress = if (any is UploadControl) {any.progress} else null
+        info { "showdata $stepres $progress" }
+        adapter.submitList(data) {
             ui.recyclerView.invalidateItemDecorations()
         }
     }
@@ -115,19 +119,13 @@ class AdminFragment : BaseFragment(), AdminView {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onUploadServiceEvent(uploadServiceEvent: UploadServiceEvent) {
-        val uploadControl = uploadServiceEvent.uploadControl
+    fun onUploadControlEvent(uploadControl: UploadControl) {
         presenter.insertUploadControl(adapter.items, uploadControl)
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
     fun onServiceKilledEvent(ignore: ServiceKilledEvent) {
         presenter.stopUpload(adapter.items)
-    }
-
-    @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    fun onProgressEvent(progressEvent: ProgressEvent) {
-        presenter.onFileDownloadProgress(adapter.items, progressEvent)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

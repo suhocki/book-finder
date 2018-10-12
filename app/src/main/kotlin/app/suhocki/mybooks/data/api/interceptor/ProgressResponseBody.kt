@@ -1,20 +1,17 @@
 package app.suhocki.mybooks.data.api.interceptor
 
-import app.suhocki.mybooks.ui.admin.eventbus.ProgressEvent
-import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
+import app.suhocki.mybooks.di.module.UploadServiceModule
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
-import org.greenrobot.eventbus.EventBus
-import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.info
 import java.io.IOException
 
 internal class ProgressResponseBody(
-    private val url: String,
     private val contentLength: Long?,
-    private val responseBody: ResponseBody
-) : ResponseBody(), AnkoLogger {
+    private val responseBody: ResponseBody,
+    private val uploadControl: UploadServiceModule.UploadControlEntity
+) : ResponseBody() {
+
     private var bufferedSource: BufferedSource? = null
 
     override fun contentType(): MediaType? {
@@ -47,14 +44,7 @@ internal class ProgressResponseBody(
                     else contentLength()
 
                 val progress = (totalBytesRead / realContentLength.toDouble() * 100).toInt()
-                val progressEvent = ProgressEvent(
-                    downloadUrl = url,
-                    bytes = totalBytesRead,
-                    progress = progress
-                )
-                info { "read: $totalBytesRead; $progress%" }
-                MPEventBus.getDefault().postToAll(progressEvent)
-
+                uploadControl.sendProgress(progress)
                 return bytesRead
             }
         }

@@ -1,6 +1,5 @@
 package app.suhocki.mybooks.data.localstorage
 
-import app.suhocki.mybooks.checkThreadInterrupt
 import app.suhocki.mybooks.data.parser.XlsParser
 import app.suhocki.mybooks.di.DownloadDirectoryPath
 import app.suhocki.mybooks.domain.model.XlsDocument
@@ -35,7 +34,6 @@ class LocalFilesRepository @Inject constructor(
             )
             FileOutputStream(outputFile).use { fileOutputStream ->
                 while (zipInputStream.read(buffer).apply { count = this } != -1) {
-                    checkThreadInterrupt()
                     fileOutputStream.write(buffer, 0, count)
                 }
             }
@@ -62,7 +60,7 @@ class LocalFilesRepository @Inject constructor(
     }
 
 
-    companion object Constants {
+    companion object LocalConstants {
         const val UNZIPPED_FILE_PREFIX = "unzipped_"
     }
 }

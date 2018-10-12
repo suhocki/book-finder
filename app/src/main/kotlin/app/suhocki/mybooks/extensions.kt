@@ -2,7 +2,6 @@ package app.suhocki.mybooks
 
 import android.app.Activity
 import android.app.ActivityManager
-import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -20,7 +19,6 @@ import android.util.TypedValue
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import app.suhocki.mybooks.domain.model.License
-import org.jetbrains.anko.internals.AnkoInternals
 import retrofit2.HttpException
 import retrofit2.Response
 import java.text.SimpleDateFormat
@@ -98,11 +96,6 @@ fun Context.openCaller(number: String) {
     val intent = Intent(Intent.ACTION_DIAL)
     intent.data = Uri.parse("tel:+$number")
     startActivity(intent)
-}
-
-@Throws(InterruptedException::class)
-fun checkThreadInterrupt() {
-    if (Thread.currentThread().isInterrupted) throw InterruptedException()
 }
 
 fun setVisible(vararg views: View) {
@@ -193,8 +186,4 @@ fun Long.toHumanFileSize() = when (Math.round(toString().length.toFloat() / 3)) 
     4 -> "${Math.round(this / 1000_000_000f)} GB"
 
     else -> "$this bytes"
-}
-
-inline fun <reified T: Service> Context.startService(vararg params: Pair<String, Any?>) {
-    AnkoInternals.internalStartService(this, T::class.java, params)
 }

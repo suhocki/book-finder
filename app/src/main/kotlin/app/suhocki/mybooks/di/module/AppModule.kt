@@ -8,7 +8,6 @@ import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.database.RoomRepository
 import app.suhocki.mybooks.data.database.dao.*
 import app.suhocki.mybooks.data.preferences.AppPreferencesRepository
-import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.ErrorReceiver
@@ -106,9 +105,6 @@ class AppModule(app: App) : Module() {
         bind(Function1::class.java)
             .withName(ErrorReceiver::class.java)
             .toProvider(ErrorReceiverProvider::class.java)
-            .singletonInScope()
-
-        bind(ProgressHandler::class.java)
             .singletonInScope()
 
         bind(SettingsRepository::class.java)
