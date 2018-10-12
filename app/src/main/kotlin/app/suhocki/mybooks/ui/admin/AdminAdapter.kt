@@ -4,6 +4,7 @@ import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
 import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.ui.admin.delegate.FileAdapterDelegate
+import app.suhocki.mybooks.ui.admin.delegate.ProgressAdapterDelegate
 import app.suhocki.mybooks.ui.admin.delegate.UploadControlAdapterDelegate
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
@@ -19,6 +20,7 @@ class AdminAdapter(
         delegatesManager.addDelegate(FileAdapterDelegate(onFileClick))
         delegatesManager.addDelegate(UploadControlAdapterDelegate(cancelUpload))
         delegatesManager.addDelegate(HeaderAdapterDelegate())
+        delegatesManager.addDelegate(ProgressAdapterDelegate())
     }
 
     private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
@@ -35,10 +37,13 @@ class AdminAdapter(
     fun submitList(
         list: List<Any>,
         changedPosition: Int = UNDEFINED,
-        payload: Any? = null
+        payload: Any? = null,
+        onAnimationEnd: (() -> Unit)? = null
     ) = mutableListOf<Any>().apply {
         addAll(list)
         items = this
+        listUpdateCallback.endAction = onAnimationEnd
+
         if (changedPosition != UNDEFINED) {
             notifyItemChanged(changedPosition, payload)
         } else differ.submitList(this)

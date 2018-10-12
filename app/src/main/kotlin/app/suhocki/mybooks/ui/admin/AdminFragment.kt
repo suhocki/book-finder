@@ -1,9 +1,6 @@
 package app.suhocki.mybooks.ui.admin
 
-import android.app.Activity
-import android.app.ActivityManager
 import android.os.Bundle
-import android.os.Process
 import android.support.annotation.StringRes
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +9,8 @@ import app.suhocki.mybooks.data.dialog.DialogManager
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.AdminModule
 import app.suhocki.mybooks.di.module.GsonModule
-import app.suhocki.mybooks.ui.admin.background.UploadService
 import app.suhocki.mybooks.ui.admin.eventbus.ProgressEvent
+import app.suhocki.mybooks.ui.admin.eventbus.ServiceKilledEvent
 import app.suhocki.mybooks.ui.admin.eventbus.UploadServiceEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
@@ -25,7 +22,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.support.v4.ctx
-import org.jetbrains.anko.support.v4.startService
 import org.jetbrains.anko.textResource
 import toothpick.Toothpick
 import javax.inject.Inject
@@ -58,10 +54,10 @@ class AdminFragment : BaseFragment(), AdminView {
         }
     }
 
-    private val adapter by lazy {
+    private val adapter: AdminAdapter by lazy {
         AdminAdapter(
-            { startService<UploadService>(UploadService.ARG_FILE to it) },
-            { killService() }
+            { presenter.upload(it, adapter.items) },
+            { presenter.stopUpload(adapter.items) }
         )
     }
 
@@ -92,7 +88,9 @@ class AdminFragment : BaseFragment(), AdminView {
     }
 
     override fun showData(data: List<Any>, changedPosition: Int, payload: Any?) {
-        adapter.submitList(data, changedPosition, payload)
+        adapter.submitList(data, changedPosition, payload) {
+            ui.recyclerView.invalidateItemDecorations()
+        }
     }
 
     override fun showProgress(isVisible: Boolean) {
@@ -116,22 +114,15 @@ class AdminFragment : BaseFragment(), AdminView {
         }
     }
 
-    private fun killService() {
-        val activityManager = requireContext()
-            .getSystemService(Activity.ACTIVITY_SERVICE) as ActivityManager
-        val processId = activityManager.runningAppProcesses.find {
-            it.processName == requireContext().packageName + ":service"
-        }!!.pid
-        Process.killProcess(processId)
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onUploadServiceEvent(uploadServiceEvent: UploadServiceEvent) {
         val uploadControl = uploadServiceEvent.uploadControl
-        if (uploadControl != null) presenter.insertUploadControl(
-            adapter.items,
-            uploadControl
-        ) else presenter.removeUploadControl(adapter.items)
+        presenter.insertUploadControl(adapter.items, uploadControl)
+    }
+
+    @Subscribe(threadMode = ThreadMode.BACKGROUND)
+    fun onServiceKilledEvent(ignore: ServiceKilledEvent) {
+        presenter.stopUpload(adapter.items)
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)

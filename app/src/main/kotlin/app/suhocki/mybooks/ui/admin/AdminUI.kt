@@ -17,20 +17,19 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.Ids
-import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
+import app.suhocki.mybooks.ui.admin.decorator.FileDecoration
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import org.jetbrains.anko.*
-import org.jetbrains.anko.appcompat.v7.themedTintedImageView
+import org.jetbrains.anko.appcompat.v7.tintedImageView
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.jetbrains.anko.appcompat.v7.tintedImageView
 
 
 class AdminUI<in T : Fragment>(
-    private val onRetryClick: () -> Unit
+    private val refresh: () -> Unit
 ) : AnkoComponent<T> {
     lateinit var recyclerView: RecyclerView
     lateinit var toolbar: Toolbar
@@ -58,7 +57,7 @@ class AdminUI<in T : Fragment>(
 
                     imageView(R.drawable.ic_refresh).apply {
                         retry = this
-                        onClick { onRetryClick() }
+                        onClick { refresh() }
                         padding = dimen(R.dimen.padding_toolbar_icon)
                         backgroundResource = context
                             .attrResource(R.attr.selectableItemBackgroundBorderless)
@@ -86,9 +85,7 @@ class AdminUI<in T : Fragment>(
                 id = Ids.recyclerInfo
                 clipToPadding = false
                 layoutManager = ScrollLayoutManager(context)
-                addItemDecoration(
-                    DividerItemDecoration(context.dimen(R.dimen.height_divider_decorator), 1)
-                )
+                addItemDecoration(FileDecoration(context.dimen(R.dimen.height_divider_decorator)))
                 setOnTouchListener { _, _ -> hideKeyboard();false }
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()

@@ -5,7 +5,7 @@ import android.os.Parcelable
 import app.suhocki.mybooks.domain.model.admin.UploadControl
 
 data class UploadServiceEvent(
-    val uploadControl: UploadControl?
+    val uploadControl: UploadControl
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(UploadControl::class.java.classLoader) as UploadControl

@@ -12,7 +12,6 @@ import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Info
 import app.suhocki.mybooks.ui.admin.eventbus.ProgressEvent
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
-import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import java.io.BufferedReader
@@ -181,7 +180,6 @@ class XlsParser @Inject constructor() : AnkoLogger {
 
                     contactSearchPosition == CONTACT_POSITION_WORKING_TIME ->
                         contacts.add(InfoEntity(Info.InfoType.WORKING_TIME, currentWord))
-
                 }
 
                 contactSearchPosition++
@@ -192,11 +190,7 @@ class XlsParser @Inject constructor() : AnkoLogger {
             title = strings[POSITION_TITLE],
             creationDate = strings[POSITION_CREATION_DATE],
             columnNames = xlsFileColumnNames,
-            booksData = booksData.apply {
-                forEach {
-                    it.key.booksCount = it.value.size
-                }
-            },
+            booksData = booksData.apply { forEach { it.key.booksCount = it.value.size } },
             statisticsData = statisticsData,
             bannersData = banners,
             infosData = contacts

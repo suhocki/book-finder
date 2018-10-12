@@ -60,19 +60,18 @@ class AppPreferencesRepository @Inject constructor(
         preferences.put(WEBSITE, website)
     }
 
-    override fun getVkGroup(): Pair<String, String>? = with(preferences) {
-        if (contains(VK_GROUP_NAME) && contains(VK_GROUP_WEBSITE))
-            getString(VK_GROUP_NAME)!! to getString(VK_GROUP_WEBSITE)!!
+    override fun getVkGroup(): Pair<String, String>? =
+        if (preferences.contains(VK_GROUP_WEBSITE))
+            resourceManager.getString(R.string.vk_group) to preferences.getString(VK_GROUP_WEBSITE)!!
         else null
-    }
 
     override fun setVkGroup(url: String) {
         preferences.put(VK_GROUP_WEBSITE, url)
     }
 
     override fun getFacebook(): Pair<String, String>? = with(preferences) {
-        if (contains(FACEBOOK_NAME) && contains(FACEBOOK_WEBSITE))
-            getString(FACEBOOK_NAME)!! to getString(FACEBOOK_WEBSITE)!!
+        if (contains(FACEBOOK_WEBSITE))
+            resourceManager.getString(R.string.facebook_group) to getString(FACEBOOK_WEBSITE)!!
         else null
     }
 

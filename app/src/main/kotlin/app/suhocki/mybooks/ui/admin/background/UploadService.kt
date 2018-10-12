@@ -12,6 +12,7 @@ import app.suhocki.mybooks.domain.BackgroundInteractor
 import app.suhocki.mybooks.domain.model.XlsDocument
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
+import app.suhocki.mybooks.ui.admin.eventbus.ServiceKilledEvent
 import app.suhocki.mybooks.ui.admin.eventbus.UploadServiceEvent
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import org.jetbrains.anko.AnkoLogger
@@ -63,11 +64,6 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        MPEventBus.getDefault().postToAll(UploadServiceEvent(null))
-    }
-
     private val tasks = mapOf(
         R.string.step_downloading to {
             MPEventBus.getDefault().postToAll(UploadServiceEvent(uploadControl))
@@ -109,15 +105,19 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
             interactor.saveStatisticsData(document.statisticsData)
             interactor.saveInfoData(document.infosData)
             interactor.saveBannersData(document.bannersData)
+
+            MPEventBus.getDefault().postToAll(DatabaseUpdatedEvent())
         },
 
         R.string.step_saving_to_remote to {
             MPEventBus.getDefault().postToAll(UploadServiceEvent(uploadControl))
-            MPEventBus.getDefault().postToAll(DatabaseUpdatedEvent())
         }
     )
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        MPEventBus.getDefault().postToAll(ServiceKilledEvent())
+    }
     companion object {
         const val ARG_FILE = "ARG_FILE"
     }

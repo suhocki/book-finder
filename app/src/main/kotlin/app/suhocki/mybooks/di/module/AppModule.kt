@@ -7,7 +7,6 @@ import app.suhocki.mybooks.data.context.ContextManager
 import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.database.RoomRepository
 import app.suhocki.mybooks.data.database.dao.*
-import app.suhocki.mybooks.data.notifier.ComponentNotifier
 import app.suhocki.mybooks.data.preferences.AppPreferencesRepository
 import app.suhocki.mybooks.data.progress.ProgressHandler
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
@@ -110,9 +109,6 @@ class AppModule(app: App) : Module() {
             .singletonInScope()
 
         bind(ProgressHandler::class.java)
-            .singletonInScope()
-
-        bind(ComponentNotifier::class.java)
             .singletonInScope()
 
         bind(SettingsRepository::class.java)

@@ -1,6 +1,5 @@
 package app.suhocki.mybooks.domain
 
-import app.suhocki.mybooks.data.database.BooksDatabase
 import app.suhocki.mybooks.data.database.entity.*
 import app.suhocki.mybooks.data.googledrive.RemoteFilesRepository
 import app.suhocki.mybooks.data.localstorage.LocalFilesRepository
@@ -43,20 +42,6 @@ class BackgroundInteractor @Inject constructor(
     fun saveBooksData(data: Map<out Category, Collection<Book>>) {
         bookDatabaseRepository.setCategories(data.keys)
         bookDatabaseRepository.setBooks(data.values.flatMap { books -> books }.toList())
-    }
-
-    fun getBooksAndCategoriesCount(): Pair<Int, Int> {
-        val categoriesCount = bookDatabaseRepository.getCategories().count()
-        val booksCount = bookDatabaseRepository.getBooks().count()
-        return categoriesCount to booksCount
-    }
-
-    fun setDatabaseLoaded() {
-        settingsRepository.databaseVersion = BooksDatabase.DATABASE_VERSION
-    }
-
-    fun setDownloadStatistics(statistics: Pair<Int, Int>) {
-        settingsRepository.downloadStatistics = statistics
     }
 
     fun saveStatisticsData(statisticsData: Map<Category, StatisticsEntity>) {
