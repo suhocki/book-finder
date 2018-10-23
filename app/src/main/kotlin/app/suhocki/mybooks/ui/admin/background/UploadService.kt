@@ -7,6 +7,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.localstorage.LocalFilesRepository
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.resources.ResourceManager
+import app.suhocki.mybooks.data.service.ServiceHandler
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.UploadServiceModule
 import app.suhocki.mybooks.domain.BackgroundInteractor
@@ -16,6 +17,7 @@ import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
 import app.suhocki.mybooks.ui.admin.eventbus.ServiceKilledEvent
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.notificationManager
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -23,6 +25,9 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
 
     @Inject
     lateinit var interactor: BackgroundInteractor
+
+    @Inject
+    lateinit var serviceHandler: ServiceHandler
 
     @Inject
     lateinit var notificationHelper: NotificationHelper
@@ -51,6 +56,15 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         Toothpick.inject(this, scope)
     }
 
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        if (intent.extras.getString(ARG_COMMAND) == UploadService.Command.CANCEL) {
+            notificationManager.cancel(NotificationHelper.NOTIFICATION_ID)
+            MPEventBus.getDefault().postToAll(ServiceKilledEvent())
+            serviceHandler.killService()
+        }
+        return super.onStartCommand(intent, flags, startId)
+    }
+
     override fun onHandleIntent(intent: Intent) {
         file = intent.getSerializableExtra(ARG_FILE) as File
         uploadControl.fileName = file.name
@@ -60,7 +74,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
 
         taskIds.forEach {
             uploadControl.stepRes = it
-            uploadControl.sendProgress(0)
+            uploadControl.sendProgress(0, notificationHelper)
             notificationHelper.showProgressNotification(it, 0)
             tasks[it]!!.invoke()
         }
@@ -76,7 +90,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         },
 
         R.string.step_unzipping to {
-            uploadControl.sendProgress(0)
+            uploadControl.sendProgress(0, notificationHelper)
 
             if (interactor.getUnzippedFile(file.id) == null) {
                 val zipped = interactor.getDownloadedFile(file.id)!!
@@ -116,5 +130,10 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
     companion object {
         const val ARG_FILE = "ARG_FILE"
         const val PROGRESS_MAX = 100
+        const val ARG_COMMAND = "ARG_COMMAND"
+    }
+
+    object Command {
+        const val CANCEL = "CANCEL"
     }
 }

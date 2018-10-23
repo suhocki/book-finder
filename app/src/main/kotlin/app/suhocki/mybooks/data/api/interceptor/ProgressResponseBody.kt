@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.data.api.interceptor
 
+import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.di.module.UploadServiceModule
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -9,7 +10,8 @@ import java.io.IOException
 internal class ProgressResponseBody(
     private val contentLength: Long?,
     private val responseBody: ResponseBody,
-    private val uploadControl: UploadServiceModule.UploadControlEntity
+    private val uploadControl: UploadServiceModule.UploadControlEntity,
+    private val notificationHelper: NotificationHelper
 ) : ResponseBody() {
 
     private var bufferedSource: BufferedSource? = null
@@ -44,7 +46,7 @@ internal class ProgressResponseBody(
                     else contentLength()
 
                 val progress = (totalBytesRead / realContentLength.toDouble() * 100).toInt()
-                uploadControl.sendProgress(progress)
+                uploadControl.sendProgress(progress, notificationHelper)
                 return bytesRead
             }
         }

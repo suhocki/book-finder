@@ -79,9 +79,9 @@ class AdminPresenter @Inject constructor(
     fun stopUpload(items: MutableList<Any>) {
         serviceHandler.killService()
         val newItems = mutableListOf<Any>().apply {
-            add(HeaderEntity(resourceManager.getString(R.string.choose_file)))
             addAll(items)
-            removeAll { it is UploadControl }
+            removeAll { it is UploadControl || it is Header }
+            add(0, HeaderEntity(resourceManager.getString(R.string.choose_file)))
         }
         viewState.showData(newItems)
     }

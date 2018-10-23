@@ -3,6 +3,7 @@ package app.suhocki.mybooks.di.module
 import android.os.Parcel
 import android.os.Parcelable
 import app.suhocki.mybooks.data.api.FilesApi
+import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.di.DownloadDirectoryPath
 import app.suhocki.mybooks.di.provider.FilesApiProvider
 import app.suhocki.mybooks.di.provider.FilesOkHttpProvider
@@ -57,11 +58,15 @@ class UploadServiceModule(
             return 0
         }
 
-        fun sendProgress(progress: Int) {
+        fun sendProgress(
+            progress: Int,
+            notificationHelper: NotificationHelper
+        ) {
             if (isEnoughTimePassed()) {
                 info { progress }
                 this.progress = progress
                 MPEventBus.getDefault().postToAll(this)
+                notificationHelper.showProgressNotification(stepRes, progress)
             }
         }
 

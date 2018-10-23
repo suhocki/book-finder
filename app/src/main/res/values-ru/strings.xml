@@ -82,7 +82,7 @@
     <string name="choose_file">Выберите файл</string>s
     <string name="vk_group">Группа ВКонтакте</string>
     <string name="facebook_group">Группа Facebook</string>
-    <string name="file_uploaded">File %s was uploaded successfully</string>
+    <string name="file_uploaded">Файл %s успешно загружен</string>
 
     <!--License names-->
     <string name="library_license_MIT">MIT</string>

@@ -1,12 +1,14 @@
 package app.suhocki.mybooks.data.api.interceptor
 
+import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.di.module.UploadServiceModule
 import okhttp3.Interceptor
 import okhttp3.Response
 import javax.inject.Inject
 
 class ProgressInterceptor @Inject constructor(
-    private val uploadControl: UploadServiceModule.UploadControlEntity
+    private val uploadControl: UploadServiceModule.UploadControlEntity,
+    private val notificationHelper: NotificationHelper
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -17,8 +19,9 @@ class ProgressInterceptor @Inject constructor(
 
         val originalResponseBody = originalResponse.body()!!
 
-        val progressResponseBody =
-            ProgressResponseBody(contentLength, originalResponseBody, uploadControl)
+        val progressResponseBody = ProgressResponseBody(
+            contentLength, originalResponseBody, uploadControl, notificationHelper
+        )
 
         return originalResponse.newBuilder()
             .body(progressResponseBody)

@@ -2,6 +2,7 @@ package app.suhocki.mybooks.data.parser
 
 import app.suhocki.mybooks.data.database.entity.BookEntity
 import app.suhocki.mybooks.data.database.entity.CategoryEntity
+import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.parser.entity.BannerEntity
 import app.suhocki.mybooks.data.parser.entity.InfoEntity
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
@@ -22,7 +23,8 @@ import javax.inject.Inject
 
 
 class XlsParser @Inject constructor(
-    private val uploadControl: UploadServiceModule.UploadControlEntity
+    private val uploadControl: UploadServiceModule.UploadControlEntity,
+    private val notificationHelper: NotificationHelper
 ) : AnkoLogger {
 
     private lateinit var xlsFileName: String
@@ -39,7 +41,7 @@ class XlsParser @Inject constructor(
         while (matcher.find()) {
             progress = (matcher.start() / contentStringLength * 100).toInt()
 
-            uploadControl.sendProgress(progress)
+            uploadControl.sendProgress(progress, notificationHelper)
             matcher.group().let {
                 allMatches.add(
                     it.removeSurrounding(REGEX_XLS_CDATA_START, REGEX_XLS_CDATA_END)
@@ -139,7 +141,7 @@ class XlsParser @Inject constructor(
                         .add(createBookEntity(currentCategory, bookFieldsQueue, statisticsData))
                         .also {
                             val progress = (index / strings.size.toDouble() * 100).toInt()
-                            uploadControl.sendProgress(progress)
+                            uploadControl.sendProgress(progress, notificationHelper)
                         }
                 }
             } else if (currentXlsPage == LIST_BANNERS) {
