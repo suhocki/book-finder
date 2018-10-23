@@ -12,8 +12,8 @@ import android.support.v4.app.NotificationCompat
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.context.ContextManager
 import app.suhocki.mybooks.data.resources.ResourceManager
-import app.suhocki.mybooks.ui.admin.background.BackgroundCommand
 import app.suhocki.mybooks.ui.admin.background.UploadService
+import app.suhocki.mybooks.ui.base.TabPosition
 import app.suhocki.mybooks.ui.main.MainActivity
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.notificationManager
@@ -35,12 +35,13 @@ class NotificationHelper @Inject constructor(
     fun showProgressNotification(@StringRes stepId: Int, progress: Int) {
         val stepIds = resourceManager.getStringArrayIdentifiers(R.array.database_upload_steps)
         val currentStepIndex = stepIds.indexOf(stepId)
-        val title = context.resources.getString(R.string.step_info, currentStepIndex, stepIds.size)
-        val pendingIntent = createIntent(BackgroundCommand.CANCEL)
+        val title =
+            context.resources.getString(R.string.step_info, currentStepIndex.inc(), stepIds.size)
+        val pendingIntent = createIntent()
         val description = context.resources.getString(stepId)
         val cancelText = context.resources.getString(R.string.cancel)
 
-        val notification = getNotificationBuilder()
+        val notification = getNotificationBuilder(MainActivity.TabPositions.TAB_POSITION_ADMIN)
             .setContentTitle(title)
             .setShowWhen(false)
             .setContentText(description)
@@ -56,8 +57,8 @@ class NotificationHelper @Inject constructor(
     fun showErrorNotification(@StringRes errorDescriptionRes: Int): Notification = with(context) {
         val title = getString(R.string.error)
         val description = getString(errorDescriptionRes)
-        val pendingIntent = createIntent(BackgroundCommand.START)
-        return getNotificationBuilder()
+        val pendingIntent = createIntent()
+        return getNotificationBuilder(MainActivity.TabPositions.TAB_POSITION_ADMIN)
             .setSmallIcon(R.drawable.notification_error)
             .setContentTitle(title)
             .addAction(NotificationCompat.Action(0, getString(R.string.retry), pendingIntent))
@@ -70,7 +71,7 @@ class NotificationHelper @Inject constructor(
 
     fun showSuccessNotification(fileName: String): Notification = with(context) {
         val title = getString(R.string.success)
-        val intentForContinue = createIntent(BackgroundCommand.CONTINUE)
+        val intentForContinue = createIntent()
         val intentForContent = intentFor<MainActivity>()
             .apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -79,7 +80,7 @@ class NotificationHelper @Inject constructor(
             }
         val intentContent = PendingIntent
             .getActivity(this, 0, intentForContent, PendingIntent.FLAG_UPDATE_CURRENT)
-        getNotificationBuilder()
+        getNotificationBuilder(MainActivity.TabPositions.TAB_POSITION_ADMIN)
             .setSmallIcon(R.drawable.ic_success)
             .setContentTitle(title)
             .setContentText(getString(R.string.file_uploaded, fileName))
@@ -98,11 +99,11 @@ class NotificationHelper @Inject constructor(
             .apply { flags = Notification.FLAG_AUTO_CANCEL }
     }
 
-    private fun getNotificationBuilder(): NotificationCompat.Builder = with(context) {
+    private fun getNotificationBuilder(@TabPosition tabPosition: Int): NotificationCompat.Builder = with(context) {
         val contentIntent = PendingIntent.getActivity(
             this,
             0,
-            intentFor<MainActivity>(),
+            intentFor<MainActivity>(MainActivity.SCREEN_TAG to tabPosition),
             PendingIntent.FLAG_UPDATE_CURRENT
         )
         return NotificationCompat.Builder(this, CHANNEL_ID)
@@ -111,8 +112,8 @@ class NotificationHelper @Inject constructor(
             .setDefaults(0)
     }
 
-    private fun createIntent(command: BackgroundCommand): PendingIntent = with(context) {
-        val intent = intentFor<UploadService>(UploadService.COMMAND to command)
+    private fun createIntent(): PendingIntent = with(context) {
+        val intent = intentFor<UploadService>()
         PendingIntent.getService(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 

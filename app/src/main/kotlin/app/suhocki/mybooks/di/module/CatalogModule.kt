@@ -2,9 +2,7 @@ package app.suhocki.mybooks.di.module
 
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.di.CategoriesDecoration
-import app.suhocki.mybooks.di.SearchAll
-import app.suhocki.mybooks.di.SearchDecoration
+import app.suhocki.mybooks.di.*
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.decorator.SearchItemDecoration
@@ -12,10 +10,15 @@ import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import toothpick.config.Module
 
 class CatalogModule(
+    isSearchMode: Boolean,
     categoriesDividerOffset: Int,
     searchDividerOffset: Int
 ) : Module() {
     init {
+        bind(PrimitiveWrapper::class.java)
+            .withName(IsSearchMode::class.java)
+            .toInstance(PrimitiveWrapper(isSearchMode))
+
         bind(Search::class.java)
             .withName(SearchAll::class.java)
             .toInstance(SearchEntity(R.string.hint_search))

@@ -64,6 +64,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
             notificationHelper.showProgressNotification(it, 0)
             tasks[it]!!.invoke()
         }
+        notificationHelper.showSuccessNotification(file.name)
     }
 
     private val tasks = mapOf(
@@ -114,7 +115,6 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
 
     companion object {
         const val ARG_FILE = "ARG_FILE"
-        const val COMMAND = "COMMAND"
         const val PROGRESS_MAX = 100
     }
 }

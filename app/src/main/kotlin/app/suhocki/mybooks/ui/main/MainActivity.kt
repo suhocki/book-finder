@@ -15,12 +15,17 @@ import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.admin.AdminFragment
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.TabPosition
 import app.suhocki.mybooks.ui.base.listener.AdminModeEnabler
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.changelog.ChangelogActivity
 import app.suhocki.mybooks.ui.info.InfoFragment
 import app.suhocki.mybooks.ui.licenses.LicensesActivity
+import app.suhocki.mybooks.ui.main.MainActivity.TabPositions.TAB_POSITION_ADMIN
+import app.suhocki.mybooks.ui.main.MainActivity.TabPositions.TAB_POSITION_CATALOG
+import app.suhocki.mybooks.ui.main.MainActivity.TabPositions.TAB_POSITION_INFO
+import app.suhocki.mybooks.ui.main.MainActivity.TabPositions.TAB_POSITION_SEARCH
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -77,7 +82,6 @@ class MainActivity : MvpAppCompatActivity(), MainView,
             DI.MAIN_ACTIVITY_SCOPE
         ).getInstance(MainPresenter::class.java)
 
-
     override fun onDestroy() {
         super.onDestroy()
         if (isFinishing) Toothpick.closeScope(DI.MAIN_ACTIVITY_SCOPE)
@@ -103,7 +107,7 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         bottomBar.setOnTabSelectedListener { position, wasSelected ->
             handleNavigationClick(position, wasSelected)
         }
-        initFragments(savedInstanceState)
+        initFragments(savedInstanceState, intent.getIntExtra(SCREEN_TAG, TAB_POSITION_CATALOG))
     }
 
     private fun MainUI.onDrawerItemClick(menuItem: MenuItem): Boolean {
@@ -141,14 +145,19 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         return false
     }
 
-    private fun initFragments(savedInstanceState: Bundle?) {
+    private fun initFragments(
+        savedInstanceState: Bundle?,
+        @TabPosition tabPosition: Int
+    ) {
         if (savedInstanceState == null) {
             tabs = createNewFragments()
-            val fragmentCatalog = tabs[tabKeys[TAB_POSITION_CATALOG]]!!
+            val startFragment = tabs[tabKeys[tabPosition]]!!
             supportFragmentManager.beginTransaction()
-                .add(Ids.mainContainer, fragmentCatalog, tabKeys[TAB_POSITION_CATALOG])
+                .add(Ids.mainContainer, startFragment, tabKeys[tabPosition])
                 .commitNow()
-            ui.bottomBar.setCurrentItem(TAB_POSITION_CATALOG, false)
+            with(ui.bottomBar) {
+                post { setCurrentItem(tabPosition, false) }
+            }
         } else {
             tabs = findFragments()
         }
@@ -169,9 +178,15 @@ class MainActivity : MvpAppCompatActivity(), MainView,
     }
 
     private fun invokeAction(position: Int) {
-        showCatalogTab()
-        when (position) {
-            TAB_POSITION_SEARCH -> expandSearchView()
+        if (position == TAB_POSITION_SEARCH) {
+            val catalogFragment = supportFragmentManager
+                .findFragmentByTag(tabKeys[TAB_POSITION_CATALOG])
+
+            if (catalogFragment == null) {
+                tabs[tabKeys[TAB_POSITION_CATALOG]] = CatalogFragment.newInstance(true)
+            }
+            showCatalogTab()
+            expandSearchView()
         }
     }
 
@@ -183,8 +198,9 @@ class MainActivity : MvpAppCompatActivity(), MainView,
     }
 
     private fun expandSearchView() {
-        val onSearchClickListener = tabs[tabKeys[TAB_POSITION_CATALOG]] as OnSearchClickListener
-        onSearchClickListener.onExpandSearchClick()
+        with(tabs[tabKeys[TAB_POSITION_CATALOG]] as OnSearchClickListener) {
+            onExpandSearchClick()
+        }
     }
 
     private fun createNewFragments(): HashMap<String, BaseFragment> = hashMapOf(
@@ -267,10 +283,15 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         toogleAdminMode(enabled, withToast)
     }
 
+
     companion object {
-        private const val TAB_POSITION_CATALOG = 0
-        private const val TAB_POSITION_SEARCH = 1
-        private const val TAB_POSITION_INFO = 2
-        private const val TAB_POSITION_ADMIN = 3
+        const val SCREEN_TAG = "Screen Tag"
+    }
+
+    object TabPositions {
+        const val TAB_POSITION_CATALOG = 0
+        const val TAB_POSITION_SEARCH = 1
+        const val TAB_POSITION_INFO = 2
+        const val TAB_POSITION_ADMIN = 3
     }
 }

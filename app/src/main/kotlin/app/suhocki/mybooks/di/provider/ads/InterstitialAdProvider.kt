@@ -12,7 +12,7 @@ class InterstitialAdProvider @Inject constructor(
 ): Provider<InterstitialAd> {
 
     override fun get(): InterstitialAd =
-        InterstitialAd(contextManager.currentContext).apply {
+        InterstitialAd(contextManager.applicationContext).apply {
             adUnitId = contextManager.currentContext.getString(R.string.interstitial_ad_id)
         }
 }

@@ -3,12 +3,8 @@ package app.suhocki.mybooks.ui.catalog
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
-import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.resources.ResourceManager
-import app.suhocki.mybooks.di.CategoriesDecoration
-import app.suhocki.mybooks.di.ErrorReceiver
-import app.suhocki.mybooks.di.SearchAll
-import app.suhocki.mybooks.di.SearchDecoration
+import app.suhocki.mybooks.di.*
 import app.suhocki.mybooks.domain.CatalogInteractor
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.entity.BookEntity
@@ -23,6 +19,7 @@ import javax.inject.Inject
 
 @InjectViewState
 class CatalogPresenter @Inject constructor(
+    @IsSearchMode private val isSearchMode: PrimitiveWrapper<Boolean>,
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val interactor: CatalogInteractor,
     private val resourceManager: ResourceManager,
@@ -34,7 +31,7 @@ class CatalogPresenter @Inject constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        loadData()
+        if (!isSearchMode.value) loadData()
     }
 
     fun loadData() {

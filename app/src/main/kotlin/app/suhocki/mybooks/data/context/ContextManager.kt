@@ -16,6 +16,8 @@ class ContextManager @Inject constructor(
     var currentContext: Context = app.applicationContext
         get() = _currentContext ?: app.applicationContext
 
+    val applicationContext = app.applicationContext
+
     init {
         app.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityPaused(p0: Activity?) {

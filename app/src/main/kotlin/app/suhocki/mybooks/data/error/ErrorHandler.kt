@@ -10,6 +10,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.concurrent.CancellationException
 import javax.inject.Inject
+import javax.net.ssl.SSLException
 import javax.net.ssl.SSLHandshakeException
 
 class ErrorHandler @Inject constructor() {
@@ -28,6 +29,8 @@ class ErrorHandler @Inject constructor() {
     private fun getErrorType(throwable: Throwable): ErrorType {
         return when {
             throwable is ConnectException -> ErrorType.NETWORK
+
+            throwable is SSLException -> ErrorType.NETWORK
 
             throwable.cause is HttpException -> ErrorType.NETWORK
 
