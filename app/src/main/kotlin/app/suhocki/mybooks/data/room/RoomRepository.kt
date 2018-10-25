@@ -1,8 +1,8 @@
-package app.suhocki.mybooks.data.database
+package app.suhocki.mybooks.data.room
 
 import android.arch.persistence.db.SupportSQLiteQuery
-import app.suhocki.mybooks.data.database.dao.*
-import app.suhocki.mybooks.data.database.entity.*
+import app.suhocki.mybooks.data.room.dao.*
+import app.suhocki.mybooks.data.room.entity.*
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category

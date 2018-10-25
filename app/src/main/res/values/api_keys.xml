@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="admob_api_key" translatable="false">ca-app-pub-5580850164009775~6716592020</string>
+    <string name="admob_app_id" translatable="false">ca-app-pub-5580850164009775~6716592020</string>
     <string name="interstitial_ad_id" translatable="false">ca-app-pub-5580850164009775/9559469093</string>
     <string name="banner_ad_id" translatable="false">ca-app-pub-5580850164009775/4254080210</string>
     <string name="google_drive_api_key" translatable="false">AIzaSyD2dHsZJ9b4OXuy5B_owiL8W18NaNOM8tk</string>

@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.data.database.entity
+package app.suhocki.mybooks.data.room.entity
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey

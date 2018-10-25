@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.data.parser.entity
 
-import app.suhocki.mybooks.data.database.entity.BookEntity
-import app.suhocki.mybooks.data.database.entity.CategoryEntity
+import app.suhocki.mybooks.data.room.entity.BookEntity
+import app.suhocki.mybooks.data.room.entity.CategoryEntity
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Info

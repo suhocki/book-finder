@@ -3,7 +3,7 @@ package app.suhocki.mybooks.di.provider.database
 import android.arch.persistence.room.Room
 import app.suhocki.mybooks.BuildConfig
 import app.suhocki.mybooks.data.context.ContextManager
-import app.suhocki.mybooks.data.database.BooksDatabase
+import app.suhocki.mybooks.data.room.BooksDatabase
 import javax.inject.Inject
 import javax.inject.Provider
 

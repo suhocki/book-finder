@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.data.database;
+package app.suhocki.mybooks.data.room;
 
 import android.arch.persistence.db.SimpleSQLiteQuery;
 import android.arch.persistence.db.SupportSQLiteQuery;

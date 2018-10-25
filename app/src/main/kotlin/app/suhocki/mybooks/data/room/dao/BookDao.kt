@@ -1,8 +1,8 @@
-package app.suhocki.mybooks.data.database.dao
+package app.suhocki.mybooks.data.room.dao
 
 import android.arch.persistence.db.SupportSQLiteQuery
 import android.arch.persistence.room.*
-import app.suhocki.mybooks.data.database.entity.BookEntity
+import app.suhocki.mybooks.data.room.entity.BookEntity
 
 @Dao
 interface BookDao {

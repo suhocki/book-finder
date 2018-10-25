@@ -1,14 +1,14 @@
-package app.suhocki.mybooks.data.database.entity
+package app.suhocki.mybooks.data.room.entity
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Index
-import app.suhocki.mybooks.domain.model.statistics.YearStatistics
+import app.suhocki.mybooks.domain.model.statistics.StatusStatistics
 
 @Entity(
-    tableName = "YearStatistics",
+    tableName = "StatusStatistics",
     indices = [(Index("category"))],
-    primaryKeys = ["year", "category"],
+    primaryKeys = ["status", "category"],
     foreignKeys = [
         (ForeignKey(
             entity = CategoryEntity::class,
@@ -17,8 +17,8 @@ import app.suhocki.mybooks.domain.model.statistics.YearStatistics
         ))
     ]
 )
-data class YearStatisticsEntity(
+data class StatusStatisticsEntity(
     override val category: String,
-    override val year: String,
+    override val status: String,
     override val count: Int
-) : YearStatistics
+) : StatusStatistics

@@ -1,24 +1,29 @@
 package app.suhocki.mybooks.domain
 
-import app.suhocki.mybooks.data.database.entity.*
 import app.suhocki.mybooks.data.googledrive.RemoteFilesRepository
 import app.suhocki.mybooks.data.localstorage.LocalFilesRepository
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
+import app.suhocki.mybooks.data.room.entity.*
+import app.suhocki.mybooks.di.Firestore
+import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Info
-import app.suhocki.mybooks.domain.repository.*
+import app.suhocki.mybooks.domain.repository.BannersRepository
+import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.domain.repository.InfoRepository
+import app.suhocki.mybooks.domain.repository.StatisticsRepository
 import java.io.File
 import javax.inject.Inject
 
-class BackgroundInteractor @Inject constructor(
+class UploadServiceInteractor @Inject constructor(
+    @Room private val localBooksRepository: BooksRepository,
+    @Firestore private val remoteBooksRepository: BooksRepository,
     private val remoteFilesRepository: RemoteFilesRepository,
     private val localFilesRepository: LocalFilesRepository,
-    private val bookDatabaseRepository: BooksRepository,
     private val bannersRepository: BannersRepository,
     private val statisticDatabaseRepository: StatisticsRepository,
-    private val settingsRepository: SettingsRepository,
     private val infoRepository: InfoRepository
 ) {
     fun getDownloadedFile(fileId: String) =
@@ -39,9 +44,14 @@ class BackgroundInteractor @Inject constructor(
     fun extractXlsDocument(strings: ArrayList<String>) =
         localFilesRepository.extractXlsDocument(strings)
 
-    fun saveBooksData(data: Map<out Category, Collection<Book>>) {
-        bookDatabaseRepository.setCategories(data.keys)
-        bookDatabaseRepository.setBooks(data.values.flatMap { books -> books }.toList())
+    fun saveBooksToLocal(data: Map<out Category, Collection<Book>>) {
+        localBooksRepository.setCategories(data.keys)
+        localBooksRepository.setBooks(data.values.flatMap { books -> books }.toList())
+    }
+
+    fun uploadBooksDataToRemote(data: Map<out Category, Collection<Book>>) {
+        remoteBooksRepository.setCategories(data.keys)
+        remoteBooksRepository.setBooks(data.values.flatMap { books -> books }.toList())
     }
 
     fun saveStatisticsData(statisticsData: Map<Category, StatisticsEntity>) {

@@ -2,4 +2,6 @@ package app.suhocki.mybooks.ui.admin.eventbus
 
 import java.io.Serializable
 
-class ServiceKilledEvent : Serializable
+data class ServiceKilledEvent(
+    val shouldKillService: Boolean
+) : Serializable

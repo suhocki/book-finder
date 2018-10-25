@@ -56,7 +56,7 @@ class AdminFragment : BaseFragment(), AdminView {
     private val adapter: AdminAdapter by lazy {
         AdminAdapter(
             { presenter.upload(it, adapter.items) },
-            { presenter.stopUpload(adapter.items) }
+            { presenter.stopUpload(adapter.items, true) }
         )
     }
 
@@ -119,8 +119,8 @@ class AdminFragment : BaseFragment(), AdminView {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    fun onServiceKilledEvent(ignore: ServiceKilledEvent) {
-        presenter.stopUpload(adapter.items)
+    fun onServiceKilledEvent(serviceKilledEvent: ServiceKilledEvent) {
+        presenter.stopUpload(adapter.items, serviceKilledEvent.shouldKillService)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

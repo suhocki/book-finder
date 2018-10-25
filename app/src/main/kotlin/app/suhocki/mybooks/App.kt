@@ -8,6 +8,7 @@ import android.os.Build
 import android.support.v7.app.AppCompatDelegate
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.AppModule
+import app.suhocki.mybooks.di.module.RoomModule
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import com.facebook.drawee.backends.pipeline.Fresco
 import com.facebook.imagepipeline.core.ImagePipelineConfig
@@ -35,7 +36,10 @@ open class App : Application() {
 
     private fun initAppScope() {
         val appScope = Toothpick.openScope(DI.APP_SCOPE)
-        appScope.installModules(AppModule(this))
+        appScope.installModules(
+            AppModule(this),
+            RoomModule()
+        )
     }
 
     private fun initNotificationChannel() {
@@ -53,7 +57,7 @@ open class App : Application() {
     }
 
     private fun initAds() {
-        MobileAds.initialize(this, getString(R.string.admob_api_key))
+        MobileAds.initialize(this, getString(R.string.admob_app_id))
     }
 
     private fun initFresco() {

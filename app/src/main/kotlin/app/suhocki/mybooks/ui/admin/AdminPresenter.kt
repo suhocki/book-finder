@@ -76,8 +76,11 @@ class AdminPresenter @Inject constructor(
         serviceHandler.startIntentService(file)
     }
 
-    fun stopUpload(items: MutableList<Any>) {
-        serviceHandler.killService()
+    fun stopUpload(
+        items: MutableList<Any>,
+        shouldKillService: Boolean
+    ) {
+        if (shouldKillService) serviceHandler.killService()
         val newItems = mutableListOf<Any>().apply {
             addAll(items)
             removeAll { it is UploadControl || it is Header }

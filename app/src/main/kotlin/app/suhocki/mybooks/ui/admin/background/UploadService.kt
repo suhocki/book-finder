@@ -10,7 +10,7 @@ import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.service.ServiceHandler
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.UploadServiceModule
-import app.suhocki.mybooks.domain.BackgroundInteractor
+import app.suhocki.mybooks.domain.UploadServiceInteractor
 import app.suhocki.mybooks.domain.model.XlsDocument
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
@@ -24,7 +24,7 @@ import javax.inject.Inject
 class UploadService : IntentService("UploadService"), AnkoLogger {
 
     @Inject
-    lateinit var interactor: BackgroundInteractor
+    lateinit var interactor: UploadServiceInteractor
 
     @Inject
     lateinit var serviceHandler: ServiceHandler
@@ -59,7 +59,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (intent.extras.getString(ARG_COMMAND) == UploadService.Command.CANCEL) {
             notificationManager.cancel(NotificationHelper.NOTIFICATION_ID)
-            MPEventBus.getDefault().postToAll(ServiceKilledEvent())
+            MPEventBus.getDefault().postToAll(ServiceKilledEvent(true))
             serviceHandler.killService()
         }
         return super.onStartCommand(intent, flags, startId)
@@ -110,7 +110,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         },
 
         R.string.step_saving_to_local to {
-            interactor.saveBooksData(document.booksData)
+            interactor.saveBooksToLocal(document.booksData)
             interactor.saveStatisticsData(document.statisticsData)
             interactor.saveInfoData(document.infosData)
             interactor.saveBannersData(document.bannersData)
@@ -119,12 +119,13 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         },
 
         R.string.step_saving_to_remote to {
+            interactor.uploadBooksDataToRemote(document.booksData)
         }
     )
 
     override fun onDestroy() {
         super.onDestroy()
-        MPEventBus.getDefault().postToAll(ServiceKilledEvent())
+        MPEventBus.getDefault().postToAll(ServiceKilledEvent(false))
     }
 
     companion object {

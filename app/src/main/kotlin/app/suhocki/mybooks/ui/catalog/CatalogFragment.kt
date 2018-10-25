@@ -18,6 +18,7 @@ import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.base.eventbus.CategoriesUpdatedEvent
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchListener
@@ -91,7 +92,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
             } else {
                 (activity as NavigationHandler).setDrawerExpanded(true)
             }
-
         }
 
         ui.recyclerView.adapter = adapter
@@ -145,10 +145,8 @@ class CatalogFragment : BaseFragment(), CatalogView,
                     presenter.removeScrollCommand(catalogItems, itemDecoration)
                 }
 
-                else -> with(ui.recyclerView) {
-                    Timer().schedule(200) {
-                        onUiThread { itemDecoration?.let { showRecyclerDecoration(it) } }
-                    }
+                else -> Timer().schedule(200) {
+                    onUiThread { itemDecoration?.let { showRecyclerDecoration(it) } }
                 }
             }
         }
@@ -235,7 +233,10 @@ class CatalogFragment : BaseFragment(), CatalogView,
         presenter.onBuyBookClicked(book)
     }
 
-    override fun showBuyDrawableForItem(book: BookEntity, @DrawableRes drawableRes: Int) {
+    override fun showBuyDrawableForItem(
+        book: BookEntity,
+        @DrawableRes drawableRes: Int
+    ) {
         val indexOfBook = adapter.items.indexOf(book)
         adapter.notifyItemChanged(indexOfBook, drawableRes)
     }
@@ -250,11 +251,16 @@ class CatalogFragment : BaseFragment(), CatalogView,
         presenter.loadData()
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onCategoriesUpdatedEvent(event: CategoriesUpdatedEvent) {
+        presenter.loadData()
+    }
+
 
     companion object {
         private const val ARG_IS_SEARCH_MODE = "ARG_IS_SEARCH_MODE"
-
         const val ARG_CATEGORY = "ARG_CATEGORY"
+
         const val UNDEFINED_POSITION = -1
         const val BANNER_POSITION = 0
         const val SEARCH_POSITION = 1

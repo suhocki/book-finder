@@ -60,8 +60,10 @@
 
         <service
             android:name=".ui.admin.background.UploadService"
-            android:exported="false"
             android:process="@string/upload_service_name" />
+
+        <service
+            android:name=".ui.update.UpdateService" />
 
         <service
             android:name=".ui.firebase.FireBaseInstanceIdService"
@@ -74,6 +76,10 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="f779c23c3f096ce55675eb5a228961f2811e8fa2" />
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id"/>
 
         <receiver
             android:name="app.suhocki.mybooks.ui.base.mpeventbus.MPEventReceiver"

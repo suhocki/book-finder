@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.di.provider.database
 
-import app.suhocki.mybooks.data.database.BooksDatabase
-import app.suhocki.mybooks.data.database.dao.PriceStatisticsDao
+import app.suhocki.mybooks.data.room.BooksDatabase
+import app.suhocki.mybooks.data.room.dao.PriceStatisticsDao
 import javax.inject.Inject
 import javax.inject.Provider
 

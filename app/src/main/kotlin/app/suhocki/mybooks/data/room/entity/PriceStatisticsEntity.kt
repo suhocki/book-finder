@@ -1,14 +1,14 @@
-package app.suhocki.mybooks.data.database.entity
+package app.suhocki.mybooks.data.room.entity
 
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Index
-import app.suhocki.mybooks.domain.model.statistics.PublisherStatistics
+import app.suhocki.mybooks.domain.model.statistics.PriceStatistics
 
 @Entity(
-    tableName = "PublisherStatistics",
+    tableName = "PriceStatistics",
     indices = [(Index("category"))],
-    primaryKeys = ["publisher", "category"],
+    primaryKeys = ["category"],
     foreignKeys = [
         (ForeignKey(
             entity = CategoryEntity::class,
@@ -17,8 +17,8 @@ import app.suhocki.mybooks.domain.model.statistics.PublisherStatistics
         ))
     ]
 )
-data class PublisherStatisticsEntity(
+data class PriceStatisticsEntity(
     override val category: String,
-    override val publisher: String,
-    override val count: Int
-) : PublisherStatistics
+    override val minPrice: Double,
+    override val maxPrice: Double
+) : PriceStatistics

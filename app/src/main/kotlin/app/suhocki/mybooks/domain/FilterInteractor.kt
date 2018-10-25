@@ -4,8 +4,8 @@ import android.arch.persistence.db.SupportSQLiteQuery
 import android.os.Parcelable
 import android.support.annotation.StringRes
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.data.database.QueryBuilder
-import app.suhocki.mybooks.data.database.entity.BookEntity
+import app.suhocki.mybooks.data.room.QueryBuilder
+import app.suhocki.mybooks.data.room.entity.BookEntity
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.SearchAuthor
 import app.suhocki.mybooks.di.SearchPublisher

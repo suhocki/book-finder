@@ -4,23 +4,25 @@ import android.os.Build
 import app.suhocki.mybooks.App
 import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.context.ContextManager
-import app.suhocki.mybooks.data.database.BooksDatabase
-import app.suhocki.mybooks.data.database.RoomRepository
-import app.suhocki.mybooks.data.database.dao.*
+import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.preferences.AppPreferencesRepository
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
+import app.suhocki.mybooks.data.room.RoomRepository
 import app.suhocki.mybooks.di.ErrorReceiver
+import app.suhocki.mybooks.di.Firestore
+import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.di.provider.AppPreferencesProvider
 import app.suhocki.mybooks.di.provider.ErrorReceiverProvider
 import app.suhocki.mybooks.di.provider.VersionProvider
 import app.suhocki.mybooks.di.provider.ads.BannerAdProvider
 import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
-import app.suhocki.mybooks.di.provider.database.*
 import app.suhocki.mybooks.domain.model.BannerAd
 import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.domain.repository.*
 import com.google.android.gms.ads.InterstitialAd
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import net.grandcentrix.tray.AppPreferences
 import org.jetbrains.anko.configuration
@@ -42,43 +44,8 @@ class AppModule(app: App) : Module() {
             .toProvider(VersionProvider::class.java)
             .providesSingletonInScope()
 
-        bind(BooksDatabase::class.java)
-            .toProvider(BooksDatabaseProvider::class.java)
-            .providesSingletonInScope()
-
-        bind(BookDao::class.java)
-            .toProvider(BookDaoProvider::class.java)
-            .providesSingletonInScope()
-
-        bind(BannerDao::class.java)
-            .toProvider(BannerDaoProvider::class.java)
-            .providesSingletonInScope()
-
-        bind(CategoryDao::class.java)
-            .toProvider(CategoryDaoProvider::class.java)
-            .providesSingletonInScope()
-
-        bind(StatusStatisticsDao::class.java)
-            .toProvider(StatusStatisticsDaoProvider::class.java)
-            .providesSingletonInScope()
-
-        bind(YearStatisticsDao::class.java)
-            .toProvider(YearStatisticsDaoProvider::class.java)
-            .providesSingletonInScope()
-
-        bind(PublisherStatisticsDao::class.java)
-            .toProvider(PublisherStatisticsDaoProvider::class.java)
-            .providesSingletonInScope()
-
-        bind(AuthorStatisticsDao::class.java)
-            .toProvider(AuthorStatisticsDaoProvider::class.java)
-            .providesSingletonInScope()
-
-        bind(PriceStatisticsDao::class.java)
-            .toProvider(PriceStatisticsDaoProvider::class.java)
-            .providesSingletonInScope()
-
         bind(BooksRepository::class.java)
+            .withName(Room::class.java)
             .to(RoomRepository::class.java)
             .singletonInScope()
 
