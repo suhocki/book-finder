@@ -1,8 +1,11 @@
 package app.suhocki.mybooks.di.module
 
 import app.suhocki.mybooks.data.room.BooksDatabase
+import app.suhocki.mybooks.data.room.RoomRepository
 import app.suhocki.mybooks.data.room.dao.*
+import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.di.provider.database.*
+import app.suhocki.mybooks.domain.repository.BooksRepository
 import toothpick.config.Module
 
 class RoomModule : Module() {
@@ -42,5 +45,10 @@ class RoomModule : Module() {
         bind(PriceStatisticsDao::class.java)
             .toProvider(PriceStatisticsDaoProvider::class.java)
             .providesSingletonInScope()
+
+        bind(BooksRepository::class.java)
+            .withName(Room::class.java)
+            .to(RoomRepository::class.java)
+            .singletonInScope()
     }
 }

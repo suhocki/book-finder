@@ -1,16 +1,16 @@
 package app.suhocki.mybooks.data.parser
 
-import app.suhocki.mybooks.data.room.entity.BookEntity
-import app.suhocki.mybooks.data.room.entity.CategoryEntity
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.parser.entity.BannerEntity
 import app.suhocki.mybooks.data.parser.entity.InfoEntity
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
-import app.suhocki.mybooks.di.module.UploadServiceModule
+import app.suhocki.mybooks.data.room.entity.BookEntity
+import app.suhocki.mybooks.data.room.entity.CategoryEntity
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Info
+import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.info
 import java.io.BufferedReader
@@ -23,7 +23,7 @@ import javax.inject.Inject
 
 
 class XlsParser @Inject constructor(
-    private val uploadControl: UploadServiceModule.UploadControlEntity,
+    private val uploadControl: UploadControlEntity,
     private val notificationHelper: NotificationHelper
 ) : AnkoLogger {
 
@@ -127,7 +127,7 @@ class XlsParser @Inject constructor(
                 if (isHeaderFound) {
                     isHeaderFound = false
                     bookFieldsQueue.clear()
-                    currentCategory = CategoryEntity(currentWord)
+                    currentCategory = CategoryEntity(currentWord, currentWord)
                     booksData[currentCategory] = mutableListOf()
                     statisticsData[currentCategory] = StatisticsEntity()
                     continue
@@ -138,7 +138,7 @@ class XlsParser @Inject constructor(
                 if (bookFieldsQueue.size == xlsFileColumnNames.size) {
                     info { bookFieldsQueue.first }
                     booksData[currentCategory]!!
-                        .add(createBookEntity(currentCategory, bookFieldsQueue, statisticsData))
+                        .add(createBookEntity(currentCategory!!, bookFieldsQueue, statisticsData))
                         .also {
                             val progress = (index / strings.size.toDouble() * 100).toInt()
                             uploadControl.sendProgress(progress, notificationHelper)
@@ -198,12 +198,12 @@ class XlsParser @Inject constructor(
     }
 
     private fun createBookEntity(
-        currentCategory: CategoryEntity?,
+        currentCategory: CategoryEntity,
         objectFieldsQueue: ArrayDeque<String>,
         statisticsData: MutableMap<Category, StatisticsEntity>
     ): BookEntity {
         return BookEntity(
-            category = currentCategory!!.name,
+            categoryId = currentCategory.id,
             shortName = objectFieldsQueue.pop(),
             fullName = objectFieldsQueue.pop(),
             shortDescription = objectFieldsQueue.pop(),

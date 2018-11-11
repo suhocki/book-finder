@@ -7,18 +7,18 @@ import app.suhocki.mybooks.domain.model.statistics.YearStatistics
 
 @Entity(
     tableName = "YearStatistics",
-    indices = [(Index("category"))],
-    primaryKeys = ["year", "category"],
+    indices = [(Index("categoryId"))],
+    primaryKeys = ["year", "categoryId"],
     foreignKeys = [
         (ForeignKey(
             entity = CategoryEntity::class,
-            parentColumns = ["name"],
-            childColumns = ["category"]
+            parentColumns = ["id"],
+            childColumns = ["categoryId"]
         ))
     ]
 )
 data class YearStatisticsEntity(
-    override val category: String,
+    override val categoryId: String,
     override val year: String,
     override val count: Int
 ) : YearStatistics

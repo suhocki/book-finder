@@ -2,14 +2,13 @@ package app.suhocki.mybooks.domain
 
 import app.suhocki.mybooks.data.googledrive.RemoteFilesRepository
 import app.suhocki.mybooks.data.localstorage.LocalFilesRepository
-import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
-import app.suhocki.mybooks.data.room.entity.*
-import app.suhocki.mybooks.di.Firestore
+import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Info
+import app.suhocki.mybooks.domain.model.statistics.*
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
 import app.suhocki.mybooks.domain.repository.InfoRepository
@@ -19,15 +18,15 @@ import javax.inject.Inject
 
 class UploadServiceInteractor @Inject constructor(
     @Room private val localBooksRepository: BooksRepository,
-    @Firestore private val remoteBooksRepository: BooksRepository,
     private val remoteFilesRepository: RemoteFilesRepository,
     private val localFilesRepository: LocalFilesRepository,
     private val bannersRepository: BannersRepository,
-    private val statisticDatabaseRepository: StatisticsRepository,
-    private val infoRepository: InfoRepository
+    private val statisticRepository: StatisticsRepository,
+    private val infoRepository: InfoRepository,
+    private val mapper: Mapper
 ) {
     fun getDownloadedFile(fileId: String) =
-            localFilesRepository.getDownloadedFile(fileId)
+        localFilesRepository.getDownloadedFile(fileId)
 
     fun downloadFile(fileId: String) =
         remoteFilesRepository.downloadFile(fileId)
@@ -49,46 +48,14 @@ class UploadServiceInteractor @Inject constructor(
         localBooksRepository.setBooks(data.values.flatMap { books -> books }.toList())
     }
 
-    fun uploadBooksDataToRemote(data: Map<out Category, Collection<Book>>) {
-        remoteBooksRepository.setCategories(data.keys)
-        remoteBooksRepository.setBooks(data.values.flatMap { books -> books }.toList())
-    }
-
-    fun saveStatisticsData(statisticsData: Map<Category, StatisticsEntity>) {
-        val authorStatistics = statisticsData.entries.flatMap { (category, statistics) ->
-            statistics.authors.entries.map { (authorName, bookCount) ->
-                AuthorStatisticsEntity(category.name, authorName, bookCount)
-            }
+    fun saveStatisticsData(statistics: Map<Category, Statistics>) =
+        with(statisticRepository) {
+            setAuthorStatistics(mapper.map(statistics, AuthorStatistics::class.java))
+            setPublisherStatistics(mapper.map(statistics, PublisherStatistics::class.java))
+            setStatusStatistics(mapper.map(statistics, StatusStatistics::class.java))
+            setYearStatistics(mapper.map(statistics, YearStatistics::class.java))
+            setPriceStatistics(mapper.map(statistics, PriceStatistics::class.java))
         }
-        statisticDatabaseRepository.setAuthorStatistics(authorStatistics)
-
-        val publisherStatistics = statisticsData.entries.flatMap { (category, statistics) ->
-            statistics.publishers.entries.map { (publisher, bookCount) ->
-                PublisherStatisticsEntity(category.name, publisher, bookCount)
-            }
-        }
-        statisticDatabaseRepository.setPublisherStatistics(publisherStatistics)
-
-        val statusStatistics = statisticsData.entries.flatMap { (category, statistics) ->
-            statistics.statuses.entries.map { (status, bookCount) ->
-                StatusStatisticsEntity(category.name, status, bookCount)
-            }
-        }
-        statisticDatabaseRepository.setStatusStatistics(statusStatistics)
-
-        val yearStatistics = statisticsData.entries.flatMap { (category, statistics) ->
-            statistics.years.entries.map { (year, bookCount) ->
-                YearStatisticsEntity(category.name, year, bookCount)
-            }
-        }
-        statisticDatabaseRepository.setYearStatistics(yearStatistics)
-
-        val priceStatistics = statisticsData.entries.map { (category, statistics) ->
-            val (minPrice, maxPrice) = statistics.prices
-            PriceStatisticsEntity(category.name, minPrice, maxPrice)
-        }
-        statisticDatabaseRepository.setPriceStatistics(priceStatistics)
-    }
 
     @Suppress("NON_EXHAUSTIVE_WHEN")
     fun saveInfoData(contactsData: List<Info>) {
@@ -109,7 +76,8 @@ class UploadServiceInteractor @Inject constructor(
                 Info.InfoType.ADDRESS -> infoRepository.setAddress(it.name)
             }
         }
-        contactsData.filter { it.type == Info.InfoType.PHONE }
+        contactsData.asSequence()
+            .filter { it.type == Info.InfoType.PHONE }
             .map { it.name }
             .toSet()
             .let { infoRepository.setContactPhones(it) }
@@ -120,5 +88,5 @@ class UploadServiceInteractor @Inject constructor(
     }
 
     fun getUnzippedFile(fileId: String): File? =
-            localFilesRepository.getUnzippedFile(fileId)
+        localFilesRepository.getUnzippedFile(fileId)
 }

@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.main
 
 import android.os.Bundle
+import android.support.annotation.IntDef
 import android.support.design.internal.NavigationMenu
 import android.support.v4.widget.DrawerLayout
 import android.view.Gravity
@@ -15,7 +16,6 @@ import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.admin.AdminFragment
 import app.suhocki.mybooks.ui.base.BaseFragment
-import app.suhocki.mybooks.ui.base.TabPosition
 import app.suhocki.mybooks.ui.base.listener.AdminModeEnabler
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
@@ -294,4 +294,13 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         const val TAB_POSITION_INFO = 2
         const val TAB_POSITION_ADMIN = 3
     }
+
+    @Retention
+    @IntDef(
+        MainActivity.TabPositions.TAB_POSITION_CATALOG,
+        MainActivity.TabPositions.TAB_POSITION_SEARCH,
+        MainActivity.TabPositions.TAB_POSITION_INFO,
+        MainActivity.TabPositions.TAB_POSITION_ADMIN
+    )
+    annotation class TabPosition
 }

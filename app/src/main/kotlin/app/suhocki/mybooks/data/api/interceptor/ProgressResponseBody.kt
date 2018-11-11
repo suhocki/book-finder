@@ -2,6 +2,7 @@ package app.suhocki.mybooks.data.api.interceptor
 
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.di.module.UploadServiceModule
+import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import okhttp3.MediaType
 import okhttp3.ResponseBody
 import okio.*
@@ -10,7 +11,7 @@ import java.io.IOException
 internal class ProgressResponseBody(
     private val contentLength: Long?,
     private val responseBody: ResponseBody,
-    private val uploadControl: UploadServiceModule.UploadControlEntity,
+    private val uploadControl: UploadControlEntity,
     private val notificationHelper: NotificationHelper
 ) : ResponseBody() {
 

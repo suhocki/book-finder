@@ -6,7 +6,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.Book
 
 class BookEntity(
-    override val category: String,
+    override val categoryId: String,
     override val shortName: String,
     override val fullName: String,
     override val price: Double,
@@ -27,7 +27,7 @@ class BookEntity(
 ) : Book {
 
     constructor(book: Book): this(
-        book.category,
+        book.categoryId,
         book.shortName,
         book.fullName,
         book.price,
@@ -67,7 +67,7 @@ class BookEntity(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(category)
+        parcel.writeString(categoryId)
         parcel.writeString(shortName)
         parcel.writeString(fullName)
         parcel.writeDouble(price)

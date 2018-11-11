@@ -4,14 +4,11 @@ import android.os.Build
 import app.suhocki.mybooks.App
 import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.context.ContextManager
-import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.preferences.AppPreferencesRepository
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.room.RoomRepository
 import app.suhocki.mybooks.di.ErrorReceiver
-import app.suhocki.mybooks.di.Firestore
-import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.di.provider.AppPreferencesProvider
 import app.suhocki.mybooks.di.provider.ErrorReceiverProvider
 import app.suhocki.mybooks.di.provider.VersionProvider
@@ -19,10 +16,12 @@ import app.suhocki.mybooks.di.provider.ads.BannerAdProvider
 import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
 import app.suhocki.mybooks.domain.model.BannerAd
 import app.suhocki.mybooks.domain.model.Version
-import app.suhocki.mybooks.domain.repository.*
+import app.suhocki.mybooks.domain.repository.BannersRepository
+import app.suhocki.mybooks.domain.repository.InfoRepository
+import app.suhocki.mybooks.domain.repository.SettingsRepository
+import app.suhocki.mybooks.domain.repository.StatisticsRepository
+import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import com.google.android.gms.ads.InterstitialAd
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import net.grandcentrix.tray.AppPreferences
 import org.jetbrains.anko.configuration
@@ -43,11 +42,6 @@ class AppModule(app: App) : Module() {
         bind(Version::class.java)
             .toProvider(VersionProvider::class.java)
             .providesSingletonInScope()
-
-        bind(BooksRepository::class.java)
-            .withName(Room::class.java)
-            .to(RoomRepository::class.java)
-            .singletonInScope()
 
         bind(StatisticsRepository::class.java)
             .to(RoomRepository::class.java)
@@ -90,6 +84,9 @@ class AppModule(app: App) : Module() {
 
         bind(AdsManager::class.java)
             .singletonInScope()
+
+        bind(UploadControlEntity::class.java)
+            .toInstance(UploadControlEntity())
 
         @Suppress("DEPRECATION")
         bind(Locale::class.java)

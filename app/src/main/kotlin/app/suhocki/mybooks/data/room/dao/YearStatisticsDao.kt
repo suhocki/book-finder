@@ -12,6 +12,6 @@ interface YearStatisticsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(yearStatistics: List<YearStatisticsEntity>)
 
-    @Query("SELECT * FROM YearStatistics WHERE category=:category ORDER BY year DESC")
-    fun getAllByCategory(category: String): List<YearStatisticsEntity>
+    @Query("SELECT * FROM YearStatistics WHERE categoryId=:categoryId ORDER BY year DESC")
+    fun getAllByCategory(categoryId: String): List<YearStatisticsEntity>
 }

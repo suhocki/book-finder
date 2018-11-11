@@ -12,6 +12,6 @@ interface PriceStatisticsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(priceStatistics: List<PriceStatisticsEntity>)
 
-    @Query("SELECT * FROM PriceStatistics WHERE category=:category")
-    fun getAllByCategory(category: String): PriceStatisticsEntity
+    @Query("SELECT * FROM PriceStatistics WHERE categoryId=:categoryId")
+    fun getAllByCategory(categoryId: String): PriceStatisticsEntity
 }

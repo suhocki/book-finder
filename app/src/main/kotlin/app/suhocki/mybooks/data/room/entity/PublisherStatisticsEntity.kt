@@ -7,18 +7,18 @@ import app.suhocki.mybooks.domain.model.statistics.PublisherStatistics
 
 @Entity(
     tableName = "PublisherStatistics",
-    indices = [(Index("category"))],
-    primaryKeys = ["publisher", "category"],
+    indices = [(Index("categoryId"))],
+    primaryKeys = ["publisher", "categoryId"],
     foreignKeys = [
         (ForeignKey(
             entity = CategoryEntity::class,
-            parentColumns = ["name"],
-            childColumns = ["category"]
+            parentColumns = ["id"],
+            childColumns = ["categoryId"]
         ))
     ]
 )
 data class PublisherStatisticsEntity(
-    override val category: String,
+    override val categoryId: String,
     override val publisher: String,
     override val count: Int
 ) : PublisherStatistics

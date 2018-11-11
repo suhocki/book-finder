@@ -13,7 +13,6 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.context.ContextManager
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.ui.admin.background.UploadService
-import app.suhocki.mybooks.ui.base.TabPosition
 import app.suhocki.mybooks.ui.main.MainActivity
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.notificationManager
@@ -101,7 +100,7 @@ class NotificationHelper @Inject constructor(
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
-    private fun getNotificationBuilder(@TabPosition tabPosition: Int): NotificationCompat.Builder =
+    private fun getNotificationBuilder(@MainActivity.TabPosition tabPosition: Int): NotificationCompat.Builder =
         with(context) {
             val contentIntent = PendingIntent.getActivity(
                 this,

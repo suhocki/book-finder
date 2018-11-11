@@ -7,18 +7,18 @@ import app.suhocki.mybooks.domain.model.statistics.PriceStatistics
 
 @Entity(
     tableName = "PriceStatistics",
-    indices = [(Index("category"))],
-    primaryKeys = ["category"],
+    indices = [(Index("categoryId"))],
+    primaryKeys = ["categoryId"],
     foreignKeys = [
         (ForeignKey(
             entity = CategoryEntity::class,
-            parentColumns = ["name"],
-            childColumns = ["category"]
+            parentColumns = ["id"],
+            childColumns = ["categoryId"]
         ))
     ]
 )
 data class PriceStatisticsEntity(
-    override val category: String,
+    override val categoryId: String,
     override val minPrice: Double,
     override val maxPrice: Double
 ) : PriceStatistics

@@ -9,13 +9,16 @@ import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.service.ServiceHandler
 import app.suhocki.mybooks.di.DI
+import app.suhocki.mybooks.di.module.FirestoreModule
 import app.suhocki.mybooks.di.module.UploadServiceModule
 import app.suhocki.mybooks.domain.UploadServiceInteractor
 import app.suhocki.mybooks.domain.model.XlsDocument
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
-import app.suhocki.mybooks.ui.admin.eventbus.ServiceKilledEvent
+import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
+import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
+import app.suhocki.mybooks.ui.firestore.FirestoreService
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.notificationManager
 import toothpick.Toothpick
@@ -36,7 +39,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
     lateinit var resourceManager: ResourceManager
 
     @Inject
-    lateinit var uploadControl: UploadServiceModule.UploadControlEntity
+    lateinit var uploadControl: UploadControlEntity
 
     private lateinit var file: File
     private lateinit var strings: ArrayList<String>
@@ -50,8 +53,9 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         val uploadServiceModule = UploadServiceModule(
             getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).path
         )
+        val firestoreModule = FirestoreModule()
 
-        scope.installModules(uploadServiceModule)
+        scope.installModules(uploadServiceModule, firestoreModule)
 
         Toothpick.inject(this, scope)
     }
@@ -59,8 +63,8 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (intent.extras.getString(ARG_COMMAND) == UploadService.Command.CANCEL) {
             notificationManager.cancel(NotificationHelper.NOTIFICATION_ID)
-            MPEventBus.getDefault().postToAll(ServiceKilledEvent(true))
-            serviceHandler.killService()
+            MPEventBus.getDefault().postToAll(UploadCompleteEvent(true))
+            serviceHandler.killUploadServiceProcess()
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -78,7 +82,6 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
             notificationHelper.showProgressNotification(it, 0)
             tasks[it]!!.invoke()
         }
-        notificationHelper.showSuccessNotification(file.name)
     }
 
     private val tasks = mapOf(
@@ -119,14 +122,11 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         },
 
         R.string.step_saving_to_remote to {
-            interactor.uploadBooksDataToRemote(document.booksData)
+            serviceHandler.startUpdateService(
+                FirestoreService.Command.PUSH_DATABASE, uploadControl
+            )
         }
     )
-
-    override fun onDestroy() {
-        super.onDestroy()
-        MPEventBus.getDefault().postToAll(ServiceKilledEvent(false))
-    }
 
     companion object {
         const val ARG_FILE = "ARG_FILE"

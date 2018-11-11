@@ -1,7 +1,6 @@
 package app.suhocki.mybooks.domain
 
 import android.content.res.Resources
-import android.support.annotation.StringRes
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
@@ -26,9 +25,9 @@ class CatalogInteractor @Inject constructor(
     fun getCategories() =
         localBooksRepository.getCategories()
 
-    fun getBanner(): Any =
+    fun getBanner(): Any? =
         if (remoteConfigurator.isBannerAdEnabled) adsManager.getBannerAd()
-        else bannersRepository.getBanners().first()
+        else bannersRepository.getBanners().firstOrNull()
 
     fun search(search: Search) =
         localBooksRepository.search(search.searchQuery)
@@ -47,29 +46,24 @@ class CatalogInteractor @Inject constructor(
         val q = search.searchQuery
         return when {
             book.productCode.contains(q, true) ->
-                composeFindByAndWholeText(R.string.isbn, book.productCode)
+                "${resourceManager.getString(R.string.isbn)}: ${book.productCode}"
 
             book.fullName.contains(q, true) ->
-                composeFindByAndWholeText(R.string.category, book.category)
+                "${resourceManager.getString(R.string.category)}: ${book.categoryId}"
 
             book.shortName.contains(q, true) ->
-                composeFindByAndWholeText(R.string.category, book.category)
+                "${resourceManager.getString(R.string.category)}: ${book.categoryId}"
 
             book.author?.contains(q, true) ?: false ->
-                composeFindByAndWholeText(R.string.author, book.author!!)
+                "${resourceManager.getString(R.string.author)}: ${book.author}"
 
             book.publisher?.contains(q, true) ?: false ->
-                composeFindByAndWholeText(R.string.publisher, book.publisher!!)
+                "${resourceManager.getString(R.string.publisher)}: ${book.publisher}"
 
             book.year?.contains(q, true) ?: false ->
-                composeFindByAndWholeText(R.string.year, book.year!!)
+                "${resourceManager.getString(R.string.year)}: ${book.year}"
 
             else -> throw Resources.NotFoundException()
         }
     }
-
-    private fun composeFindByAndWholeText(
-        @StringRes foundBy: Int,
-        wholeText: String
-    ) = "${resourceManager.getString(foundBy)}: $wholeText"
 }

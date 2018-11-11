@@ -4,40 +4,47 @@ import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.resources.ResourceManager
+import app.suhocki.mybooks.data.service.ServiceHandler
 import app.suhocki.mybooks.di.*
 import app.suhocki.mybooks.domain.CatalogInteractor
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.catalog.entity.HeaderEntity
+import app.suhocki.mybooks.ui.firestore.FirestoreService
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.concurrent.Future
+import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
 
 @InjectViewState
 class CatalogPresenter @Inject constructor(
-    @IsSearchMode private val isSearchMode: PrimitiveWrapper<Boolean>,
+    @IsSearchMode private val isSearchMode: AtomicBoolean,
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val interactor: CatalogInteractor,
     private val resourceManager: ResourceManager,
     private val adsManager: AdsManager,
     @SearchAll private val searchEntity: Search,
     @SearchDecoration private val searchDecoration: RecyclerView.ItemDecoration,
-    @CategoriesDecoration private val categoriesDecoration: RecyclerView.ItemDecoration
+    @CategoriesDecoration private val categoriesDecoration: RecyclerView.ItemDecoration,
+    private val serviceHandler: ServiceHandler
 ) : MvpPresenter<CatalogView>(), AnkoLogger {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        if (!isSearchMode.value) loadData()
+        serviceHandler.startUpdateService(FirestoreService.Command.PULL_CATEGORIES)
+        loadData()
     }
 
     fun loadData() {
+        if (isSearchMode.get()) return
+
         doAsync(errorReceiver) {
             val catalogItems = mutableListOf<Any>().apply {
-                add(interactor.getBanner())
+                interactor.getBanner()?.let { add(it) }
                 add(HeaderEntity(title = resourceManager.getString(R.string.catalog)))
                 addAll(interactor.getCategories())
             }
@@ -54,8 +61,9 @@ class CatalogPresenter @Inject constructor(
 
     fun startSearchMode(): Future<Unit> {
         return doAsync(errorReceiver) {
+            isSearchMode.set(true)
             val catalogItems = mutableListOf<Any>().apply {
-                add(interactor.getBanner())
+                interactor.getBanner()?.let { add(it) }
                 add(searchEntity)
                 add(HeaderEntity(title = resourceManager.getString(R.string.enter_query)))
             }
@@ -71,9 +79,10 @@ class CatalogPresenter @Inject constructor(
 
     fun stopSearchMode() =
         doAsync(errorReceiver) {
+            isSearchMode.set(false)
             searchEntity.searchQuery = EMPTY_STRING
             val catalogItems = mutableListOf<Any>().apply {
-                add(interactor.getBanner())
+                interactor.getBanner()?.let { add(it) }
                 add(HeaderEntity(title = resourceManager.getString(R.string.catalog)))
                 addAll(interactor.getCategories())
             }
@@ -101,7 +110,7 @@ class CatalogPresenter @Inject constructor(
     fun search() = doAsync(errorReceiver) {
         if (searchEntity.searchQuery.isBlank()) return@doAsync
         val catalogItems = mutableListOf<Any>().apply {
-            add(interactor.getBanner())
+            interactor.getBanner()?.let { add(it) }
             add(searchEntity)
             val searchResults = interactor.search(searchEntity)
             val title = resourceManager.getString(
@@ -124,7 +133,7 @@ class CatalogPresenter @Inject constructor(
         if (searchEntity.searchQuery.isBlank()) stopSearchMode()
         else {
             val catalogItems = mutableListOf<Any>().apply {
-                add(interactor.getBanner())
+                interactor.getBanner()?.let { add(it) }
                 add(searchEntity)
                 add(HeaderEntity(title = resourceManager.getString(R.string.enter_query)))
             }

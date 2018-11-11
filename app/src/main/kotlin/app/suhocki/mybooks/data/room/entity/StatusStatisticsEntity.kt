@@ -7,18 +7,18 @@ import app.suhocki.mybooks.domain.model.statistics.StatusStatistics
 
 @Entity(
     tableName = "StatusStatistics",
-    indices = [(Index("category"))],
-    primaryKeys = ["status", "category"],
+    indices = [(Index("categoryId"))],
+    primaryKeys = ["status", "categoryId"],
     foreignKeys = [
         (ForeignKey(
             entity = CategoryEntity::class,
-            parentColumns = ["name"],
-            childColumns = ["category"]
+            parentColumns = ["id"],
+            childColumns = ["categoryId"]
         ))
     ]
 )
 data class StatusStatisticsEntity(
-    override val category: String,
+    override val categoryId: String,
     override val status: String,
     override val count: Int
 ) : StatusStatistics

@@ -18,7 +18,7 @@ class GoogleDriveRepository @Inject constructor(
             .getFolderContents(query, PAGINATION_SIZE)
             .execute().getResponse()
 
-        return metaData.items.map { mapper.map(it, File::class.java) }
+        return metaData.items.map { mapper.map<File>(it) }
     }
 
     companion object {

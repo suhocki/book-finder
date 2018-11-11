@@ -6,19 +6,19 @@ import android.arch.persistence.room.Index
 import app.suhocki.mybooks.domain.model.statistics.AuthorStatistics
 
 @Entity(
-    indices = [(Index("category"))],
+    indices = [(Index("categoryId"))],
     tableName = "AuthorStatistics",
-    primaryKeys = ["author", "category"],
+    primaryKeys = ["author", "categoryId"],
     foreignKeys = [
         (ForeignKey(
             entity = CategoryEntity::class,
-            parentColumns = ["name"],
-            childColumns = ["category"]
+            parentColumns = ["id"],
+            childColumns = ["categoryId"]
         ))
     ]
 )
 data class AuthorStatisticsEntity(
-    override val category: String,
+    override val categoryId: String,
     override val author: String,
     override val count: Int
 ) : AuthorStatistics

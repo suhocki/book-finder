@@ -2,12 +2,16 @@ package app.suhocki.mybooks.di.module
 
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.di.*
+import app.suhocki.mybooks.di.CategoriesDecoration
+import app.suhocki.mybooks.di.IsSearchMode
+import app.suhocki.mybooks.di.SearchAll
+import app.suhocki.mybooks.di.SearchDecoration
+import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
-import app.suhocki.mybooks.ui.base.decorator.DividerItemDecoration
 import app.suhocki.mybooks.ui.base.decorator.SearchItemDecoration
-import app.suhocki.mybooks.ui.catalog.CatalogFragment
+import app.suhocki.mybooks.ui.base.decorator.TypeDividerItemDecoration
 import toothpick.config.Module
+import java.util.concurrent.atomic.AtomicBoolean
 
 class CatalogModule(
     isSearchMode: Boolean,
@@ -15,9 +19,9 @@ class CatalogModule(
     searchDividerOffset: Int
 ) : Module() {
     init {
-        bind(PrimitiveWrapper::class.java)
+        bind(AtomicBoolean::class.java)
             .withName(IsSearchMode::class.java)
-            .toInstance(PrimitiveWrapper(isSearchMode))
+            .toInstance(AtomicBoolean(isSearchMode))
 
         bind(Search::class.java)
             .withName(SearchAll::class.java)
@@ -26,9 +30,9 @@ class CatalogModule(
         bind(RecyclerView.ItemDecoration::class.java)
             .withName(CategoriesDecoration::class.java)
             .toInstance(
-                DividerItemDecoration(
+                TypeDividerItemDecoration(
                     categoriesDividerOffset,
-                    CatalogFragment.CATEGORY_POSITION
+                    Category::class.java
                 )
             )
 

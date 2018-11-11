@@ -73,14 +73,14 @@ class AdminPresenter @Inject constructor(
         add(PROGRESS_POSITION, Progress())
 
         viewState.showData(this)
-        serviceHandler.startIntentService(file)
+        serviceHandler.startUploadService(file)
     }
 
     fun stopUpload(
         items: MutableList<Any>,
         shouldKillService: Boolean
     ) {
-        if (shouldKillService) serviceHandler.killService()
+        if (shouldKillService) serviceHandler.killUploadServiceProcess()
         val newItems = mutableListOf<Any>().apply {
             addAll(items)
             removeAll { it is UploadControl || it is Header }

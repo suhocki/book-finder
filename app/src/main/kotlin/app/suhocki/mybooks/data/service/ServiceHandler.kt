@@ -7,7 +7,9 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.context.ContextManager
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.domain.model.admin.File
+import app.suhocki.mybooks.domain.model.admin.UploadControl
 import app.suhocki.mybooks.ui.admin.background.UploadService
+import app.suhocki.mybooks.ui.firestore.FirestoreService
 import org.jetbrains.anko.startService
 import javax.inject.Inject
 
@@ -16,12 +18,12 @@ class ServiceHandler @Inject constructor(
     private val resourceManager: ResourceManager
 ) {
 
-    fun startIntentService(file: File) {
+    fun startUploadService(file: File) {
         contextManager.currentContext
             .startService<UploadService>(UploadService.ARG_FILE to file)
     }
 
-    fun killService() {
+    fun killUploadServiceProcess() {
         val activityManager = contextManager.currentContext
             .getSystemService(Activity.ACTIVITY_SERVICE) as ActivityManager
         val processId = activityManager.runningAppProcesses.find {
@@ -29,5 +31,16 @@ class ServiceHandler @Inject constructor(
                     resourceManager.getString(R.string.upload_service_name)
         }?.pid
         processId?.let { Process.killProcess(it) }
+    }
+
+    fun startUpdateService(
+        @FirestoreService.UpdateCommand command: String,
+        uploadControl: UploadControl? = null
+    ) {
+        contextManager.currentContext
+            .startService<FirestoreService>(
+                FirestoreService.ARG_COMMAND to command,
+                FirestoreService.ARG_UPLOAD_CONTROL to uploadControl
+            )
     }
 }

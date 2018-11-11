@@ -63,7 +63,7 @@
             android:process="@string/upload_service_name" />
 
         <service
-            android:name=".ui.update.UpdateService" />
+            android:name=".ui.firestore.FirestoreService" />
 
         <service
             android:name=".ui.firebase.FireBaseInstanceIdService"

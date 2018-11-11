@@ -8,6 +8,7 @@ import android.os.Build
 import android.support.v7.app.AppCompatDelegate
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.AppModule
+import app.suhocki.mybooks.di.module.FirestoreModule
 import app.suhocki.mybooks.di.module.RoomModule
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -38,7 +39,8 @@ open class App : Application() {
         val appScope = Toothpick.openScope(DI.APP_SCOPE)
         appScope.installModules(
             AppModule(this),
-            RoomModule()
+            RoomModule(),
+            FirestoreModule()
         )
     }
 

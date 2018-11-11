@@ -1,19 +1,23 @@
-package app.suhocki.mybooks.data.room.entity
+package app.suhocki.mybooks.data.firestore.entity
 
-import android.arch.persistence.room.Entity
 import android.os.Parcel
 import android.os.Parcelable
 import app.suhocki.mybooks.domain.model.Category
 
-@Entity(
-    tableName = "Categories",
-    primaryKeys = ["id"]
-)
-data class CategoryEntity(
-    val id: String,
-    override val name: String,
+class CategoryEntity() : Category {
+    lateinit var id: String
+    override lateinit var name: String
     override var booksCount: Int = 0
-) : Category {
+
+    constructor(
+        id: String,
+        name: String,
+        booksCount: Int
+    ) : this() {
+        this.id = id
+        this.name = name
+        this.booksCount = booksCount
+    }
 
     constructor(parcel: Parcel) : this(
         parcel.readString(),

@@ -10,7 +10,7 @@ import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.AdminModule
 import app.suhocki.mybooks.di.module.GsonModule
 import app.suhocki.mybooks.domain.model.admin.UploadControl
-import app.suhocki.mybooks.ui.admin.eventbus.ServiceKilledEvent
+import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
@@ -119,8 +119,8 @@ class AdminFragment : BaseFragment(), AdminView {
     }
 
     @Subscribe(threadMode = ThreadMode.BACKGROUND)
-    fun onServiceKilledEvent(serviceKilledEvent: ServiceKilledEvent) {
-        presenter.stopUpload(adapter.items, serviceKilledEvent.shouldKillService)
+    fun onUploadCompleteEvent(uploadCompleteEvent: UploadCompleteEvent) {
+        presenter.stopUpload(adapter.items, uploadCompleteEvent.shouldKillService)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

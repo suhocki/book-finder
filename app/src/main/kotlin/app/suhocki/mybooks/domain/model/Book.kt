@@ -3,7 +3,7 @@ package app.suhocki.mybooks.domain.model
 import android.os.Parcelable
 
 interface Book: Parcelable {
-    val category: String
+    val categoryId: String
     val shortName: String
     val fullName: String
     val price: Double

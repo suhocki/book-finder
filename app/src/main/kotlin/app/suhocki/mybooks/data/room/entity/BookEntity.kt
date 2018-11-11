@@ -9,19 +9,19 @@ import android.os.Parcelable
 import app.suhocki.mybooks.domain.model.Book
 
 @Entity(
-    indices = [(Index("category"))],
+    indices = [(Index("categoryId"))],
     tableName = BookEntity.TABLE_NAME,
     primaryKeys = ["productCode"],
     foreignKeys = [
         (ForeignKey(
             entity = CategoryEntity::class,
-            parentColumns = ["name"],
-            childColumns = ["category"]
+            parentColumns = ["id"],
+            childColumns = ["categoryId"]
         ))
     ]
 )
 data class BookEntity(
-    override var category: String = "",
+    override var categoryId: String = "",
     override var shortName: String = "",
     override var fullName: String = "",
     override var price: Double = 0.0,
@@ -64,7 +64,7 @@ data class BookEntity(
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeString(category)
+        parcel.writeString(categoryId)
         parcel.writeString(shortName)
         parcel.writeString(fullName)
         parcel.writeDouble(price)
@@ -96,7 +96,7 @@ data class BookEntity(
         const val FIELD_PUBLISHER = "publisher"
         const val FIELD_SHORT_NAME = "shortName"
         const val FIELD_PRICE = "price"
-        const val FIELD_CATEGORY = "category"
+        const val FIELD_CATEGORY = "categoryId"
         const val TABLE_NAME = "Books"
         override fun createFromParcel(parcel: Parcel): BookEntity {
             return BookEntity(parcel)
