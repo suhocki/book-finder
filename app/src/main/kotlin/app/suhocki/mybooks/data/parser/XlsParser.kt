@@ -127,7 +127,8 @@ class XlsParser @Inject constructor(
                 if (isHeaderFound) {
                     isHeaderFound = false
                     bookFieldsQueue.clear()
-                    currentCategory = CategoryEntity(currentWord, currentWord)
+                    val categoryId = UUID.nameUUIDFromBytes(currentWord.toByteArray()).toString()
+                    currentCategory = CategoryEntity(categoryId, currentWord)
                     booksData[currentCategory] = mutableListOf()
                     statisticsData[currentCategory] = StatisticsEntity()
                     continue

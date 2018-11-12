@@ -29,17 +29,8 @@ class RoomRepository @Inject constructor(
         return categoryDao.getAll()
     }
 
-    override fun setCategories(categories: Set<Category>) {
-        val oldCategories = getCategories()
-            .map { mapper.map<CategoryEntity>(it) }
-        val newCategories = categories.asSequence()
-            .map { mapper.map<CategoryEntity>(it) }
-            .toSet()
-
-        val toDeleteFromLocal = oldCategories - newCategories
-
-        categoryDao.deleteAll(toDeleteFromLocal.toList())
-        categoryDao.insertAll(newCategories.toList())
+    override fun setCategories(categories: List<Category>) {
+        categoryDao.insertAll(categories.map { mapper.map<CategoryEntity>(it) })
     }
 
     override fun getBooks(): List<BookEntity> =

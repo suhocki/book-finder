@@ -34,7 +34,7 @@ class Mapper @Inject constructor(
         val converter = converters
             .find {
                 val isSuitableConverter =
-                    it.fromClass == input.javaClass && To::class.java.isAssignableFrom(it.toClass)
+                    it.fromClass == input::class.java && To::class.java.isAssignableFrom(it.toClass)
 
                 if (genericType != null)
                     it is GenericConverter && isSuitableConverter &&

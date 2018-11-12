@@ -66,7 +66,7 @@ class FirestoreService : Service() {
         firestoreCategories.addSnapshotListener { snapshot, _ ->
             val categories = snapshot!!.toObjects(CategoryEntity::class.java)
             doAsync {
-                localBooksRepository.setCategories(categories.toSet())
+                localBooksRepository.setCategories(categories)
                 EventBus.getDefault().post(CategoriesUpdatedEvent())
             }
         }
@@ -78,7 +78,7 @@ class FirestoreService : Service() {
             val categories = localBooksRepository.getCategories()
 
             remoteBooksRepository.setBooks(books, uploadControl)
-            remoteBooksRepository.setCategories(categories.toSet())
+            remoteBooksRepository.setCategories(categories)
 
             EventBus.getDefault().post(UploadCompleteEvent(true))
             notificationHelper.showSuccessNotification(uploadControl.fileName)

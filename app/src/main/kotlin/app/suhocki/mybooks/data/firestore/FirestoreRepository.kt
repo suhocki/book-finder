@@ -3,6 +3,7 @@ package app.suhocki.mybooks.data.firestore
 import android.arch.persistence.db.SupportSQLiteQuery
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.room.entity.BookEntity
+import app.suhocki.mybooks.data.room.entity.CategoryEntity
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.repository.BooksRepository
@@ -33,12 +34,12 @@ class FirestoreRepository @Inject constructor(
         return result
     }
 
-    override fun setCategories(categories: Set<Category>) {
+    override fun setCategories(categories: List<Category>) {
         val totalCount = categories.size
         val currentCount = AtomicInteger(0)
         categories.forEach { category ->
             firebaseFirestore.collection(CATEGORIES)
-                .document(category.name)
+                .document((category as CategoryEntity).id)
                 .set(category)
                 .addOnSuccessListener { currentCount.incrementAndGet() }
         }

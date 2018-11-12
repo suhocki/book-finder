@@ -26,6 +26,7 @@ class CategoryEntity() : Category {
     )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeString(id)
         parcel.writeString(name)
         parcel.writeInt(booksCount)
     }
