@@ -29,21 +29,20 @@ class RoomRepository @Inject constructor(
         return categoryDao.getAll()
     }
 
-    override fun setCategories(categories: List<Category>) {
+    override fun addCategories(categories: List<Category>) {
         categoryDao.insertAll(categories.map { mapper.map<CategoryEntity>(it) })
     }
 
     override fun getBooks(): List<BookEntity> =
         bookDao.getAll()
 
-    override fun setBooks(books: List<Book>, uploadControl: UploadControlEntity?) {
+    override fun addBooks(books: List<Book>, uploadControl: UploadControlEntity?) {
         val data = books.map { mapper.map<BookEntity>(it) }
         bookDao.insertAll(data)
     }
 
     override fun getBooksFor(category: Category): List<Book> {
-        val categoryEntity = mapper.map<CategoryEntity>(category)
-        return bookDao.getAllByCategory(categoryEntity.id)
+        return bookDao.getAllByCategory(category.id)
     }
 
     override fun search(text: String) =
@@ -53,44 +52,37 @@ class RoomRepository @Inject constructor(
         bookDao.filter(query)
 
     override fun getAuthorStatisticsFor(category: Category): List<AuthorStatisticsEntity> {
-        val categoryEntity = mapper.map<CategoryEntity>(category)
-        return authorStatisticsDao.getAllByCategory(categoryEntity.id)
+        return authorStatisticsDao.getAllByCategory(category.id)
     }
 
     override fun getAuthorsWithName(
         searchQuery: String,
         category: Category
     ): List<AuthorStatisticsEntity> {
-        val categoryEntity = mapper.map<CategoryEntity>(category)
-        return authorStatisticsDao.getAllByNameAndCategory("%$searchQuery%", categoryEntity.id)
+        return authorStatisticsDao.getAllByNameAndCategory("%$searchQuery%", category.id)
     }
 
     override fun getPublisherStatisticsFor(category: Category): List<PublisherStatisticsEntity> {
-        val categoryEntity = mapper.map<CategoryEntity>(category)
-        return publisherStatisticsDao.getAllByCategory(categoryEntity.id)
+        return publisherStatisticsDao.getAllByCategory(category.id)
     }
 
     override fun getPublishersWithName(
         searchQuery: String,
         category: Category
     ): List<PublisherStatisticsEntity> {
-        val categoryEntity = mapper.map<CategoryEntity>(category)
-        return publisherStatisticsDao.getAllByNameAndCategory("%$searchQuery%", categoryEntity.id)
+        return publisherStatisticsDao.getAllByNameAndCategory("%$searchQuery%", category.id)
     }
 
     override fun getYearStatisticsFor(category: Category): List<YearStatistics> {
-        val categoryEntity = mapper.map<CategoryEntity>(category)
-        return yearStatisticsDao.getAllByCategory(categoryEntity.id)
+        return yearStatisticsDao.getAllByCategory(category.id)
     }
 
     override fun getStatusStatisticsFor(category: Category): List<StatusStatisticsEntity> {
-        val categoryEntity = mapper.map<CategoryEntity>(category)
-        return statusStatisticsDao.getAllByCategory(categoryEntity.id)
+        return statusStatisticsDao.getAllByCategory(category.id)
     }
 
     override fun getPriceStatisticsFor(category: Category): PriceStatisticsEntity {
-        val categoryEntity = mapper.map<CategoryEntity>(category)
-        return priceStatisticsDao.getAllByCategory(categoryEntity.id)
+        return priceStatisticsDao.getAllByCategory(category.id)
     }
 
     override fun setAuthorStatistics(authorStatistics: List<AuthorStatistics>) =

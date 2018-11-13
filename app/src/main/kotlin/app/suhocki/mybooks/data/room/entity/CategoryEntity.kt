@@ -9,11 +9,21 @@ import app.suhocki.mybooks.domain.model.Category
     tableName = "Categories",
     primaryKeys = ["id"]
 )
-data class CategoryEntity(
-    val id: String,
-    override val name: String,
+class CategoryEntity() : Category {
+
+    override lateinit var id: String
+    override lateinit var name: String
     override var booksCount: Int = 0
-) : Category {
+
+    constructor(
+        id: String,
+        name: String,
+        booksCount: Int = 0
+    ) : this() {
+        this.id = id
+        this.name = name
+        this.booksCount = booksCount
+    }
 
     constructor(parcel: Parcel) : this(
         parcel.readString(),

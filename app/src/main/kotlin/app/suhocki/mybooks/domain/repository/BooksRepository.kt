@@ -9,11 +9,11 @@ import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 interface BooksRepository {
     fun getCategories(): List<Category>
 
-    fun setCategories(categories: List<Category>)
+    fun addCategories(categories: List<Category>)
 
     fun getBooks(): List<Book>
 
-    fun setBooks(books: List<Book>, uploadControl: UploadControlEntity? = null)
+    fun addBooks(books: List<Book>, uploadControl: UploadControlEntity? = null)
 
     fun getBooksFor(category: Category): List<Book>
 

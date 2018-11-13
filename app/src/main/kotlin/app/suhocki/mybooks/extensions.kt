@@ -187,3 +187,6 @@ fun Long.toHumanFileSize() = when (Math.round(toString().length.toFloat() / 3)) 
 
     else -> "$this bytes"
 }
+
+fun Double.toRoundedPrice() =
+    (Math.round(this * 100) / 100.0).toString()

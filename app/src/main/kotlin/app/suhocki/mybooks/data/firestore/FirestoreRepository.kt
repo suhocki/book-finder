@@ -34,7 +34,7 @@ class FirestoreRepository @Inject constructor(
         return result
     }
 
-    override fun setCategories(categories: List<Category>) {
+    override fun addCategories(categories: List<Category>) {
         val totalCount = categories.size
         val currentCount = AtomicInteger(0)
         categories.forEach { category ->
@@ -51,7 +51,7 @@ class FirestoreRepository @Inject constructor(
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    override fun setBooks(books: List<Book>, uploadControl: UploadControlEntity?) {
+    override fun addBooks(books: List<Book>, uploadControl: UploadControlEntity?) {
         val totalCount = books.size
         val currentCount = AtomicInteger(0)
         books.forEach { book ->

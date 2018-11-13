@@ -9,8 +9,17 @@ internal class BooksDiffCallback : EndActionDiffUtil.ItemCallback<Any>() {
         else false
     }
 
-    override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-        return if (oldItem is Book && newItem is Book) oldItem.productCode == newItem.productCode
-        else false
+    override fun areContentsTheSame(oldItem: Any, newItem: Any) =
+        when {
+            oldItem is Book && newItem is Book ->
+                oldItem.shortName == newItem.shortName &&
+                        oldItem.price == newItem.price &&
+                        oldItem.iconLink == newItem.iconLink
+
+            else -> false
+        }
+
+    override fun getChangePayload(oldItem: Any?, newItem: Any?): Any {
+        return Any()
     }
 }

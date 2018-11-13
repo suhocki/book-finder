@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.filter.FilterPrice
+import app.suhocki.mybooks.toRoundedPrice
 import app.suhocki.mybooks.ui.filter.listener.OnFilterPriceChangeListener
 import app.suhocki.mybooks.ui.filter.ui.FilterPriceItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
@@ -61,12 +62,16 @@ class FilterPriceAdapterDelegate(
             with(ui) {
                 if (filterPrice.from == 0.0) from.setText("")
                 if (filterPrice.to == Integer.MAX_VALUE.toDouble()) from.setText("")
-                from.hint = parent.context.getString(R.string.rubles, filterPrice.hintFrom)
-                    .dropLast(1)
-                    .replace(",", ".")
-                to.hint = parent.context.getString(R.string.rubles, filterPrice.hintTo)
-                    .dropLast(1)
-                    .replace(",", ".")
+
+                from.hint = parent.context.getString(
+                    R.string.rubles,
+                    filterPrice.hintFrom.toRoundedPrice()
+                ).dropLast(1).replace(",", ".")
+
+                to.hint = parent.context.getString(
+                    R.string.rubles,
+                    filterPrice.hintTo.toRoundedPrice()
+                ).dropLast(1).replace(",", ".")
             }
         }
     }

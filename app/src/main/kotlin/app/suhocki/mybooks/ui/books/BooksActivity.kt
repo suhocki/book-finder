@@ -15,6 +15,7 @@ import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.base.eventbus.BooksUpdatedEvent
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnFilterResultListener
 import app.suhocki.mybooks.ui.books.listener.OnFilterClickListener
@@ -24,6 +25,9 @@ import app.suhocki.mybooks.ui.filter.FilterFragment
 import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.startActivity
 import toothpick.Toothpick
@@ -67,6 +71,16 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
         if (savedInstanceState == null) {
             initFilter()
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
     }
 
     private fun initFilter() {
@@ -160,7 +174,12 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
     }
 
     override fun onFilterReset() {
-        presenter.resetFilter()
+        presenter.loadBooks(true)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onBooksUpdatedEvent(event: BooksUpdatedEvent) {
+        presenter.loadBooks()
     }
 
     companion object {

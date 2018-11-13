@@ -3,10 +3,12 @@ package app.suhocki.mybooks.ui.books
 import android.arch.persistence.db.SupportSQLiteQuery
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
+import app.suhocki.mybooks.data.service.ServiceHandler
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.BooksInteractor
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.firestore.FirestoreService
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.doAsync
@@ -18,13 +20,20 @@ class BooksPresenter @Inject constructor(
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val interactor: BooksInteractor,
     private val category: Category,
-    private val adsManager: AdsManager
+    private val adsManager: AdsManager,
+    private val serviceHandler: ServiceHandler
 ) : MvpPresenter<BooksView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         viewState.showTitle(category.name)
-        loadInitialState()
+
+        serviceHandler.startUpdateService(
+            FirestoreService.Command.PULL_BOOKS,
+            categoryId = category.id
+        )
+
+        loadBooks()
     }
 
     override fun attachView(view: BooksView?) {
@@ -32,9 +41,10 @@ class BooksPresenter @Inject constructor(
         adsManager.loadInterstitialAd()
     }
 
-    private fun loadInitialState(scrollToTop: Boolean = false) =
+    fun loadBooks(scrollToTop: Boolean = false) {
+        viewState.showProgressVisible(true)
+
         doAsync(errorReceiver) {
-            uiThread { viewState.showProgressVisible(true) }
             interactor.getBooks(category).let { books ->
                 uiThread {
                     if (books.isNotEmpty()) {
@@ -47,6 +57,7 @@ class BooksPresenter @Inject constructor(
                 }
             }
         }
+    }
 
     fun setDrawerExpanded(isExpanded: Boolean) {
         viewState.showDrawerExpanded(isExpanded)
@@ -68,15 +79,14 @@ class BooksPresenter @Inject constructor(
         }
     }
 
-    fun resetFilter() = loadInitialState(true)
-
     fun setProgressInvisible() {
         viewState.showProgressVisible(false)
     }
 
     fun onBuyBookClicked(book: BookEntity) {
         if (adsManager.isInterstitialAdLoading ||
-            adsManager.isInterstitialAdLoaded) {
+            adsManager.isInterstitialAdLoaded
+        ) {
             adsManager.onAdFlowFinished {
                 adsManager.loadInterstitialAd()
                 viewState.openBookWebsite(book)
@@ -101,5 +111,6 @@ class BooksPresenter @Inject constructor(
     override fun onDestroy() {
         super.onDestroy()
         adsManager.onAdFlowFinished(null)
+        serviceHandler.startUpdateService(FirestoreService.Command.CANCEL_PULL_BOOKS)
     }
 }

@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.Book
+import app.suhocki.mybooks.toRoundedPrice
 import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.books.ui.BookItemUI
@@ -45,9 +46,9 @@ class BookAdapterDelegate(
             with(ui) {
                 icon.setImageURI(book.iconLink)
                 name.text = book.shortName
-                price.text = parent.context.getString(R.string.rubles, book.price)
+                price.text = parent.context.getString(R.string.rubles, book.price.toRoundedPrice())
                 buy.setImageResource(book.buyDrawableRes)
-                if (payloads.isNotEmpty()) {
+                if (payloads.firstOrNull() is Int) {
                     val drawableRes = payloads.first() as Int
                     buy.setImageResource(drawableRes)
                     book.buyDrawableRes = drawableRes

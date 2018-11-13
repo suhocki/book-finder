@@ -26,7 +26,7 @@
     <string name="corrupted_file">К сожалению, загруженный файл повреждён.</string>
     <string name="error">Ошибка</string>
     <string name="categories">Категории</string>
-    <string name="rubles">%.2f руб.</string>
+    <string name="rubles">%s руб.</string>
     <string name="empty_screen_books">Текущая версия базы данных не содержит книг по этой категории</string>
     <string name="empty_screen_authors">Текущая версия базы данных не содержит авторов, удовлетворяющих этому запросу</string>
     <string name="back">Назад</string>

@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.SearchResult
+import app.suhocki.mybooks.toRoundedPrice
 import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.catalog.ui.SearchResultItemUI
@@ -47,7 +48,7 @@ class SearchResultBookAdapterDelegate(
                     buy.setImageResource(drawableRes)
                     book.buyDrawableRes = drawableRes
                 }
-                price.text = parent.context.getString(R.string.rubles, book.price)
+                price.text = parent.context.getString(R.string.rubles, book.price.toRoundedPrice())
                 buy.setImageResource(book.buyDrawableRes)
                 foundBy.text = searchResult.foundBy
                 foundBy.text = searchResult.foundBy

@@ -44,8 +44,8 @@ class UploadServiceInteractor @Inject constructor(
         localFilesRepository.extractXlsDocument(strings)
 
     fun saveBooksToLocal(data: Map<out Category, Collection<Book>>) {
-        localBooksRepository.setCategories(data.keys.toList())
-        localBooksRepository.setBooks(data.values.flatMap { books -> books }.toList())
+        localBooksRepository.addCategories(data.keys.toList())
+        localBooksRepository.addBooks(data.values.flatMap { books -> books }.toList())
     }
 
     fun saveStatisticsData(statistics: Map<Category, Statistics>) =

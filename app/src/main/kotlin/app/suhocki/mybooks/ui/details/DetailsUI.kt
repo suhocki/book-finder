@@ -13,6 +13,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.setGone
+import app.suhocki.mybooks.toRoundedPrice
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.multilineCollapsingToolbarLayout
 import app.suhocki.mybooks.ui.base.simpleDraweeView
@@ -98,7 +99,7 @@ class DetailsUI @Inject constructor(
                     divider(dip(8), dip(8))
 
                     textView {
-                        text = owner.getString(R.string.rubles, book.price)
+                        text = owner.getString(R.string.rubles, book.price.toRoundedPrice())
                         textAppearance = R.style.TextAppearance_AppCompat_Headline
                     }.lparams {
                         setMargins(dip(0), dip(0), dip(0), dip(16))

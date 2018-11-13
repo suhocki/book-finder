@@ -1,13 +1,11 @@
 package app.suhocki.mybooks.data.mapper
 
-import app.suhocki.mybooks.data.mapper.converter.FirestoreCategoryToRoomCategory
 import app.suhocki.mybooks.data.mapper.converter.MetaDataItemToFile
 import app.suhocki.mybooks.data.mapper.converter.statistics.*
 import javax.inject.Inject
 
 class Mapper @Inject constructor(
     metaDataItemToFile: MetaDataItemToFile,
-    firestoreCategoryToRoomCategory: FirestoreCategoryToRoomCategory,
     statisticsToAuthorStatistics: StatisticsToAuthorStatistics,
     statisticsToPublisherStatistics: StatisticsToPublisherStatistics,
     statisticsToStatusStatistics: StatisticsToStatusStatistics,
@@ -18,7 +16,6 @@ class Mapper @Inject constructor(
     val converters by lazy {
         mutableListOf<Converter<*, *>>(
             metaDataItemToFile,
-            firestoreCategoryToRoomCategory,
             statisticsDataToPriceStatistics,
             statisticsToPublisherStatistics,
             statisticsToYearStatistics,

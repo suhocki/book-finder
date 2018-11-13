@@ -1,7 +1,6 @@
 package app.suhocki.mybooks.data.mapper.converter.statistics
 
 import app.suhocki.mybooks.data.mapper.GenericConverter
-import app.suhocki.mybooks.data.room.entity.CategoryEntity
 import app.suhocki.mybooks.data.room.entity.PriceStatisticsEntity
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.statistics.PriceStatistics
@@ -18,6 +17,6 @@ class StatisticsToPriceStatistics @Inject constructor() :
     override fun convert(value: LinkedHashMap<Category, Statistics>): ArrayList<PriceStatistics> =
         value.entries.asSequence().map { (category, statistics) ->
             val (minPrice, maxPrice) = statistics.prices
-            PriceStatisticsEntity((category as CategoryEntity).id, minPrice, maxPrice)
+            PriceStatisticsEntity(category.id, minPrice, maxPrice)
         }.toCollection(arrayListOf())
 }

@@ -35,12 +35,14 @@ class ServiceHandler @Inject constructor(
 
     fun startUpdateService(
         @FirestoreService.UpdateCommand command: String,
-        uploadControl: UploadControl? = null
+        uploadControl: UploadControl? = null,
+        categoryId: String? = null
     ) {
         contextManager.currentContext
             .startService<FirestoreService>(
                 FirestoreService.ARG_COMMAND to command,
-                FirestoreService.ARG_UPLOAD_CONTROL to uploadControl
+                FirestoreService.ARG_UPLOAD_CONTROL to uploadControl,
+                FirestoreService.ARG_CATEGORY_ID to categoryId
             )
     }
 }
