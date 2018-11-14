@@ -1,22 +1,20 @@
 package app.suhocki.mybooks.domain
 
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.resources.ResourceManager
+import app.suhocki.mybooks.di.Room
+import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.Info
-import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.domain.repository.InfoRepository
 import app.suhocki.mybooks.domain.repository.SettingsRepository
-import app.suhocki.mybooks.ui.info.entity.ContactEntity
-import app.suhocki.mybooks.ui.info.entity.HeaderEntity
-import app.suhocki.mybooks.ui.info.entity.InfoEntity
-import com.google.common.io.Files.map
 import javax.inject.Inject
 
 class InfoInteractor @Inject constructor(
-    private val infoRepository: InfoRepository,
+    @Room private val infoRepository: InfoRepository,
     private val settingsRepository: SettingsRepository,
     private val resourceManager: ResourceManager,
-    private val appVersion: Version
+    private val mapper: Mapper
 ) {
 
     fun toogleAdminMode(): Boolean {
@@ -24,49 +22,12 @@ class InfoInteractor @Inject constructor(
         return settingsRepository.isAdminModeEnabled
     }
 
-    fun getHeaderOrganization() =
-        infoRepository.getOrganizationName()?.let { HeaderEntity(it, true) }
-
-    fun getHeaderAddress() =
-        HeaderEntity(resourceManager.getString(R.string.address), true)
-
-    fun getHeaderWorkingTime() = HeaderEntity(
-        resourceManager.getString(R.string.working_time),
-        true
-    )
-
-    fun getContacts(): List<Info> {
-        val phones = infoRepository.getContactPhones()?.map {
-            ContactEntity(Info.InfoType.PHONE, it, R.drawable.ic_phone)
+    fun getShopInfoItems() =
+        mutableListOf<Any>().apply {
+            infoRepository.getShopInfo()?.let {
+                addAll(mapper.map<List<Any>>(it))
+            }
         }
-        val website = infoRepository.getWebsite()?.let { (websiteName, url) ->
-            ContactEntity(Info.InfoType.WEBSITE, websiteName, R.drawable.ic_web, url)
-        }
-        val email = infoRepository.getContactEmail()?.let {
-            ContactEntity(Info.InfoType.EMAIL, it, R.drawable.ic_email)
-        }
-        val vkGroup = infoRepository.getVkGroup()?.let { (title, url) ->
-            ContactEntity(Info.InfoType.VK, title, R.drawable.ic_vk, url)
-        }
-        val facebook = infoRepository.getFacebook()?.let { (title, url) ->
-            ContactEntity(Info.InfoType.FACEBOOK, title, R.drawable.ic_facebook, url)
-        }
-        return mutableListOf<Info>().apply {
-            phones?.let { addAll(it) }
-            website?.let { add(it) }
-            email?.let { add(it) }
-            vkGroup?.let { add(it) }
-            facebook?.let { add(it) }
-        }
-    }
-
-    fun getWorkingTime() = infoRepository.getWorkingTime()?.let {
-        ContactEntity(Info.InfoType.WORKING_TIME, it, R.drawable.ic_time)
-    }
-
-    fun getAddress() = infoRepository.getAddress()?.let {
-        ContactEntity(Info.InfoType.ADDRESS, it, R.drawable.ic_address)
-    }
 
     fun getAboutThisApplication() = listOf(
         HeaderEntity(
@@ -87,8 +48,19 @@ class InfoInteractor @Inject constructor(
             Info.InfoType.ABOUT_DEVELOPER,
             resourceManager.getString(R.string.about_developer),
             iconRes = R.drawable.ic_developer
-        ),
-        appVersion
+        )
     )
 
+    inner class HeaderEntity(
+        override var title: String,
+        override val inverseColors: Boolean = false,
+        override val allCaps: Boolean = true
+    ) : Header
+
+    class InfoEntity(
+        override val type: Info.InfoType,
+        override val name: String,
+        override val valueForNavigation: String? = null,
+        override val iconRes: Int = 0
+    ) : Info
 }

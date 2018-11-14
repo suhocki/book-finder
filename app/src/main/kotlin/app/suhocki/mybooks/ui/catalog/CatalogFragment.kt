@@ -63,7 +63,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     @ProvidePresenter
     fun providePresenter(): CatalogPresenter {
-        val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.MAIN_ACTIVITY_SCOPE)
+        val scope = Toothpick.openScopes(DI.APP_SCOPE)
         val catalogModule = CatalogModule(
             arguments!!.getBoolean(ARG_IS_SEARCH_MODE),
             dimen(R.dimen.height_divider_decorator),

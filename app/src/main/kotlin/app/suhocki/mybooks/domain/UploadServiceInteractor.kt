@@ -7,7 +7,7 @@ import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.domain.model.Info
+import app.suhocki.mybooks.domain.model.ShopInfo
 import app.suhocki.mybooks.domain.model.statistics.*
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
@@ -22,7 +22,7 @@ class UploadServiceInteractor @Inject constructor(
     private val localFilesRepository: LocalFilesRepository,
     private val bannersRepository: BannersRepository,
     private val statisticRepository: StatisticsRepository,
-    private val infoRepository: InfoRepository,
+    @Room private val infoRepository: InfoRepository,
     private val mapper: Mapper
 ) {
     fun getDownloadedFile(fileId: String) =
@@ -57,31 +57,8 @@ class UploadServiceInteractor @Inject constructor(
             setPriceStatistics(mapper.map(statistics, PriceStatistics::class.java))
         }
 
-    @Suppress("NON_EXHAUSTIVE_WHEN")
-    fun saveInfoData(contactsData: List<Info>) {
-        contactsData.forEach {
-            when (it.type) {
-                Info.InfoType.ORGANIZATION -> infoRepository.setOrganizationName(it.name)
-
-                Info.InfoType.EMAIL -> infoRepository.setContactEmail(it.name)
-
-                Info.InfoType.WEBSITE -> infoRepository.setWebsite(it.name)
-
-                Info.InfoType.FACEBOOK -> infoRepository.setFacebook(it.name)
-
-                Info.InfoType.VK -> infoRepository.setVkGroup(it.name)
-
-                Info.InfoType.WORKING_TIME -> infoRepository.setWorkingTime(it.name)
-
-                Info.InfoType.ADDRESS -> infoRepository.setAddress(it.name)
-            }
-        }
-        contactsData.asSequence()
-            .filter { it.type == Info.InfoType.PHONE }
-            .map { it.name }
-            .toSet()
-            .let { infoRepository.setContactPhones(it) }
-    }
+    fun saveShopInfo(shopInfo: ShopInfo) =
+        infoRepository.setShopInfo(shopInfo)
 
     fun saveBannersData(bannersData: List<Banner>) {
         bannersRepository.setBanners(bannersData)

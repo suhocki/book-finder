@@ -1,36 +1,10 @@
 package app.suhocki.mybooks.domain.repository
 
+import app.suhocki.mybooks.domain.model.ShopInfo
+
 interface InfoRepository {
 
-    fun getContactPhones(): Set<String>?
+    fun getShopInfo(): ShopInfo?
 
-    fun setContactPhones(phones: Set<String>)
-
-    fun getContactEmail(): String?
-
-    fun setContactEmail(email: String)
-
-    fun getOrganizationName(): String?
-
-    fun setOrganizationName(name: String)
-
-    fun getWebsite(): Pair<String, String>?
-
-    fun setWebsite(website: String)
-
-    fun getVkGroup(): Pair<String, String>?
-
-    fun setVkGroup(url: String)
-
-    fun getFacebook(): Pair<String, String>?
-
-    fun setFacebook(url: String)
-
-    fun getAddress(): String?
-
-    fun setAddress(address: String)
-
-    fun getWorkingTime(): String?
-
-    fun setWorkingTime(time: String)
+    fun setShopInfo(shopInfo: ShopInfo)
 }

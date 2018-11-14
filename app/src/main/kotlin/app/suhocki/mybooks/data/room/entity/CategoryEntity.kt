@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.data.room.entity
 
 import android.arch.persistence.room.Entity
+import android.arch.persistence.room.Ignore
 import android.os.Parcel
 import android.os.Parcelable
 import app.suhocki.mybooks.domain.model.Category
@@ -9,7 +10,7 @@ import app.suhocki.mybooks.domain.model.Category
     tableName = "Categories",
     primaryKeys = ["id"]
 )
-class CategoryEntity() : Category {
+class CategoryEntity @Ignore constructor() : Category {
 
     override lateinit var id: String
     override lateinit var name: String

@@ -45,18 +45,17 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
     private lateinit var strings: ArrayList<String>
     private lateinit var document: XlsDocument
 
+    private val scope by lazy {
+        Toothpick.openScopes(DI.APP_SCOPE, DI.UPLOAD_SERVICE).apply {
+            installModules(
+                UploadServiceModule(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).path),
+                FirestoreModule()
+            )
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
-
-        val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.UPLOAD_SERVICE)
-        val uploadServiceModule = UploadServiceModule(
-            getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).path
-        )
-        val firestoreModule = FirestoreModule()
-
-        scope.installModules(uploadServiceModule, firestoreModule)
-
         Toothpick.inject(this, scope)
     }
 
@@ -115,7 +114,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         R.string.step_saving_to_local to {
             interactor.saveBooksToLocal(document.booksData)
             interactor.saveStatisticsData(document.statisticsData)
-            interactor.saveInfoData(document.infosData)
+            interactor.saveShopInfo(document.shopInfo)
             interactor.saveBannersData(document.bannersData)
 
             MPEventBus.getDefault().postToAll(DatabaseUpdatedEvent())

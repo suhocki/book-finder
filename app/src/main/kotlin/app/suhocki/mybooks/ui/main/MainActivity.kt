@@ -75,23 +75,16 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         R.id.nav_admin to TAB_POSITION_ADMIN
     )
 
+    private val scope by lazy { Toothpick.openScopes(DI.APP_SCOPE) }
+
     @ProvidePresenter
     fun providePresenter(): MainPresenter =
-        Toothpick.openScopes(
-            DI.APP_SCOPE,
-            DI.MAIN_ACTIVITY_SCOPE
-        ).getInstance(MainPresenter::class.java)
-
-    override fun onDestroy() {
-        super.onDestroy()
-        if (isFinishing) Toothpick.closeScope(DI.MAIN_ACTIVITY_SCOPE)
-    }
+        scope.getInstance(MainPresenter::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) = with(ui) {
         super.onCreate(savedInstanceState)
-        Toothpick.openScopes(DI.APP_SCOPE).apply {
-            Toothpick.inject(this@MainActivity, this)
-        }
+        Toothpick.inject(this@MainActivity, scope)
+
         setContentView(this@MainActivity)
         navigationView.inflateMenu(
             if (remoteConfiguration.isAboutApplicationEnabled) R.menu.drawer_menu_with_about

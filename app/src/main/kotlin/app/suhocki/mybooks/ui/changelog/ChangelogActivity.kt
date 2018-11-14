@@ -22,18 +22,14 @@ class ChangelogActivity : MvpAppCompatActivity(), ChangelogView, OnDownloadFileC
 
     private val adapter by lazy { ChangelogAdapter(this) }
 
-    @ProvidePresenter
-    fun providePresenter(): ChangelogPresenter {
-        val scope = Toothpick.openScopes(
-            DI.APP_SCOPE,
-            DI.MAIN_ACTIVITY_SCOPE,
-            DI.GSON_SCOPE,
-            DI.CHANGELOG_ACTIVITY_SCOPE
-        )
-        scope.installModules(GsonModule(), ChangelogModule())
-
-        return scope.getInstance(ChangelogPresenter::class.java)
+    private val scope by lazy {
+        Toothpick.openScopes(DI.APP_SCOPE, DI.GSON_SCOPE, DI.CHANGELOG_ACTIVITY_SCOPE)
+            .apply { installModules(GsonModule(), ChangelogModule()) }
     }
+
+    @ProvidePresenter
+    fun providePresenter(): ChangelogPresenter =
+        scope.getInstance(ChangelogPresenter::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

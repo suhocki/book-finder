@@ -4,7 +4,7 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
-import app.suhocki.mybooks.data.room.entity.StatusStatisticsEntity
+import app.suhocki.mybooks.data.room.entity.statistics.StatusStatisticsEntity
 
 @Dao
 interface StatusStatisticsDao {

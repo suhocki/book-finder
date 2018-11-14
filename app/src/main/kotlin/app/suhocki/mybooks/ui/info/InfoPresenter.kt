@@ -3,6 +3,7 @@ package app.suhocki.mybooks.ui.info
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.InfoInteractor
+import app.suhocki.mybooks.domain.model.Version
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.doAsync
@@ -13,8 +14,9 @@ import javax.inject.Inject
 class InfoPresenter @Inject constructor(
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val infoInteractor: InfoInteractor,
-    private val remoteConfigurator: RemoteConfiguration
-) : MvpPresenter<InfoView>() {
+    private val remoteConfigurator: RemoteConfiguration,
+    private val appVersion: Version
+    ) : MvpPresenter<InfoView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -25,19 +27,13 @@ class InfoPresenter @Inject constructor(
         viewState.showProgress(true)
         doAsync(errorReceiver) {
             val items = mutableListOf<Any>().apply {
-                infoInteractor.getHeaderOrganization()?.let { add(it) }
-                addAll(infoInteractor.getContacts())
-                infoInteractor.getAddress()?.let {
-                    add(infoInteractor.getHeaderAddress())
-                    add(it)
-                }
-                infoInteractor.getWorkingTime()?.let {
-                    add(infoInteractor.getHeaderWorkingTime())
-                    add(it)
-                }
+                addAll(infoInteractor.getShopInfoItems())
+
                 if (remoteConfigurator.isAboutApplicationEnabled) {
                     addAll(infoInteractor.getAboutThisApplication())
                 }
+
+                add(appVersion)
             }
             uiThread {
                 viewState.showProgress(false)

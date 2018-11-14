@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.data.parser
 
+import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.parser.entity.BannerEntity
 import app.suhocki.mybooks.data.parser.entity.InfoEntity
@@ -24,7 +25,8 @@ import javax.inject.Inject
 
 class XlsParser @Inject constructor(
     private val uploadControl: UploadControlEntity,
-    private val notificationHelper: NotificationHelper
+    private val notificationHelper: NotificationHelper,
+    private val mapper: Mapper
 ) : AnkoLogger {
 
     private lateinit var xlsFileName: String
@@ -194,7 +196,7 @@ class XlsParser @Inject constructor(
             booksData = booksData.apply { forEach { it.key.booksCount = it.value.size } },
             statisticsData = statisticsData,
             bannersData = banners,
-            infosData = contacts
+            shopInfo = mapper.map(contacts)
         )
     }
 

@@ -24,18 +24,14 @@ class LicensesActivity : MvpAppCompatActivity(), LicensesView, OnLicenseClickLis
 
     private val adapter by lazy { LicensesAdapter(this) }
 
-    @ProvidePresenter
-    fun providePresenter(): LicensesPresenter {
-        val scope = Toothpick.openScopes(
-            DI.APP_SCOPE,
-            DI.MAIN_ACTIVITY_SCOPE,
-            DI.GSON_SCOPE,
-            DI.LICENSES_ACTIVITY_SCOPE
-        )
-        scope.installModules(GsonModule(), LicensesModule())
-
-        return scope.getInstance(LicensesPresenter::class.java)
+    private val scope by lazy {
+        Toothpick.openScopes(DI.APP_SCOPE, DI.GSON_SCOPE, DI.LICENSES_ACTIVITY_SCOPE)
+            .apply { installModules(GsonModule(), LicensesModule()) }
     }
+
+    @ProvidePresenter
+    fun providePresenter(): LicensesPresenter =
+        scope.getInstance(LicensesPresenter::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

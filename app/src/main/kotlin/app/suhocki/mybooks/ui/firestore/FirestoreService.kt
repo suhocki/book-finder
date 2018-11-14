@@ -12,6 +12,7 @@ import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.Firestore
 import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.domain.repository.InfoRepository
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.eventbus.BooksUpdatedEvent
@@ -37,6 +38,14 @@ class FirestoreService : Service() {
     lateinit var localBooksRepository: BooksRepository
 
     @Inject
+    @field:Firestore
+    lateinit var remoteInfoRepository: InfoRepository
+
+    @Inject
+    @field:Room
+    lateinit var localInfoRepository: InfoRepository
+
+    @Inject
     @field:ErrorReceiver
     lateinit var errorReceiver: (Throwable) -> Unit
 
@@ -53,9 +62,11 @@ class FirestoreService : Service() {
         firestore.collection(FirestoreRepository.BOOKS)
             .whereEqualTo(BookEntity.FIELD_CATEGORY, categoryId)
 
+    private val scope by lazy { Toothpick.openScopes(DI.APP_SCOPE) }
+
     override fun onCreate() {
         super.onCreate()
-        Toothpick.inject(this, Toothpick.openScopes(DI.APP_SCOPE))
+        Toothpick.inject(this, scope)
     }
 
     override fun onBind(intent: Intent?) = null
@@ -100,9 +111,11 @@ class FirestoreService : Service() {
         doAsync(errorReceiver) {
             val books = localBooksRepository.getBooks()
             val categories = localBooksRepository.getCategories()
+            val shopInfo = localInfoRepository.getShopInfo()!!
 
             remoteBooksRepository.addBooks(books, uploadControl)
             remoteBooksRepository.addCategories(categories)
+            remoteInfoRepository.setShopInfo(shopInfo)
 
             EventBus.getDefault().post(UploadCompleteEvent(true))
             notificationHelper.showSuccessNotification(uploadControl.fileName)

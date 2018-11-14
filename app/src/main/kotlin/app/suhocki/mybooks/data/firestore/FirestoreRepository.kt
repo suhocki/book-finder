@@ -6,7 +6,9 @@ import app.suhocki.mybooks.data.room.entity.BookEntity
 import app.suhocki.mybooks.data.room.entity.CategoryEntity
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.domain.model.ShopInfo
 import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.domain.repository.InfoRepository
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import com.google.firebase.firestore.FirebaseFirestore
 import org.jetbrains.anko.AnkoLogger
@@ -18,7 +20,7 @@ import kotlin.math.roundToInt
 class FirestoreRepository @Inject constructor(
     private val firebaseFirestore: FirebaseFirestore,
     private val notificationHelper: NotificationHelper
-) : BooksRepository, AnkoLogger {
+) : BooksRepository, InfoRepository, AnkoLogger {
 
     override fun getCategories(): List<Category> {
         val isFinished = AtomicBoolean(false)
@@ -80,9 +82,33 @@ class FirestoreRepository @Inject constructor(
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    override fun getShopInfo(): ShopInfo? {
+        val isFinished = AtomicBoolean(false)
+        var result: ShopInfo? = null
+        firebaseFirestore.collection(CATEGORIES)
+            .get()
+            .addOnSuccessListener {
+                result = it.toObjects(ShopInfo::class.java).firstOrNull()
+                isFinished.set(true)
+            }
+        while (!isFinished.get()) {
+        }
+        return result
+    }
+
+    override fun setShopInfo(shopInfo: ShopInfo) {
+        val isUploaded = AtomicBoolean(false)
+            firebaseFirestore.collection(SHOP_INFO)
+                .document(SHOP_INFO)
+                .set(shopInfo)
+                .addOnSuccessListener { isUploaded.set(true) }
+        while (!isUploaded.get()) {
+        }
+    }
 
     companion object FirestoreCollections {
         const val BOOKS = "books"
         const val CATEGORIES = "categories"
+        const val SHOP_INFO = "shopInfo"
     }
 }

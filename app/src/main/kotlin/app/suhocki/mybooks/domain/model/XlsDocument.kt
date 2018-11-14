@@ -8,6 +8,6 @@ interface XlsDocument {
     val columnNames: List<String>
     val booksData: Map<out Category, Collection<Book>>
     val statisticsData: Map<Category, StatisticsEntity>
-    val infosData: List<Info>
+    val shopInfo: ShopInfo
     val bannersData: List<Banner>
 }

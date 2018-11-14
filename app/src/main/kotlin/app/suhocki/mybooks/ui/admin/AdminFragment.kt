@@ -30,22 +30,17 @@ class AdminFragment : BaseFragment(), AdminView {
     @InjectPresenter
     lateinit var presenter: AdminPresenter
 
+    @ProvidePresenter
+    fun providePresenter(): AdminPresenter =
+        scope.getInstance(AdminPresenter::class.java)
+
+    private val scope by lazy {
+        Toothpick.openScopes(DI.APP_SCOPE, DI.GSON_SCOPE, DI.ADMIN_SCOPE)
+            .apply { installModules(GsonModule(), AdminModule()) }
+    }
+
     @Inject
     lateinit var dialogManager: DialogManager
-
-    @ProvidePresenter
-    fun providePresenter(): AdminPresenter {
-        val scope = Toothpick.openScopes(
-            DI.APP_SCOPE,
-            DI.MAIN_ACTIVITY_SCOPE,
-            DI.GSON_SCOPE,
-            DI.ADMIN_SCOPE
-        )
-        scope.installModules(GsonModule(), AdminModule())
-
-        Toothpick.inject(this, scope)
-        return scope.getInstance(AdminPresenter::class.java)
-    }
 
     private val ui by lazy {
         AdminUI<AdminFragment> {
@@ -58,6 +53,11 @@ class AdminFragment : BaseFragment(), AdminView {
             { presenter.upload(it, adapter.items) },
             { presenter.stopUpload(adapter.items, true) }
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Toothpick.inject(this, scope)
     }
 
     override fun onCreateView(

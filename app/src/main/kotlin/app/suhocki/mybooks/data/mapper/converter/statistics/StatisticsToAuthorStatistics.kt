@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.data.mapper.converter.statistics
 
 import app.suhocki.mybooks.data.mapper.GenericConverter
-import app.suhocki.mybooks.data.room.entity.AuthorStatisticsEntity
+import app.suhocki.mybooks.data.room.entity.statistics.AuthorStatisticsEntity
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.statistics.AuthorStatistics
 import app.suhocki.mybooks.domain.model.statistics.Statistics
@@ -17,7 +17,11 @@ class StatisticsToAuthorStatistics @Inject constructor() :
     override fun convert(value: LinkedHashMap<Category, Statistics>): ArrayList<AuthorStatistics> =
         value.entries.flatMap { (category, statistics) ->
             statistics.authors.entries.map { (authorName, bookCount) ->
-                AuthorStatisticsEntity(category.id, authorName, bookCount)
+                AuthorStatisticsEntity(
+                    category.id,
+                    authorName,
+                    bookCount
+                )
             }
         }.toCollection(arrayListOf())
 }

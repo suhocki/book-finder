@@ -3,13 +3,19 @@ package app.suhocki.mybooks.data.room
 import android.arch.persistence.db.SupportSQLiteQuery
 import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.room.dao.*
-import app.suhocki.mybooks.data.room.entity.*
+import app.suhocki.mybooks.data.room.entity.BannerEntity
+import app.suhocki.mybooks.data.room.entity.BookEntity
+import app.suhocki.mybooks.data.room.entity.CategoryEntity
+import app.suhocki.mybooks.data.room.entity.ShopInfoEntity
+import app.suhocki.mybooks.data.room.entity.statistics.*
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.domain.model.ShopInfo
 import app.suhocki.mybooks.domain.model.statistics.*
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.domain.repository.InfoRepository
 import app.suhocki.mybooks.domain.repository.StatisticsRepository
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import javax.inject.Inject
@@ -23,8 +29,9 @@ class RoomRepository @Inject constructor(
     private val authorStatisticsDao: AuthorStatisticsDao,
     private val priceStatisticsDao: PriceStatisticsDao,
     private val bannerDao: BannerDao,
+    private val infoDao: ShopInfoDao,
     private val mapper: Mapper
-) : BooksRepository, StatisticsRepository, BannersRepository {
+) : BooksRepository, StatisticsRepository, BannersRepository, InfoRepository {
     override fun getCategories(): List<Category> {
         return categoryDao.getAll()
     }
@@ -105,4 +112,10 @@ class RoomRepository @Inject constructor(
 
     override fun setBanners(banners: List<Banner>) =
         bannerDao.insertAll(banners.map { BannerEntity(it.imageUrl, it.description) })
+
+    override fun getShopInfo() =
+        infoDao.get()
+
+    override fun setShopInfo(shopInfo: ShopInfo) =
+        infoDao.insert(shopInfo as ShopInfoEntity)
 }

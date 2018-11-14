@@ -7,7 +7,6 @@ import app.suhocki.mybooks.data.context.ContextManager
 import app.suhocki.mybooks.data.preferences.AppPreferencesRepository
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
-import app.suhocki.mybooks.data.room.RoomRepository
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.provider.AppPreferencesProvider
 import app.suhocki.mybooks.di.provider.ErrorReceiverProvider
@@ -16,10 +15,7 @@ import app.suhocki.mybooks.di.provider.ads.BannerAdProvider
 import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
 import app.suhocki.mybooks.domain.model.BannerAd
 import app.suhocki.mybooks.domain.model.Version
-import app.suhocki.mybooks.domain.repository.BannersRepository
-import app.suhocki.mybooks.domain.repository.InfoRepository
 import app.suhocki.mybooks.domain.repository.SettingsRepository
-import app.suhocki.mybooks.domain.repository.StatisticsRepository
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import com.google.android.gms.ads.InterstitialAd
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -42,18 +38,6 @@ class AppModule(app: App) : Module() {
         bind(Version::class.java)
             .toProvider(VersionProvider::class.java)
             .providesSingletonInScope()
-
-        bind(StatisticsRepository::class.java)
-            .to(RoomRepository::class.java)
-            .singletonInScope()
-
-        bind(BannersRepository::class.java)
-            .to(RoomRepository::class.java)
-            .singletonInScope()
-
-        bind(InfoRepository::class.java)
-            .to(AppPreferencesRepository::class.java)
-            .singletonInScope()
 
         bind(AppPreferences::class.java)
             .toProvider(AppPreferencesProvider::class.java)

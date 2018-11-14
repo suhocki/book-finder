@@ -1,6 +1,8 @@
 package app.suhocki.mybooks.data.mapper
 
+import app.suhocki.mybooks.data.mapper.converter.ContactsToShopInfo
 import app.suhocki.mybooks.data.mapper.converter.MetaDataItemToFile
+import app.suhocki.mybooks.data.mapper.converter.ShopInfoToList
 import app.suhocki.mybooks.data.mapper.converter.statistics.*
 import javax.inject.Inject
 
@@ -10,7 +12,9 @@ class Mapper @Inject constructor(
     statisticsToPublisherStatistics: StatisticsToPublisherStatistics,
     statisticsToStatusStatistics: StatisticsToStatusStatistics,
     statisticsToYearStatistics: StatisticsToYearStatistics,
-    statisticsDataToPriceStatistics: StatisticsToPriceStatistics
+    statisticsDataToPriceStatistics: StatisticsToPriceStatistics,
+    contactsToShopInfo: ContactsToShopInfo,
+    shopInfoToList: ShopInfoToList
 ) {
 
     val converters by lazy {
@@ -20,7 +24,9 @@ class Mapper @Inject constructor(
             statisticsToPublisherStatistics,
             statisticsToYearStatistics,
             statisticsToStatusStatistics,
-            statisticsToAuthorStatistics
+            statisticsToAuthorStatistics,
+            contactsToShopInfo,
+            shopInfoToList
         )
     }
 
@@ -31,7 +37,8 @@ class Mapper @Inject constructor(
         val converter = converters
             .find {
                 val isSuitableConverter =
-                    it.fromClass == input::class.java && To::class.java.isAssignableFrom(it.toClass)
+                    it.fromClass.isAssignableFrom(input::class.java) &&
+                            To::class.java.isAssignableFrom(it.toClass)
 
                 if (genericType != null)
                     it is GenericConverter && isSuitableConverter &&
