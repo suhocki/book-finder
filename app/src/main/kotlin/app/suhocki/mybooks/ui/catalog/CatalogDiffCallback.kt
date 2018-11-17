@@ -8,7 +8,7 @@ import app.suhocki.mybooks.domain.model.SearchResult
 internal class CatalogDiffCallback : EndActionDiffUtil.ItemCallback<Any>() {
 
     override fun areItemsTheSame(oldItem: Any, newItem: Any) = when {
-        oldItem is Category && newItem is Category -> oldItem.hashCode() == newItem.hashCode()
+        oldItem is Category && newItem is Category -> oldItem.id == newItem.id
 
         oldItem is SearchResult && newItem is SearchResult ->
             oldItem.book.productCode == newItem.book.productCode

@@ -1,20 +1,21 @@
 package app.suhocki.mybooks.ui.info
 
 import android.support.v7.util.EndActionDiffUtil
-import app.suhocki.mybooks.domain.model.Category
-import app.suhocki.mybooks.domain.model.Header
-import app.suhocki.mybooks.domain.model.SearchResult
+import app.suhocki.mybooks.domain.model.Info
 
 internal class InfoDiffCallback : EndActionDiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-        return if (oldItem is Category && newItem is Category) oldItem.name == newItem.name
-        else if (oldItem is SearchResult && newItem is SearchResult) oldItem.foundBy == newItem.foundBy
+        return if (oldItem is Info && newItem is Info)
+            oldItem.name == newItem.name && oldItem.type == newItem.type
         else oldItem::class.java == newItem::class.java
     }
 
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-        return if (oldItem is Category && newItem is Category) oldItem.name == newItem.name
-        else if (oldItem is Header && newItem is Header) false
-        else true
+        return if (oldItem is Info && newItem is Info) oldItem == newItem
+        else false
+    }
+
+    override fun getChangePayload(oldItem: Any?, newItem: Any?): Any {
+        return Any()
     }
 }

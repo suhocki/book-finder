@@ -7,6 +7,7 @@ import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.room.entity.BookEntity
 import app.suhocki.mybooks.data.room.entity.CategoryEntity
+import app.suhocki.mybooks.data.room.entity.ShopInfoEntity
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.Firestore
@@ -17,6 +18,7 @@ import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.eventbus.BooksUpdatedEvent
 import app.suhocki.mybooks.ui.base.eventbus.CategoriesUpdatedEvent
+import app.suhocki.mybooks.ui.base.eventbus.ShopInfoUpdatedEvent
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import org.greenrobot.eventbus.EventBus
@@ -56,6 +58,11 @@ class FirestoreService : Service() {
         firestore.collection(FirestoreRepository.CATEGORIES)
     }
 
+    private val firestoreShopInfo by lazy {
+        firestore.collection(FirestoreRepository.SHOP_INFO)
+            .document(FirestoreRepository.SHOP_INFO)
+    }
+
     private lateinit var booksSnapshotListener: ListenerRegistration
 
     private fun getFirestoreBooks(categoryId: String) =
@@ -75,11 +82,11 @@ class FirestoreService : Service() {
         when (intent.extras.getString(ARG_COMMAND)) {
             Command.PULL_CATEGORIES -> listenToCategoriesUpdates()
 
-            Command.PULL_BOOKS ->
-                listenToBooksUpdates(intent.getStringExtra(ARG_CATEGORY_ID))
+            Command.PULL_SHOP_INFO -> listenToShopInfoUpdates()
 
-            Command.CANCEL_PULL_BOOKS ->
-                booksSnapshotListener.remove()
+            Command.PULL_BOOKS -> listenToBooksUpdates(intent.getStringExtra(ARG_CATEGORY_ID))
+
+            Command.CANCEL_PULL_BOOKS -> booksSnapshotListener.remove()
 
             Command.PUSH_DATABASE ->
                 pushLocalDatabaseToFirestore(intent.getParcelableExtra(ARG_UPLOAD_CONTROL))
@@ -93,6 +100,16 @@ class FirestoreService : Service() {
             doAsync {
                 localBooksRepository.addCategories(categories)
                 EventBus.getDefault().postSticky(CategoriesUpdatedEvent())
+            }
+        }
+    }
+
+    private fun listenToShopInfoUpdates() {
+        firestoreShopInfo.addSnapshotListener { snapshot, _ ->
+            val shopInfo = snapshot!!.toObject(ShopInfoEntity::class.java)!!
+            doAsync {
+                localInfoRepository.setShopInfo(shopInfo)
+                EventBus.getDefault().postSticky(ShopInfoUpdatedEvent())
             }
         }
     }
@@ -131,6 +148,7 @@ class FirestoreService : Service() {
     object Command {
         const val PULL_CATEGORIES = "PULL_CATEGORIES"
         const val PULL_BOOKS = "PULL_BOOKS"
+        const val PULL_SHOP_INFO = "PULL_SHOP_INFO"
         const val CANCEL_PULL_BOOKS = "CANCEL_PULL_BOOKS"
         const val PUSH_DATABASE = "PUSH_DATABASE"
     }

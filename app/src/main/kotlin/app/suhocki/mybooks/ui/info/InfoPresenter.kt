@@ -1,9 +1,11 @@
 package app.suhocki.mybooks.ui.info
 
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
+import app.suhocki.mybooks.data.service.ServiceHandler
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.InfoInteractor
 import app.suhocki.mybooks.domain.model.Version
+import app.suhocki.mybooks.ui.firestore.FirestoreService
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.doAsync
@@ -15,11 +17,15 @@ class InfoPresenter @Inject constructor(
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val infoInteractor: InfoInteractor,
     private val remoteConfigurator: RemoteConfiguration,
+    private val serviceHandler: ServiceHandler,
     private val appVersion: Version
-    ) : MvpPresenter<InfoView>() {
+) : MvpPresenter<InfoView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+
+        serviceHandler.startUpdateService(FirestoreService.Command.PULL_SHOP_INFO)
+
         loadData()
     }
 

@@ -33,6 +33,10 @@ class InfoAdapter(
         differ.currentList.size
 
     fun submitList(list: List<Any>, onAnimationEnd: () -> Unit = {}) {
+        if (items != null && items.size == list.size &&
+            items.toTypedArray().contentDeepEquals(list.toTypedArray())
+        ) return
+
         listUpdateCallback.endAction = onAnimationEnd
         mutableListOf<Any>().apply {
             addAll(list)

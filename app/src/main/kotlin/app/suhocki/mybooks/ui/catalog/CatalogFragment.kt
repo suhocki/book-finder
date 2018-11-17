@@ -15,7 +15,6 @@ import app.suhocki.mybooks.di.module.CatalogModule
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
-import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.base.eventbus.CategoriesUpdatedEvent
@@ -244,11 +243,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
     override fun openBookWebsite(book: Book) {
         Analytics.bookAddedToCart(book)
         context!!.openLink(book.website)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onDatabaseUpdated(event: DatabaseUpdatedEvent) {
-        presenter.loadData()
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

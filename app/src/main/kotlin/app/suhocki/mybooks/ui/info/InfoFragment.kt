@@ -10,8 +10,8 @@ import app.suhocki.mybooks.domain.model.Info
 import app.suhocki.mybooks.openCaller
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.openMap
-import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.eventbus.ShopInfoUpdatedEvent
 import app.suhocki.mybooks.ui.base.listener.AdminModeEnabler
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import app.suhocki.mybooks.ui.changelog.ChangelogActivity
@@ -108,7 +108,7 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onDatabaseUpdated(event: DatabaseUpdatedEvent) {
+    fun onShopInfoUpdated(event: ShopInfoUpdatedEvent) {
         presenter.loadData()
     }
 

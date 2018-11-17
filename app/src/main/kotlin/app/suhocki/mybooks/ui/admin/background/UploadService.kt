@@ -14,7 +14,6 @@ import app.suhocki.mybooks.di.module.UploadServiceModule
 import app.suhocki.mybooks.domain.UploadServiceInteractor
 import app.suhocki.mybooks.domain.model.XlsDocument
 import app.suhocki.mybooks.domain.model.admin.File
-import app.suhocki.mybooks.ui.admin.eventbus.DatabaseUpdatedEvent
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
@@ -116,8 +115,6 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
             interactor.saveStatisticsData(document.statisticsData)
             interactor.saveShopInfo(document.shopInfo)
             interactor.saveBannersData(document.bannersData)
-
-            MPEventBus.getDefault().postToAll(DatabaseUpdatedEvent())
         },
 
         R.string.step_saving_to_remote to {
