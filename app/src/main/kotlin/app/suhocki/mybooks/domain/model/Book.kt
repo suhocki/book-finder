@@ -1,15 +1,13 @@
 package app.suhocki.mybooks.domain.model
 
-import android.os.Parcelable
-
-interface Book: Parcelable {
+interface Book {
+    val id: String
     val categoryId: String
     val shortName: String
     val fullName: String
     val price: Double
     val iconLink: String
     val productLink: String
-    val productCode: String
     val website: String
     val status: String?
     val publisher: String?

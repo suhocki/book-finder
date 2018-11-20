@@ -1,22 +1,21 @@
 package app.suhocki.mybooks.domain.repository
 
-import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.statistics.*
 
 interface StatisticsRepository {
-    fun getAuthorStatisticsFor(category: Category): List<AuthorStatistics>
+    fun getAuthorStatisticsFor(categoryId: String): List<AuthorStatistics>
 
-    fun getAuthorsWithName(searchQuery: String, category: Category): List<AuthorStatistics>
+    fun getAuthorsWithName(searchQuery: String, categoryId: String): List<AuthorStatistics>
 
-    fun getPublisherStatisticsFor(category: Category): List<PublisherStatistics>
+    fun getPublisherStatisticsFor(categoryId: String): List<PublisherStatistics>
 
-    fun getPublishersWithName(searchQuery: String, category: Category): List<PublisherStatistics>
+    fun getPublishersWithName(searchQuery: String, categoryId: String): List<PublisherStatistics>
 
-    fun getYearStatisticsFor(category: Category): List<YearStatistics>
+    fun getYearStatisticsFor(categoryId: String): List<YearStatistics>
 
-    fun getStatusStatisticsFor(category: Category): List<StatusStatistics>
+    fun getStatusStatisticsFor(categoryId: String): List<StatusStatistics>
 
-    fun getPriceStatisticsFor(category: Category): PriceStatistics
+    fun getPriceStatisticsFor(categoryId: String): PriceStatistics
 
     fun setAuthorStatistics(authorStatistics: List<AuthorStatistics>)
 

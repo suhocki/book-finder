@@ -12,6 +12,9 @@ interface CategoryDao {
     @Query("SELECT * from Categories")
     fun getAll(): List<CategoryEntity>
 
+    @Query("SELECT * from Categories WHERE id=:categoryId")
+    fun getCategoryById(categoryId: String): CategoryEntity
+
     @Delete
     fun deleteAll(categories: List<CategoryEntity>)
 }

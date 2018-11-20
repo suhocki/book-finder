@@ -1,10 +1,10 @@
 package app.suhocki.mybooks.ui.admin
 
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.data.googledrive.GoogleDriveRepository
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.service.ServiceHandler
 import app.suhocki.mybooks.di.ErrorReceiver
-import app.suhocki.mybooks.domain.AdminInteractor
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.domain.model.admin.UploadControl
@@ -21,8 +21,8 @@ import javax.inject.Inject
 @InjectViewState
 class AdminPresenter @Inject constructor(
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
-    private val interactor: AdminInteractor,
     private val resourceManager: ResourceManager,
+    private val googleDriveRepository: GoogleDriveRepository,
     private val serviceHandler: ServiceHandler
 ) : MvpPresenter<AdminView>() {
 
@@ -41,7 +41,9 @@ class AdminPresenter @Inject constructor(
         }) {
             val data = mutableListOf<Any>().apply {
                 add(HeaderEntity(resourceManager.getString(R.string.choose_file)))
-                addAll(interactor.getAvailableFiles())
+
+                val folderId = resourceManager.getString(R.string.google_drive_folder_id)
+                addAll(googleDriveRepository.getFiles(folderId))
             }
             uiThread {
                 viewState.showProgress(false)

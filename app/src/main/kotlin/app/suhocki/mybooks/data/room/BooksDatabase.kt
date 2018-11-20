@@ -48,4 +48,16 @@ abstract class BooksDatabase : RoomDatabase() {
     companion object {
         const val DATABASE_VERSION = 6
     }
+
+    object Table {
+        const val BOOKS = "Books"
+        const val CATEGORIES = "Categories"
+        const val AUTHOR_STATISTICS = "AuthorStatistics"
+        const val PUBLISHER_STATISTICS = "PublisherStatistics"
+        const val YEAR_STATISTICS = "YearStatistics"
+        const val STATUS_STATISTICS = "StatusStatistics"
+        const val PRICE_STATISTICS = "PriceStatistics"
+        const val SHOP_INFO = "ShopInfo"
+        const val BANNERS = "Banners"
+    }
 }

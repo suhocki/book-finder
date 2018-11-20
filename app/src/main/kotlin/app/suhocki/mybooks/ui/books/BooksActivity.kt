@@ -11,7 +11,6 @@ import app.suhocki.mybooks.Analytics
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.BooksModule
 import app.suhocki.mybooks.domain.model.Book
-import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.entity.BookEntity
@@ -46,8 +45,8 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
     @ProvidePresenter
     fun providePresenter(): BooksPresenter {
         val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.BOOKS_SCOPE)
-        val category = intent.getParcelableExtra<Category>(CatalogFragment.ARG_CATEGORY)
-        scope.installModules(BooksModule(category))
+        val categoryId = intent.getStringExtra(CatalogFragment.ARG_CATEGORY_ID)
+        scope.installModules(BooksModule(categoryId))
 
         return scope.getInstance(BooksPresenter::class.java)
     }
@@ -129,7 +128,7 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
     }
 
     override fun onBookClick(book: Book) {
-        startActivity<DetailsActivity>(ARG_BOOK to book)
+        startActivity<DetailsActivity>(ARG_BOOK_ID to book.id)
     }
 
     override fun onBuyBookClick(book: BookEntity) {
@@ -183,7 +182,7 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
     }
 
     companion object {
-        const val ARG_BOOK = "ARG_BOOK"
+        const val ARG_BOOK_ID = "ARG_BOOK_ID"
     }
 }
 

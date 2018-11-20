@@ -185,7 +185,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun onCategoryClick(category: Category) {
-        context!!.startActivity<BooksActivity>(ARG_CATEGORY to category)
+        context!!.startActivity<BooksActivity>(ARG_CATEGORY_ID to category.id)
     }
 
     override fun onExpandSearchClick() {
@@ -225,17 +225,14 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun onBookClick(book: Book) {
-        context!!.startActivity<DetailsActivity>(BooksActivity.ARG_BOOK to book)
+        context!!.startActivity<DetailsActivity>(BooksActivity.ARG_BOOK_ID to book)
     }
 
     override fun onBuyBookClick(book: BookEntity) {
         presenter.onBuyBookClicked(book)
     }
 
-    override fun showBuyDrawableForItem(
-        book: BookEntity,
-        @DrawableRes drawableRes: Int
-    ) {
+    override fun showBuyDrawableForItem(book: Book, @DrawableRes drawableRes: Int) {
         val indexOfBook = adapter.items.indexOf(book)
         adapter.notifyItemChanged(indexOfBook, drawableRes)
     }
@@ -253,7 +250,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     companion object {
         private const val ARG_IS_SEARCH_MODE = "ARG_IS_SEARCH_MODE"
-        const val ARG_CATEGORY = "ARG_CATEGORY"
+        const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
 
         const val UNDEFINED_POSITION = -1
         const val BANNER_POSITION = 0

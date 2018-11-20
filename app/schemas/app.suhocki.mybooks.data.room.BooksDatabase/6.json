@@ -2,12 +2,18 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "dfc4deaa051df43e32b72f055690ee20",
+    "identityHash": "4955aeb36504bb3dbfc49f29af6ce009",
     "entities": [
       {
         "tableName": "Books",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`categoryId` TEXT NOT NULL, `shortName` TEXT NOT NULL, `fullName` TEXT NOT NULL, `price` REAL NOT NULL, `iconLink` TEXT NOT NULL, `productLink` TEXT NOT NULL, `website` TEXT NOT NULL, `productCode` TEXT NOT NULL, `status` TEXT, `publisher` TEXT, `author` TEXT, `series` TEXT, `format` TEXT, `year` TEXT, `pageCount` TEXT, `cover` TEXT, `description` TEXT, PRIMARY KEY(`productCode`), FOREIGN KEY(`categoryId`) REFERENCES `Categories`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`creationDate` TEXT NOT NULL, `categoryId` TEXT NOT NULL, `shortName` TEXT NOT NULL, `fullName` TEXT NOT NULL, `price` REAL NOT NULL, `iconLink` TEXT NOT NULL, `productLink` TEXT NOT NULL, `website` TEXT NOT NULL, `id` TEXT NOT NULL, `status` TEXT, `publisher` TEXT, `author` TEXT, `series` TEXT, `format` TEXT, `year` TEXT, `pageCount` TEXT, `cover` TEXT, `description` TEXT, PRIMARY KEY(`id`), FOREIGN KEY(`categoryId`) REFERENCES `Categories`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creationDate",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "categoryId",
             "columnName": "categoryId",
@@ -51,8 +57,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "productCode",
-            "columnName": "productCode",
+            "fieldPath": "id",
+            "columnName": "id",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -113,7 +119,7 @@
         ],
         "primaryKey": {
           "columnNames": [
-            "productCode"
+            "id"
           ],
           "autoGenerate": false
         },
@@ -539,7 +545,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"dfc4deaa051df43e32b72f055690ee20\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"4955aeb36504bb3dbfc49f29af6ce009\")"
     ]
   }
 }

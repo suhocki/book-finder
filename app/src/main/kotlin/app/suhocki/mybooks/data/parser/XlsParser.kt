@@ -29,11 +29,13 @@ class XlsParser @Inject constructor(
     private val mapper: Mapper
 ) : AnkoLogger {
 
+    private var creationDate: Long = 0
     private lateinit var xlsFileName: String
     private lateinit var xlsFileCreationDate: String
     private val xlsFileColumnNames = mutableListOf<String>()
 
     fun parseStructure(xlsFile: File): ArrayList<String> {
+        creationDate = System.currentTimeMillis()
         val contentString = getStringFromFile(xlsFile)
         val allMatches = ArrayList<String>()
         val matcher = Pattern.compile(REGEX_XLS_DATA).matcher(contentString)
@@ -206,6 +208,7 @@ class XlsParser @Inject constructor(
         statisticsData: MutableMap<Category, StatisticsEntity>
     ): BookEntity {
         return BookEntity(
+            creationDate = creationDate.toString(),
             categoryId = currentCategory.id,
             shortName = objectFieldsQueue.pop(),
             fullName = objectFieldsQueue.pop(),
@@ -215,7 +218,7 @@ class XlsParser @Inject constructor(
             iconLink = objectFieldsQueue.pop().replace(OLD_WEBSITE, NEW_WEBSITE),
             productLink = objectFieldsQueue.pop().replace(OLD_WEBSITE, NEW_WEBSITE),
             website = objectFieldsQueue.pop().replace(OLD_WEBSITE, NEW_WEBSITE),
-            productCode = objectFieldsQueue.pop(),
+            id = objectFieldsQueue.pop(),
             status = if (objectFieldsQueue.isNotEmpty()) objectFieldsQueue.pop() else null
         ).apply {
             publisher = findValue(KEY_PUBLISHER, shortDescription, fullDescription)

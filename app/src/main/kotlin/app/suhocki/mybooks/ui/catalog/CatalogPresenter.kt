@@ -1,14 +1,19 @@
 package app.suhocki.mybooks.ui.catalog
 
+import android.content.res.Resources
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
+import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
+import app.suhocki.mybooks.data.room.entity.BookEntity
 import app.suhocki.mybooks.data.service.ServiceHandler
 import app.suhocki.mybooks.di.*
-import app.suhocki.mybooks.domain.CatalogInteractor
+import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Search
-import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.domain.model.SearchResult
+import app.suhocki.mybooks.domain.repository.BannersRepository
+import app.suhocki.mybooks.domain.repository.BooksRepository
 import app.suhocki.mybooks.ui.catalog.entity.HeaderEntity
 import app.suhocki.mybooks.ui.firestore.FirestoreService
 import com.arellomobile.mvp.InjectViewState
@@ -24,14 +29,16 @@ import javax.inject.Inject
 class CatalogPresenter @Inject constructor(
     @IsSearchMode private val isSearchMode: AtomicBoolean,
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
-    private val interactor: CatalogInteractor,
-    private val resourceManager: ResourceManager,
-    private val adsManager: AdsManager,
     @SearchAll private val searchEntity: Search,
     @SearchDecoration private val searchDecoration: RecyclerView.ItemDecoration,
     @CategoriesDecoration private val categoriesDecoration: RecyclerView.ItemDecoration,
-    private val serviceHandler: ServiceHandler
-) : MvpPresenter<CatalogView>(), AnkoLogger {
+    @Room private val localBooksRepository: BooksRepository,
+    private val resourceManager: ResourceManager,
+    private val adsManager: AdsManager,
+    private val serviceHandler: ServiceHandler,
+    private val remoteConfigurator: RemoteConfiguration,
+    private val bannersRepository: BannersRepository
+    ) : MvpPresenter<CatalogView>(), AnkoLogger {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -44,9 +51,9 @@ class CatalogPresenter @Inject constructor(
 
         doAsync(errorReceiver) {
             val catalogItems = mutableListOf<Any>().apply {
-                interactor.getBanner()?.let { add(it) }
+                getBanner()?.let { add(it) }
                 add(HeaderEntity(title = resourceManager.getString(R.string.catalog)))
-                addAll(interactor.getCategories())
+                addAll(getCategories())
             }
             uiThread {
                 viewState.showCatalogItems(catalogItems, categoriesDecoration)
@@ -63,7 +70,7 @@ class CatalogPresenter @Inject constructor(
         return doAsync(errorReceiver) {
             isSearchMode.set(true)
             val catalogItems = mutableListOf<Any>().apply {
-                interactor.getBanner()?.let { add(it) }
+                getBanner()?.let { add(it) }
                 add(searchEntity)
                 add(HeaderEntity(title = resourceManager.getString(R.string.enter_query)))
             }
@@ -82,9 +89,9 @@ class CatalogPresenter @Inject constructor(
             isSearchMode.set(false)
             searchEntity.searchQuery = EMPTY_STRING
             val catalogItems = mutableListOf<Any>().apply {
-                interactor.getBanner()?.let { add(it) }
+                getBanner()?.let { add(it) }
                 add(HeaderEntity(title = resourceManager.getString(R.string.catalog)))
-                addAll(interactor.getCategories())
+                addAll(getCategories())
             }
             uiThread {
                 viewState.showSearchMode(false)
@@ -110,9 +117,9 @@ class CatalogPresenter @Inject constructor(
     fun search() = doAsync(errorReceiver) {
         if (searchEntity.searchQuery.isBlank()) return@doAsync
         val catalogItems = mutableListOf<Any>().apply {
-            interactor.getBanner()?.let { add(it) }
+            getBanner()?.let { add(it) }
             add(searchEntity)
-            val searchResults = interactor.search(searchEntity)
+            val searchResults = search(searchEntity)
             val title = resourceManager.getString(
                 if (searchResults.isNotEmpty()) R.string.search_results
                 else R.string.not_found
@@ -133,7 +140,7 @@ class CatalogPresenter @Inject constructor(
         if (searchEntity.searchQuery.isBlank()) stopSearchMode()
         else {
             val catalogItems = mutableListOf<Any>().apply {
-                interactor.getBanner()?.let { add(it) }
+                getBanner()?.let { add(it) }
                 add(searchEntity)
                 add(HeaderEntity(title = resourceManager.getString(R.string.enter_query)))
             }
@@ -152,7 +159,7 @@ class CatalogPresenter @Inject constructor(
         viewState.showTopRightButton(!searchEntity.searchQuery.isBlank())
     }
 
-    fun onBuyBookClicked(book: BookEntity) {
+    fun onBuyBookClicked(book: Book) {
         if (adsManager.isInterstitialAdLoading ||
             adsManager.isInterstitialAdLoaded
         ) {
@@ -174,6 +181,51 @@ class CatalogPresenter @Inject constructor(
             adsManager.isInterstitialAdLoaded -> adsManager.showInterstitialAd(book.website)
 
             else -> viewState.openBookWebsite(book)
+        }
+    }
+
+    private fun getCategories() =
+        localBooksRepository.getCategories()
+
+    private fun getBanner(): Any? =
+        if (remoteConfigurator.isBannerAdEnabled) adsManager.getBannerAd()
+        else bannersRepository.getBanners().firstOrNull()
+
+    private fun search(search: Search) =
+        localBooksRepository.search(search.searchQuery)
+            .map {
+                object : SearchResult {
+                    override val foundBy = determineFoundBy(search, it)
+                    override val book = it
+                }
+            }
+            .toList<SearchResult>()
+
+    private fun determineFoundBy(
+        search: Search,
+        book: BookEntity
+    ): String {
+        val q = search.searchQuery
+        return when {
+            book.id.contains(q, true) ->
+                "${resourceManager.getString(R.string.isbn)}: ${book.id}"
+
+            book.fullName.contains(q, true) ->
+                "${resourceManager.getString(R.string.category)}: ${book.categoryId}"
+
+            book.shortName.contains(q, true) ->
+                "${resourceManager.getString(R.string.category)}: ${book.categoryId}"
+
+            book.author?.contains(q, true) ?: false ->
+                "${resourceManager.getString(R.string.author)}: ${book.author}"
+
+            book.publisher?.contains(q, true) ?: false ->
+                "${resourceManager.getString(R.string.publisher)}: ${book.publisher}"
+
+            book.year?.contains(q, true) ?: false ->
+                "${resourceManager.getString(R.string.year)}: ${book.year}"
+
+            else -> throw Resources.NotFoundException()
         }
     }
 

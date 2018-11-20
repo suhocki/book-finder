@@ -22,20 +22,6 @@ class FirestoreRepository @Inject constructor(
     private val notificationHelper: NotificationHelper
 ) : BooksRepository, InfoRepository, AnkoLogger {
 
-    override fun getCategories(): List<Category> {
-        val isFinished = AtomicBoolean(false)
-        val result = mutableListOf<Category>()
-        firebaseFirestore.collection(CATEGORIES)
-            .get()
-            .addOnSuccessListener {
-                result.addAll(it.toObjects(Category::class.java))
-                isFinished.set(true)
-            }
-        while (!isFinished.get()) {
-        }
-        return result
-    }
-
     override fun addCategories(categories: List<Category>) {
         val totalCount = categories.size
         val currentCount = AtomicInteger(0)
@@ -49,16 +35,12 @@ class FirestoreRepository @Inject constructor(
         }
     }
 
-    override fun getBooks(): List<Book> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun addBooks(books: List<Book>, uploadControl: UploadControlEntity?) {
         val totalCount = books.size
         val currentCount = AtomicInteger(0)
         books.forEach { book ->
             firebaseFirestore.collection(BOOKS)
-                .document(book.productCode)
+                .document(book.id)
                 .set(book)
                 .addOnSuccessListener {
                     currentCount.incrementAndGet()
@@ -70,30 +52,12 @@ class FirestoreRepository @Inject constructor(
         }
     }
 
-    override fun getBooksFor(category: Category): List<BookEntity> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
     override fun search(text: String): List<BookEntity> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     override fun filter(query: SupportSQLiteQuery): List<BookEntity> {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
-
-    override fun getShopInfo(): ShopInfo? {
-        val isFinished = AtomicBoolean(false)
-        var result: ShopInfo? = null
-        firebaseFirestore.collection(CATEGORIES)
-            .get()
-            .addOnSuccessListener {
-                result = it.toObjects(ShopInfo::class.java).firstOrNull()
-                isFinished.set(true)
-            }
-        while (!isFinished.get()) {
-        }
-        return result
     }
 
     override fun setShopInfo(shopInfo: ShopInfo) {

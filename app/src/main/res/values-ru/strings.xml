@@ -97,6 +97,6 @@
     <string name="step_unzipping">Распаковка</string>
     <string name="step_string_analysing">Разбор строк</string>
     <string name="step_book_construct">Генерация объектов</string>
-    <string name="step_saving_to_local">Сохранение в локальную базу данных</string>
-    <string name="step_saving_to_remote">Загрузка книг на удалённый сервер</string>
+    <string name="step_saving_to_local">Сохранение в базу данных</string>
+    <string name="step_saving_to_remote">Загрузка на сервер</string>
 </resources>

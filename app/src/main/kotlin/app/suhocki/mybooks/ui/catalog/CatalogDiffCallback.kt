@@ -11,7 +11,7 @@ internal class CatalogDiffCallback : EndActionDiffUtil.ItemCallback<Any>() {
         oldItem is Category && newItem is Category -> oldItem.id == newItem.id
 
         oldItem is SearchResult && newItem is SearchResult ->
-            oldItem.book.productCode == newItem.book.productCode
+            oldItem.book.id == newItem.book.id
 
         else -> oldItem::class.java == newItem::class.java
     }

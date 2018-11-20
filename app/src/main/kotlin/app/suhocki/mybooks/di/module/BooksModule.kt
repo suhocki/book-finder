@@ -2,26 +2,27 @@ package app.suhocki.mybooks.di.module
 
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.filter.FilterRepositoryImpl
+import app.suhocki.mybooks.di.CategoryId
 import app.suhocki.mybooks.di.SearchAuthor
 import app.suhocki.mybooks.di.SearchPublisher
 import app.suhocki.mybooks.di.provider.FilterItemStatisticsProvider
 import app.suhocki.mybooks.di.provider.FilterPriceEntityProvider
-import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.filter.FilterPrice
 import app.suhocki.mybooks.domain.model.statistics.FilterItemStatistics
 import app.suhocki.mybooks.domain.repository.FilterRepository
 import toothpick.config.Module
 
-class BooksModule(category: Category) : Module() {
+class BooksModule(categoryId: String) : Module() {
 
     init {
         bind(FilterRepository::class.java)
             .to(FilterRepositoryImpl::class.java)
             .singletonInScope()
 
-        bind(Category::class.java)
-            .toInstance(category)
+        bind(String::class.java)
+            .withName(CategoryId::class.java)
+            .toInstance(categoryId)
 
         bind(FilterItemStatistics::class.java)
             .toProvider(FilterItemStatisticsProvider::class.java)

@@ -1,8 +1,6 @@
 package app.suhocki.mybooks.data.mapper
 
-import app.suhocki.mybooks.data.mapper.converter.ContactsToShopInfo
-import app.suhocki.mybooks.data.mapper.converter.MetaDataItemToFile
-import app.suhocki.mybooks.data.mapper.converter.ShopInfoToList
+import app.suhocki.mybooks.data.mapper.converter.*
 import app.suhocki.mybooks.data.mapper.converter.statistics.*
 import javax.inject.Inject
 
@@ -14,6 +12,9 @@ class Mapper @Inject constructor(
     statisticsToYearStatistics: StatisticsToYearStatistics,
     statisticsDataToPriceStatistics: StatisticsToPriceStatistics,
     contactsToShopInfo: ContactsToShopInfo,
+    firestoreBookToRoomBook: FirestoreBookToRoomBook,
+    firestoreCategoryToRoomCategory: FirestoreCategoryToRoomCategory,
+    dbBookEntityToUiBookEntity: DbBookEntityToUiBookEntity,
     shopInfoToList: ShopInfoToList
 ) {
 
@@ -26,6 +27,9 @@ class Mapper @Inject constructor(
             statisticsToStatusStatistics,
             statisticsToAuthorStatistics,
             contactsToShopInfo,
+            dbBookEntityToUiBookEntity,
+            firestoreBookToRoomBook,
+            firestoreCategoryToRoomCategory,
             shopInfoToList
         )
     }

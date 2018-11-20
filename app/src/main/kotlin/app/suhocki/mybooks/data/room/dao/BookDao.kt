@@ -13,10 +13,13 @@ interface BookDao {
     @Query("SELECT * FROM Books")
     fun getAll(): List<BookEntity>
 
+    @Query("SELECT * FROM Books WHERE id=:bookId")
+    fun getBookById(bookId: String): BookEntity
+
     @Query("SELECT * FROM Books WHERE categoryId=:categoryId")
     fun getAllByCategory(categoryId: String): List<BookEntity>
 
-    @Query("SELECT * FROM Books WHERE productCode LIKE :q OR shortName LIKE :q OR fullName LIKE :q OR author LIKE :q OR publisher LIKE :q OR year LIKE :q LIMIT 20")
+    @Query("SELECT * FROM Books WHERE id LIKE :q OR shortName LIKE :q OR fullName LIKE :q OR author LIKE :q OR publisher LIKE :q OR year LIKE :q LIMIT 20")
     fun find(q: String): List<BookEntity>
 
     @RawQuery(observedEntities = [BookEntity::class])

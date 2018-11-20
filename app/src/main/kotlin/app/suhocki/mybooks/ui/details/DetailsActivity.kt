@@ -16,7 +16,6 @@ import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.stfalcon.frescoimageviewer.ImageViewer
 import org.jetbrains.anko.setContentView
 import toothpick.Toothpick
-import javax.inject.Inject
 
 
 class DetailsActivity : MvpAppCompatActivity(), DetailsView {
@@ -24,18 +23,14 @@ class DetailsActivity : MvpAppCompatActivity(), DetailsView {
     @InjectPresenter
     lateinit var presenter: DetailsPresenter
 
-    @Inject
     lateinit var ui: DetailsUI
-
-    @Inject
-    lateinit var book: Book
 
     @ProvidePresenter
     fun providePresenter(): DetailsPresenter =
         Toothpick.openScopes(DI.APP_SCOPE, DI.DETAILS_ACTIVITY_SCOPE)
             .apply {
-                val book = intent.getParcelableExtra<Book>(BooksActivity.ARG_BOOK)
-                installModules(DetailsModule(book))
+                val bookId = intent.getStringExtra(BooksActivity.ARG_BOOK_ID)
+                installModules(DetailsModule(bookId))
             }
             .getInstance(DetailsPresenter::class.java)
 
@@ -43,6 +38,11 @@ class DetailsActivity : MvpAppCompatActivity(), DetailsView {
         super.onCreate(savedInstanceState)
         val scope = Toothpick.openScopes(DI.APP_SCOPE, DI.DETAILS_ACTIVITY_SCOPE)
         Toothpick.inject(this, scope)
+    }
+
+    override fun showBook(book: Book) {
+        ui = DetailsUI(book)
+
         ui.setContentView(this@DetailsActivity)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
 

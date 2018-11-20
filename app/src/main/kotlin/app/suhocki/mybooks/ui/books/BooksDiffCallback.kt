@@ -5,7 +5,7 @@ import app.suhocki.mybooks.domain.model.Book
 
 internal class BooksDiffCallback : EndActionDiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-        return if (oldItem is Book && newItem is Book) oldItem.productCode == newItem.productCode
+        return if (oldItem is Book && newItem is Book) oldItem.id == newItem.id
         else false
     }
 

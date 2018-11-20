@@ -1,8 +1,6 @@
 package app.suhocki.mybooks.domain.model
 
-import android.os.Parcelable
-
-interface Category: Parcelable {
+interface Category {
     val id: String
     val name: String
     val booksCount: Int

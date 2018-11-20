@@ -17,7 +17,7 @@ object Analytics {
             .putCurrency(Currency.getInstance(CURRENCY_CODE_BYR))
             .putItemName(book.shortName)
             .putItemType(book.website)
-            .putItemId(book.productCode)
+            .putItemId(book.id)
         Answers.getInstance().logAddToCart(toCartEvent)
     }
 

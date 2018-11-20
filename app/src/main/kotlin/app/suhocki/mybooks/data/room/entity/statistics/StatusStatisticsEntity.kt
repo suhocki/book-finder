@@ -3,11 +3,12 @@ package app.suhocki.mybooks.data.room.entity.statistics
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Index
+import app.suhocki.mybooks.data.room.BooksDatabase
 import app.suhocki.mybooks.data.room.entity.CategoryEntity
 import app.suhocki.mybooks.domain.model.statistics.StatusStatistics
 
 @Entity(
-    tableName = "StatusStatistics",
+    tableName = BooksDatabase.Table.STATUS_STATISTICS,
     indices = [(Index("categoryId"))],
     primaryKeys = ["status", "categoryId"],
     foreignKeys = [

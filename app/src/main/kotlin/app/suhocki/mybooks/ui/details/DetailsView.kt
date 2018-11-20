@@ -14,4 +14,6 @@ interface DetailsView : MvpView {
     fun openBookWebsite(book: Book)
 
     fun showFabDrawableRes(@DrawableRes drawableRes: Int)
+
+    fun showBook(book: Book)
 }

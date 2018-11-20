@@ -6,7 +6,7 @@ import android.support.annotation.StringDef
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.room.entity.BookEntity
-import app.suhocki.mybooks.data.room.entity.CategoryEntity
+import app.suhocki.mybooks.data.firestore.entity.CategoryEntity
 import app.suhocki.mybooks.data.room.entity.ShopInfoEntity
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.ErrorReceiver
@@ -67,7 +67,7 @@ class FirestoreService : Service() {
 
     private fun getFirestoreBooks(categoryId: String) =
         firestore.collection(FirestoreRepository.BOOKS)
-            .whereEqualTo(BookEntity.FIELD_CATEGORY, categoryId)
+            .whereEqualTo(BookEntity.CATEGORY_ID, categoryId)
 
     private val scope by lazy { Toothpick.openScopes(DI.APP_SCOPE) }
 
@@ -116,7 +116,7 @@ class FirestoreService : Service() {
 
     private fun listenToBooksUpdates(categoryId: String) {
         booksSnapshotListener = getFirestoreBooks(categoryId).addSnapshotListener { snapshot, _ ->
-            val books = snapshot!!.toObjects(BookEntity::class.java)
+            val books = snapshot!!.toObjects(app.suhocki.mybooks.data.firestore.entity.BookEntity::class.java)
             doAsync {
                 localBooksRepository.addBooks(books)
                 EventBus.getDefault().postSticky(BooksUpdatedEvent())

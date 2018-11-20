@@ -1,10 +1,12 @@
 package app.suhocki.mybooks.di.module
 
-import app.suhocki.mybooks.domain.model.Book
+import app.suhocki.mybooks.di.BookId
 import toothpick.config.Module
 
-class DetailsModule(book: Book) : Module() {
+class DetailsModule(bookId: String) : Module() {
     init {
-        bind(Book::class.java).toInstance(book)
+        bind(String::class.java)
+            .withName(BookId::class.java)
+            .toInstance(bookId)
     }
 }

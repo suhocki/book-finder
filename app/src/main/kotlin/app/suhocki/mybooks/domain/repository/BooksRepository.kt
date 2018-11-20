@@ -7,15 +7,24 @@ import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 
 interface BooksRepository {
-    fun getCategories(): List<Category>
+    fun getCategories(): List<Category> =
+        throw NotImplementedError()
 
     fun addCategories(categories: List<Category>)
 
-    fun getBooks(): List<Book>
+    fun getCategoryById(id: String): Category =
+        throw NotImplementedError()
+
+    fun getBooks(): List<Book> =
+        throw NotImplementedError()
 
     fun addBooks(books: List<Book>, uploadControl: UploadControlEntity? = null)
 
-    fun getBooksFor(category: Category): List<Book>
+    fun getBookById(id: String): Book =
+        throw NotImplementedError()
+
+    fun getBooksFor(categoryId: String): List<Book> =
+        throw NotImplementedError()
 
     fun search(text: String): List<BookEntity>
 

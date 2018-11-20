@@ -27,7 +27,7 @@ interface CatalogView : MvpView {
 
     fun showTopRightButton(isClearTextMode: Boolean)
 
-    fun showBuyDrawableForItem(book: BookEntity, @DrawableRes drawableRes: Int)
+    fun showBuyDrawableForItem(book: Book, @DrawableRes drawableRes: Int)
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun openBookWebsite(book: Book)

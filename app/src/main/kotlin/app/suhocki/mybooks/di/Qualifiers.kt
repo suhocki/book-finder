@@ -13,3 +13,5 @@ import javax.inject.Qualifier
 @Qualifier annotation class SearchKey
 @Qualifier annotation class SearchAll
 @Qualifier annotation class IsSearchMode
+@Qualifier annotation class CategoryId
+@Qualifier annotation class BookId

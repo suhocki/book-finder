@@ -3,10 +3,11 @@ package app.suhocki.mybooks.data.room.entity
 import android.arch.persistence.room.Entity
 import android.arch.persistence.room.Ignore
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
+import app.suhocki.mybooks.data.room.BooksDatabase
 import app.suhocki.mybooks.domain.model.ShopInfo
 
 @Entity(
-    tableName = "ShopInfo",
+    tableName = BooksDatabase.Table.SHOP_INFO,
     primaryKeys = ["id"]
 )
 class ShopInfoEntity @Ignore constructor() : ShopInfo {

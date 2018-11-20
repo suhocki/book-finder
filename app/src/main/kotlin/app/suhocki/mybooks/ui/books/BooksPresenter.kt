@@ -3,10 +3,12 @@ package app.suhocki.mybooks.ui.books
 import android.arch.persistence.db.SupportSQLiteQuery
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
+import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.service.ServiceHandler
+import app.suhocki.mybooks.di.CategoryId
 import app.suhocki.mybooks.di.ErrorReceiver
-import app.suhocki.mybooks.domain.BooksInteractor
-import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.di.Room
+import app.suhocki.mybooks.domain.repository.BooksRepository
 import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.firestore.FirestoreService
 import com.arellomobile.mvp.InjectViewState
@@ -18,19 +20,23 @@ import javax.inject.Inject
 @InjectViewState
 class BooksPresenter @Inject constructor(
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
-    private val interactor: BooksInteractor,
-    private val category: Category,
+    @Room private val booksRepository: BooksRepository,
+    @CategoryId private val categoryId: String,
     private val adsManager: AdsManager,
+    private val mapper: Mapper,
     private val serviceHandler: ServiceHandler
 ) : MvpPresenter<BooksView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        viewState.showTitle(category.name)
+        doAsync {
+            val title = booksRepository.getCategoryById(categoryId).name
+            uiThread { viewState.showTitle(title) }
+        }
 
         serviceHandler.startUpdateService(
             FirestoreService.Command.PULL_BOOKS,
-            categoryId = category.id
+            categoryId = categoryId
         )
 
         loadBooks()
@@ -45,7 +51,7 @@ class BooksPresenter @Inject constructor(
         viewState.showProgressVisible(true)
 
         doAsync(errorReceiver) {
-            interactor.getBooks(category).let { books ->
+            getBooks(categoryId).let { books ->
                 uiThread {
                     if (books.isNotEmpty()) {
                         viewState.showBooks(books, scrollToTop)
@@ -67,7 +73,7 @@ class BooksPresenter @Inject constructor(
         uiThread {
             viewState.showProgressVisible(true)
         }
-        val books = interactor.filter(sqLiteQuery)
+        val books = filter(sqLiteQuery)
         uiThread {
             if (books.isNotEmpty()) {
                 viewState.showBooks(books, true)
@@ -113,4 +119,12 @@ class BooksPresenter @Inject constructor(
         adsManager.onAdFlowFinished(null)
         serviceHandler.startUpdateService(FirestoreService.Command.CANCEL_PULL_BOOKS)
     }
+
+    private fun getBooks(categoryId: String) =
+        booksRepository.getBooksFor(categoryId)
+            .map { mapper.map<BookEntity>(it) }
+
+    private fun filter(sqLiteQuery: SupportSQLiteQuery) =
+        booksRepository.filter(sqLiteQuery)
+            .map { mapper.map<BookEntity>(it) }
 }

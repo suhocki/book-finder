@@ -2,6 +2,7 @@ package app.suhocki.mybooks.di.provider
 
 import android.os.Parcel
 import android.os.Parcelable
+import app.suhocki.mybooks.di.CategoryId
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.filter.*
 import app.suhocki.mybooks.domain.model.statistics.FilterItemStatistics
@@ -11,7 +12,7 @@ import javax.inject.Inject
 import javax.inject.Provider
 
 class FilterItemStatisticsProvider @Inject constructor(
-    private val category: Category,
+    @CategoryId private val categoryId: String,
     private val statisticsRepository: StatisticsRepository,
     private val filterRepository: FilterRepository
 ) : Provider<FilterItemStatistics> {
@@ -42,62 +43,62 @@ class FilterItemStatisticsProvider @Inject constructor(
 
         override val authorsFilterItems by lazy {
             mutableListOf<FilterAuthor>().apply {
-                addAll(statisticsRepository.getAuthorStatisticsFor(category)
+                addAll(statisticsRepository.getAuthorStatisticsFor(categoryId)
                     .map { (_, author, count) -> FilterAuthorEntity(author, count) })
             }
         }
 
         override val publishersFilterItems by lazy {
             mutableListOf<FilterPublisher>().apply {
-                addAll(statisticsRepository.getPublisherStatisticsFor(category)
+                addAll(statisticsRepository.getPublisherStatisticsFor(categoryId)
                     .map { (_, publisher, count) -> FilterPublisherEntity(publisher, count) })
             }
         }
 
         override val yearsFilterItems by lazy {
             mutableListOf<FilterYear>().apply {
-                addAll(statisticsRepository.getYearStatisticsFor(category)
+                addAll(statisticsRepository.getYearStatisticsFor(categoryId)
                     .map { (_, year, count) -> FilterYearEntity(year, count) })
             }
         }
 
         override val statusesFilterItems by lazy {
             mutableListOf<FilterStatus>().apply {
-                addAll(statisticsRepository.getStatusStatisticsFor(category)
+                addAll(statisticsRepository.getStatusStatisticsFor(categoryId)
                     .map { (_, status, count) -> FilterStatusEntity(status, count) })
             }
         }
 
         override val authors by lazy {
             mutableMapOf<String, Int>().apply {
-                statisticsRepository.getAuthorStatisticsFor(category)
+                statisticsRepository.getAuthorStatisticsFor(categoryId)
                     .forEach { this[it.author] = it.count }
             }
         }
 
         override val publishers by lazy {
             mutableMapOf<String, Int>().apply {
-                statisticsRepository.getPublisherStatisticsFor(category)
+                statisticsRepository.getPublisherStatisticsFor(categoryId)
                     .forEach { this[it.publisher] = it.count }
             }
         }
 
         override val years by lazy {
             mutableMapOf<String, Int>().apply {
-                statisticsRepository.getYearStatisticsFor(category)
+                statisticsRepository.getYearStatisticsFor(categoryId)
                     .forEach { this[it.year] = it.count }
             }
         }
 
         override val statuses by lazy {
             mutableMapOf<String, Int>().apply {
-                statisticsRepository.getStatusStatisticsFor(category)
+                statisticsRepository.getStatusStatisticsFor(categoryId)
                     .forEach { this[it.status] = it.count }
             }
         }
 
         override val prices by lazy {
-            statisticsRepository.getPriceStatisticsFor(category)
+            statisticsRepository.getPriceStatisticsFor(categoryId)
                 .let { (_, min, max) -> doubleArrayOf(min, max) }
         }
     }

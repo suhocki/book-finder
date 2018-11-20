@@ -23,12 +23,9 @@ import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.floatingActionButton
 import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.support.v4.nestedScrollView
-import javax.inject.Inject
 
 
-class DetailsUI @Inject constructor(
-    private var book: Book
-) : AnkoComponent<DetailsActivity>, AnkoLogger {
+class DetailsUI constructor(private val book: Book) : AnkoComponent<DetailsActivity>, AnkoLogger {
 
     lateinit var fabBuy: FloatingActionButton
     lateinit var image: View
@@ -108,7 +105,7 @@ class DetailsUI @Inject constructor(
                     linearLayout {
                         textView(R.string.isbn) { gravity = Gravity.CENTER_VERTICAL }
                             .lparams(0, matchParent) { weight = 0.5f }
-                        textView { text = book.productCode }.lparams(0, matchParent) {
+                        textView { text = book.id }.lparams(0, matchParent) {
                             weight = 0.5f
                         }
                     }

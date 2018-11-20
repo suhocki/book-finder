@@ -40,6 +40,13 @@ class RoomRepository @Inject constructor(
         categoryDao.insertAll(categories.map { mapper.map<CategoryEntity>(it) })
     }
 
+    override fun getCategoryById(id: String) =
+        categoryDao.getCategoryById(id)
+
+    override fun getBookById(id: String): Book {
+        return bookDao.getBookById(id)
+    }
+
     override fun getBooks(): List<BookEntity> =
         bookDao.getAll()
 
@@ -48,8 +55,8 @@ class RoomRepository @Inject constructor(
         bookDao.insertAll(data)
     }
 
-    override fun getBooksFor(category: Category): List<Book> {
-        return bookDao.getAllByCategory(category.id)
+    override fun getBooksFor(categoryId: String): List<Book> {
+        return bookDao.getAllByCategory(categoryId)
     }
 
     override fun search(text: String) =
@@ -58,38 +65,38 @@ class RoomRepository @Inject constructor(
     override fun filter(query: SupportSQLiteQuery): List<BookEntity> =
         bookDao.filter(query)
 
-    override fun getAuthorStatisticsFor(category: Category): List<AuthorStatisticsEntity> {
-        return authorStatisticsDao.getAllByCategory(category.id)
+    override fun getAuthorStatisticsFor(categoryId: String): List<AuthorStatisticsEntity> {
+        return authorStatisticsDao.getAllByCategory(categoryId)
     }
 
     override fun getAuthorsWithName(
         searchQuery: String,
-        category: Category
+        categoryId: String
     ): List<AuthorStatisticsEntity> {
-        return authorStatisticsDao.getAllByNameAndCategory("%$searchQuery%", category.id)
+        return authorStatisticsDao.getAllByNameAndCategory("%$searchQuery%", categoryId)
     }
 
-    override fun getPublisherStatisticsFor(category: Category): List<PublisherStatisticsEntity> {
-        return publisherStatisticsDao.getAllByCategory(category.id)
+    override fun getPublisherStatisticsFor(categoryId: String): List<PublisherStatisticsEntity> {
+        return publisherStatisticsDao.getAllByCategory(categoryId)
     }
 
     override fun getPublishersWithName(
         searchQuery: String,
-        category: Category
+        categoryId: String
     ): List<PublisherStatisticsEntity> {
-        return publisherStatisticsDao.getAllByNameAndCategory("%$searchQuery%", category.id)
+        return publisherStatisticsDao.getAllByNameAndCategory("%$searchQuery%", categoryId)
     }
 
-    override fun getYearStatisticsFor(category: Category): List<YearStatistics> {
-        return yearStatisticsDao.getAllByCategory(category.id)
+    override fun getYearStatisticsFor(categoryId: String): List<YearStatistics> {
+        return yearStatisticsDao.getAllByCategory(categoryId)
     }
 
-    override fun getStatusStatisticsFor(category: Category): List<StatusStatisticsEntity> {
-        return statusStatisticsDao.getAllByCategory(category.id)
+    override fun getStatusStatisticsFor(categoryId: String): List<StatusStatisticsEntity> {
+        return statusStatisticsDao.getAllByCategory(categoryId)
     }
 
-    override fun getPriceStatisticsFor(category: Category): PriceStatisticsEntity {
-        return priceStatisticsDao.getAllByCategory(category.id)
+    override fun getPriceStatisticsFor(categoryId: String): PriceStatisticsEntity {
+        return priceStatisticsDao.getAllByCategory(categoryId)
     }
 
     override fun setAuthorStatistics(authorStatistics: List<AuthorStatistics>) =
