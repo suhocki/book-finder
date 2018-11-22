@@ -4,21 +4,22 @@ import android.app.Service
 import android.content.Intent
 import android.support.annotation.StringDef
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
-import app.suhocki.mybooks.data.notification.NotificationHelper
-import app.suhocki.mybooks.data.room.entity.BookEntity
+import app.suhocki.mybooks.data.firestore.entity.BannerEntity
 import app.suhocki.mybooks.data.firestore.entity.CategoryEntity
+import app.suhocki.mybooks.data.notification.NotificationHelper
+import app.suhocki.mybooks.data.room.RoomRepository
+import app.suhocki.mybooks.data.room.entity.BookEntity
 import app.suhocki.mybooks.data.room.entity.ShopInfoEntity
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.ErrorReceiver
-import app.suhocki.mybooks.di.Firestore
-import app.suhocki.mybooks.di.Room
-import app.suhocki.mybooks.domain.repository.BooksRepository
-import app.suhocki.mybooks.domain.repository.InfoRepository
+import app.suhocki.mybooks.domain.model.Banner
+import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.eventbus.BooksUpdatedEvent
-import app.suhocki.mybooks.ui.base.eventbus.CategoriesUpdatedEvent
+import app.suhocki.mybooks.ui.base.eventbus.CatalogItemsUpdatedEvent
 import app.suhocki.mybooks.ui.base.eventbus.ShopInfoUpdatedEvent
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import org.greenrobot.eventbus.EventBus
@@ -32,20 +33,10 @@ class FirestoreService : Service() {
     lateinit var firestore: FirebaseFirestore
 
     @Inject
-    @field:Firestore
-    lateinit var remoteBooksRepository: BooksRepository
+    lateinit var roomRepository: RoomRepository
 
     @Inject
-    @field:Room
-    lateinit var localBooksRepository: BooksRepository
-
-    @Inject
-    @field:Firestore
-    lateinit var remoteInfoRepository: InfoRepository
-
-    @Inject
-    @field:Room
-    lateinit var localInfoRepository: InfoRepository
+    lateinit var firestoreRepository: FirestoreRepository
 
     @Inject
     @field:ErrorReceiver
@@ -61,6 +52,10 @@ class FirestoreService : Service() {
     private val firestoreShopInfo by lazy {
         firestore.collection(FirestoreRepository.SHOP_INFO)
             .document(FirestoreRepository.SHOP_INFO)
+    }
+
+    private val firestoreBanners by lazy {
+        firestore.collection(FirestoreRepository.BANNERS)
     }
 
     private lateinit var booksSnapshotListener: ListenerRegistration
@@ -80,13 +75,13 @@ class FirestoreService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         when (intent.extras.getString(ARG_COMMAND)) {
-            Command.PULL_CATEGORIES -> listenToCategoriesUpdates()
+            Command.FETCH_CATALOG_ITEMS -> fetchCatalogItems()
 
-            Command.PULL_SHOP_INFO -> listenToShopInfoUpdates()
+            Command.FETCH_SHOP_INFO -> listenToShopInfo()
 
-            Command.PULL_BOOKS -> listenToBooksUpdates(intent.getStringExtra(ARG_CATEGORY_ID))
+            Command.FETCH_BOOKS -> listenToBooks(intent.getStringExtra(ARG_CATEGORY_ID))
 
-            Command.CANCEL_PULL_BOOKS -> booksSnapshotListener.remove()
+            Command.CANCEL_FETCH_BOOKS -> booksSnapshotListener.remove()
 
             Command.PUSH_DATABASE ->
                 pushLocalDatabaseToFirestore(intent.getParcelableExtra(ARG_UPLOAD_CONTROL))
@@ -94,31 +89,54 @@ class FirestoreService : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun listenToCategoriesUpdates() {
+    private fun fetchCatalogItems() {
+        Tasks.whenAllSuccess<Any>(
+            firestoreBanners.get(),
+            firestoreCategories.get()
+        ).addOnSuccessListener { data ->
+            doAsync(errorReceiver) {
+                roomRepository.setBanners(data.asSequence().filterIsInstance<Banner>().toList())
+                roomRepository.addCategories(data.asSequence().filterIsInstance<Category>().toList())
+
+                listenToCatalogItems()
+            }
+
+        }
+    }
+
+    private fun listenToCatalogItems() {
+        firestoreBanners.addSnapshotListener { snapshot, _ ->
+            val banners = snapshot!!.toObjects(BannerEntity::class.java)
+            doAsync {
+                roomRepository.setBanners(banners)
+                EventBus.getDefault().postSticky(CatalogItemsUpdatedEvent())
+            }
+        }
         firestoreCategories.addSnapshotListener { snapshot, _ ->
             val categories = snapshot!!.toObjects(CategoryEntity::class.java)
             doAsync {
-                localBooksRepository.addCategories(categories)
-                EventBus.getDefault().postSticky(CategoriesUpdatedEvent())
+                roomRepository.addCategories(categories)
+                EventBus.getDefault().postSticky(CatalogItemsUpdatedEvent())
             }
         }
     }
 
-    private fun listenToShopInfoUpdates() {
+    private fun listenToShopInfo() {
         firestoreShopInfo.addSnapshotListener { snapshot, _ ->
             val shopInfo = snapshot!!.toObject(ShopInfoEntity::class.java)!!
             doAsync {
-                localInfoRepository.setShopInfo(shopInfo)
+                roomRepository.setShopInfo(shopInfo)
                 EventBus.getDefault().postSticky(ShopInfoUpdatedEvent())
             }
         }
     }
 
-    private fun listenToBooksUpdates(categoryId: String) {
+    private fun listenToBooks(categoryId: String) {
         booksSnapshotListener = getFirestoreBooks(categoryId).addSnapshotListener { snapshot, _ ->
-            val books = snapshot!!.toObjects(app.suhocki.mybooks.data.firestore.entity.BookEntity::class.java)
+            val books =
+                snapshot!!.toObjects(app.suhocki.mybooks.data.firestore.entity.BookEntity::class.java)
             doAsync {
-                localBooksRepository.addBooks(books)
+                roomRepository.addBooks(books)
                 EventBus.getDefault().postSticky(BooksUpdatedEvent())
             }
         }
@@ -126,13 +144,13 @@ class FirestoreService : Service() {
 
     private fun pushLocalDatabaseToFirestore(uploadControl: UploadControlEntity) {
         doAsync(errorReceiver) {
-            val books = localBooksRepository.getBooks()
-            val categories = localBooksRepository.getCategories()
-            val shopInfo = localInfoRepository.getShopInfo()!!
 
-            remoteBooksRepository.addBooks(books, uploadControl)
-            remoteBooksRepository.addCategories(categories)
-            remoteInfoRepository.setShopInfo(shopInfo)
+            with(firestoreRepository) {
+                addBooks(roomRepository.getBooks(), uploadControl)
+                addCategories(roomRepository.getCategories())
+                setBanners(roomRepository.getBanners())
+                setShopInfo(roomRepository.getShopInfo()!!)
+            }
 
             EventBus.getDefault().post(UploadCompleteEvent(true))
             notificationHelper.showSuccessNotification(uploadControl.fileName)
@@ -146,16 +164,16 @@ class FirestoreService : Service() {
     }
 
     object Command {
-        const val PULL_CATEGORIES = "PULL_CATEGORIES"
-        const val PULL_BOOKS = "PULL_BOOKS"
-        const val PULL_SHOP_INFO = "PULL_SHOP_INFO"
-        const val CANCEL_PULL_BOOKS = "CANCEL_PULL_BOOKS"
+        const val FETCH_CATALOG_ITEMS = "FETCH_CATALOG_ITEMS"
+        const val FETCH_BOOKS = "FETCH_BOOKS"
+        const val FETCH_SHOP_INFO = "FETCH_SHOP_INFO"
+        const val CANCEL_FETCH_BOOKS = "CANCEL_FETCH_BOOKS"
         const val PUSH_DATABASE = "PUSH_DATABASE"
     }
 
     @Retention
     @StringDef(
-        Command.PULL_CATEGORIES,
+        Command.FETCH_CATALOG_ITEMS,
         Command.PUSH_DATABASE
     )
     annotation class UpdateCommand

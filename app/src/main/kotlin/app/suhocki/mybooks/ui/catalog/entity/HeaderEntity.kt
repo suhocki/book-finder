@@ -4,8 +4,8 @@ import app.suhocki.mybooks.domain.model.Header
 
 
 class HeaderEntity(
-    override val inverseColors: Boolean = false,
     override var title: String,
+    override val inverseColors: Boolean = false,
     override val allCaps: Boolean = true
 ) : Header {
     override fun equals(other: Any?): Boolean {

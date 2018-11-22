@@ -13,22 +13,22 @@ class FirestoreBookToRoomBook @Inject constructor() :
 
     override fun convert(value: FirestoreBookEntity) =
         RoomBookEntity(
-            value.categoryId,
-            value.shortName,
-            value.fullName,
-            value.price,
-            value.iconLink,
-            value.productLink,
-            value.id,
-            value.website,
-            value.status,
-            value.publisher,
-            value.author,
-            value.series,
-            value.format,
-            value.year,
-            value.pageCount,
-            value.cover,
-            value.description
+            categoryId = value.categoryId,
+            shortName = value.shortName,
+            fullName = value.fullName,
+            price = value.price,
+            iconLink = value.iconLink,
+            productLink = value.productLink,
+            website = value.website,
+            id = value.id,
+            status = value.status,
+            publisher = value.publisher,
+            author = value.author,
+            series = value.series,
+            format = value.format,
+            year = value.year,
+            pageCount = value.pageCount,
+            cover = value.cover,
+            description = value.description
         )
 }

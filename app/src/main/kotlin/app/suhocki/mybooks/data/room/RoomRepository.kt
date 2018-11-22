@@ -13,10 +13,7 @@ import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.ShopInfo
 import app.suhocki.mybooks.domain.model.statistics.*
-import app.suhocki.mybooks.domain.repository.BannersRepository
-import app.suhocki.mybooks.domain.repository.BooksRepository
-import app.suhocki.mybooks.domain.repository.InfoRepository
-import app.suhocki.mybooks.domain.repository.StatisticsRepository
+import app.suhocki.mybooks.domain.repository.*
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import javax.inject.Inject
 
@@ -31,7 +28,7 @@ class RoomRepository @Inject constructor(
     private val bannerDao: BannerDao,
     private val infoDao: ShopInfoDao,
     private val mapper: Mapper
-) : BooksRepository, StatisticsRepository, BannersRepository, InfoRepository {
+) : BooksRepository, CategoriesRepository, StatisticsRepository, BannersRepository, InfoRepository {
     override fun getCategories(): List<Category> {
         return categoryDao.getAll()
     }
@@ -118,7 +115,7 @@ class RoomRepository @Inject constructor(
         bannerDao.getAll()
 
     override fun setBanners(banners: List<Banner>) =
-        bannerDao.insertAll(banners.map { BannerEntity(it.imageUrl, it.description) })
+        bannerDao.insertAll(banners.map { BannerEntity(it.id, it.imageUrl, it.description) })
 
     override fun getShopInfo() =
         infoDao.get()

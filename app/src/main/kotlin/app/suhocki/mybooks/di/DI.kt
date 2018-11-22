@@ -3,6 +3,8 @@ package app.suhocki.mybooks.di
 object DI {
     const val APP_SCOPE = "APP_SCOPE"
 
+    const val CATALOG_SCOPE = "CATALOG_SCOPE"
+
     const val GSON_SCOPE = "GSON_SCOPE"
 
     const val ADMIN_SCOPE = "ADMIN_SCOPE"

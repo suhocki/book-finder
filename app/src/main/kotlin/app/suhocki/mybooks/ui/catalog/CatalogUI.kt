@@ -28,6 +28,7 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
     lateinit var search: View
     lateinit var close: ImageView
     lateinit var toolbar: Toolbar
+    lateinit var progressBar: View
 
     override fun createView(ui: AnkoContext<T>) = with(ui) {
 
@@ -107,6 +108,14 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
                 setOnTouchListener { _, _ -> hideKeyboard();false }
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
+            }
+
+            themedProgressBar(R.style.AccentProgressBar) {
+                progressBar = this
+                visibility = View.GONE
+                topPadding = dimenAttr(R.attr.actionBarSize)
+            }.lparams {
+                gravity = Gravity.CENTER
             }
         }
     }

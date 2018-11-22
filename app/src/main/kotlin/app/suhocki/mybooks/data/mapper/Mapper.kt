@@ -13,7 +13,9 @@ class Mapper @Inject constructor(
     statisticsDataToPriceStatistics: StatisticsToPriceStatistics,
     contactsToShopInfo: ContactsToShopInfo,
     firestoreBookToRoomBook: FirestoreBookToRoomBook,
+    roomBannerToFirestoreBanner: RoomBannerToFirestoreBanner,
     firestoreCategoryToRoomCategory: FirestoreCategoryToRoomCategory,
+    firestoreBannerToRoomBanner: FirestoreBannerToRoomBanner,
     dbBookEntityToUiBookEntity: DbBookEntityToUiBookEntity,
     shopInfoToList: ShopInfoToList
 ) {
@@ -28,7 +30,9 @@ class Mapper @Inject constructor(
             statisticsToAuthorStatistics,
             contactsToShopInfo,
             dbBookEntityToUiBookEntity,
+            roomBannerToFirestoreBanner,
             firestoreBookToRoomBook,
+            firestoreBannerToRoomBanner,
             firestoreCategoryToRoomCategory,
             shopInfoToList
         )

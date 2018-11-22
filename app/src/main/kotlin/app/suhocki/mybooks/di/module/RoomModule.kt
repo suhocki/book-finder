@@ -5,10 +5,7 @@ import app.suhocki.mybooks.data.room.RoomRepository
 import app.suhocki.mybooks.data.room.dao.*
 import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.di.provider.database.*
-import app.suhocki.mybooks.domain.repository.BannersRepository
-import app.suhocki.mybooks.domain.repository.BooksRepository
-import app.suhocki.mybooks.domain.repository.InfoRepository
-import app.suhocki.mybooks.domain.repository.StatisticsRepository
+import app.suhocki.mybooks.domain.repository.*
 import toothpick.config.Module
 
 class RoomModule : Module() {
@@ -58,6 +55,11 @@ class RoomModule : Module() {
             .to(RoomRepository::class.java)
             .singletonInScope()
 
+        bind(CategoriesRepository::class.java)
+            .withName(Room::class.java)
+            .to(RoomRepository::class.java)
+            .singletonInScope()
+
         bind(InfoRepository::class.java)
             .withName(Room::class.java)
             .to(RoomRepository::class.java)
@@ -68,6 +70,7 @@ class RoomModule : Module() {
             .singletonInScope()
 
         bind(BannersRepository::class.java)
+            .withName(Room::class.java)
             .to(RoomRepository::class.java)
             .singletonInScope()
     }

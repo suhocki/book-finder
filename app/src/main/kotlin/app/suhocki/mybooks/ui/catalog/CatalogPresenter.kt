@@ -14,10 +14,12 @@ import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.domain.repository.CategoriesRepository
+import app.suhocki.mybooks.presentation.base.Paginator
 import app.suhocki.mybooks.ui.catalog.entity.HeaderEntity
-import app.suhocki.mybooks.ui.firestore.FirestoreService
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.arellomobile.mvp.viewstate.MvpViewState
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -27,38 +29,39 @@ import javax.inject.Inject
 
 @InjectViewState
 class CatalogPresenter @Inject constructor(
+    mvpViewState: MvpViewState<CatalogView>,
+
     @IsSearchMode private val isSearchMode: AtomicBoolean,
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     @SearchAll private val searchEntity: Search,
+
     @SearchDecoration private val searchDecoration: RecyclerView.ItemDecoration,
     @CategoriesDecoration private val categoriesDecoration: RecyclerView.ItemDecoration,
-    @Room private val localBooksRepository: BooksRepository,
+
+    @Room private val booksRepository: BooksRepository,
+    @Room private val bannersRepository: BannersRepository,
+    @Room private val categoriesRepository: CategoriesRepository,
+
     private val resourceManager: ResourceManager,
     private val adsManager: AdsManager,
     private val serviceHandler: ServiceHandler,
     private val remoteConfigurator: RemoteConfiguration,
-    private val bannersRepository: BannersRepository
-    ) : MvpPresenter<CatalogView>(), AnkoLogger {
+    private val paginator: Paginator<Any>
+) : MvpPresenter<CatalogView>(), AnkoLogger {
+
+    init {
+        setViewState(mvpViewState)
+    }
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        serviceHandler.startUpdateService(FirestoreService.Command.PULL_CATEGORIES)
         loadData()
     }
 
     fun loadData() {
         if (isSearchMode.get()) return
 
-        doAsync(errorReceiver) {
-            val catalogItems = mutableListOf<Any>().apply {
-                getBanner()?.let { add(it) }
-                add(HeaderEntity(title = resourceManager.getString(R.string.catalog)))
-                addAll(getCategories())
-            }
-            uiThread {
-                viewState.showCatalogItems(catalogItems, categoriesDecoration)
-            }
-        }
+        paginator.refresh()
     }
 
     override fun attachView(view: CatalogView?) {
@@ -72,7 +75,7 @@ class CatalogPresenter @Inject constructor(
             val catalogItems = mutableListOf<Any>().apply {
                 getBanner()?.let { add(it) }
                 add(searchEntity)
-                add(HeaderEntity(title = resourceManager.getString(R.string.enter_query)))
+                add(HeaderEntity(resourceManager.getString(R.string.enter_query)))
             }
             uiThread {
                 viewState.showSearchMode(true)
@@ -90,7 +93,7 @@ class CatalogPresenter @Inject constructor(
             searchEntity.searchQuery = EMPTY_STRING
             val catalogItems = mutableListOf<Any>().apply {
                 getBanner()?.let { add(it) }
-                add(HeaderEntity(title = resourceManager.getString(R.string.catalog)))
+                add(HeaderEntity(resourceManager.getString(R.string.catalog)))
                 addAll(getCategories())
             }
             uiThread {
@@ -124,7 +127,7 @@ class CatalogPresenter @Inject constructor(
                 if (searchResults.isNotEmpty()) R.string.search_results
                 else R.string.not_found
             )
-            add(HeaderEntity(title = title))
+            add(HeaderEntity(title))
             addAll(searchResults)
         }
         uiThread {
@@ -142,7 +145,7 @@ class CatalogPresenter @Inject constructor(
             val catalogItems = mutableListOf<Any>().apply {
                 getBanner()?.let { add(it) }
                 add(searchEntity)
-                add(HeaderEntity(title = resourceManager.getString(R.string.enter_query)))
+                add(HeaderEntity(resourceManager.getString(R.string.enter_query)))
             }
             searchEntity.searchQuery = EMPTY_STRING
             uiThread {
@@ -185,14 +188,14 @@ class CatalogPresenter @Inject constructor(
     }
 
     private fun getCategories() =
-        localBooksRepository.getCategories()
+        categoriesRepository.getCategories()
 
     private fun getBanner(): Any? =
         if (remoteConfigurator.isBannerAdEnabled) adsManager.getBannerAd()
         else bannersRepository.getBanners().firstOrNull()
 
     private fun search(search: Search) =
-        localBooksRepository.search(search.searchQuery)
+        booksRepository.search(search.searchQuery)
             .map {
                 object : SearchResult {
                     override val foundBy = determineFoundBy(search, it)
@@ -231,7 +234,8 @@ class CatalogPresenter @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        adsManager.onAdFlowFinished(null)
+        adsManager.onAdFlowFinished()
+        paginator.release()
     }
 
     companion object {

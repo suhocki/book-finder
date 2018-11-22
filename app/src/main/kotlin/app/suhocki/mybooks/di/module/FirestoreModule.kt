@@ -2,7 +2,9 @@ package app.suhocki.mybooks.di.module
 
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.di.Firestore
+import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.domain.repository.CategoriesRepository
 import app.suhocki.mybooks.domain.repository.InfoRepository
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
@@ -25,7 +27,17 @@ class FirestoreModule : Module() {
             .to(FirestoreRepository::class.java)
             .singletonInScope()
 
+        bind(CategoriesRepository::class.java)
+            .withName(Firestore::class.java)
+            .to(FirestoreRepository::class.java)
+            .singletonInScope()
+
         bind(InfoRepository::class.java)
+            .withName(Firestore::class.java)
+            .to(FirestoreRepository::class.java)
+            .singletonInScope()
+
+        bind(BannersRepository::class.java)
             .withName(Firestore::class.java)
             .to(FirestoreRepository::class.java)
             .singletonInScope()

@@ -35,7 +35,7 @@ class InfoPresenter @Inject constructor(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        serviceHandler.startUpdateService(FirestoreService.Command.PULL_SHOP_INFO)
+        serviceHandler.startUpdateService(FirestoreService.Command.FETCH_SHOP_INFO)
 
         loadData()
     }

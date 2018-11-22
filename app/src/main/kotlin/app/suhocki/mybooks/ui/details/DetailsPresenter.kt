@@ -65,6 +65,6 @@ class DetailsPresenter @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        adsManager.onAdFlowFinished(null)
+        adsManager.onAdFlowFinished()
     }
 }

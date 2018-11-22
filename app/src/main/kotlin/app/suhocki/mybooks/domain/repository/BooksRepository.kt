@@ -3,18 +3,9 @@ package app.suhocki.mybooks.domain.repository
 import android.arch.persistence.db.SupportSQLiteQuery
 import app.suhocki.mybooks.data.room.entity.BookEntity
 import app.suhocki.mybooks.domain.model.Book
-import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 
 interface BooksRepository {
-    fun getCategories(): List<Category> =
-        throw NotImplementedError()
-
-    fun addCategories(categories: List<Category>)
-
-    fun getCategoryById(id: String): Category =
-        throw NotImplementedError()
-
     fun getBooks(): List<Book> =
         throw NotImplementedError()
 
@@ -26,7 +17,9 @@ interface BooksRepository {
     fun getBooksFor(categoryId: String): List<Book> =
         throw NotImplementedError()
 
-    fun search(text: String): List<BookEntity>
+    fun search(text: String): List<BookEntity> =
+        throw NotImplementedError()
 
-    fun filter(query: SupportSQLiteQuery): List<BookEntity>
+    fun filter(query: SupportSQLiteQuery): List<BookEntity> =
+        throw NotImplementedError()
 }

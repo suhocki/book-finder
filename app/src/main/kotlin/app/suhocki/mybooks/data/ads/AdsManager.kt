@@ -54,7 +54,7 @@ class AdsManager @Inject constructor(
         if (remoteConfigurator.isAdsEnabled) urlsAdShownFor.contains(url)
         else true
 
-    fun onAdFlowFinished(onAdFlowFinished: (() -> Unit)?) {
+    fun onAdFlowFinished(onAdFlowFinished: (() -> Unit)? = null) {
         isWaitingForInterstitialAdLoad = false
         this.onAdFlowFinished = onAdFlowFinished
     }

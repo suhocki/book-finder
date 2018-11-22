@@ -12,15 +12,11 @@ import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.service.ServiceHandler
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.Room
-import app.suhocki.mybooks.di.module.FirestoreModule
 import app.suhocki.mybooks.di.module.UploadServiceModule
 import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.domain.model.statistics.*
-import app.suhocki.mybooks.domain.repository.BannersRepository
-import app.suhocki.mybooks.domain.repository.BooksRepository
-import app.suhocki.mybooks.domain.repository.InfoRepository
-import app.suhocki.mybooks.domain.repository.StatisticsRepository
+import app.suhocki.mybooks.domain.repository.*
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
@@ -33,18 +29,25 @@ import javax.inject.Inject
 class UploadService : IntentService("UploadService"), AnkoLogger {
 
     @Inject
-    @Room
+    @field:Room
     lateinit var infoRepository: InfoRepository
+
     @Inject
-    @Room
-    lateinit var localBooksRepository: BooksRepository
+    @field:Room
+    lateinit var booksRepository: BooksRepository
+
+    @Inject
+    @field:Room
+    lateinit var categoriesRepository: CategoriesRepository
+
+    @Inject
+    @field:Room
+    lateinit var bannersRepository: BannersRepository
 
     @Inject
     lateinit var remoteFilesRepository: RemoteFilesRepository
     @Inject
     lateinit var localFilesRepository: LocalFilesRepository
-    @Inject
-    lateinit var bannersRepository: BannersRepository
     @Inject
     lateinit var statisticRepository: StatisticsRepository
     @Inject
@@ -65,8 +68,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
     private val scope by lazy {
         Toothpick.openScopes(DI.APP_SCOPE, DI.UPLOAD_SERVICE).apply {
             installModules(
-                UploadServiceModule(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).path),
-                FirestoreModule()
+                UploadServiceModule(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS).path)
             )
         }
     }
@@ -98,6 +100,11 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
             notificationHelper.showProgressNotification(it, 0)
             tasks[it]!!.invoke()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Toothpick.closeScope(DI.UPLOAD_SERVICE)
     }
 
     private val tasks = mapOf(
@@ -161,18 +168,19 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         localFilesRepository.extractXlsDocument(strings)
 
     private fun saveBooksToLocal(data: Map<out Category, Collection<Book>>) {
-        localBooksRepository.addCategories(data.keys.toList())
-        localBooksRepository.addBooks(data.values.flatMap { books -> books }.toList())
+        categoriesRepository.addCategories(data.keys.toList())
+        booksRepository.addBooks(data.values.flatMap { books -> books }.toList())
     }
 
-    private fun saveStatisticsData(statistics: Map<Category, Statistics>) =
-        with(statisticRepository) {
-            setAuthorStatistics(mapper.map(statistics, AuthorStatistics::class.java))
-            setPublisherStatistics(mapper.map(statistics, PublisherStatistics::class.java))
-            setStatusStatistics(mapper.map(statistics, StatusStatistics::class.java))
-            setYearStatistics(mapper.map(statistics, YearStatistics::class.java))
-            setPriceStatistics(mapper.map(statistics, PriceStatistics::class.java))
-        }
+    private fun saveStatisticsData(
+        statistics: Map<Category, Statistics>
+    ) = with(statisticRepository) {
+        setAuthorStatistics(mapper.map(statistics, AuthorStatistics::class.java))
+        setPublisherStatistics(mapper.map(statistics, PublisherStatistics::class.java))
+        setStatusStatistics(mapper.map(statistics, StatusStatistics::class.java))
+        setYearStatistics(mapper.map(statistics, YearStatistics::class.java))
+        setPriceStatistics(mapper.map(statistics, PriceStatistics::class.java))
+    }
 
     private fun saveShopInfo(shopInfo: ShopInfo) =
         infoRepository.setShopInfo(shopInfo)

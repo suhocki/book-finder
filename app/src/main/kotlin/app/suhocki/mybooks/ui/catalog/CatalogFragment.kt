@@ -17,7 +17,7 @@ import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.entity.BookEntity
-import app.suhocki.mybooks.ui.base.eventbus.CategoriesUpdatedEvent
+import app.suhocki.mybooks.ui.base.eventbus.CatalogItemsUpdatedEvent
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchListener
@@ -26,6 +26,7 @@ import app.suhocki.mybooks.ui.books.BooksActivity
 import app.suhocki.mybooks.ui.catalog.listener.OnCategoryClickListener
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
+import com.arellomobile.mvp.MoxyReflector
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.greenrobot.eventbus.Subscribe
@@ -46,6 +47,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
     OnBookClickListener,
     OnSearchListener {
 
+    private val scope by lazy { Toothpick.openScopes(DI.APP_SCOPE, DI.CATALOG_SCOPE) }
     private val ui by lazy { CatalogUI<CatalogFragment>() }
 
     private val adapter by lazy {
@@ -62,12 +64,12 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     @ProvidePresenter
     fun providePresenter(): CatalogPresenter {
-        val scope = Toothpick.openScopes(DI.APP_SCOPE)
-        val catalogModule = CatalogModule(
-            arguments!!.getBoolean(ARG_IS_SEARCH_MODE),
-            dimen(R.dimen.height_divider_decorator),
-            dip(4)
-        )
+        val isSearchMode = arguments!!.getBoolean(ARG_IS_SEARCH_MODE)
+        val dividerOffset = dimen(R.dimen.height_divider_decorator)
+        val searchOffset = dip(4)
+        val viewState = MoxyReflector.getViewState(CatalogPresenter::class.java)
+        val catalogModule = CatalogModule(isSearchMode, dividerOffset, searchOffset, viewState)
+
         scope.installModules(catalogModule)
 
         return scope.getInstance(CatalogPresenter::class.java)
@@ -242,8 +244,38 @@ class CatalogFragment : BaseFragment(), CatalogView,
         context!!.openLink(book.website)
     }
 
+    override fun showEmptyProgress(show: Boolean) {
+        ui.progressBar.visibility =
+                if (show) View.VISIBLE
+                else View.GONE
+    }
+
+    override fun showEmptyError(show: Boolean, error: Throwable?) {
+        TODO("not implemented")
+    }
+
+    override fun showEmptyView(show: Boolean) {
+        TODO("not implemented")
+    }
+
+    override fun showData(show: Boolean, data: List<Any>) {
+        adapter.submitList(data)
+    }
+
+    override fun showErrorMessage(error: Throwable) {
+        TODO("not implemented")
+    }
+
+    override fun showRefreshProgress(show: Boolean) {
+        TODO("not implemented")
+    }
+
+    override fun showPageProgress(show: Boolean) {
+        TODO("not implemented")
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onCategoriesUpdatedEvent(event: CategoriesUpdatedEvent) {
+    fun onDataUpdatedEvent(event: CatalogItemsUpdatedEvent) {
         presenter.loadData()
     }
 
@@ -255,7 +287,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
         const val UNDEFINED_POSITION = -1
         const val BANNER_POSITION = 0
         const val SEARCH_POSITION = 1
-        const val CATEGORY_POSITION = 2
         const val SEARCH_RESULT_POSITION = 3
 
         fun newInstance(isSearchMode: Boolean = false) =

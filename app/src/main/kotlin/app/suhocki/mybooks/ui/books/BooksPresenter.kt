@@ -9,6 +9,7 @@ import app.suhocki.mybooks.di.CategoryId
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.domain.repository.CategoriesRepository
 import app.suhocki.mybooks.ui.base.entity.BookEntity
 import app.suhocki.mybooks.ui.firestore.FirestoreService
 import com.arellomobile.mvp.InjectViewState
@@ -21,6 +22,7 @@ import javax.inject.Inject
 class BooksPresenter @Inject constructor(
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     @Room private val booksRepository: BooksRepository,
+    @Room private val categoriesRepository: CategoriesRepository,
     @CategoryId private val categoryId: String,
     private val adsManager: AdsManager,
     private val mapper: Mapper,
@@ -30,12 +32,12 @@ class BooksPresenter @Inject constructor(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         doAsync {
-            val title = booksRepository.getCategoryById(categoryId).name
+            val title = categoriesRepository.getCategoryById(categoryId).name
             uiThread { viewState.showTitle(title) }
         }
 
         serviceHandler.startUpdateService(
-            FirestoreService.Command.PULL_BOOKS,
+            FirestoreService.Command.FETCH_BOOKS,
             categoryId = categoryId
         )
 
@@ -116,8 +118,8 @@ class BooksPresenter @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        adsManager.onAdFlowFinished(null)
-        serviceHandler.startUpdateService(FirestoreService.Command.CANCEL_PULL_BOOKS)
+        adsManager.onAdFlowFinished()
+        serviceHandler.startUpdateService(FirestoreService.Command.CANCEL_FETCH_BOOKS)
     }
 
     private fun getBooks(categoryId: String) =

@@ -2,10 +2,10 @@ package app.suhocki.mybooks.data.parser
 
 import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.notification.NotificationHelper
-import app.suhocki.mybooks.data.parser.entity.BannerEntity
 import app.suhocki.mybooks.data.parser.entity.InfoEntity
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
+import app.suhocki.mybooks.data.room.entity.BannerEntity
 import app.suhocki.mybooks.data.room.entity.BookEntity
 import app.suhocki.mybooks.data.room.entity.CategoryEntity
 import app.suhocki.mybooks.domain.model.Banner
@@ -152,7 +152,11 @@ class XlsParser @Inject constructor(
             } else if (currentXlsPage == LIST_BANNERS) {
                 bannerFieldsQueue.add(currentWord)
                 if (bannerFieldsQueue.size == 2) {
-                    banners.add(BannerEntity(bannerFieldsQueue.pop(), bannerFieldsQueue.pop()))
+                    val url = bannerFieldsQueue.pop()
+                    val description = bannerFieldsQueue.pop()
+                    val uniqueData = url + description + System.nanoTime()
+                    val bannerId = UUID.nameUUIDFromBytes(uniqueData.toByteArray()).toString()
+                    banners.add(BannerEntity(bannerId, url, description))
                 }
             } else if (currentXlsPage == LIST_CONTACTS) {
 

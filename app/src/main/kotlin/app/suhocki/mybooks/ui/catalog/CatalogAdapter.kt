@@ -39,7 +39,7 @@ class CatalogAdapter(
     override fun getItemCount(): Int =
         differ.currentList.size
 
-    fun submitList(list: List<Any>, onAnimationEnd: () -> Unit) {
+    fun submitList(list: List<Any>, onAnimationEnd: (() -> Unit)? = null) {
         if (items != null && items.size == list.size &&
             items.toTypedArray().contentDeepEquals(list.toTypedArray())
         ) return

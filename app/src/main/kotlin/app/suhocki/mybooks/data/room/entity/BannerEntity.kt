@@ -9,6 +9,7 @@ import app.suhocki.mybooks.domain.model.Banner
     primaryKeys = ["imageUrl"]
 )
 data class BannerEntity(
+    override val id: String,
     override val imageUrl: String,
     override val description: String
 ) : Banner

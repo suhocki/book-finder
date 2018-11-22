@@ -2,21 +2,22 @@ package app.suhocki.mybooks.di.module
 
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.di.CategoriesDecoration
-import app.suhocki.mybooks.di.IsSearchMode
-import app.suhocki.mybooks.di.SearchAll
-import app.suhocki.mybooks.di.SearchDecoration
+import app.suhocki.mybooks.di.*
+import app.suhocki.mybooks.di.provider.CatalogRequestFactoryProvider
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
+import app.suhocki.mybooks.presentation.base.Paginator
 import app.suhocki.mybooks.ui.base.decorator.SearchItemDecoration
 import app.suhocki.mybooks.ui.base.decorator.TypeDividerItemDecoration
+import com.arellomobile.mvp.viewstate.MvpViewState
 import toothpick.config.Module
 import java.util.concurrent.atomic.AtomicBoolean
 
 class CatalogModule(
     isSearchMode: Boolean,
     categoriesDividerOffset: Int,
-    searchDividerOffset: Int
+    searchDividerOffset: Int,
+    viewState: Any
 ) : Module() {
     init {
         bind(AtomicBoolean::class.java)
@@ -39,6 +40,16 @@ class CatalogModule(
         bind(RecyclerView.ItemDecoration::class.java)
             .withName(SearchDecoration::class.java)
             .toInstance(SearchItemDecoration(searchDividerOffset))
+
+        bind(Function1::class.java)
+            .withName(RequestFactory::class.java)
+            .toProvider(CatalogRequestFactoryProvider::class.java)
+
+        bind(Paginator.ViewController::class.java)
+            .toInstance(viewState as Paginator.ViewController<*>)
+
+        bind(MvpViewState::class.java)
+            .toInstance(viewState as MvpViewState<*>)
     }
 
     internal class SearchEntity(
