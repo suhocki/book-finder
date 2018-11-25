@@ -4,23 +4,23 @@ import android.arch.persistence.room.Entity
 import android.arch.persistence.room.ForeignKey
 import android.arch.persistence.room.Index
 import app.suhocki.mybooks.data.room.BooksDatabase
-import app.suhocki.mybooks.data.room.entity.CategoryEntity
-import app.suhocki.mybooks.domain.model.statistics.PublisherStatistics
+import app.suhocki.mybooks.data.room.entity.CategoryDbo
+import app.suhocki.mybooks.domain.model.statistics.StatusStatistics
 
 @Entity(
-    tableName = BooksDatabase.Table.PUBLISHER_STATISTICS,
+    tableName = BooksDatabase.Table.STATUS_STATISTICS,
     indices = [(Index("categoryId"))],
-    primaryKeys = ["publisher", "categoryId"],
+    primaryKeys = ["status", "categoryId"],
     foreignKeys = [
         (ForeignKey(
-            entity = CategoryEntity::class,
+            entity = CategoryDbo::class,
             parentColumns = ["id"],
             childColumns = ["categoryId"]
         ))
     ]
 )
-data class PublisherStatisticsEntity(
+data class StatusStatisticsDbo(
     override val categoryId: String,
-    override val publisher: String,
+    override val status: String,
     override val count: Int
-) : PublisherStatistics
+) : StatusStatistics

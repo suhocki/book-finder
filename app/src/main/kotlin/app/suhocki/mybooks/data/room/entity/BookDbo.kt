@@ -8,18 +8,19 @@ import app.suhocki.mybooks.data.room.BooksDatabase
 import app.suhocki.mybooks.domain.model.Book
 
 @Entity(
-    indices = [(Index(BookEntity.CATEGORY_ID))],
+    indices = [(Index(BookDbo.CATEGORY_ID))],
     tableName = BooksDatabase.Table.BOOKS,
-    primaryKeys = [BookEntity.PRODUCT_CODE],
+    primaryKeys = [BookDbo.PRODUCT_CODE],
     foreignKeys = [
         (ForeignKey(
-            entity = CategoryEntity::class,
-            parentColumns = [CategoryEntity.ID],
-            childColumns = [BookEntity.CATEGORY_ID]
+            entity = CategoryDbo::class,
+            parentColumns = [CategoryDbo.ID],
+            childColumns = [BookDbo.CATEGORY_ID]
         ))
     ]
 )
-data class BookEntity(
+data class BookDbo(
+    override var id: String = "",
     override var categoryId: String = "",
     override var shortName: String = "",
     override var fullName: String = "",
@@ -27,7 +28,6 @@ data class BookEntity(
     override var iconLink: String = "",
     override var productLink: String = "",
     override var website: String = "",
-    override var id: String = "",
     override var status: String? = null,
     override var publisher: String? = null,
     override var author: String? = null,

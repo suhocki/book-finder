@@ -43,7 +43,7 @@ class Paginator<T> @Inject constructor(
         currentState.release()
     }
 
-    private fun loadPage(page: Int = 1) {
+    private fun loadPage(page: Int = 0) {
         currentTask = doAsync({
             currentState.fail(it)
         }) {
@@ -70,7 +70,7 @@ class Paginator<T> @Inject constructor(
         }
 
         override fun release() {
-            currentState = RELEASED()
+            currentState = Released()
             currentTask?.cancel(true)
         }
     }
@@ -103,7 +103,7 @@ class Paginator<T> @Inject constructor(
         }
 
         override fun release() {
-            currentState = RELEASED()
+            currentState = Released()
             currentTask?.cancel(true)
         }
     }
@@ -125,7 +125,7 @@ class Paginator<T> @Inject constructor(
         }
 
         override fun release() {
-            currentState = RELEASED()
+            currentState = Released()
             currentTask?.cancel(true)
         }
     }
@@ -147,7 +147,7 @@ class Paginator<T> @Inject constructor(
         }
 
         override fun release() {
-            currentState = RELEASED()
+            currentState = Released()
             currentTask?.cancel(true)
         }
     }
@@ -174,7 +174,7 @@ class Paginator<T> @Inject constructor(
         }
 
         override fun release() {
-            currentState = RELEASED()
+            currentState = Released()
             currentTask?.cancel(true)
         }
     }
@@ -213,7 +213,7 @@ class Paginator<T> @Inject constructor(
         }
 
         override fun release() {
-            currentState = RELEASED()
+            currentState = Released()
             currentTask?.cancel(true)
         }
     }
@@ -255,7 +255,7 @@ class Paginator<T> @Inject constructor(
         }
 
         override fun release() {
-            currentState = RELEASED()
+            currentState = Released()
             currentTask?.cancel(true)
         }
     }
@@ -276,10 +276,10 @@ class Paginator<T> @Inject constructor(
         }
 
         override fun release() {
-            currentState = RELEASED()
+            currentState = Released()
             currentTask?.cancel(true)
         }
     }
 
-    private inner class RELEASED : State<T>
+    private inner class Released : State<T>
 }

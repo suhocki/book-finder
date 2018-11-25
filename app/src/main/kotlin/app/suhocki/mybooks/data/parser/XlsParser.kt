@@ -5,9 +5,10 @@ import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.parser.entity.InfoEntity
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
-import app.suhocki.mybooks.data.room.entity.BannerEntity
-import app.suhocki.mybooks.data.room.entity.BookEntity
-import app.suhocki.mybooks.data.room.entity.CategoryEntity
+import app.suhocki.mybooks.data.preferences.AppPreferencesRepository
+import app.suhocki.mybooks.data.room.entity.BannerDbo
+import app.suhocki.mybooks.data.room.entity.BookDbo
+import app.suhocki.mybooks.data.room.entity.CategoryDbo
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Info
@@ -26,7 +27,8 @@ import javax.inject.Inject
 class XlsParser @Inject constructor(
     private val uploadControl: UploadControlEntity,
     private val notificationHelper: NotificationHelper,
-    private val mapper: Mapper
+    private val mapper: Mapper,
+    private val preferencesRepository: AppPreferencesRepository
 ) : AnkoLogger {
 
     private var creationDate: Long = 0
@@ -35,7 +37,8 @@ class XlsParser @Inject constructor(
     private val xlsFileColumnNames = mutableListOf<String>()
 
     fun parseStructure(xlsFile: File): ArrayList<String> {
-        creationDate = System.currentTimeMillis()
+        updateCreationDate()
+
         val contentString = getStringFromFile(xlsFile)
         val allMatches = ArrayList<String>()
         val matcher = Pattern.compile(REGEX_XLS_DATA).matcher(contentString)
@@ -58,9 +61,9 @@ class XlsParser @Inject constructor(
 
     fun extractPayload(strings: ArrayList<String>): XlsDocumentEntity {
         val statisticsData = mutableMapOf<Category, StatisticsEntity>()
-        var currentCategory: CategoryEntity? = null
+        var currentCategory: CategoryDbo? = null
 
-        val booksData = mutableMapOf<CategoryEntity, MutableList<BookEntity>>()
+        val booksData = mutableMapOf<CategoryDbo, MutableList<BookDbo>>()
         val bookFieldsQueue = ArrayDeque<String>()
 
         val banners = mutableListOf<Banner>()
@@ -132,7 +135,7 @@ class XlsParser @Inject constructor(
                     isHeaderFound = false
                     bookFieldsQueue.clear()
                     val categoryId = UUID.nameUUIDFromBytes(currentWord.toByteArray()).toString()
-                    currentCategory = CategoryEntity(categoryId, currentWord)
+                    currentCategory = CategoryDbo(categoryId, currentWord, creationDate.toString())
                     booksData[currentCategory] = mutableListOf()
                     statisticsData[currentCategory] = StatisticsEntity()
                     continue
@@ -156,7 +159,7 @@ class XlsParser @Inject constructor(
                     val description = bannerFieldsQueue.pop()
                     val uniqueData = url + description + System.nanoTime()
                     val bannerId = UUID.nameUUIDFromBytes(uniqueData.toByteArray()).toString()
-                    banners.add(BannerEntity(bannerId, url, description))
+                    banners.add(BannerDbo(bannerId, url, description))
                 }
             } else if (currentXlsPage == LIST_CONTACTS) {
 
@@ -207,11 +210,11 @@ class XlsParser @Inject constructor(
     }
 
     private fun createBookEntity(
-        currentCategory: CategoryEntity,
+        currentCategory: CategoryDbo,
         objectFieldsQueue: ArrayDeque<String>,
         statisticsData: MutableMap<Category, StatisticsEntity>
-    ): BookEntity {
-        return BookEntity(
+    ): BookDbo {
+        return BookDbo(
             creationDate = creationDate.toString(),
             categoryId = currentCategory.id,
             shortName = objectFieldsQueue.pop(),
@@ -299,6 +302,11 @@ class XlsParser @Inject constructor(
         return reader.readText().apply {
             reader.close()
         }
+    }
+
+    private fun updateCreationDate() {
+        creationDate = System.currentTimeMillis()
+        preferencesRepository.updateDate = creationDate.toString()
     }
 
     companion object {

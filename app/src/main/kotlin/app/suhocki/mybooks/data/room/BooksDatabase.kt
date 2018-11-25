@@ -5,23 +5,23 @@ import android.arch.persistence.room.RoomDatabase
 import android.arch.persistence.room.TypeConverters
 import app.suhocki.mybooks.data.room.converter.ListToStringConverter
 import app.suhocki.mybooks.data.room.dao.*
-import app.suhocki.mybooks.data.room.entity.BannerEntity
-import app.suhocki.mybooks.data.room.entity.BookEntity
-import app.suhocki.mybooks.data.room.entity.CategoryEntity
-import app.suhocki.mybooks.data.room.entity.ShopInfoEntity
+import app.suhocki.mybooks.data.room.entity.BannerDbo
+import app.suhocki.mybooks.data.room.entity.BookDbo
+import app.suhocki.mybooks.data.room.entity.CategoryDbo
+import app.suhocki.mybooks.data.room.entity.ShopInfoDbo
 import app.suhocki.mybooks.data.room.entity.statistics.*
 
 @Database(
     entities = [
-        BookEntity::class,
-        CategoryEntity::class,
-        AuthorStatisticsEntity::class,
-        PublisherStatisticsEntity::class,
-        YearStatisticsEntity::class,
-        StatusStatisticsEntity::class,
-        PriceStatisticsEntity::class,
-        ShopInfoEntity::class,
-        BannerEntity::class
+        BookDbo::class,
+        CategoryDbo::class,
+        AuthorStatisticsDbo::class,
+        PublisherStatisticsDbo::class,
+        YearStatisticsDbo::class,
+        StatusStatisticsDbo::class,
+        PriceStatisticsDbo::class,
+        ShopInfoDbo::class,
+        BannerDbo::class
     ],
     version = BooksDatabase.DATABASE_VERSION
 )

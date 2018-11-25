@@ -13,7 +13,7 @@ import app.suhocki.mybooks.di.module.BooksModule
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.ui.Ids
-import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.base.entity.UiBook
 import app.suhocki.mybooks.ui.base.eventbus.BooksUpdatedEvent
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnFilterResultListener
@@ -131,11 +131,11 @@ class BooksActivity : MvpAppCompatActivity(), BooksView,
         startActivity<DetailsActivity>(ARG_BOOK_ID to book.id)
     }
 
-    override fun onBuyBookClick(book: BookEntity) {
+    override fun onBuyBookClick(book: UiBook) {
         presenter.onBuyBookClicked(book)
     }
 
-    override fun showBuyDrawableForItem(book: BookEntity, @DrawableRes drawableRes: Int) {
+    override fun showBuyDrawableForItem(book: UiBook, @DrawableRes drawableRes: Int) {
         val indexOfBook = adapter.items.indexOf(book)
         adapter.notifyItemChanged(indexOfBook, drawableRes)
     }

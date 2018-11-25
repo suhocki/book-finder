@@ -1,29 +1,28 @@
-package app.suhocki.mybooks.ui.catalog.delegate
+package app.suhocki.mybooks.ui.admin.delegate
 
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.Header
-import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.catalog.ui.HeaderItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.backgroundResource
 import org.jetbrains.anko.textAppearance
 
-class HeaderAdapterDelegate : AdapterDelegate<MutableList<UiItem>>() {
+class HeaderAdapterDelegate : AdapterDelegate<MutableList<Any>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         HeaderItemUI()
             .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
             .let { ViewHolder(it) }
 
-    override fun isForViewType(items: MutableList<UiItem>, position: Int): Boolean =
+    override fun isForViewType(items: MutableList<Any>, position: Int): Boolean =
         with(items[position]) { this is Header }
 
     override fun onBindViewHolder(
-        items: MutableList<UiItem>,
+        items: MutableList<Any>,
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
@@ -38,7 +37,7 @@ class HeaderAdapterDelegate : AdapterDelegate<MutableList<UiItem>>() {
                     title.textAppearance = R.style.TextAppearance_AppCompat_Subhead_Inverse
                     title.setTypeface(title.typeface, Typeface.BOLD)
                 }
-                title.setAllCaps(header.allCaps)
+                title.isAllCaps = header.allCaps
                 if (!header.allCaps) {
                     title.textAppearance = R.style.TextAppearance_AppCompat_Subhead
                     title.setTypeface(title.typeface, Typeface.NORMAL)

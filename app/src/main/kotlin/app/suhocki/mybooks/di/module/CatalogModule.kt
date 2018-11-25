@@ -10,6 +10,7 @@ import app.suhocki.mybooks.presentation.base.Paginator
 import app.suhocki.mybooks.ui.base.decorator.SearchItemDecoration
 import app.suhocki.mybooks.ui.base.decorator.TypeDividerItemDecoration
 import com.arellomobile.mvp.viewstate.MvpViewState
+import com.google.firebase.firestore.DocumentSnapshot
 import toothpick.config.Module
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -50,6 +51,9 @@ class CatalogModule(
 
         bind(MvpViewState::class.java)
             .toInstance(viewState as MvpViewState<*>)
+
+        bind(MutableList::class.java)
+            .toInstance(mutableListOf<DocumentSnapshot>())
     }
 
     internal class SearchEntity(

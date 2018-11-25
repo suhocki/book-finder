@@ -3,10 +3,10 @@ package app.suhocki.mybooks.data.room
 import android.arch.persistence.db.SupportSQLiteQuery
 import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.room.dao.*
-import app.suhocki.mybooks.data.room.entity.BannerEntity
-import app.suhocki.mybooks.data.room.entity.BookEntity
-import app.suhocki.mybooks.data.room.entity.CategoryEntity
-import app.suhocki.mybooks.data.room.entity.ShopInfoEntity
+import app.suhocki.mybooks.data.room.entity.BannerDbo
+import app.suhocki.mybooks.data.room.entity.BookDbo
+import app.suhocki.mybooks.data.room.entity.CategoryDbo
+import app.suhocki.mybooks.data.room.entity.ShopInfoDbo
 import app.suhocki.mybooks.data.room.entity.statistics.*
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
@@ -29,12 +29,17 @@ class RoomRepository @Inject constructor(
     private val infoDao: ShopInfoDao,
     private val mapper: Mapper
 ) : BooksRepository, CategoriesRepository, StatisticsRepository, BannersRepository, InfoRepository {
-    override fun getCategories(): List<Category> {
-        return categoryDao.getAll()
+
+    override fun getCategories(offset: Int, limit: Int): List<Category> {
+        return categoryDao.getAll(offset, limit)
+    }
+
+    fun getCategories(creationDate: String): List<Category> {
+        return categoryDao.getAll(creationDate)
     }
 
     override fun addCategories(categories: List<Category>) {
-        categoryDao.insertAll(categories.map { mapper.map<CategoryEntity>(it) })
+        categoryDao.insertAll(categories.map { mapper.map<CategoryDbo>(it) })
     }
 
     override fun getCategoryById(id: String) =
@@ -44,11 +49,14 @@ class RoomRepository @Inject constructor(
         return bookDao.getBookById(id)
     }
 
-    override fun getBooks(): List<BookEntity> =
+    override fun getBooks(): List<BookDbo> =
         bookDao.getAll()
 
+    fun getBooks(creationDate: String): List<BookDbo> =
+        bookDao.getAll(creationDate)
+
     override fun addBooks(books: List<Book>, uploadControl: UploadControlEntity?) {
-        val data = books.map { mapper.map<BookEntity>(it) }
+        val data = books.map { mapper.map<BookDbo>(it) }
         bookDao.insertAll(data)
     }
 
@@ -59,28 +67,28 @@ class RoomRepository @Inject constructor(
     override fun search(text: String) =
         bookDao.find("%$text%")
 
-    override fun filter(query: SupportSQLiteQuery): List<BookEntity> =
+    override fun filter(query: SupportSQLiteQuery): List<BookDbo> =
         bookDao.filter(query)
 
-    override fun getAuthorStatisticsFor(categoryId: String): List<AuthorStatisticsEntity> {
+    override fun getAuthorStatisticsFor(categoryId: String): List<AuthorStatisticsDbo> {
         return authorStatisticsDao.getAllByCategory(categoryId)
     }
 
     override fun getAuthorsWithName(
         searchQuery: String,
         categoryId: String
-    ): List<AuthorStatisticsEntity> {
+    ): List<AuthorStatisticsDbo> {
         return authorStatisticsDao.getAllByNameAndCategory("%$searchQuery%", categoryId)
     }
 
-    override fun getPublisherStatisticsFor(categoryId: String): List<PublisherStatisticsEntity> {
+    override fun getPublisherStatisticsFor(categoryId: String): List<PublisherStatisticsDbo> {
         return publisherStatisticsDao.getAllByCategory(categoryId)
     }
 
     override fun getPublishersWithName(
         searchQuery: String,
         categoryId: String
-    ): List<PublisherStatisticsEntity> {
+    ): List<PublisherStatisticsDbo> {
         return publisherStatisticsDao.getAllByNameAndCategory("%$searchQuery%", categoryId)
     }
 
@@ -88,38 +96,38 @@ class RoomRepository @Inject constructor(
         return yearStatisticsDao.getAllByCategory(categoryId)
     }
 
-    override fun getStatusStatisticsFor(categoryId: String): List<StatusStatisticsEntity> {
+    override fun getStatusStatisticsFor(categoryId: String): List<StatusStatisticsDbo> {
         return statusStatisticsDao.getAllByCategory(categoryId)
     }
 
-    override fun getPriceStatisticsFor(categoryId: String): PriceStatisticsEntity {
+    override fun getPriceStatisticsFor(categoryId: String): PriceStatisticsDbo {
         return priceStatisticsDao.getAllByCategory(categoryId)
     }
 
     override fun setAuthorStatistics(authorStatistics: List<AuthorStatistics>) =
-        authorStatisticsDao.insertAll(authorStatistics.map { it as AuthorStatisticsEntity })
+        authorStatisticsDao.insertAll(authorStatistics.map { it as AuthorStatisticsDbo })
 
     override fun setPublisherStatistics(publisherStatistics: List<PublisherStatistics>) =
-        publisherStatisticsDao.insertAll(publisherStatistics.map { it as PublisherStatisticsEntity })
+        publisherStatisticsDao.insertAll(publisherStatistics.map { it as PublisherStatisticsDbo })
 
     override fun setYearStatistics(yearStatistics: List<YearStatistics>) =
-        yearStatisticsDao.insertAll(yearStatistics.map { it as YearStatisticsEntity })
+        yearStatisticsDao.insertAll(yearStatistics.map { it as YearStatisticsDbo })
 
     override fun setStatusStatistics(statusStatistics: List<StatusStatistics>) =
-        statusStatisticsDao.insertAll(statusStatistics.map { it as StatusStatisticsEntity })
+        statusStatisticsDao.insertAll(statusStatistics.map { it as StatusStatisticsDbo })
 
     override fun setPriceStatistics(priceStatistics: List<PriceStatistics>) =
-        priceStatisticsDao.insertAll(priceStatistics.map { it as PriceStatisticsEntity })
+        priceStatisticsDao.insertAll(priceStatistics.map { it as PriceStatisticsDbo })
 
     override fun getBanners(): List<Banner> =
         bannerDao.getAll()
 
     override fun setBanners(banners: List<Banner>) =
-        bannerDao.insertAll(banners.map { BannerEntity(it.id, it.imageUrl, it.description) })
+        bannerDao.insertAll(banners.map { BannerDbo(it.id, it.imageUrl, it.description) })
 
     override fun getShopInfo() =
         infoDao.get()
 
     override fun setShopInfo(shopInfo: ShopInfo) =
-        infoDao.insert(shopInfo as ShopInfoEntity)
+        infoDao.insert(shopInfo as ShopInfoDbo)
 }

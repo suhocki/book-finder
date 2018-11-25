@@ -5,7 +5,8 @@ import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.toRoundedPrice
-import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.base.entity.UiBook
+import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.catalog.ui.SearchResultItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
@@ -13,18 +14,18 @@ import org.jetbrains.anko.AnkoContext
 
 class SearchResultBookAdapterDelegate(
     private val onBookClickListener: OnBookClickListener
-) : AdapterDelegate<MutableList<Any>>() {
+) : AdapterDelegate<MutableList<UiItem>>() {
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
         SearchResultItemUI()
             .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
             .let { ViewHolder(it) }
 
-    override fun isForViewType(items: MutableList<Any>, position: Int): Boolean =
+    override fun isForViewType(items: MutableList<UiItem>, position: Int): Boolean =
         with(items[position]) { this is SearchResult }
 
     override fun onBindViewHolder(
-        items: MutableList<Any>,
+        items: MutableList<UiItem>,
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
@@ -33,7 +34,7 @@ class SearchResultBookAdapterDelegate(
 
     private inner class ViewHolder(val ui: SearchResultItemUI) :
         RecyclerView.ViewHolder(ui.parent) {
-        private lateinit var book: BookEntity
+        private lateinit var book: UiBook
 
         init {
             itemView.setOnClickListener { onBookClickListener.onBookClick(book) }
@@ -41,7 +42,7 @@ class SearchResultBookAdapterDelegate(
         }
 
         fun bind(searchResult: SearchResult, payloads: MutableList<Any>) {
-            this.book = searchResult.book as BookEntity
+            this.book = searchResult.book as UiBook
             with(ui) {
                 if (payloads.isNotEmpty()) {
                     val drawableRes = payloads.first() as Int

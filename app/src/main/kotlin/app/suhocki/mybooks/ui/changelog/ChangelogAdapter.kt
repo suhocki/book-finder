@@ -2,9 +2,9 @@ package app.suhocki.mybooks.ui.changelog
 
 import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
 import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
+import app.suhocki.mybooks.ui.admin.delegate.HeaderAdapterDelegate
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.books.BooksDiffCallback
-import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
 import app.suhocki.mybooks.ui.changelog.delegate.ChangelogAdapterDelegate
 import app.suhocki.mybooks.ui.changelog.listener.OnDownloadFileClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter

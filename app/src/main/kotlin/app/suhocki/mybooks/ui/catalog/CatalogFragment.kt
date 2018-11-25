@@ -13,17 +13,16 @@ import app.suhocki.mybooks.*
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.CatalogModule
 import app.suhocki.mybooks.domain.model.Book
-import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.BaseFragment
-import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.base.entity.UiBook
+import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.base.eventbus.CatalogItemsUpdatedEvent
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchListener
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import app.suhocki.mybooks.ui.books.BooksActivity
-import app.suhocki.mybooks.ui.catalog.listener.OnCategoryClickListener
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.MoxyReflector
@@ -42,17 +41,15 @@ import kotlin.concurrent.schedule
 
 
 class CatalogFragment : BaseFragment(), CatalogView,
-    OnCategoryClickListener,
-    OnSearchClickListener,
-    OnBookClickListener,
-    OnSearchListener {
+    OnSearchClickListener, OnBookClickListener, OnSearchListener {
 
     private val scope by lazy { Toothpick.openScopes(DI.APP_SCOPE, DI.CATALOG_SCOPE) }
     private val ui by lazy { CatalogUI<CatalogFragment>() }
 
     private val adapter by lazy {
         CatalogAdapter(
-            this,
+            { presenter.loadNextPage() },
+            { context!!.startActivity<BooksActivity>(ARG_CATEGORY_ID to it) },
             this,
             this,
             this
@@ -119,7 +116,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun showCatalogItems(
-        catalogItems: List<Any>,
+        catalogItems: List<UiItem>,
         itemDecoration: RecyclerView.ItemDecoration?,
         scrollToPosition: Int,
         updateSearchView: Boolean
@@ -186,10 +183,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
         }
     }
 
-    override fun onCategoryClick(category: Category) {
-        context!!.startActivity<BooksActivity>(ARG_CATEGORY_ID to category.id)
-    }
-
     override fun onExpandSearchClick() {
         animateToolbarNavigationButton(true)
         with(ui) {
@@ -230,11 +223,11 @@ class CatalogFragment : BaseFragment(), CatalogView,
         context!!.startActivity<DetailsActivity>(BooksActivity.ARG_BOOK_ID to book)
     }
 
-    override fun onBuyBookClick(book: BookEntity) {
+    override fun onBuyBookClick(book: UiBook) {
         presenter.onBuyBookClicked(book)
     }
 
-    override fun showBuyDrawableForItem(book: Book, @DrawableRes drawableRes: Int) {
+    override fun showBuyDrawableForItem(book: UiBook, @DrawableRes drawableRes: Int) {
         val indexOfBook = adapter.items.indexOf(book)
         adapter.notifyItemChanged(indexOfBook, drawableRes)
     }
@@ -258,12 +251,12 @@ class CatalogFragment : BaseFragment(), CatalogView,
         TODO("not implemented")
     }
 
-    override fun showData(show: Boolean, data: List<Any>) {
+    override fun showData(show: Boolean, data: List<UiItem>) {
         adapter.submitList(data)
     }
 
     override fun showErrorMessage(error: Throwable) {
-        TODO("not implemented")
+        longToast(error.toString())
     }
 
     override fun showRefreshProgress(show: Boolean) {
@@ -271,7 +264,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun showPageProgress(show: Boolean) {
-        TODO("not implemented")
+        presenter.changeProgressVisibility(show, adapter.items)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

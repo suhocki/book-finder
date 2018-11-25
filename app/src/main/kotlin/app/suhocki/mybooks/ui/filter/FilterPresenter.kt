@@ -7,7 +7,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.room.BooksDatabase
 import app.suhocki.mybooks.data.room.QueryBuilder
-import app.suhocki.mybooks.data.room.entity.BookEntity
+import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.di.CategoryId
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.SearchAuthor
@@ -353,11 +353,11 @@ class FilterPresenter @Inject constructor(
 
     private fun getSearchQuery(): SupportSQLiteQuery {
         val builder = QueryBuilder.builder(BooksDatabase.Table.BOOKS)
-            .selection("${BookEntity.CATEGORY_ID} = ?", arrayOf(categoryId))
+            .selection("${BookDbo.CATEGORY_ID} = ?", arrayOf(categoryId))
         with(filterItemStatistics) {
 
             nameSortItems.find { it.isChecked }?.let {
-                builder.setFirstOrderBy(BookEntity.SHORT_NAME)
+                builder.setFirstOrderBy(BookDbo.SHORT_NAME)
                 when (it.sortName) {
                     resourceManager.getString(R.string.ascending) -> QueryBuilder.ORDER_TYPE_ASC
 
@@ -368,7 +368,7 @@ class FilterPresenter @Inject constructor(
             }
 
             builder.filter(
-                BookEntity.PRICE,
+                BookDbo.PRICE,
                 resourceManager.getString(R.string.format_two_sign_after_point, filterPrice.from)
                     .replace(",", "."),
                 resourceManager.getString(R.string.format_two_sign_after_point, filterPrice.to)
@@ -376,7 +376,7 @@ class FilterPresenter @Inject constructor(
             )
 
             pricesSortItems.find { it.isChecked }?.let {
-                builder.setSecondOrderBy(BookEntity.PRICE)
+                builder.setSecondOrderBy(BookDbo.PRICE)
                 when (it.sortName) {
                     resourceManager.getString(R.string.ascending) -> QueryBuilder.ORDER_TYPE_ASC
 
@@ -395,7 +395,7 @@ class FilterPresenter @Inject constructor(
                     if (checkedStatuses.lastIndex != index) query.append(", ")
                 }
                 query.append(")")
-                builder.statusIn(BookEntity.STATUS, query.toString())
+                builder.statusIn(BookDbo.STATUS, query.toString())
             }
 
             val checkedYears = yearsFilterItems.filter { it.isChecked }
@@ -407,7 +407,7 @@ class FilterPresenter @Inject constructor(
                     if (checkedYears.lastIndex != index) query.append(", ")
                 }
                 query.append(")")
-                builder.yearIn(BookEntity.YEAR, query.toString())
+                builder.yearIn(BookDbo.YEAR, query.toString())
             }
 
             val checkedAuthors = authorsFilterItems.filter { it.isChecked }
@@ -419,7 +419,7 @@ class FilterPresenter @Inject constructor(
                     if (checkedAuthors.lastIndex != index) query.append(", ")
                 }
                 query.append(")")
-                builder.authorIn(BookEntity.AUTHOR, query.toString())
+                builder.authorIn(BookDbo.AUTHOR, query.toString())
             }
 
             val checkedPublishers = publishersFilterItems.filter { it.isChecked }
@@ -431,7 +431,7 @@ class FilterPresenter @Inject constructor(
                     if (checkedPublishers.lastIndex != index) query.append(", ")
                 }
                 query.append(")")
-                builder.publisherIn(BookEntity.PUBLISHER, query.toString())
+                builder.publisherIn(BookDbo.PUBLISHER, query.toString())
             }
         }
         return builder.create()

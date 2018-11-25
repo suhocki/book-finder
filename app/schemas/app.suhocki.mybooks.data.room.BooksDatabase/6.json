@@ -2,12 +2,18 @@
   "formatVersion": 1,
   "database": {
     "version": 6,
-    "identityHash": "1cecc437174f3874f902ce8654572520",
+    "identityHash": "feb5e48bbc3baab1bc9525c8e124aa65",
     "entities": [
       {
         "tableName": "Books",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`categoryId` TEXT NOT NULL, `shortName` TEXT NOT NULL, `fullName` TEXT NOT NULL, `price` REAL NOT NULL, `iconLink` TEXT NOT NULL, `productLink` TEXT NOT NULL, `website` TEXT NOT NULL, `id` TEXT NOT NULL, `status` TEXT, `publisher` TEXT, `author` TEXT, `series` TEXT, `format` TEXT, `year` TEXT, `pageCount` TEXT, `cover` TEXT, `description` TEXT, `creationDate` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`categoryId`) REFERENCES `Categories`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `categoryId` TEXT NOT NULL, `shortName` TEXT NOT NULL, `fullName` TEXT NOT NULL, `price` REAL NOT NULL, `iconLink` TEXT NOT NULL, `productLink` TEXT NOT NULL, `website` TEXT NOT NULL, `status` TEXT, `publisher` TEXT, `author` TEXT, `series` TEXT, `format` TEXT, `year` TEXT, `pageCount` TEXT, `cover` TEXT, `description` TEXT, `creationDate` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`categoryId`) REFERENCES `Categories`(`id`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
         "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": true
+          },
           {
             "fieldPath": "categoryId",
             "columnName": "categoryId",
@@ -47,12 +53,6 @@
           {
             "fieldPath": "website",
             "columnName": "website",
-            "affinity": "TEXT",
-            "notNull": true
-          },
-          {
-            "fieldPath": "id",
-            "columnName": "id",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -149,7 +149,7 @@
       },
       {
         "tableName": "Categories",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `booksCount` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `creationDate` TEXT NOT NULL, `booksCount` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -160,6 +160,12 @@
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "creationDate",
+            "columnName": "creationDate",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -551,7 +557,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1cecc437174f3874f902ce8654572520\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"feb5e48bbc3baab1bc9525c8e124aa65\")"
     ]
   }
 }

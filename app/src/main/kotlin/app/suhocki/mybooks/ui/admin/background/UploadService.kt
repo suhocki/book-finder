@@ -9,14 +9,15 @@ import app.suhocki.mybooks.data.localstorage.LocalFilesRepository
 import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.resources.ResourceManager
+import app.suhocki.mybooks.data.room.RoomRepository
 import app.suhocki.mybooks.data.service.ServiceHandler
 import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.di.module.UploadServiceModule
 import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.domain.model.statistics.*
-import app.suhocki.mybooks.domain.repository.*
+import app.suhocki.mybooks.domain.repository.SettingsRepository
+import app.suhocki.mybooks.domain.repository.StatisticsRepository
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
@@ -29,21 +30,7 @@ import javax.inject.Inject
 class UploadService : IntentService("UploadService"), AnkoLogger {
 
     @Inject
-    @field:Room
-    lateinit var infoRepository: InfoRepository
-
-    @Inject
-    @field:Room
-    lateinit var booksRepository: BooksRepository
-
-    @Inject
-    @field:Room
-    lateinit var categoriesRepository: CategoriesRepository
-
-    @Inject
-    @field:Room
-    lateinit var bannersRepository: BannersRepository
-
+    lateinit var roomRepository: RoomRepository
     @Inject
     lateinit var remoteFilesRepository: RemoteFilesRepository
     @Inject
@@ -144,7 +131,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
 
         R.string.step_saving_to_remote to {
             serviceHandler.startUpdateService(
-                FirestoreService.Command.PUSH_DATABASE, uploadControl
+                FirestoreService.Command.PUSH_CHANGES, uploadControl
             )
         }
     )
@@ -168,8 +155,8 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         localFilesRepository.extractXlsDocument(strings)
 
     private fun saveBooksToLocal(data: Map<out Category, Collection<Book>>) {
-        categoriesRepository.addCategories(data.keys.toList())
-        booksRepository.addBooks(data.values.flatMap { books -> books }.toList())
+        roomRepository.addCategories(data.keys.toList())
+        roomRepository.addBooks(data.values.flatMap { books -> books }.toList())
     }
 
     private fun saveStatisticsData(
@@ -183,10 +170,10 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
     }
 
     private fun saveShopInfo(shopInfo: ShopInfo) =
-        infoRepository.setShopInfo(shopInfo)
+        roomRepository.setShopInfo(shopInfo)
 
     private fun saveBannersData(bannersData: List<Banner>) {
-        bannersRepository.setBanners(bannersData)
+        roomRepository.setBanners(bannersData)
     }
 
     private fun getUnzippedFile(fileId: String): java.io.File? =

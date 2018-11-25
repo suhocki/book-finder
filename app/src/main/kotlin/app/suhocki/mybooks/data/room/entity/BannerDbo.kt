@@ -8,7 +8,7 @@ import app.suhocki.mybooks.domain.model.Banner
     tableName = BooksDatabase.Table.BANNERS,
     primaryKeys = ["imageUrl"]
 )
-data class BannerEntity(
+data class BannerDbo(
     override val id: String,
     override val imageUrl: String,
     override val description: String

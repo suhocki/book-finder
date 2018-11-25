@@ -6,17 +6,19 @@ import javax.inject.Inject
 
 class Mapper @Inject constructor(
     metaDataItemToFile: MetaDataItemToFile,
-    statisticsToAuthorStatistics: StatisticsToAuthorStatistics,
-    statisticsToPublisherStatistics: StatisticsToPublisherStatistics,
-    statisticsToStatusStatistics: StatisticsToStatusStatistics,
-    statisticsToYearStatistics: StatisticsToYearStatistics,
-    statisticsDataToPriceStatistics: StatisticsToPriceStatistics,
-    contactsToShopInfo: ContactsToShopInfo,
-    firestoreBookToRoomBook: FirestoreBookToRoomBook,
-    roomBannerToFirestoreBanner: RoomBannerToFirestoreBanner,
+    statisticsToAuthorStatistics: StatisticsToAuthorStatisticDbo,
+    statisticsToPublisherStatistics: StatisticsToPublisherStatisticDbo,
+    statisticsToStatusStatistics: StatisticsToStatusStatisticDbo,
+    statisticsToYearStatistics: StatisticsToYearStatisticDbo,
+    statisticsDataToPriceStatistics: StatisticsToPriceStatisticDbo,
+    contactsToShopInfo: ContactsToShopInfoDbo,
+    firestoreBookToRoomBook: FirestoreBookToBookDbo,
+    roomBannerToFirestoreBanner: BannerDboToFirestoreBanner,
     firestoreCategoryToRoomCategory: FirestoreCategoryToRoomCategory,
-    firestoreBannerToRoomBanner: FirestoreBannerToRoomBanner,
-    dbBookEntityToUiBookEntity: DbBookEntityToUiBookEntity,
+    firestoreBannerToRoomBanner: FirestoreBannerToBannerDbo,
+    dbBookEntityToUiBookEntity: BookDboToUiBook,
+    bannerDboToUiBanner: BannerDboToUiBanner,
+    roomCategoryToUiCategory: RoomCategoryToUiCategory,
     shopInfoToList: ShopInfoToList
 ) {
 
@@ -34,6 +36,8 @@ class Mapper @Inject constructor(
             firestoreBookToRoomBook,
             firestoreBannerToRoomBanner,
             firestoreCategoryToRoomCategory,
+            roomCategoryToUiCategory,
+            bannerDboToUiBanner,
             shopInfoToList
         )
     }

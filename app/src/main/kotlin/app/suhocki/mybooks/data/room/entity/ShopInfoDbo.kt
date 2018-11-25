@@ -10,7 +10,7 @@ import app.suhocki.mybooks.domain.model.ShopInfo
     tableName = BooksDatabase.Table.SHOP_INFO,
     primaryKeys = ["id"]
 )
-class ShopInfoEntity @Ignore constructor() : ShopInfo {
+class ShopInfoDbo @Ignore constructor() : ShopInfo {
     var id: String = FirestoreRepository.SHOP_INFO
     override lateinit var name: String
     override lateinit var phones: List<String>

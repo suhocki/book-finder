@@ -2,7 +2,7 @@ package app.suhocki.mybooks.data.firestore.entity
 
 import app.suhocki.mybooks.domain.model.Book
 
-class BookEntity(
+class FirestoreBook(
     override var categoryId: String = "",
     override var shortName: String = "",
     override var fullName: String = "",

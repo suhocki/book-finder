@@ -1,18 +1,17 @@
 package app.suhocki.mybooks.data.mapper.converter
 
+import app.suhocki.mybooks.data.firestore.entity.FirestoreBook
 import app.suhocki.mybooks.data.mapper.BaseConverter
+import app.suhocki.mybooks.data.room.entity.BookDbo
 import javax.inject.Inject
 
-typealias RoomBookEntity = app.suhocki.mybooks.data.room.entity.BookEntity
-typealias FirestoreBookEntity = app.suhocki.mybooks.data.firestore.entity.BookEntity
-
-class FirestoreBookToRoomBook @Inject constructor() :
-    BaseConverter<FirestoreBookEntity, RoomBookEntity>(
-        FirestoreBookEntity::class.java, RoomBookEntity::class.java
+class FirestoreBookToBookDbo @Inject constructor() :
+    BaseConverter<FirestoreBook, BookDbo>(
+        FirestoreBook::class.java, BookDbo::class.java
     ) {
 
-    override fun convert(value: FirestoreBookEntity) =
-        RoomBookEntity(
+    override fun convert(value: FirestoreBook) =
+        BookDbo(
             categoryId = value.categoryId,
             shortName = value.shortName,
             fullName = value.fullName,

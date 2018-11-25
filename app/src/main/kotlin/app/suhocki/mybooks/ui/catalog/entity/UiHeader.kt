@@ -1,18 +1,20 @@
 package app.suhocki.mybooks.ui.catalog.entity
 
 import app.suhocki.mybooks.domain.model.Header
+import app.suhocki.mybooks.ui.base.entity.UiItem
 
 
-class HeaderEntity(
+class UiHeader(
     override var title: String,
     override val inverseColors: Boolean = false,
-    override val allCaps: Boolean = true
-) : Header {
+    override val allCaps: Boolean = true,
+    override var isNextPageTrigger: Boolean = false
+) : Header, UiItem {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as HeaderEntity
+        other as UiHeader
 
         if (title != other.title) return false
         if (inverseColors != other.inverseColors) return false

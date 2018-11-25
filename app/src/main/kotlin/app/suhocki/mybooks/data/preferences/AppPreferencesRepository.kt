@@ -14,7 +14,14 @@ class AppPreferencesRepository @Inject constructor(
             preferences.put(IS_ADMIN_ENABLED, value)
         }
 
+    override var updateDate: String
+        get() = preferences.getString(UPDATE_DATE, "")!!
+        set(value) {
+            preferences.put(UPDATE_DATE, value)
+        }
+
     companion object {
         const val IS_ADMIN_ENABLED = "IS_ADMIN_ENABLED"
+        const val UPDATE_DATE = "UPDATE_DATE"
     }
 }

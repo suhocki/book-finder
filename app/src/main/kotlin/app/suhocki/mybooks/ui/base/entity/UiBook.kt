@@ -2,7 +2,7 @@ package app.suhocki.mybooks.ui.base.entity
 
 import app.suhocki.mybooks.domain.model.Book
 
-class BookEntity(
+class UiBook(
     var buyDrawableRes: Int,
 
     override val categoryId: String,
@@ -21,5 +21,7 @@ class BookEntity(
     override val year: String?,
     override val pageCount: String?,
     override val cover: String?,
-    override val description: String?
-) : Book
+    override val description: String?,
+
+    override var isNextPageTrigger: Boolean = false
+) : Book, UiItem

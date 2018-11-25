@@ -2,10 +2,9 @@ package app.suhocki.mybooks.ui.licenses
 
 import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
 import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
+import app.suhocki.mybooks.ui.admin.delegate.HeaderAdapterDelegate
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
-import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
 import app.suhocki.mybooks.ui.licenses.delegate.LicenseAdapterDelegate
-import app.suhocki.mybooks.ui.changelog.listener.OnDownloadFileClickListener
 import app.suhocki.mybooks.ui.licenses.listener.OnLicenseClickListener
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 

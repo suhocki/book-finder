@@ -4,16 +4,17 @@ import android.app.Service
 import android.content.Intent
 import android.support.annotation.StringDef
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
-import app.suhocki.mybooks.data.firestore.entity.BannerEntity
-import app.suhocki.mybooks.data.firestore.entity.CategoryEntity
+import app.suhocki.mybooks.data.firestore.entity.FirestoreBanner
+import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.room.RoomRepository
-import app.suhocki.mybooks.data.room.entity.BookEntity
-import app.suhocki.mybooks.data.room.entity.ShopInfoEntity
+import app.suhocki.mybooks.data.room.entity.BookDbo
+import app.suhocki.mybooks.data.room.entity.ShopInfoDbo
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.domain.repository.SettingsRepository
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.eventbus.BooksUpdatedEvent
@@ -45,6 +46,9 @@ class FirestoreService : Service() {
     @Inject
     lateinit var notificationHelper: NotificationHelper
 
+    @Inject
+    lateinit var settingsRepository: SettingsRepository
+
     private val firestoreCategories by lazy {
         firestore.collection(FirestoreRepository.CATEGORIES)
     }
@@ -62,7 +66,7 @@ class FirestoreService : Service() {
 
     private fun getFirestoreBooks(categoryId: String) =
         firestore.collection(FirestoreRepository.BOOKS)
-            .whereEqualTo(BookEntity.CATEGORY_ID, categoryId)
+            .whereEqualTo(BookDbo.CATEGORY_ID, categoryId)
 
     private val scope by lazy { Toothpick.openScopes(DI.APP_SCOPE) }
 
@@ -83,8 +87,7 @@ class FirestoreService : Service() {
 
             Command.CANCEL_FETCH_BOOKS -> booksSnapshotListener.remove()
 
-            Command.PUSH_DATABASE ->
-                pushLocalDatabaseToFirestore(intent.getParcelableExtra(ARG_UPLOAD_CONTROL))
+            Command.PUSH_CHANGES -> pushChanges(intent.getParcelableExtra(ARG_UPLOAD_CONTROL))
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -106,14 +109,14 @@ class FirestoreService : Service() {
 
     private fun listenToCatalogItems() {
         firestoreBanners.addSnapshotListener { snapshot, _ ->
-            val banners = snapshot!!.toObjects(BannerEntity::class.java)
+            val banners = snapshot!!.toObjects(FirestoreBanner::class.java)
             doAsync {
                 roomRepository.setBanners(banners)
                 EventBus.getDefault().postSticky(CatalogItemsUpdatedEvent())
             }
         }
         firestoreCategories.addSnapshotListener { snapshot, _ ->
-            val categories = snapshot!!.toObjects(CategoryEntity::class.java)
+            val categories = snapshot!!.toObjects(FirestoreCategory::class.java)
             doAsync {
                 roomRepository.addCategories(categories)
                 EventBus.getDefault().postSticky(CatalogItemsUpdatedEvent())
@@ -123,7 +126,7 @@ class FirestoreService : Service() {
 
     private fun listenToShopInfo() {
         firestoreShopInfo.addSnapshotListener { snapshot, _ ->
-            val shopInfo = snapshot!!.toObject(ShopInfoEntity::class.java)!!
+            val shopInfo = snapshot!!.toObject(ShopInfoDbo::class.java)!!
             doAsync {
                 roomRepository.setShopInfo(shopInfo)
                 EventBus.getDefault().postSticky(ShopInfoUpdatedEvent())
@@ -134,7 +137,7 @@ class FirestoreService : Service() {
     private fun listenToBooks(categoryId: String) {
         booksSnapshotListener = getFirestoreBooks(categoryId).addSnapshotListener { snapshot, _ ->
             val books =
-                snapshot!!.toObjects(app.suhocki.mybooks.data.firestore.entity.BookEntity::class.java)
+                snapshot!!.toObjects(app.suhocki.mybooks.data.firestore.entity.FirestoreBook::class.java)
             doAsync {
                 roomRepository.addBooks(books)
                 EventBus.getDefault().postSticky(BooksUpdatedEvent())
@@ -142,12 +145,12 @@ class FirestoreService : Service() {
         }
     }
 
-    private fun pushLocalDatabaseToFirestore(uploadControl: UploadControlEntity) {
+    private fun pushChanges(uploadControl: UploadControlEntity) {
         doAsync(errorReceiver) {
-
+            val updateDate = settingsRepository.updateDate
             with(firestoreRepository) {
-                addBooks(roomRepository.getBooks(), uploadControl)
-                addCategories(roomRepository.getCategories())
+                addBooks(roomRepository.getBooks(updateDate), uploadControl)
+                addCategories(roomRepository.getCategories(updateDate))
                 setBanners(roomRepository.getBanners())
                 setShopInfo(roomRepository.getShopInfo()!!)
             }
@@ -168,13 +171,13 @@ class FirestoreService : Service() {
         const val FETCH_BOOKS = "FETCH_BOOKS"
         const val FETCH_SHOP_INFO = "FETCH_SHOP_INFO"
         const val CANCEL_FETCH_BOOKS = "CANCEL_FETCH_BOOKS"
-        const val PUSH_DATABASE = "PUSH_DATABASE"
+        const val PUSH_CHANGES = "PUSH_CHANGES"
     }
 
     @Retention
     @StringDef(
         Command.FETCH_CATALOG_ITEMS,
-        Command.PUSH_DATABASE
+        Command.PUSH_CHANGES
     )
     annotation class UpdateCommand
 }

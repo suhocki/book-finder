@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.toRoundedPrice
-import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.base.entity.UiBook
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.books.ui.BookItemUI
 import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
@@ -30,18 +30,18 @@ class BookAdapterDelegate(
         position: Int,
         holder: RecyclerView.ViewHolder,
         payloads: MutableList<Any>
-    ) = (holder as ViewHolder).bind(items[position] as BookEntity, payloads)
+    ) = (holder as ViewHolder).bind(items[position] as UiBook, payloads)
 
 
     private inner class ViewHolder(val ui: BookItemUI) : RecyclerView.ViewHolder(ui.parent) {
-        private lateinit var book: BookEntity
+        private lateinit var book: UiBook
 
         init {
             itemView.setOnClickListener { onBookClickListener.onBookClick(book) }
             ui.buy.setOnClickListener { onBookClickListener.onBuyBookClick(book) }
         }
 
-        fun bind(book: BookEntity, payloads: MutableList<Any>) {
+        fun bind(book: UiBook, payloads: MutableList<Any>) {
             this.book = book
             with(ui) {
                 icon.setImageURI(book.iconLink)

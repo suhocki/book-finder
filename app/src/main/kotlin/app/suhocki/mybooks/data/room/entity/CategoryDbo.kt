@@ -6,11 +6,12 @@ import app.suhocki.mybooks.domain.model.Category
 
 @Entity(
     tableName = BooksDatabase.Table.CATEGORIES,
-    primaryKeys = [CategoryEntity.ID]
+    primaryKeys = [CategoryDbo.ID]
 )
-data class CategoryEntity constructor(
-    override var id: String,
-    override var name: String,
+data class CategoryDbo constructor(
+    override var id: String = "",
+    override var name: String = "",
+    var creationDate: String = "",
     override var booksCount: Int = 0
 ) : Category {
 
@@ -18,7 +19,7 @@ data class CategoryEntity constructor(
         if (this === other) return true
         if (javaClass != other?.javaClass) return false
 
-        other as CategoryEntity
+        other as CategoryDbo
 
         if (id != other.id) return false
         if (name != other.name) return false

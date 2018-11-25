@@ -10,7 +10,7 @@ import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.domain.repository.BooksRepository
 import app.suhocki.mybooks.domain.repository.CategoriesRepository
-import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.base.entity.UiBook
 import app.suhocki.mybooks.ui.firestore.FirestoreService
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -91,7 +91,7 @@ class BooksPresenter @Inject constructor(
         viewState.showProgressVisible(false)
     }
 
-    fun onBuyBookClicked(book: BookEntity) {
+    fun onBuyBookClicked(book: UiBook) {
         if (adsManager.isInterstitialAdLoading ||
             adsManager.isInterstitialAdLoaded
         ) {
@@ -124,9 +124,9 @@ class BooksPresenter @Inject constructor(
 
     private fun getBooks(categoryId: String) =
         booksRepository.getBooksFor(categoryId)
-            .map { mapper.map<BookEntity>(it) }
+            .map { mapper.map<UiBook>(it) }
 
     private fun filter(sqLiteQuery: SupportSQLiteQuery) =
         booksRepository.filter(sqLiteQuery)
-            .map { mapper.map<BookEntity>(it) }
+            .map { mapper.map<UiBook>(it) }
 }

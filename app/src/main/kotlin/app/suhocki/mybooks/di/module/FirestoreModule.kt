@@ -11,35 +11,31 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 import toothpick.config.Module
 
 class FirestoreModule : Module() {
+
+    private val firebaseFirestore = FirebaseFirestore.getInstance().apply {
+        firestoreSettings = FirebaseFirestoreSettings.Builder()
+            .setTimestampsInSnapshotsEnabled(true)
+            .build()
+    }
+
     init {
         bind(FirebaseFirestore::class.java)
-            .toProviderInstance {
-                FirebaseFirestore.getInstance().apply {
-                    firestoreSettings = FirebaseFirestoreSettings.Builder()
-                        .setTimestampsInSnapshotsEnabled(true)
-                        .build()
-                }
-            }
-            .providesSingletonInScope()
+            .toInstance(firebaseFirestore)
 
         bind(BooksRepository::class.java)
             .withName(Firestore::class.java)
             .to(FirestoreRepository::class.java)
-            .singletonInScope()
 
         bind(CategoriesRepository::class.java)
             .withName(Firestore::class.java)
             .to(FirestoreRepository::class.java)
-            .singletonInScope()
 
         bind(InfoRepository::class.java)
             .withName(Firestore::class.java)
             .to(FirestoreRepository::class.java)
-            .singletonInScope()
 
         bind(BannersRepository::class.java)
             .withName(Firestore::class.java)
             .to(FirestoreRepository::class.java)
-            .singletonInScope()
     }
 }

@@ -2,7 +2,7 @@ package app.suhocki.mybooks.ui.books
 
 import android.support.annotation.DrawableRes
 import app.suhocki.mybooks.domain.model.Book
-import app.suhocki.mybooks.ui.base.entity.BookEntity
+import app.suhocki.mybooks.ui.base.entity.UiBook
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
@@ -21,7 +21,7 @@ interface BooksView : MvpView {
 
     fun showDrawerExpanded(isExpanded: Boolean)
 
-    fun showBuyDrawableForItem(book: BookEntity, @DrawableRes drawableRes: Int)
+    fun showBuyDrawableForItem(book: UiBook, @DrawableRes drawableRes: Int)
 
     @StateStrategyType(OneExecutionStateStrategy::class)
     fun openBookWebsite(book: Book)

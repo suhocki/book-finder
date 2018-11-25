@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.data.firestore
 
-import app.suhocki.mybooks.data.firestore.entity.BannerEntity
-import app.suhocki.mybooks.data.firestore.entity.CategoryEntity
+import app.suhocki.mybooks.data.firestore.entity.FirestoreBanner
+import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
 import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.domain.model.Banner
@@ -13,8 +13,8 @@ import app.suhocki.mybooks.domain.repository.BooksRepository
 import app.suhocki.mybooks.domain.repository.CategoriesRepository
 import app.suhocki.mybooks.domain.repository.InfoRepository
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import org.jetbrains.anko.AnkoLogger
 import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicInteger
 import javax.inject.Inject
@@ -23,12 +23,13 @@ import kotlin.math.roundToInt
 class FirestoreRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val mapper: Mapper,
-    private val notificationHelper: NotificationHelper
-) : BooksRepository, CategoriesRepository, InfoRepository, BannersRepository, AnkoLogger {
+    private val notificationHelper: NotificationHelper,
+    private val snapshots: MutableList<DocumentSnapshot>
+) : BooksRepository, CategoriesRepository, InfoRepository, BannersRepository {
 
     override fun setBanners(banners: List<Banner>) {
         val currentCount = AtomicInteger(0)
-        banners.map { mapper.map<BannerEntity>(it) }.forEach { banner ->
+        banners.map { mapper.map<FirestoreBanner>(it) }.forEach { banner ->
             firestore.collection(BANNERS)
                 .document(banner.id)
                 .set(banner)
@@ -46,7 +47,7 @@ class FirestoreRepository @Inject constructor(
             .get()
             .addOnCompleteListener {
                 if (it.result != null) {
-                    banners.addAll(it.result!!.toObjects(BannerEntity::class.java))
+                    banners.addAll(it.result!!.toObjects(FirestoreBanner::class.java))
                     notFinished = false
                 }
             }
@@ -69,17 +70,18 @@ class FirestoreRepository @Inject constructor(
         }
     }
 
-    override fun getCategories(): List<Category> {
-        val categories = mutableListOf<Category>()
+    override fun getCategories(offset: Int, limit: Int): List<Category> {
         var notFinished = true
+        val categories = mutableListOf<Category>()
 
         firestore.collection(FirestoreRepository.CATEGORIES)
+            .apply { snapshots.getOrNull(offset)?.let { startAfter(it) } }
+            .limit(limit.toLong())
             .get()
-            .addOnCompleteListener {
-                if (it.result != null) {
-                    categories.addAll(it.result!!.toObjects(CategoryEntity::class.java))
-                    notFinished = false
-                }
+            .addOnSuccessListener {
+                snapshots.addAll(it.documents)
+                categories.addAll(it.toObjects(FirestoreCategory::class.java))
+                notFinished = false
             }
 
         while (notFinished) {

@@ -2,8 +2,8 @@ package app.suhocki.mybooks.ui.info
 
 import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
 import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
+import app.suhocki.mybooks.ui.admin.delegate.HeaderAdapterDelegate
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
-import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
 import app.suhocki.mybooks.ui.info.delegate.InfoAdapterDelegate
 import app.suhocki.mybooks.ui.info.delegate.VersionAdapterDelegate
 import app.suhocki.mybooks.ui.info.listener.OnInfoClickListener

@@ -6,23 +6,20 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
-import app.suhocki.mybooks.data.room.entity.BookEntity
-import app.suhocki.mybooks.data.service.ServiceHandler
+import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.di.*
-import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
-import app.suhocki.mybooks.domain.repository.CategoriesRepository
 import app.suhocki.mybooks.presentation.base.Paginator
-import app.suhocki.mybooks.ui.catalog.entity.HeaderEntity
+import app.suhocki.mybooks.ui.base.entity.UiItem
+import app.suhocki.mybooks.ui.base.entity.UiProgress
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.arellomobile.mvp.viewstate.MvpViewState
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import java.util.concurrent.Future
 import java.util.concurrent.atomic.AtomicBoolean
 import javax.inject.Inject
@@ -40,13 +37,11 @@ class CatalogPresenter @Inject constructor(
 
     @Room private val booksRepository: BooksRepository,
     @Room private val bannersRepository: BannersRepository,
-    @Room private val categoriesRepository: CategoriesRepository,
 
     private val resourceManager: ResourceManager,
     private val adsManager: AdsManager,
-    private val serviceHandler: ServiceHandler,
     private val remoteConfigurator: RemoteConfiguration,
-    private val paginator: Paginator<Any>
+    private val paginator: Paginator<UiItem>
 ) : MvpPresenter<CatalogView>(), AnkoLogger {
 
     init {
@@ -64,6 +59,8 @@ class CatalogPresenter @Inject constructor(
         paginator.refresh()
     }
 
+    fun loadNextPage() = paginator.loadNewPage()
+
     override fun attachView(view: CatalogView?) {
         super.attachView(view)
         adsManager.loadInterstitialAd()
@@ -71,43 +68,43 @@ class CatalogPresenter @Inject constructor(
 
     fun startSearchMode(): Future<Unit> {
         return doAsync(errorReceiver) {
-            isSearchMode.set(true)
-            val catalogItems = mutableListOf<Any>().apply {
-                getBanner()?.let { add(it) }
-                add(searchEntity)
-                add(HeaderEntity(resourceManager.getString(R.string.enter_query)))
-            }
-            uiThread {
-                viewState.showSearchMode(true)
-                viewState.showCatalogItems(
-                    catalogItems,
-                    scrollToPosition = CatalogFragment.SEARCH_POSITION
-                )
-            }
+//            isSearchMode.set(true)
+//            val catalogItems = mutableListOf<UiItem>().apply {
+//                getBanner()?.let { add(it) }
+//                add(searchEntity)
+//                add(HeaderEntity(resourceManager.getString(R.string.enter_query)))
+//            }
+//            uiThread {
+//                viewState.showSearchMode(true)
+//                viewState.showCatalogItems(
+//                    catalogItems,
+//                    scrollToPosition = CatalogFragment.SEARCH_POSITION
+//                )
+//            }
         }
     }
 
     fun stopSearchMode() =
         doAsync(errorReceiver) {
-            isSearchMode.set(false)
-            searchEntity.searchQuery = EMPTY_STRING
-            val catalogItems = mutableListOf<Any>().apply {
-                getBanner()?.let { add(it) }
-                add(HeaderEntity(resourceManager.getString(R.string.catalog)))
-                addAll(getCategories())
-            }
-            uiThread {
-                viewState.showSearchMode(false)
-                viewState.showCatalogItems(
-                    catalogItems,
-                    categoriesDecoration,
-                    CatalogFragment.BANNER_POSITION
-                )
-            }
+//            isSearchMode.set(false)
+//            searchEntity.searchQuery = EMPTY_STRING
+//            val catalogItems = mutableListOf<Any>().apply {
+//                getBanner()?.let { add(it) }
+//                add(HeaderEntity(resourceManager.getString(R.string.catalog)))
+//                addAll(getCategories())
+//            }
+//            uiThread {
+//                viewState.showSearchMode(false)
+//                viewState.showCatalogItems(
+//                    catalogItems,
+//                    categoriesDecoration,
+//                    CatalogFragment.BANNER_POSITION
+//                )
+//            }
         }
 
     fun removeScrollCommand(
-        catalogItems: List<Any>,
+        catalogItems: List<UiItem>,
         itemDecoration: RecyclerView.ItemDecoration?
     ) {
         viewState.showCatalogItems(
@@ -118,51 +115,51 @@ class CatalogPresenter @Inject constructor(
     }
 
     fun search() = doAsync(errorReceiver) {
-        if (searchEntity.searchQuery.isBlank()) return@doAsync
-        val catalogItems = mutableListOf<Any>().apply {
-            getBanner()?.let { add(it) }
-            add(searchEntity)
-            val searchResults = search(searchEntity)
-            val title = resourceManager.getString(
-                if (searchResults.isNotEmpty()) R.string.search_results
-                else R.string.not_found
-            )
-            add(HeaderEntity(title))
-            addAll(searchResults)
-        }
-        uiThread {
-            viewState.showCatalogItems(
-                catalogItems,
-                searchDecoration,
-                CatalogFragment.SEARCH_POSITION
-            )
-        }
+//        if (searchEntity.searchQuery.isBlank()) return@doAsync
+//        val catalogItems = mutableListOf<Any>().apply {
+//            getBanner()?.let { add(it) }
+//            add(searchEntity)
+//            val searchResults = search(searchEntity)
+//            val title = resourceManager.getString(
+//                if (searchResults.isNotEmpty()) R.string.search_results
+//                else R.string.not_found
+//            )
+//            add(HeaderEntity(title))
+//            addAll(searchResults)
+//        }
+//        uiThread {
+//            viewState.showCatalogItems(
+//                catalogItems,
+//                searchDecoration,
+//                CatalogFragment.SEARCH_POSITION
+//            )
+//        }
     }
 
     fun clearSearchQuery() = doAsync(errorReceiver) {
-        if (searchEntity.searchQuery.isBlank()) stopSearchMode()
-        else {
-            val catalogItems = mutableListOf<Any>().apply {
-                getBanner()?.let { add(it) }
-                add(searchEntity)
-                add(HeaderEntity(resourceManager.getString(R.string.enter_query)))
-            }
-            searchEntity.searchQuery = EMPTY_STRING
-            uiThread {
-                viewState.showCatalogItems(
-                    catalogItems,
-                    scrollToPosition = CatalogFragment.BANNER_POSITION,
-                    updateSearchView = true
-                )
-            }
-        }
+//        if (searchEntity.searchQuery.isBlank()) stopSearchMode()
+//        else {
+//            val catalogItems = mutableListOf<Any>().apply {
+//                getBanner()?.let { add(it) }
+//                add(searchEntity)
+//                add(HeaderEntity(resourceManager.getString(R.string.enter_query)))
+//            }
+//            searchEntity.searchQuery = EMPTY_STRING
+//            uiThread {
+//                viewState.showCatalogItems(
+//                    catalogItems,
+//                    scrollToPosition = CatalogFragment.BANNER_POSITION,
+//                    updateSearchView = true
+//                )
+//            }
+//        }
     }
 
     fun onSearchQueryChange() {
         viewState.showTopRightButton(!searchEntity.searchQuery.isBlank())
     }
 
-    fun onBuyBookClicked(book: Book) {
+    fun onBuyBookClicked(book: app.suhocki.mybooks.ui.base.entity.UiBook) {
         if (adsManager.isInterstitialAdLoading ||
             adsManager.isInterstitialAdLoaded
         ) {
@@ -187,9 +184,6 @@ class CatalogPresenter @Inject constructor(
         }
     }
 
-    private fun getCategories() =
-        categoriesRepository.getCategories()
-
     private fun getBanner(): Any? =
         if (remoteConfigurator.isBannerAdEnabled) adsManager.getBannerAd()
         else bannersRepository.getBanners().firstOrNull()
@@ -206,7 +200,7 @@ class CatalogPresenter @Inject constructor(
 
     private fun determineFoundBy(
         search: Search,
-        book: BookEntity
+        book: BookDbo
     ): String {
         val q = search.searchQuery
         return when {
@@ -238,7 +232,13 @@ class CatalogPresenter @Inject constructor(
         paginator.release()
     }
 
-    companion object {
-        const val EMPTY_STRING = ""
+    fun changeProgressVisibility(isVisible: Boolean, items: List<UiItem>) {
+        val hasProgress = items.lastOrNull() is UiProgress
+        val changedItems = mutableListOf<UiItem>().apply { addAll(items) }
+
+        if (isVisible && !hasProgress) changedItems.add(UiProgress())
+        else if (!isVisible && hasProgress) changedItems.remove(items.last())
+
+        viewState.showCatalogItems(changedItems)
     }
 }
