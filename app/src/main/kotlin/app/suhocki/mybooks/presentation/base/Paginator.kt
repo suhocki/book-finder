@@ -43,7 +43,7 @@ class Paginator<T> @Inject constructor(
         currentState.release()
     }
 
-    private fun loadPage(page: Int = 0) {
+    private fun loadPage(page: Int = FIRST_PAGE) {
         currentTask = doAsync({ throwable ->
             doAsync { uiThread { currentState.fail(throwable) } }
         }) {
@@ -86,7 +86,7 @@ class Paginator<T> @Inject constructor(
                 currentState = Data()
                 currentData.clear()
                 currentData.addAll(data)
-                currentPage = 1
+                currentPage = FIRST_PAGE
                 viewController.showData(true, currentData)
                 viewController.showEmptyProgress(false)
             } else {
@@ -194,7 +194,7 @@ class Paginator<T> @Inject constructor(
                 currentState = Data()
                 currentData.clear()
                 currentData.addAll(data)
-                currentPage = 1
+                currentPage = FIRST_PAGE
                 viewController.showRefreshProgress(false)
                 viewController.showData(true, currentData)
             } else {
@@ -282,4 +282,9 @@ class Paginator<T> @Inject constructor(
     }
 
     private inner class Released : State<T>
+
+
+    companion object {
+        const val FIRST_PAGE = 1
+    }
 }

@@ -11,6 +11,7 @@ import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.CategoriesRepository
+import app.suhocki.mybooks.presentation.base.Paginator
 import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.catalog.entity.UiBanner
 import app.suhocki.mybooks.ui.catalog.entity.UiCategory
@@ -33,28 +34,30 @@ class CatalogRequestFactoryProvider @Inject constructor(
 
     override fun get(): (Int) -> List<UiItem> = { page ->
         val data = mutableListOf<UiItem>()
+        val categories = getCategories(page.dec() * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
+            .map { mapper.map<UiCategory>(it) }
+            .apply { setNextPageTrigger(this) }
+
+        if (page == Paginator.FIRST_PAGE) fillWithBannerAndHeader(data)
+        data.apply { addAll(categories) }
+    }
+
+    private fun fillWithBannerAndHeader(data: MutableList<UiItem>) {
         val banner: UiItem? =
             if (remoteConfigurator.isBannerAdEnabled) adsManager.getBannerAd()
             else getBanners().asSequence().map { mapper.map<UiBanner>(it) }.firstOrNull()
-        val categories = getCategories(page * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
-            .map { mapper.map<UiCategory>(it) }
-
         if (banner != null) {
             data.add(banner)
             data.add(UiHeader(resourceManager.getString(R.string.catalog)))
         }
-        data.addAll(categories)
-        markNextPageTrigger(data)
-
-        data
     }
 
-    private fun markNextPageTrigger(list: List<UiItem>) = with(list){
+    private fun setNextPageTrigger(list: List<UiItem>) = with(list) {
         val nextPageTriggerPosition =
             if (size > TRIGGER_OFFSET) size - TRIGGER_OFFSET
             else lastIndex
 
-        this[nextPageTriggerPosition].isNextPageTrigger = true
+        list.getOrNull(nextPageTriggerPosition)?.let { it.isNextPageTrigger = true }
     }
 
     private fun getCategories(offset: Int, limit: Int): List<Category> {

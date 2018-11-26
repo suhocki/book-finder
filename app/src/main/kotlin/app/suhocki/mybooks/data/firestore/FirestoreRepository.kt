@@ -73,9 +73,17 @@ class FirestoreRepository @Inject constructor(
     override fun getCategories(offset: Int, limit: Int): List<Category> {
         var notFinished = true
         val categories = mutableListOf<Category>()
+        val latestSnapshot = snapshots.getOrNull(offset.dec())
 
-        firestore.collection(FirestoreRepository.CATEGORIES)
-            .apply { snapshots.getOrNull(offset)?.let { startAfter(it) } }
+        val firestoreQuery =
+            when {
+                snapshots.isEmpty() -> firestore.collection(FirestoreRepository.CATEGORIES)
+                latestSnapshot != null -> firestore.collection(FirestoreRepository.CATEGORIES)
+                    .startAfter(latestSnapshot)
+                else -> return categories
+            }
+
+        firestoreQuery
             .limit(limit.toLong())
             .get()
             .addOnSuccessListener {
