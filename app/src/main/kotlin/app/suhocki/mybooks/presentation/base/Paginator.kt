@@ -44,8 +44,8 @@ class Paginator<T> @Inject constructor(
     }
 
     private fun loadPage(page: Int = 0) {
-        currentTask = doAsync({
-            currentState.fail(it)
+        currentTask = doAsync({ throwable ->
+            doAsync { uiThread { currentState.fail(throwable) } }
         }) {
             val data = requestFactory.invoke(page)
             uiThread { currentState.newData(data) }

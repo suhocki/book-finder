@@ -68,8 +68,10 @@ class CatalogFragment : BaseFragment(), CatalogView,
         val catalogModule = CatalogModule(isSearchMode, dividerOffset, searchOffset, viewState)
 
         scope.installModules(catalogModule)
+        val catalogPresenter = scope.getInstance(CatalogPresenter::class.java)
+        Toothpick.closeScope(DI.CATALOG_SCOPE)
 
-        return scope.getInstance(CatalogPresenter::class.java)
+        return catalogPresenter
     }
 
     override fun onCreateView(
@@ -244,7 +246,7 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun showEmptyError(show: Boolean, error: Throwable?) {
-        TODO("not implemented")
+        longToast(error.toString())
     }
 
     override fun showEmptyView(show: Boolean) {

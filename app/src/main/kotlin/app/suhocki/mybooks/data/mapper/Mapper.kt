@@ -18,7 +18,9 @@ class Mapper @Inject constructor(
     firestoreBannerToRoomBanner: FirestoreBannerToBannerDbo,
     dbBookEntityToUiBookEntity: BookDboToUiBook,
     bannerDboToUiBanner: BannerDboToUiBanner,
-    roomCategoryToUiCategory: RoomCategoryToUiCategory,
+    roomCategoryToUiCategory: RoomDboToUiCategory,
+    firestoreCategoryToUiCategory: FirestoreCategoryToUiCategory,
+    firestoreBannerToUiBanner: FirestoreBannerToUiBanner,
     shopInfoToList: ShopInfoToList
 ) {
 
@@ -37,6 +39,8 @@ class Mapper @Inject constructor(
             firestoreBannerToRoomBanner,
             firestoreCategoryToRoomCategory,
             roomCategoryToUiCategory,
+            firestoreCategoryToUiCategory,
+            firestoreBannerToUiBanner,
             bannerDboToUiBanner,
             shopInfoToList
         )
@@ -46,7 +50,17 @@ class Mapper @Inject constructor(
     inline fun <reified To> map(input: Any, genericType: Class<out Any>? = null): To {
         if (input is To) return input
 
-        val converter = converters
+        val converter = findConverter<To>(input, genericType)
+            ?: throw NoSuchElementException("Cannot find converter from ${input::class.java} to ${To::class.java}")
+
+        return (converter as Converter<Any, To>).convert(input)
+    }
+
+    inline fun <reified To> findConverter(
+        input: Any,
+        genericType: Class<out Any>?
+    ): Converter<*, *>? {
+        return converters
             .find {
                 val isSuitableConverter =
                     it.fromClass.isAssignableFrom(input::class.java) &&
@@ -58,8 +72,6 @@ class Mapper @Inject constructor(
                 else
                     isSuitableConverter
 
-            } as Converter<Any, To>
-
-        return converter.convert(input)
+            }
     }
 }

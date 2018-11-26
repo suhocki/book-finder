@@ -11,9 +11,7 @@ import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.provider.AppPreferencesProvider
 import app.suhocki.mybooks.di.provider.ErrorReceiverProvider
 import app.suhocki.mybooks.di.provider.VersionProvider
-import app.suhocki.mybooks.di.provider.ads.BannerAdProvider
 import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
-import app.suhocki.mybooks.domain.model.BannerAd
 import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.domain.repository.SettingsRepository
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
@@ -61,10 +59,6 @@ class AppModule(app: App) : Module() {
 
         bind(FirebaseRemoteConfig::class.java)
             .toInstance(FirebaseRemoteConfig.getInstance())
-
-        bind(BannerAd::class.java)
-            .toProvider(BannerAdProvider::class.java)
-            .providesSingletonInScope()
 
         bind(AdsManager::class.java)
             .singletonInScope()
