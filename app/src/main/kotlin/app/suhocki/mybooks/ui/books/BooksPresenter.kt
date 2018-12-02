@@ -36,7 +36,7 @@ class BooksPresenter @Inject constructor(
             uiThread { viewState.showTitle(title) }
         }
 
-        serviceHandler.startUpdateService(
+        serviceHandler.startFirestoreService(
             FirestoreService.Command.FETCH_BOOKS,
             categoryId = categoryId
         )
@@ -119,7 +119,7 @@ class BooksPresenter @Inject constructor(
     override fun onDestroy() {
         super.onDestroy()
         adsManager.onAdFlowFinished()
-        serviceHandler.startUpdateService(FirestoreService.Command.CANCEL_FETCH_BOOKS)
+        serviceHandler.startFirestoreService(FirestoreService.Command.CANCEL_FETCH_BOOKS)
     }
 
     private fun getBooks(categoryId: String) =

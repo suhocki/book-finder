@@ -4,6 +4,7 @@ import android.content.res.Resources
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
+import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.room.entity.BookDbo
@@ -12,7 +13,7 @@ import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
-import app.suhocki.mybooks.presentation.base.Paginator
+import app.suhocki.mybooks.presentation.base.paginator.Paginator
 import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.base.entity.UiProgress
 import com.arellomobile.mvp.InjectViewState
@@ -27,6 +28,7 @@ import javax.inject.Inject
 @InjectViewState
 class CatalogPresenter @Inject constructor(
     mvpViewState: MvpViewState<CatalogView>,
+    private val firestoreObserver: FirestoreObserver,
 
     @IsSearchMode private val isSearchMode: AtomicBoolean,
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
@@ -107,11 +109,11 @@ class CatalogPresenter @Inject constructor(
         catalogItems: List<UiItem>,
         itemDecoration: RecyclerView.ItemDecoration?
     ) {
-        viewState.showCatalogItems(
-            catalogItems,
-            itemDecoration,
-            CatalogFragment.UNDEFINED_POSITION
-        )
+//        viewState.showCatalogItems(
+//            catalogItems,
+//            itemDecoration,
+//            CatalogFragment.UNDEFINED_POSITION
+//        )
     }
 
     fun search() = doAsync(errorReceiver) {
@@ -230,15 +232,16 @@ class CatalogPresenter @Inject constructor(
         super.onDestroy()
         adsManager.onAdFlowFinished()
         paginator.release()
+        firestoreObserver.dispose()
     }
 
-    fun changeProgressVisibility(isVisible: Boolean, items: List<UiItem>) {
+    fun setPageProgressVisible(isVisible: Boolean, items: List<UiItem>) {
         val hasProgress = items.lastOrNull() is UiProgress
-        val changedItems = mutableListOf<UiItem>().apply { addAll(items) }
+        val changedItems = items.toMutableList()
 
         if (isVisible && !hasProgress) changedItems.add(UiProgress())
         else if (!isVisible && hasProgress) changedItems.remove(items.last())
 
-        viewState.showCatalogItems(changedItems)
+        viewState.showData(changedItems)
     }
 }

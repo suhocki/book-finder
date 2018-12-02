@@ -23,9 +23,10 @@ import kotlin.math.roundToInt
 class FirestoreRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val mapper: Mapper,
-    private val notificationHelper: NotificationHelper,
-    private val snapshots: MutableList<DocumentSnapshot>
+    private val notificationHelper: NotificationHelper
 ) : BooksRepository, CategoriesRepository, InfoRepository, BannersRepository {
+
+    private val snapshots = mutableListOf<DocumentSnapshot>()
 
     override fun setBanners(banners: List<Banner>) {
         val currentCount = AtomicInteger(0)

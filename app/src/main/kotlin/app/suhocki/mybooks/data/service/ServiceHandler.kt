@@ -33,7 +33,7 @@ class ServiceHandler @Inject constructor(
         processId?.let { Process.killProcess(it) }
     }
 
-    fun startUpdateService(
+    fun startFirestoreService(
         @FirestoreService.UpdateCommand command: String,
         uploadControl: UploadControl? = null,
         categoryId: String? = null
@@ -44,5 +44,13 @@ class ServiceHandler @Inject constructor(
                 FirestoreService.ARG_UPLOAD_CONTROL to uploadControl,
                 FirestoreService.ARG_CATEGORY_ID to categoryId
             )
+    }
+
+    fun startFirestoreService(
+        command: String,
+        paginatedFrom: Int,
+        paginatedTo: Int
+    ) {
+
     }
 }

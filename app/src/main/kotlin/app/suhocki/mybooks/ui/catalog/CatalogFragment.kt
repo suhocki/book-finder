@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.support.annotation.DrawableRes
 import android.support.v7.graphics.drawable.DrawerArrowDrawable
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -36,8 +35,6 @@ import org.jetbrains.anko.padding
 import org.jetbrains.anko.startActivity
 import org.jetbrains.anko.support.v4.*
 import toothpick.Toothpick
-import java.util.*
-import kotlin.concurrent.schedule
 
 
 class CatalogFragment : BaseFragment(), CatalogView,
@@ -116,41 +113,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
         ObjectAnimator.ofFloat(animatedDrawable, "progress", fromProgress, toProgress)
             .start()
     }
-
-    override fun showCatalogItems(
-        catalogItems: List<UiItem>,
-        itemDecoration: RecyclerView.ItemDecoration?,
-        scrollToPosition: Int,
-        updateSearchView: Boolean
-    ) = adapter.submitList(catalogItems, onAnimationEnd = {
-        with(ui.recyclerView) {
-            when (scrollToPosition) {
-                SEARCH_POSITION -> {
-                    itemDecoration?.let { showRecyclerDecoration(it) }
-                    (layoutManager as LinearLayoutManager)
-                        .scrollToPositionWithOffset(SEARCH_POSITION, 0)
-                    showKeyboard()
-                    presenter.removeScrollCommand(catalogItems, itemDecoration)
-                }
-
-                BANNER_POSITION -> {
-                    Timer().schedule(200) {
-                        onUiThread { itemDecoration?.let { showRecyclerDecoration(it) } }
-                    }
-                    if (updateSearchView) {
-                        showBlankSearch()
-                        showKeyboard()
-                    }
-                    scrollToPosition(BANNER_POSITION)
-                    presenter.removeScrollCommand(catalogItems, itemDecoration)
-                }
-
-                else -> Timer().schedule(200) {
-                    onUiThread { itemDecoration?.let { showRecyclerDecoration(it) } }
-                }
-            }
-        }
-    })
 
     override fun showSearchMode(expanded: Boolean) {
         ui.recyclerView.stopScroll()
@@ -250,10 +212,10 @@ class CatalogFragment : BaseFragment(), CatalogView,
     }
 
     override fun showEmptyView(show: Boolean) {
-        TODO("not implemented")
+        longToast("empty data")
     }
 
-    override fun showData(show: Boolean, data: List<UiItem>) {
+    override fun showData(data: List<UiItem>) {
         adapter.submitList(data)
     }
 
@@ -265,8 +227,8 @@ class CatalogFragment : BaseFragment(), CatalogView,
         TODO("not implemented")
     }
 
-    override fun showPageProgress(show: Boolean) {
-        presenter.changeProgressVisibility(show, adapter.items)
+    override fun showPageProgress(visible: Boolean) {
+        presenter.setPageProgressVisible(visible, adapter.items)
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

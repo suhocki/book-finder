@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.base.delegate.ProgressAdapterDelegate
 import app.suhocki.mybooks.ui.base.entity.UiItem
-import app.suhocki.mybooks.ui.base.entity.UiProgress
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchListener
@@ -40,20 +39,9 @@ class CatalogAdapter(
             .addDelegate(SearchResultBookAdapterDelegate(onBookClickListener))
     }
 
-    override fun getItemCount(): Int =
-        differ.currentList.size
-
     fun submitList(list: List<UiItem>, onAnimationEnd: (() -> Unit)? = null) {
-        if (items != null && items.size == list.size &&
-            items.toTypedArray().contentDeepEquals(list.toTypedArray())
-        ) return
-
-        listUpdateCallback.endAction = onAnimationEnd
-        mutableListOf<UiItem>().apply {
-            addAll(list)
-            items = this
-            differ.submitList(this)
-        }
+        items = list.toMutableList()
+        differ.submitList(list.toList())
     }
 
     override fun onBindViewHolder(

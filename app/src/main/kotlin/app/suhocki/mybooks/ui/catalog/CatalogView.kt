@@ -3,7 +3,7 @@ package app.suhocki.mybooks.ui.catalog
 import android.support.annotation.DrawableRes
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.domain.model.Book
-import app.suhocki.mybooks.presentation.base.Paginator
+import app.suhocki.mybooks.presentation.base.paginator.PaginationView
 import app.suhocki.mybooks.ui.base.entity.UiBook
 import app.suhocki.mybooks.ui.base.entity.UiItem
 import com.arellomobile.mvp.MvpView
@@ -12,14 +12,7 @@ import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface CatalogView : MvpView, Paginator.ViewController<UiItem> {
-
-    fun showCatalogItems(
-        catalogItems: List<UiItem>,
-        itemDecoration: RecyclerView.ItemDecoration? = null,
-        scrollToPosition: Int = CatalogFragment.UNDEFINED_POSITION,
-        updateSearchView: Boolean = false
-    )
+interface CatalogView : MvpView, PaginationView<UiItem> {
 
     fun showSearchMode(expanded: Boolean)
 

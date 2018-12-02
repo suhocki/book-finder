@@ -2,15 +2,17 @@ package app.suhocki.mybooks.di.module
 
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.di.*
 import app.suhocki.mybooks.di.provider.CatalogRequestFactoryProvider
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Search
-import app.suhocki.mybooks.presentation.base.Paginator
+import app.suhocki.mybooks.presentation.base.paginator.PaginationView
 import app.suhocki.mybooks.ui.base.decorator.SearchItemDecoration
 import app.suhocki.mybooks.ui.base.decorator.TypeDividerItemDecoration
+import app.suhocki.mybooks.ui.base.entity.UiItem
+import app.suhocki.mybooks.ui.catalog.CatalogView
 import com.arellomobile.mvp.viewstate.MvpViewState
-import com.google.firebase.firestore.DocumentSnapshot
 import toothpick.config.Module
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -31,29 +33,30 @@ class CatalogModule(
 
         bind(RecyclerView.ItemDecoration::class.java)
             .withName(CategoriesDecoration::class.java)
-            .toInstance(
-                TypeDividerItemDecoration(
-                    categoriesDividerOffset,
-                    Category::class.java
-                )
-            )
+            .toInstance(TypeDividerItemDecoration(categoriesDividerOffset, Category::class.java))
 
         bind(RecyclerView.ItemDecoration::class.java)
             .withName(SearchDecoration::class.java)
             .toInstance(SearchItemDecoration(searchDividerOffset))
 
-        bind(Function1::class.java)
-            .withName(RequestFactory::class.java)
-            .toProvider(CatalogRequestFactoryProvider::class.java)
-
-        bind(Paginator.ViewController::class.java)
-            .toInstance(viewState as Paginator.ViewController<*>)
-
         bind(MvpViewState::class.java)
             .toInstance(viewState as MvpViewState<*>)
 
+        bind(CatalogView::class.java)
+            .toInstance(viewState as CatalogView)
+
+        bind(PaginationView::class.java)
+            .toInstance(viewState as PaginationView<*>)
+
+        bind(Function1::class.java)
+            .withName(CatalogRequestFactory::class.java)
+            .toProvider(CatalogRequestFactoryProvider::class.java)
+
         bind(MutableList::class.java)
-            .toInstance(mutableListOf<DocumentSnapshot>())
+            .toInstance(mutableListOf<UiItem>())
+
+        bind(FirestoreObserver::class.java)
+            .singletonInScope()
     }
 
     internal class SearchEntity(

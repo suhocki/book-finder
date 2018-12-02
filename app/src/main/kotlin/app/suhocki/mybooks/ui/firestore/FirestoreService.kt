@@ -4,7 +4,7 @@ import android.app.Service
 import android.content.Intent
 import android.support.annotation.StringDef
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
-import app.suhocki.mybooks.data.firestore.entity.FirestoreBanner
+import app.suhocki.mybooks.data.firestore.entity.FirestoreBook
 import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.room.RoomRepository
@@ -12,15 +12,12 @@ import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.data.room.entity.ShopInfoDbo
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.ErrorReceiver
-import app.suhocki.mybooks.domain.model.Banner
-import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.repository.SettingsRepository
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.eventbus.BooksUpdatedEvent
 import app.suhocki.mybooks.ui.base.eventbus.CatalogItemsUpdatedEvent
 import app.suhocki.mybooks.ui.base.eventbus.ShopInfoUpdatedEvent
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import org.greenrobot.eventbus.EventBus
@@ -49,10 +46,6 @@ class FirestoreService : Service() {
     @Inject
     lateinit var settingsRepository: SettingsRepository
 
-    private val firestoreCategories by lazy {
-        firestore.collection(FirestoreRepository.CATEGORIES)
-    }
-
     private val firestoreShopInfo by lazy {
         firestore.collection(FirestoreRepository.SHOP_INFO)
             .document(FirestoreRepository.SHOP_INFO)
@@ -79,7 +72,7 @@ class FirestoreService : Service() {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         when (intent.extras.getString(ARG_COMMAND)) {
-            Command.FETCH_CATALOG_ITEMS -> fetchCatalogItems()
+            Command.LISTEN_CATEGORIES -> listenCategories()
 
             Command.FETCH_SHOP_INFO -> listenToShopInfo()
 
@@ -92,36 +85,16 @@ class FirestoreService : Service() {
         return super.onStartCommand(intent, flags, startId)
     }
 
-    private fun fetchCatalogItems() {
-        Tasks.whenAllSuccess<Any>(
-            firestoreBanners.get(),
-            firestoreCategories.get()
-        ).addOnSuccessListener { data ->
-            doAsync(errorReceiver) {
-                roomRepository.setBanners(data.asSequence().filterIsInstance<Banner>().toList())
-                roomRepository.addCategories(data.asSequence().filterIsInstance<Category>().toList())
-
-                listenToCatalogItems()
+    private fun listenCategories() {
+        firestore.collection(FirestoreRepository.CATEGORIES)
+            .limit(20)
+            .addSnapshotListener { snapshot, _ ->
+                val categories = snapshot!!.toObjects(FirestoreCategory::class.java)
+                doAsync {
+                    roomRepository.addCategories(categories)
+                    EventBus.getDefault().postSticky(CatalogItemsUpdatedEvent())
+                }
             }
-
-        }
-    }
-
-    private fun listenToCatalogItems() {
-        firestoreBanners.addSnapshotListener { snapshot, _ ->
-            val banners = snapshot!!.toObjects(FirestoreBanner::class.java)
-            doAsync {
-                roomRepository.setBanners(banners)
-                EventBus.getDefault().postSticky(CatalogItemsUpdatedEvent())
-            }
-        }
-        firestoreCategories.addSnapshotListener { snapshot, _ ->
-            val categories = snapshot!!.toObjects(FirestoreCategory::class.java)
-            doAsync {
-                roomRepository.addCategories(categories)
-                EventBus.getDefault().postSticky(CatalogItemsUpdatedEvent())
-            }
-        }
     }
 
     private fun listenToShopInfo() {
@@ -136,8 +109,7 @@ class FirestoreService : Service() {
 
     private fun listenToBooks(categoryId: String) {
         booksSnapshotListener = getFirestoreBooks(categoryId).addSnapshotListener { snapshot, _ ->
-            val books =
-                snapshot!!.toObjects(app.suhocki.mybooks.data.firestore.entity.FirestoreBook::class.java)
+            val books = snapshot!!.toObjects(FirestoreBook::class.java)
             doAsync {
                 roomRepository.addBooks(books)
                 EventBus.getDefault().postSticky(BooksUpdatedEvent())
@@ -167,7 +139,7 @@ class FirestoreService : Service() {
     }
 
     object Command {
-        const val FETCH_CATALOG_ITEMS = "FETCH_CATALOG_ITEMS"
+        const val LISTEN_CATEGORIES = "LISTEN_CATEGORIES"
         const val FETCH_BOOKS = "FETCH_BOOKS"
         const val FETCH_SHOP_INFO = "FETCH_SHOP_INFO"
         const val CANCEL_FETCH_BOOKS = "CANCEL_FETCH_BOOKS"
@@ -176,7 +148,7 @@ class FirestoreService : Service() {
 
     @Retention
     @StringDef(
-        Command.FETCH_CATALOG_ITEMS,
+        Command.LISTEN_CATEGORIES,
         Command.PUSH_CHANGES
     )
     annotation class UpdateCommand

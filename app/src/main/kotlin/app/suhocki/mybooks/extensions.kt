@@ -9,6 +9,8 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.net.Uri
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.support.annotation.ArrayRes
 import android.support.annotation.AttrRes
 import android.support.annotation.DrawableRes
@@ -190,3 +192,7 @@ fun Long.toHumanFileSize() = when (Math.round(toString().length.toFloat() / 3)) 
 
 fun Double.toRoundedPrice() =
     (Math.round(this * 100) / 100.0).toString()
+
+fun Any.uiThread(action: () -> Unit) {
+    Handler(Looper.getMainLooper()).post(action)
+}

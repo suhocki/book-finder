@@ -2,6 +2,7 @@ package app.suhocki.mybooks.di.provider
 
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
+import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
@@ -11,11 +12,11 @@ import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.CategoriesRepository
-import app.suhocki.mybooks.presentation.base.Paginator
 import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.catalog.entity.UiBanner
 import app.suhocki.mybooks.ui.catalog.entity.UiCategory
 import app.suhocki.mybooks.ui.catalog.entity.UiHeader
+import org.jetbrains.anko.doAsync
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -24,8 +25,8 @@ class CatalogRequestFactoryProvider @Inject constructor(
     @Room private val localCategoriesRepository: CategoriesRepository,
 
     @Firestore private val remoteBannersRepository: BannersRepository,
-    @Firestore private val remoteCategoriesRepository: CategoriesRepository,
 
+    private val firestoreObserver: FirestoreObserver,
     private val mapper: Mapper,
     private val remoteConfigurator: RemoteConfiguration,
     private val adsManager: AdsManager,
@@ -38,7 +39,7 @@ class CatalogRequestFactoryProvider @Inject constructor(
             .map { mapper.map<UiCategory>(it) }
             .apply { setNextPageTrigger(this) }
 
-        if (page == Paginator.FIRST_PAGE) fillWithBannerAndHeader(data)
+//        if (page == Paginator.FIRST_PAGE) fillWithBannerAndHeader(data)
         data.apply { addAll(categories) }
     }
 
@@ -60,17 +61,13 @@ class CatalogRequestFactoryProvider @Inject constructor(
         list.getOrNull(nextPageTriggerPosition)?.let { it.isNextPageTrigger = true }
     }
 
-    private fun getCategories(offset: Int, limit: Int): List<Category> {
-        val localCategories = localCategoriesRepository.getCategories(offset, limit)
-
-        return if (localCategories.isNotEmpty()) {
-            localCategories
-        } else {
-            val remoteCategories = remoteCategoriesRepository.getCategories(offset, limit)
-            localCategoriesRepository.addCategories(remoteCategories)
-            remoteCategories
+    private fun getCategories(offset: Int, limit: Int): List<Category> =
+        localCategoriesRepository.getCategories(offset, limit).let {
+            if (it.isNotEmpty()) {
+                doAsync { firestoreObserver.observeCategories(offset, limit) }
+                it
+            } else firestoreObserver.observeCategories(offset, limit)
         }
-    }
 
     private fun getBanners(): List<Banner> {
         val localBanners = localBannersRepository.getBanners()
@@ -79,14 +76,14 @@ class CatalogRequestFactoryProvider @Inject constructor(
             localBanners
         } else {
             val remoteBanners = remoteBannersRepository.getBanners()
-            localBannersRepository.setBanners(remoteBanners)
+//            localBannersRepository.setBanners(remoteBanners)
             remoteBanners
         }
     }
 
 
     companion object {
-        private const val ITEMS_PER_PAGE = 15
-        private const val TRIGGER_OFFSET = 5
+        const val ITEMS_PER_PAGE = 15
+        const val TRIGGER_OFFSET = 1
     }
 }

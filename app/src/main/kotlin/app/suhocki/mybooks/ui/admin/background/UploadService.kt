@@ -16,7 +16,6 @@ import app.suhocki.mybooks.di.module.UploadServiceModule
 import app.suhocki.mybooks.domain.model.*
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.domain.model.statistics.*
-import app.suhocki.mybooks.domain.repository.SettingsRepository
 import app.suhocki.mybooks.domain.repository.StatisticsRepository
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
@@ -130,7 +129,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
         },
 
         R.string.step_saving_to_remote to {
-            serviceHandler.startUpdateService(
+            serviceHandler.startFirestoreService(
                 FirestoreService.Command.PUSH_CHANGES, uploadControl
             )
         }
