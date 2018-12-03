@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.presentation.base.paginator
 
 import app.suhocki.mybooks.di.CatalogRequestFactory
-import app.suhocki.mybooks.presentation.base.paginator.state.Empty
+import app.suhocki.mybooks.presentation.base.paginator.state.*
 import app.suhocki.mybooks.uiThread
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -10,40 +10,54 @@ import javax.inject.Inject
 
 
 class Paginator<T> @Inject constructor(
-    viewController: PaginationView<T>,
+    private val viewController: PaginationView<T>,
     val currentData: MutableList<T>,
     @CatalogRequestFactory private val requestFactory: (Int) -> List<T>
 ) {
 
-    internal var currentState: State<T> = Empty(this, viewController)
+    internal var state: State<T> = Empty(this, viewController)
     internal var currentPage = 0
     internal var currentTask: Future<Unit>? = null
 
     fun restart() {
-        currentState.restart()
+        state.restart()
     }
 
     fun refresh() {
-        currentState.refresh()
+        state.refresh()
     }
 
     fun loadNewPage() {
-        currentState.loadNewPage()
+        state.loadNewPage()
     }
 
     fun release() {
-        currentState.release()
+        state.release()
     }
 
     internal fun loadPage(page: Int = FIRST_PAGE) {
-        doAsync({ throwable -> uiThread { currentState.fail(throwable) } }) {
+        doAsync({ throwable -> uiThread { state.fail(throwable) } }) {
             val data = requestFactory.invoke(page)
 
             this.uiThread {
-                currentState.newData(data)
+                state.newData(data)
             }
         }.apply {
             currentTask = this
+        }
+    }
+
+    internal inline fun <reified T> toggleState() {
+        state = when (T::class.java) {
+            AllData::class.java -> AllData(this, viewController)
+            Data::class.java -> Data(this, viewController)
+            Empty::class.java -> Empty(this, viewController)
+            EmptyError::class.java -> EmptyError(this, viewController)
+            EmptyProgress::class.java -> EmptyProgress(this, viewController)
+            PageProgress::class.java -> PageProgress(this, viewController)
+            Refresh::class.java -> Refresh(this, viewController)
+            Released::class.java -> Released()
+            else -> throw NotImplementedError("Cannot determine paginator state")
         }
     }
 

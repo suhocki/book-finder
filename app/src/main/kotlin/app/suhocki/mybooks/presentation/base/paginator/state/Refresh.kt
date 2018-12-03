@@ -10,7 +10,7 @@ class Refresh<T> constructor(
 ) : State<T> {
 
     override fun restart() {
-        paginator.currentState = EmptyProgress(paginator, viewController)
+        paginator.toggleState<EmptyProgress<T>>()
         viewController.showData()
         viewController.showRefreshProgress(false)
         viewController.showEmptyProgress(true)
@@ -19,14 +19,14 @@ class Refresh<T> constructor(
 
     override fun newData(data: List<T>) {
         if (data.isNotEmpty()) {
-            paginator.currentState = Data(paginator, viewController)
+            paginator.toggleState<Data<T>>()
             paginator.currentData.clear()
             paginator.currentData.addAll(data)
             paginator.currentPage = Paginator.FIRST_PAGE
             viewController.showRefreshProgress(false)
             viewController.showData(paginator.currentData)
         } else {
-            paginator.currentState = EmptyData(paginator, viewController)
+            paginator.toggleState<EmptyData<T>>()
             paginator.currentData.clear()
             viewController.showData()
             viewController.showRefreshProgress(false)
@@ -35,13 +35,13 @@ class Refresh<T> constructor(
     }
 
     override fun fail(error: Throwable) {
-        paginator.currentState = Data(paginator, viewController)
+        paginator.toggleState<Data<T>>()
         viewController.showRefreshProgress(false)
         viewController.showErrorMessage(error)
     }
 
     override fun release() {
-        paginator.currentState = Released()
+        paginator.toggleState<Released<T>>()
         paginator.currentTask?.cancel(true)
     }
 }

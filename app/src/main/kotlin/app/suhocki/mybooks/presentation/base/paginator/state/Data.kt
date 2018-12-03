@@ -1,8 +1,8 @@
 package app.suhocki.mybooks.presentation.base.paginator.state
 
+import app.suhocki.mybooks.presentation.base.paginator.PaginationView
 import app.suhocki.mybooks.presentation.base.paginator.Paginator
 import app.suhocki.mybooks.presentation.base.paginator.State
-import app.suhocki.mybooks.presentation.base.paginator.PaginationView
 
 class Data<T> constructor(
     private val paginator: Paginator<T>,
@@ -10,25 +10,25 @@ class Data<T> constructor(
 ) : State<T> {
 
     override fun restart() {
-        paginator.currentState = EmptyProgress(paginator, viewController)
+        paginator.toggleState<EmptyProgress<T>>()
         viewController.showData()
         viewController.showEmptyProgress(true)
         paginator.loadPage()
     }
 
     override fun refresh() {
-        paginator.currentState = Refresh(paginator, viewController)
+        paginator.toggleState<Refresh<T>>()
         viewController.showRefreshProgress(true)
         paginator.loadPage()
     }
 
     override fun loadNewPage() {
-        paginator.currentState = PageProgress(paginator, viewController)
+        paginator.toggleState<PageProgress<T>>()
         paginator.loadPage(paginator.currentPage + 1)
     }
 
     override fun release() {
-        paginator.currentState = Released()
+        paginator.toggleState<Released<T>>()
         paginator.currentTask?.cancel(true)
     }
 }

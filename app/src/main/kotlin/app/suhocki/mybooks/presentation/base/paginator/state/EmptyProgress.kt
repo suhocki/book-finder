@@ -15,27 +15,27 @@ class EmptyProgress<T> constructor(
 
     override fun newData(data: List<T>) {
         if (data.isNotEmpty()) {
-            paginator.currentState = Data(paginator, viewController)
+            paginator.toggleState<Data<T>>()
             paginator.currentData.clear()
             paginator.currentData.addAll(data)
             paginator.currentPage = Paginator.FIRST_PAGE
             viewController.showData(paginator.currentData)
             viewController.showEmptyProgress(false)
         } else {
-            paginator.currentState = EmptyData(paginator, viewController)
+            paginator.toggleState<EmptyData<T>>()
             viewController.showEmptyProgress(false)
             viewController.showEmptyView(true)
         }
     }
 
     override fun fail(error: Throwable) {
-        paginator.currentState = EmptyError(paginator, viewController)
+        paginator.toggleState<EmptyError<T>>()
         viewController.showEmptyProgress(false)
         viewController.showEmptyError(true, error)
     }
 
     override fun release() {
-        paginator.currentState = Released()
+        paginator.toggleState<Released<T>>()
         paginator.currentTask?.cancel(true)
     }
 }

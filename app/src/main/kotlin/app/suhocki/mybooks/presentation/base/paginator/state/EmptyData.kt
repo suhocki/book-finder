@@ -10,21 +10,21 @@ class EmptyData<T> constructor(
 ) : State<T> {
 
     override fun restart() {
-        paginator.currentState = EmptyProgress(paginator, viewController)
+        paginator.toggleState<EmptyProgress<T>>()
         viewController.showEmptyView(false)
         viewController.showEmptyProgress(true)
         paginator.loadPage()
     }
 
     override fun refresh() {
-        paginator.currentState = EmptyProgress(paginator, viewController)
+        paginator.toggleState<EmptyProgress<T>>()
         viewController.showEmptyView(false)
         viewController.showEmptyProgress(true)
         paginator.loadPage()
     }
 
     override fun release() {
-        paginator.currentState = Released()
+        paginator.toggleState<Released<T>>()
         paginator.currentTask?.cancel(true)
     }
 }
