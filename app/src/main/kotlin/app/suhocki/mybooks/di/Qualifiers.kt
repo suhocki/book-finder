@@ -16,3 +16,4 @@ import javax.inject.Qualifier
 @Qualifier annotation class IsSearchMode
 @Qualifier annotation class CategoryId
 @Qualifier annotation class BookId
+@Qualifier annotation class Converters

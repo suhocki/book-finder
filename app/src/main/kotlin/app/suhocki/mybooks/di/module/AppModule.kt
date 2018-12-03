@@ -8,8 +8,10 @@ import app.suhocki.mybooks.data.preferences.AppPreferencesRepository
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.ErrorReceiver
+import app.suhocki.mybooks.di.Converters
 import app.suhocki.mybooks.di.provider.AppPreferencesProvider
 import app.suhocki.mybooks.di.provider.ErrorReceiverProvider
+import app.suhocki.mybooks.di.provider.MapperConvertersProvider
 import app.suhocki.mybooks.di.provider.VersionProvider
 import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
 import app.suhocki.mybooks.domain.model.Version
@@ -26,6 +28,11 @@ class AppModule(app: App) : Module() {
     init {
         bind(App::class.java)
             .toInstance(app)
+
+        bind(Set::class.java)
+            .withName(Converters::class.java)
+            .toProvider(MapperConvertersProvider::class.java)
+            .providesSingletonInScope()
 
         bind(ContextManager::class.java)
             .singletonInScope()
