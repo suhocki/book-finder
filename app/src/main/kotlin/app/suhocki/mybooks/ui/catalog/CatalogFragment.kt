@@ -227,9 +227,8 @@ class CatalogFragment : BaseFragment(), CatalogView,
         TODO("not implemented")
     }
 
-    override fun showPageProgress(visible: Boolean) {
-        presenter.setPageProgressVisible(visible, adapter.items)
-    }
+    override fun hidePageProgress() =
+        presenter.removePageProgress(adapter.items)
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onDataUpdatedEvent(event: CatalogItemsUpdatedEvent) {

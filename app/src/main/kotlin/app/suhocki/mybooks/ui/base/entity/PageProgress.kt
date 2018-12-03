@@ -1,5 +1,5 @@
 package app.suhocki.mybooks.ui.base.entity
 
-class UiProgress(
+class PageProgress(
     override var isNextPageTrigger: Boolean = false
 ) : UiItem

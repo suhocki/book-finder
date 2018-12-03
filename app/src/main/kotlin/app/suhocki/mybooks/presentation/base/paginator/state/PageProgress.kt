@@ -11,9 +11,11 @@ class PageProgress<T> constructor(
 
     override fun restart() {
         paginator.currentState = EmptyProgress(paginator, viewController)
+
         viewController.showData()
-        viewController.showPageProgress(false)
+        viewController.hidePageProgress()
         viewController.showEmptyProgress(true)
+
         paginator.loadPage()
     }
 
@@ -22,24 +24,28 @@ class PageProgress<T> constructor(
             paginator.currentState = Data(paginator, viewController)
             paginator.currentData.addAll(data)
             paginator.currentPage++
-            viewController.showPageProgress(false)
+
+            viewController.hidePageProgress()
             viewController.showData(paginator.currentData)
         } else {
             paginator.currentState = AllData(paginator, viewController)
-            viewController.showPageProgress(false)
+            viewController.hidePageProgress()
         }
     }
 
     override fun refresh() {
         paginator.currentState = Refresh(paginator, viewController)
-        viewController.showPageProgress(false)
+
+        viewController.hidePageProgress()
         viewController.showRefreshProgress(true)
+
         paginator.loadPage()
     }
 
     override fun fail(error: Throwable) {
         paginator.currentState = Data(paginator, viewController)
-        viewController.showPageProgress(false)
+
+        viewController.hidePageProgress()
         viewController.showErrorMessage(error)
     }
 

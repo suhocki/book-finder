@@ -7,5 +7,5 @@ interface PaginationView<T> {
     fun showData(data: List<T> = emptyList())
     fun showErrorMessage(error: Throwable)
     fun showRefreshProgress(show: Boolean)
-    fun showPageProgress(visible: Boolean)
+    fun hidePageProgress()
 }

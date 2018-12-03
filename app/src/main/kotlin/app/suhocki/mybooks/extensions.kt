@@ -193,6 +193,6 @@ fun Long.toHumanFileSize() = when (Math.round(toString().length.toFloat() / 3)) 
 fun Double.toRoundedPrice() =
     (Math.round(this * 100) / 100.0).toString()
 
-fun Any.uiThread(action: () -> Unit) {
+fun uiThread(action: () -> Unit) {
     Handler(Looper.getMainLooper()).post(action)
 }

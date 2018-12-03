@@ -8,6 +8,7 @@ import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.Firestore
 import app.suhocki.mybooks.di.Room
+import app.suhocki.mybooks.domain.ListTools
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.repository.BannersRepository
@@ -30,14 +31,21 @@ class CatalogRequestFactoryProvider @Inject constructor(
     private val mapper: Mapper,
     private val remoteConfigurator: RemoteConfiguration,
     private val adsManager: AdsManager,
-    private val resourceManager: ResourceManager
+    private val resourceManager: ResourceManager,
+    private val listTools: ListTools
 ) : Provider<(Int) -> List<UiItem>> {
 
     override fun get(): (Int) -> List<UiItem> = { page ->
         val data = mutableListOf<UiItem>()
-        val categories = getCategories(page.dec() * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
-            .map { mapper.map<UiCategory>(it) }
-            .apply { setNextPageTrigger(this) }
+
+        val categories =
+            getCategories(page.dec() * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
+                .asSequence()
+                .map { mapper.map<UiCategory>(it) as UiItem }
+                .toMutableList()
+
+        listTools.setNextPageTrigger(categories)
+        listTools.addPageProgress(categories)
 
 //        if (page == Paginator.FIRST_PAGE) fillWithBannerAndHeader(data)
         data.apply { addAll(categories) }
@@ -51,14 +59,6 @@ class CatalogRequestFactoryProvider @Inject constructor(
             data.add(banner)
             data.add(UiHeader(resourceManager.getString(R.string.catalog)))
         }
-    }
-
-    private fun setNextPageTrigger(list: List<UiItem>) = with(list) {
-        val nextPageTriggerPosition =
-            if (size > TRIGGER_OFFSET) size - TRIGGER_OFFSET
-            else lastIndex
-
-        list.getOrNull(nextPageTriggerPosition)?.let { it.isNextPageTrigger = true }
     }
 
     private fun getCategories(offset: Int, limit: Int): List<Category> =

@@ -14,8 +14,8 @@ import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
 import app.suhocki.mybooks.presentation.base.paginator.Paginator
+import app.suhocki.mybooks.ui.base.entity.PageProgress
 import app.suhocki.mybooks.ui.base.entity.UiItem
-import app.suhocki.mybooks.ui.base.entity.UiProgress
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.arellomobile.mvp.viewstate.MvpViewState
@@ -235,12 +235,10 @@ class CatalogPresenter @Inject constructor(
         firestoreObserver.dispose()
     }
 
-    fun setPageProgressVisible(isVisible: Boolean, items: List<UiItem>) {
-        val hasProgress = items.lastOrNull() is UiProgress
+    fun removePageProgress(items: List<UiItem>) {
         val changedItems = items.toMutableList()
 
-        if (isVisible && !hasProgress) changedItems.add(UiProgress())
-        else if (!isVisible && hasProgress) changedItems.remove(items.last())
+        if (items.lastOrNull() is PageProgress) changedItems.remove(items.last())
 
         viewState.showData(changedItems)
     }

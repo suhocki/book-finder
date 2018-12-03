@@ -4,6 +4,7 @@ import app.suhocki.mybooks.di.CatalogRequestFactory
 import app.suhocki.mybooks.presentation.base.paginator.state.Empty
 import app.suhocki.mybooks.uiThread
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.util.concurrent.Future
 import javax.inject.Inject
 
@@ -38,7 +39,9 @@ class Paginator<T> @Inject constructor(
         doAsync({ throwable -> uiThread { currentState.fail(throwable) } }) {
             val data = requestFactory.invoke(page)
 
-            uiThread { currentState.newData(data) }
+            this.uiThread {
+                currentState.newData(data)
+            }
         }.apply {
             currentTask = this
         }

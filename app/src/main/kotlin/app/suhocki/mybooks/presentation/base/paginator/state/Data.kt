@@ -24,7 +24,6 @@ class Data<T> constructor(
 
     override fun loadNewPage() {
         paginator.currentState = PageProgress(paginator, viewController)
-        viewController.showPageProgress(true)
         paginator.loadPage(paginator.currentPage + 1)
     }
 
