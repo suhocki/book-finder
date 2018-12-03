@@ -31,11 +31,11 @@ class ListTools @Inject constructor() {
     }
 
     fun setNextPageTrigger(list: List<UiItem>) = with(list) {
-        val nextPageTriggerPosition =
+        val triggerPosition =
             if (size > CatalogRequestFactoryProvider.TRIGGER_OFFSET) size - CatalogRequestFactoryProvider.TRIGGER_OFFSET
             else lastIndex
 
-        list.getOrNull(nextPageTriggerPosition)?.let { it.isNextPageTrigger = true }
+        list.getOrNull(triggerPosition)?.let { it.isNextPageTrigger = true }
     }
 
     fun addPageProgress(data: MutableList<UiItem>) {
@@ -49,4 +49,8 @@ class ListTools @Inject constructor() {
     fun removePageProgress(data: MutableList<UiItem>) {
         data.removeAll { it is PageProgress }
     }
+
+
+    fun findTriggerIndex(data: List<UiItem>) =
+        data.find { it.isNextPageTrigger }?.let { data.indexOf(it) } ?: -1
 }

@@ -27,39 +27,22 @@ class FirestoreObserver @Inject constructor(
     fun observeCategories(offset: Int, limit: Int): List<Category> {
         var newSnapshots = mutableListOf<FirestoreCategory>()
         var needReturnData = true
-        dispose()
 
-        configureCurrentPage(offset, limit)
+        val observer = configureCurrentPage(offset, limit)
             .addSnapshotListener { snapshot, _ ->
-                listTools.updatePaginatedData(currentSnapshots, snapshot!!.documents, offset, limit)
+                newSnapshots = snapshot!!.toObjects(FirestoreCategory::class.java)
 
-                newSnapshots = snapshot.toObjects(FirestoreCategory::class.java)
+                listTools.updatePaginatedData(currentSnapshots, snapshot.documents, offset, limit)
 
                 if (needReturnData) {
                     listTools.removePageProgress(currentData)
                     needReturnData = false
                 } else {
-                    val newData = newSnapshots.map { mapper.map<UiCategory>(it) }
-                    val oldTrigger = currentData.find { it.isNextPageTrigger }
-                    val oldTriggerIndex =
-                        if (oldTrigger != null) currentData.indexOf(oldTrigger)
-                        else -1
-
-                    listTools.updatePaginatedData(currentData, newData, offset, limit)
-                    listTools.addPageProgress(currentData)
-
-                    val newTrigger = currentData.find { it.isNextPageTrigger }
-                    val newTriggerIndex =
-                        if (oldTrigger != null) currentData.indexOf(newTrigger)
-                        else -1
-
-                    if (oldTriggerIndex != newTriggerIndex) {
-                        listTools.setNextPageTrigger(currentData)
-                    }
-
+                    onDataUpdated(newSnapshots, offset, limit)
                     viewState.showData(currentData)
                 }
-            }.apply { observers.add(this) }
+            }
+        observers.add(observer)
 
         while (needReturnData) {
         }
@@ -67,9 +50,26 @@ class FirestoreObserver @Inject constructor(
         return newSnapshots
     }
 
+    private fun onDataUpdated(
+        newSnapshots: MutableList<FirestoreCategory>,
+        offset: Int,
+        limit: Int
+    ) {
+        val newData = newSnapshots.map { mapper.map<UiCategory>(it) }
+        val oldTriggerIndex = listTools.findTriggerIndex(currentData)
+
+        listTools.updatePaginatedData(currentData, newData, offset, limit)
+
+        val newTriggerIndex = listTools.findTriggerIndex(currentData)
+
+        if (oldTriggerIndex != newTriggerIndex) listTools.setNextPageTrigger(currentData)
+    }
+
     private fun configureCurrentPage(offset: Int, limit: Int): Query {
         return firestore.collection(FirestoreRepository.CATEGORIES)
-            .let { fb -> currentSnapshots.getOrNull(offset - 1)?.let { fb.startAfter(it) } ?: fb }
+            .let { fb ->
+                currentSnapshots.getOrNull(offset - 1)?.let { fb.startAfter(it) } ?: fb
+            }
             .let { fb ->
                 if (currentSnapshots.size < offset && currentSnapshots.isNotEmpty()) {
                     fb.startAfter(currentSnapshots.last())
