@@ -7,27 +7,27 @@ import javax.inject.Inject
 
 class ListTools @Inject constructor() {
 
-    fun <T> updatePaginatedData(
-        oldData: MutableList<T>,
-        newPartOfData: List<T>,
+    fun <T> updatePageData(
+        allData: MutableList<T>,
+        pageData: List<T>,
         offset: Int,
         limit: Int
     ) {
-        if (oldData.isEmpty()) {
-            oldData.addAll(newPartOfData)
+        if (allData.isEmpty()) {
+            allData.addAll(pageData)
             return
         }
 
         val from =
-            if (offset <= oldData.lastIndex) offset
-            else oldData.size
+            if (offset <= allData.lastIndex) offset
+            else allData.size
 
         val to =
-            if (offset + limit <= oldData.lastIndex) offset + limit
-            else oldData.size
+            if (offset + limit <= allData.lastIndex) offset + limit
+            else allData.size
 
-        oldData.removeAll(oldData.subList(from, to).toList())
-        oldData.addAll(from, newPartOfData)
+        allData.removeAll(allData.subList(from, to).toList())
+        allData.addAll(from, pageData)
     }
 
     fun setNextPageTrigger(list: List<UiItem>) = with(list) {

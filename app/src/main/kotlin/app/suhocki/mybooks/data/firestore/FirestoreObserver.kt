@@ -2,85 +2,138 @@ package app.suhocki.mybooks.data.firestore
 
 import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
 import app.suhocki.mybooks.data.mapper.Mapper
+import app.suhocki.mybooks.di.provider.CatalogRequestFactoryProvider
 import app.suhocki.mybooks.domain.ListTools
-import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.presentation.base.paginator.PaginationView
+import app.suhocki.mybooks.ui.base.entity.PageProgress
 import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.catalog.entity.UiCategory
+import app.suhocki.mybooks.uiThread
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.Query
-import java.util.*
+import org.jetbrains.anko.doAsync
 import javax.inject.Inject
 
 class FirestoreObserver @Inject constructor(
     private val viewState: PaginationView<UiItem>,
     private val firestore: FirebaseFirestore,
     private val mapper: Mapper,
-    private val currentData: MutableList<UiItem>,
+    private val allData: MutableList<UiItem>,
     private val listTools: ListTools
 ) {
-    private val currentSnapshots = mutableListOf<DocumentSnapshot>()
-    private var observers = ArrayDeque<ListenerRegistration>()
+    private val allSnapshots = mutableListOf<DocumentSnapshot>()
+    private var observers = mutableListOf<ListenerRegistration>()
 
-    fun observeCategories(offset: Int, limit: Int): List<Category> {
-        var newSnapshots = mutableListOf<FirestoreCategory>()
+    fun observeCategories(offset: Int, limit: Int): List<FirestoreCategory> {
+        var pageData = mutableListOf<FirestoreCategory>()
         var needReturnData = true
 
         val observer = configureCurrentPage(offset, limit)
             .addSnapshotListener { snapshot, _ ->
-                newSnapshots = snapshot!!.toObjects(FirestoreCategory::class.java)
+                pageData = snapshot!!.toObjects(FirestoreCategory::class.java)
 
-                listTools.updatePaginatedData(currentSnapshots, snapshot.documents, offset, limit)
+                listTools.updatePageData(allSnapshots, snapshot.documents, offset, limit)
 
                 if (needReturnData) {
-                    listTools.removePageProgress(currentData)
+                    listTools.removePageProgress(allData)
                     needReturnData = false
                 } else {
-                    onDataUpdated(newSnapshots, offset, limit)
-                    viewState.showData(currentData)
+                    val uiData = pageData.asSequence()
+                        .map { mapper.map<UiCategory>(it) as UiItem }
+                        .toMutableList()
+                    sendToUi(uiData, offset, limit)
+
+                    if (hasRemovedOrAddedItems(snapshot.documentChanges)) {
+                        val startPage = offset / limit
+                        val disposedCount = dispose(startPage + 1)
+                        val realOffset = offset + pageData.size
+
+                        if (disposedCount > 0) reSubscribeFrom(realOffset, disposedCount)
+                    }
                 }
             }
-        observers.add(observer)
 
         while (needReturnData) {
         }
-
-        return newSnapshots
+        if (pageData.isNotEmpty()) observers.add(observer)
+        return pageData
     }
 
-    private fun onDataUpdated(
-        newSnapshots: MutableList<FirestoreCategory>,
+    private fun sendToUi(
+        pageData: MutableList<UiItem>,
         offset: Int,
         limit: Int
     ) {
-        val newData = newSnapshots.map { mapper.map<UiCategory>(it) }
-        val oldTriggerIndex = listTools.findTriggerIndex(currentData)
+        val oldTriggerIndex = listTools.findTriggerIndex(allData)
 
-        listTools.updatePaginatedData(currentData, newData, offset, limit)
+        listTools.updatePageData(allData, pageData, offset, limit)
 
-        val newTriggerIndex = listTools.findTriggerIndex(currentData)
+        val newTriggerIndex = listTools.findTriggerIndex(allData)
 
-        if (oldTriggerIndex != newTriggerIndex) listTools.setNextPageTrigger(currentData)
+        if (oldTriggerIndex != newTriggerIndex) listTools.setNextPageTrigger(allData)
+
+        uiThread { viewState.showData(allData) }
     }
 
-    private fun configureCurrentPage(offset: Int, limit: Int): Query {
-        return firestore.collection(FirestoreRepository.CATEGORIES)
-            .let { fb ->
-                currentSnapshots.getOrNull(offset - 1)?.let { fb.startAfter(it) } ?: fb
-            }
-            .let { fb ->
-                if (currentSnapshots.size < offset && currentSnapshots.isNotEmpty()) {
-                    fb.startAfter(currentSnapshots.last())
-                } else fb
-            }
-            .limit(limit.toLong())
-    }
+    private fun reSubscribeFrom(offset: Int, disposedCount: Int) {
+        val limit = CatalogRequestFactoryProvider.ITEMS_PER_PAGE
+        val startPage = offset / limit
+        val hasPageProgress = allData.last() is PageProgress
 
-    fun dispose() {
-        repeat(observers.size) {
-            observers.poll().remove()
+        allData.subList(offset, allData.size).clear()
+        allSnapshots.subList(offset, allSnapshots.size).clear()
+
+        doAsync {
+            val pagesData = mutableListOf<FirestoreCategory>()
+
+            repeat(disposedCount) { index ->
+                val realOffset = (startPage + index) * limit
+                val pageData = observeCategories(realOffset, limit)
+
+                if (pageData.isNotEmpty()) pagesData.addAll(pageData)
+                else return@repeat
+            }
+            val uiData = pagesData.asSequence()
+                .map { mapper.map<UiCategory>(it) as UiItem }
+                .toMutableList()
+                .apply {
+                    listTools.setNextPageTrigger(this)
+                    if (hasPageProgress) listTools.addPageProgress(this)
+                }
+
+            sendToUi(uiData, offset, limit)
         }
+    }
+
+    private fun hasRemovedOrAddedItems(
+        documentChanges: MutableList<DocumentChange>
+    ) = documentChanges.any {
+        it.type == DocumentChange.Type.ADDED ||
+                it.type == DocumentChange.Type.REMOVED
+    }
+
+    private fun configureCurrentPage(
+        offset: Int,
+        limit: Int
+    ) = firestore.collection(FirestoreRepository.CATEGORIES)
+        .let { fb ->
+            allSnapshots.getOrNull(offset - 1)?.let { fb.startAfter(it) } ?: fb
+        }
+        .let { fb ->
+            if (allSnapshots.size < offset && allSnapshots.isNotEmpty()) {
+                fb.startAfter(allSnapshots.last())
+            } else fb
+        }
+        .limit(limit.toLong())
+
+    fun dispose(startPage: Int = 0): Int {
+        val oldObservers = observers.subList(startPage, observers.size)
+        val disposedCount = oldObservers.size
+        oldObservers.forEach { it.remove() }
+        oldObservers.clear()
+
+        return disposedCount
     }
 }

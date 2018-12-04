@@ -657,7 +657,7 @@ public class EndActionDiffUtil {
          * On the other hand, if you have another
          * {@link android.support.v7.widget.RecyclerView.AdapterDataObserver AdapterDataObserver}
          * that tries to process events synchronously, this may confuse that observer because the
-         * list is instantly moved to its final state while the adapter updates are dispatched later
+         * list is instantly moved to its final currentState while the adapter updates are dispatched later
          * on, one by one. If you have such an
          * {@link android.support.v7.widget.RecyclerView.AdapterDataObserver AdapterDataObserver},
          * you can use

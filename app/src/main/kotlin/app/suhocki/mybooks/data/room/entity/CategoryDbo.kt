@@ -15,23 +15,6 @@ data class CategoryDbo constructor(
     override var booksCount: Int = 0
 ) : Category {
 
-    override fun equals(other: Any?): Boolean {
-        if (this === other) return true
-        if (javaClass != other?.javaClass) return false
-
-        other as CategoryDbo
-
-        if (id != other.id) return false
-        if (name != other.name) return false
-        if (booksCount != other.booksCount) return false
-
-        return true
-    }
-
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
-
     companion object {
         const val ID = "id"
     }

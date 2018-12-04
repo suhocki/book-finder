@@ -36,19 +36,15 @@ class CatalogRequestFactoryProvider @Inject constructor(
 ) : Provider<(Int) -> List<UiItem>> {
 
     override fun get(): (Int) -> List<UiItem> = { page ->
-        val data = mutableListOf<UiItem>()
-
-        val categories =
-            getCategories(page.dec() * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
+        getCategories(page.dec() * ITEMS_PER_PAGE, ITEMS_PER_PAGE)
                 .asSequence()
                 .map { mapper.map<UiCategory>(it) as UiItem }
                 .toMutableList()
-
-        listTools.setNextPageTrigger(categories)
-        listTools.addPageProgress(categories)
-
+                .apply {
+                    listTools.setNextPageTrigger(this)
+                    listTools.addPageProgress(this)
+                }
 //        if (page == Paginator.FIRST_PAGE) fillWithBannerAndHeader(data)
-        data.apply { addAll(categories) }
     }
 
     private fun fillWithBannerAndHeader(data: MutableList<UiItem>) {

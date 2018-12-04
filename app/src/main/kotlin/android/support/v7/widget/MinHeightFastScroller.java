@@ -533,7 +533,7 @@ class MinHeightFastScroller extends RecyclerView.ItemDecoration implements Recyc
 
         @Override
         public void onAnimationEnd(Animator animation) {
-            // Cancel is always followed by a new directive, so don't update state.
+            // Cancel is always followed by a new directive, so don't update currentState.
             if (mCanceled) {
                 mCanceled = false;
                 return;
