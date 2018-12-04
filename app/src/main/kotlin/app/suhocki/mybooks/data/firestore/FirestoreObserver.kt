@@ -43,14 +43,16 @@ class FirestoreObserver @Inject constructor(
                     val uiData = pageData.asSequence()
                         .map { mapper.map<UiCategory>(it) as UiItem }
                         .toMutableList()
-                    sendToUi(uiData, offset, limit)
 
+                    var disposedCount = 0
                     if (hasRemovedOrAddedItems(snapshot.documentChanges)) {
-                        val startPage = offset / limit
-                        val disposedCount = dispose(startPage + 1)
-                        val realOffset = offset + pageData.size
-
-                        if (disposedCount > 0) reSubscribeFrom(realOffset, disposedCount)
+                        disposedCount = dispose(offset / limit + 1)
+                    }
+                    if (disposedCount > 0) {
+                        listTools.updatePageData(allData, uiData, offset, limit)
+                        reSubscribeFrom(offset + pageData.size, disposedCount)
+                    } else {
+                        sendToUi(uiData, offset, limit)
                     }
                 }
             }
