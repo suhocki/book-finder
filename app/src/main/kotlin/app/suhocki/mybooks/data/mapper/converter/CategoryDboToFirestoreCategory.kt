@@ -5,13 +5,13 @@ import app.suhocki.mybooks.data.mapper.BaseConverter
 import app.suhocki.mybooks.data.room.entity.CategoryDbo
 import javax.inject.Inject
 
-class FirestoreCategoryToRoomCategory @Inject constructor() :
-    BaseConverter<FirestoreCategory, CategoryDbo>(
-        FirestoreCategory::class.java, CategoryDbo::class.java
+class CategoryDboToFirestoreCategory @Inject constructor() :
+    BaseConverter<CategoryDbo, FirestoreCategory>(
+        CategoryDbo::class.java, FirestoreCategory::class.java
     ) {
 
-    override fun convert(value: FirestoreCategory) =
-        CategoryDbo(
+    override fun convert(value: CategoryDbo) =
+        FirestoreCategory(
             id = value.id,
             name = value.name,
             booksCount = value.booksCount

@@ -6,6 +6,7 @@ import android.support.annotation.StringDef
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.firestore.entity.FirestoreBook
 import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
+import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.room.RoomRepository
 import app.suhocki.mybooks.data.room.entity.BookDbo
@@ -16,7 +17,6 @@ import app.suhocki.mybooks.domain.repository.SettingsRepository
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.eventbus.BooksUpdatedEvent
-import app.suhocki.mybooks.ui.base.eventbus.CatalogItemsUpdatedEvent
 import app.suhocki.mybooks.ui.base.eventbus.ShopInfoUpdatedEvent
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
@@ -28,23 +28,21 @@ import javax.inject.Inject
 class FirestoreService : Service() {
 
     @Inject
-    lateinit var firestore: FirebaseFirestore
-
-    @Inject
-    lateinit var roomRepository: RoomRepository
-
-    @Inject
-    lateinit var firestoreRepository: FirestoreRepository
-
-    @Inject
     @field:ErrorReceiver
     lateinit var errorReceiver: (Throwable) -> Unit
 
     @Inject
+    lateinit var firestore: FirebaseFirestore
+    @Inject
+    lateinit var roomRepository: RoomRepository
+    @Inject
+    lateinit var firestoreRepository: FirestoreRepository
+    @Inject
     lateinit var notificationHelper: NotificationHelper
-
     @Inject
     lateinit var settingsRepository: SettingsRepository
+    @Inject
+    lateinit var mapper: Mapper
 
     private val firestoreShopInfo by lazy {
         firestore.collection(FirestoreRepository.SHOP_INFO)
@@ -92,7 +90,6 @@ class FirestoreService : Service() {
                 val categories = snapshot!!.toObjects(FirestoreCategory::class.java)
                 doAsync {
                     roomRepository.addCategories(categories)
-                    EventBus.getDefault().postSticky(CatalogItemsUpdatedEvent())
                 }
             }
     }
@@ -117,19 +114,24 @@ class FirestoreService : Service() {
         }
     }
 
-    private fun pushChanges(uploadControl: UploadControlEntity) {
-        doAsync(errorReceiver) {
-            val updateDate = settingsRepository.updateDate
-            with(firestoreRepository) {
-                addBooks(roomRepository.getBooks(updateDate), uploadControl)
-                addCategories(roomRepository.getCategories(updateDate))
-                setBanners(roomRepository.getBanners())
-                setShopInfo(roomRepository.getShopInfo()!!)
-            }
+    private fun pushChanges(
+        uploadControl: UploadControlEntity
+    ) = doAsync(errorReceiver) {
+        val updateDate = settingsRepository.updateDate
+        val categories = roomRepository.getCategories(updateDate)
+            .map { mapper.map<FirestoreCategory>(it) }
+        val books = roomRepository.getBooks(updateDate)
+            .map { mapper.map<FirestoreBook>(it) }
 
-            EventBus.getDefault().post(UploadCompleteEvent(true))
-            notificationHelper.showSuccessNotification(uploadControl.fileName)
+        with(firestoreRepository) {
+            addBooks(books, uploadControl)
+            addCategories(categories)
+            setBanners(roomRepository.getBanners())
+            setShopInfo(roomRepository.getShopInfo()!!)
         }
+
+        EventBus.getDefault().post(UploadCompleteEvent(true))
+        notificationHelper.showSuccessNotification(uploadControl.fileName)
     }
 
     companion object {

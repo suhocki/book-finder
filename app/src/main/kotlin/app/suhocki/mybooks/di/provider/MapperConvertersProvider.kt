@@ -16,34 +16,37 @@ class MapperConvertersProvider @Inject constructor(
     private val contactsToShopInfo: ContactsToShopInfoDbo,
     private val firestoreBookToRoomBook: FirestoreBookToBookDbo,
     private val roomBannerToFirestoreBanner: BannerDboToFirestoreBanner,
-    private val firestoreCategoryToRoomCategory: FirestoreCategoryToRoomCategory,
+    private val firestoreCategoryToRoomCategory: FirestoreCategoryToCategoryDbo,
     private val firestoreBannerToRoomBanner: FirestoreBannerToBannerDbo,
     private val dbBookEntityToUiBookEntity: BookDboToUiBook,
     private val bannerDboToUiBanner: BannerDboToUiBanner,
     private val roomCategoryToUiCategory: RoomDboToUiCategory,
     private val firestoreCategoryToUiCategory: FirestoreCategoryToUiCategory,
     private val firestoreBannerToUiBanner: FirestoreBannerToUiBanner,
-    private val shopInfoToList: ShopInfoToList
+    private val categoryDboToFirestoreCategory: CategoryDboToFirestoreCategory,
+    private val shopInfoToList: ShopInfoToList,
+    private val bookDboToFirestoreBook: BookDboToFirestoreBook
 ) : Provider<Set<Converter<*, *>>> {
 
-    override fun get() =
-        setOf(
-            metaDataItemToFile,
-            statisticsToAuthorStatistics,
-            statisticsToPublisherStatistics,
-            statisticsToStatusStatistics,
-            statisticsToYearStatistics,
-            statisticsDataToPriceStatistics,
-            contactsToShopInfo,
-            firestoreBookToRoomBook,
-            roomBannerToFirestoreBanner,
-            firestoreCategoryToRoomCategory,
-            firestoreBannerToRoomBanner,
-            dbBookEntityToUiBookEntity,
-            bannerDboToUiBanner,
-            roomCategoryToUiCategory,
-            firestoreCategoryToUiCategory,
-            firestoreBannerToUiBanner,
-            shopInfoToList
-        )
+    override fun get() = setOf(
+        metaDataItemToFile,
+        statisticsToAuthorStatistics,
+        statisticsToPublisherStatistics,
+        statisticsToStatusStatistics,
+        statisticsToYearStatistics,
+        statisticsDataToPriceStatistics,
+        contactsToShopInfo,
+        firestoreBookToRoomBook,
+        roomBannerToFirestoreBanner,
+        firestoreCategoryToRoomCategory,
+        firestoreBannerToRoomBanner,
+        dbBookEntityToUiBookEntity,
+        bannerDboToUiBanner,
+        roomCategoryToUiCategory,
+        firestoreCategoryToUiCategory,
+        firestoreBannerToUiBanner,
+        bookDboToFirestoreBook,
+        categoryDboToFirestoreCategory,
+        shopInfoToList
+    )
 }

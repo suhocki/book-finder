@@ -61,7 +61,9 @@ class CatalogPresenter @Inject constructor(
         paginator.refresh()
     }
 
-    fun loadNextPage() = paginator.loadNewPage()
+    fun loadNextPage() {
+        paginator.loadNewPage()
+    }
 
     override fun attachView(view: CatalogView?) {
         super.attachView(view)

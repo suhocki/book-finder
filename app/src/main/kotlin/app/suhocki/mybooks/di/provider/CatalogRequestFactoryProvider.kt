@@ -17,7 +17,6 @@ import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.catalog.entity.UiBanner
 import app.suhocki.mybooks.ui.catalog.entity.UiCategory
 import app.suhocki.mybooks.ui.catalog.entity.UiHeader
-import org.jetbrains.anko.doAsync
 import javax.inject.Inject
 import javax.inject.Provider
 
@@ -59,10 +58,10 @@ class CatalogRequestFactoryProvider @Inject constructor(
 
     private fun getCategories(offset: Int, limit: Int): List<Category> =
         localCategoriesRepository.getCategories(offset, limit).let {
-            if (it.isNotEmpty()) {
+            /*if (it.isNotEmpty()) {
                 doAsync { firestoreObserver.observeCategories(offset, limit) }
                 it
-            } else firestoreObserver.observeCategories(offset, limit)
+            } else */firestoreObserver.observeCategories(offset, limit)
         }
 
     private fun getBanners(): List<Banner> {

@@ -16,19 +16,15 @@ import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.entity.UiBook
 import app.suhocki.mybooks.ui.base.entity.UiItem
-import app.suhocki.mybooks.ui.base.eventbus.CatalogItemsUpdatedEvent
 import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.listener.OnSearchListener
-import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import app.suhocki.mybooks.ui.books.BooksActivity
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.MoxyReflector
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.dimen
 import org.jetbrains.anko.padding
@@ -92,16 +88,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
         }
 
         ui.recyclerView.adapter = adapter
-    }
-
-    override fun onStart() {
-        super.onStart()
-        MPEventBus.getDefault().register(this)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        MPEventBus.getDefault().unregister(this)
     }
 
     private fun animateToolbarNavigationButton(toArrow: Boolean) {
@@ -229,11 +215,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
 
     override fun hidePageProgress() =
         presenter.removePageProgress(adapter.items)
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onDataUpdatedEvent(event: CatalogItemsUpdatedEvent) {
-        presenter.loadData()
-    }
 
 
     companion object {

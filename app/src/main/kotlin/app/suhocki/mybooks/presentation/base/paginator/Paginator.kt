@@ -15,7 +15,7 @@ class Paginator<T> @Inject constructor(
     @CatalogRequestFactory private val requestFactory: (Int) -> List<T>
 ) {
 
-    var currentState: State<T> = Empty(this, viewController)
+    private var currentState: State<T> = Empty(this, viewController)
     internal var currentPage = 0
     internal var currentTask: Future<Unit>? = null
 
@@ -28,11 +28,18 @@ class Paginator<T> @Inject constructor(
     }
 
     fun loadNewPage() {
+        updateState()
         currentState.loadNewPage()
     }
 
     fun release() {
         currentState.release()
+    }
+
+    fun updateState() {
+        if (currentData.isNotEmpty() && currentState is EmptyData) {
+            toggleState<Data<T>>()
+        }
     }
 
     internal fun loadPage(page: Int = FIRST_PAGE) {
@@ -47,17 +54,20 @@ class Paginator<T> @Inject constructor(
         }
     }
 
-    inline fun <reified T> toggleState() {
+    internal inline fun <reified T> toggleState() {
         currentState = when (T::class.java) {
             AllData::class.java -> AllData(this, viewController)
             Data::class.java -> Data(this, viewController)
             Empty::class.java -> Empty(this, viewController)
+            EmptyData::class.java -> {
+                EmptyData(this, viewController)
+            }
             EmptyError::class.java -> EmptyError(this, viewController)
             EmptyProgress::class.java -> EmptyProgress(this, viewController)
             PageProgress::class.java -> PageProgress(this, viewController)
             Refresh::class.java -> Refresh(this, viewController)
             Released::class.java -> Released()
-            else -> throw NotImplementedError("Cannot determine paginator currentState")
+            else -> throw NotImplementedError("Cannot determine state: ${T::class.java}")
         }
     }
 

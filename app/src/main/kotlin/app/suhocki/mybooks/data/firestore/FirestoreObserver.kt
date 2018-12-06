@@ -8,12 +8,12 @@ import app.suhocki.mybooks.presentation.base.paginator.PaginationView
 import app.suhocki.mybooks.ui.base.entity.PageProgress
 import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.catalog.entity.UiCategory
-import app.suhocki.mybooks.uiThread
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import javax.inject.Inject
 
 class FirestoreObserver @Inject constructor(
@@ -40,30 +40,43 @@ class FirestoreObserver @Inject constructor(
                     listTools.removePageProgress(allData)
                     needReturnData = false
                 } else {
+                    var disposedCount = 0
+
+                    val currentObserverIndex = offset / limit
+                    if (hasRemovedOrAddedItems(snapshot.documentChanges)) {
+                        val disposeFromIndex = currentObserverIndex + 1
+                        disposedCount = dispose(disposeFromIndex)
+                    }
+
                     val uiData = pageData.asSequence()
                         .map { mapper.map<UiCategory>(it) as UiItem }
                         .toMutableList()
+                    if (disposedCount == 0) {
+                        if (currentObserverIndex == observers.lastIndex &&
+                            uiData.size == limit
+                        ) {
+                            listTools.updatePageData(allData, uiData, offset, limit)
+                            listTools.setNextPageTrigger(allData)
+                            listTools.addPageProgress(allData)
 
-                    var disposedCount = 0
-                    if (hasRemovedOrAddedItems(snapshot.documentChanges)) {
-                        disposedCount = dispose(offset / limit + 1)
-                    }
-                    if (disposedCount > 0) {
+                            viewState.showData(allData)
+                        }
+                    } else {
                         listTools.updatePageData(allData, uiData, offset, limit)
                         reSubscribeFrom(offset + pageData.size, disposedCount)
-                    } else {
-                        sendToUi(uiData, offset, limit)
                     }
                 }
             }
 
         while (needReturnData) {
         }
-        if (pageData.isNotEmpty()) observers.add(observer)
+        if (pageData.isNotEmpty() || offset == 0) observers.add(observer)
+        else observer.remove()
+
         return pageData
     }
 
-    private fun sendToUi(
+    private fun fixPageTrigger(
         pageData: MutableList<UiItem>,
         offset: Int,
         limit: Int
@@ -75,14 +88,12 @@ class FirestoreObserver @Inject constructor(
         val newTriggerIndex = listTools.findTriggerIndex(allData)
 
         if (oldTriggerIndex != newTriggerIndex) listTools.setNextPageTrigger(allData)
-
-        uiThread { viewState.showData(allData) }
     }
 
     private fun reSubscribeFrom(offset: Int, disposedCount: Int) {
         val limit = CatalogRequestFactoryProvider.ITEMS_PER_PAGE
         val startPage = offset / limit
-        val hasPageProgress = allData.last() is PageProgress
+        val hasPageProgress = allData.lastOrNull() is PageProgress
 
         allData.subList(offset, allData.size).clear()
         allSnapshots.subList(offset, allSnapshots.size).clear()
@@ -91,8 +102,8 @@ class FirestoreObserver @Inject constructor(
             val pagesData = mutableListOf<FirestoreCategory>()
 
             repeat(disposedCount) { index ->
-                val realOffset = (startPage + index) * limit
-                val pageData = observeCategories(realOffset, limit)
+                val observerOffset = (startPage + index) * limit
+                val pageData = observeCategories(observerOffset, limit)
 
                 if (pageData.isNotEmpty()) pagesData.addAll(pageData)
                 else return@repeat
@@ -104,8 +115,12 @@ class FirestoreObserver @Inject constructor(
                     listTools.setNextPageTrigger(this)
                     if (hasPageProgress) listTools.addPageProgress(this)
                 }
+            fixPageTrigger(uiData, offset, limit)
 
-            sendToUi(uiData, offset, limit)
+
+            this.uiThread {
+                viewState.showData(allData)
+            }
         }
     }
 
@@ -131,6 +146,8 @@ class FirestoreObserver @Inject constructor(
         .limit(limit.toLong())
 
     fun dispose(startPage: Int = 0): Int {
+        if (observers.isEmpty()) return 0
+
         val oldObservers = observers.subList(startPage, observers.size)
         val disposedCount = oldObservers.size
         oldObservers.forEach { it.remove() }
