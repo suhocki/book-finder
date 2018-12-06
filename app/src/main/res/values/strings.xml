@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">MyBooks</string>
     <string name="upload_service_name">:UploadService</string>
     <string name="database_load_need">Before using this application, download the book database file.</string>
@@ -77,12 +77,15 @@
     <string name="about_this_application">About this application:</string>
     <string name="working_time">Working time:</string>
     <string name="changelog">Changelog</string>
-    <string name="admin_mode_enabled">Admin mode enabled</string>
-    <string name="admin_mode_disabled">Admin mode disabled</string>
     <string name="choose_file">Choose file</string>
     <string name="vk_group">VK group</string>
     <string name="facebook_group">Facebook group</string>
     <string name="file_uploaded">File %s was uploaded successfully</string>
+
+    <!--Debug Menu-->
+    <string name="debug_menu">Debug Menu</string>
+    <string name="admin_mode">Admin mode</string>
+    <string name="debug_panel">Debug panel</string>
 
     <!--License names-->
     <string name="library_license_MIT">MIT</string>

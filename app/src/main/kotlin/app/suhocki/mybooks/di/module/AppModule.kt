@@ -4,7 +4,6 @@ import android.os.Build
 import app.suhocki.mybooks.App
 import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.context.ContextManager
-import app.suhocki.mybooks.data.preferences.AppPreferencesRepository
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.ErrorReceiver
@@ -15,7 +14,6 @@ import app.suhocki.mybooks.di.provider.MapperConvertersProvider
 import app.suhocki.mybooks.di.provider.VersionProvider
 import app.suhocki.mybooks.di.provider.ads.InterstitialAdProvider
 import app.suhocki.mybooks.domain.model.Version
-import app.suhocki.mybooks.domain.repository.SettingsRepository
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import com.google.android.gms.ads.InterstitialAd
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -55,10 +53,6 @@ class AppModule(app: App) : Module() {
         bind(Function1::class.java)
             .withName(ErrorReceiver::class.java)
             .toProvider(ErrorReceiverProvider::class.java)
-            .singletonInScope()
-
-        bind(SettingsRepository::class.java)
-            .to(AppPreferencesRepository::class.java)
             .singletonInScope()
 
         bind(RemoteConfiguration::class.java)

@@ -8,12 +8,12 @@ import app.suhocki.mybooks.data.firestore.entity.FirestoreBook
 import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
 import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.notification.NotificationHelper
+import app.suhocki.mybooks.data.preferences.PreferencesRepository
 import app.suhocki.mybooks.data.room.RoomRepository
 import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.data.room.entity.ShopInfoDbo
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.ErrorReceiver
-import app.suhocki.mybooks.domain.repository.SettingsRepository
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.eventbus.BooksUpdatedEvent
@@ -40,7 +40,7 @@ class FirestoreService : Service() {
     @Inject
     lateinit var notificationHelper: NotificationHelper
     @Inject
-    lateinit var settingsRepository: SettingsRepository
+    lateinit var settingsRepository: PreferencesRepository
     @Inject
     lateinit var mapper: Mapper
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.BuildConfig
+import app.suhocki.mybooks.data.dialog.DialogManager
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.domain.model.Info
 import app.suhocki.mybooks.openCaller
@@ -27,6 +28,7 @@ import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.email
 import org.jetbrains.anko.support.v4.startActivity
 import toothpick.Toothpick
+import javax.inject.Inject
 
 
 class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
@@ -34,7 +36,7 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
     private val ui by lazy { InfoUI<InfoFragment>() }
 
     private val adapter by lazy {
-        InfoAdapter(this, presenter::toogleAdminMode)
+        InfoAdapter(this, presenter::onVersionLongClick)
     }
 
     @InjectPresenter
@@ -44,6 +46,16 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
     fun providePresenter(): InfoPresenter =
         Toothpick.openScopes(DI.APP_SCOPE)
             .getInstance(InfoPresenter::class.java)
+
+    @Inject
+    lateinit var dialogManager: DialogManager
+
+    private val scope by lazy { Toothpick.openScopes(DI.APP_SCOPE) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Toothpick.inject(this, scope)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -99,7 +111,7 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
     }
 
     override fun showAdminMode(enabled: Boolean) =
-        (activity as AdminModeEnabler).toogleAdminMode(enabled, true)
+        (activity as AdminModeEnabler).toogleAdminMode(enabled)
 
     override fun showProgress(isVisible: Boolean) {
         ui.progressBar.visibility =
@@ -110,6 +122,18 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onShopInfoUpdated(event: ShopInfoUpdatedEvent) {
         presenter.loadData()
+    }
+
+    override fun showHiddenSettingsDialog(
+        adminModeEnabled: Boolean,
+        debugPanelEnabled: Boolean
+    ) {
+        dialogManager.showHiddenSettingsDialog(
+            adminModeEnabled,
+            debugPanelEnabled
+        ) { resultAdminEnabled, resultDebugEnabled ->
+            presenter.updateHiddenSettings(resultAdminEnabled, resultDebugEnabled)
+        }
     }
 
 

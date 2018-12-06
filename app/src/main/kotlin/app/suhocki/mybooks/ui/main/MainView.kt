@@ -7,5 +7,5 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface MainView : MvpView {
 
-    fun showAdminMode(enabled: Boolean, withToast: Boolean = false)
+    fun showAdminMode(enabled: Boolean)
 }

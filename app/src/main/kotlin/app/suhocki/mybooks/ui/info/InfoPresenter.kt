@@ -2,6 +2,7 @@ package app.suhocki.mybooks.ui.info
 
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.mapper.Mapper
+import app.suhocki.mybooks.data.preferences.PreferencesRepository
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.service.ServiceHandler
@@ -10,7 +11,6 @@ import app.suhocki.mybooks.di.Room
 import app.suhocki.mybooks.domain.model.Info
 import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.domain.repository.InfoRepository
-import app.suhocki.mybooks.domain.repository.SettingsRepository
 import app.suhocki.mybooks.ui.firestore.FirestoreService
 import app.suhocki.mybooks.ui.info.entity.HeaderEntity
 import app.suhocki.mybooks.ui.info.entity.InfoEntity
@@ -27,7 +27,7 @@ class InfoPresenter @Inject constructor(
     private val serviceHandler: ServiceHandler,
     private val appVersion: Version,
     @Room private val infoRepository: InfoRepository,
-    private val settingsRepository: SettingsRepository,
+    private val preferences: PreferencesRepository,
     private val resourceManager: ResourceManager,
     private val mapper: Mapper
 ) : MvpPresenter<InfoView>() {
@@ -59,14 +59,11 @@ class InfoPresenter @Inject constructor(
         }
     }
 
-    fun toogleAdminMode() {
-        val mode = getToggledAdminMode()
-        viewState.showAdminMode(mode)
-    }
-
-    private fun getToggledAdminMode(): Boolean {
-        settingsRepository.isAdminModeEnabled = !settingsRepository.isAdminModeEnabled
-        return settingsRepository.isAdminModeEnabled
+    fun onVersionLongClick() {
+        viewState.showHiddenSettingsDialog(
+            preferences.isAdminModeEnabled,
+            preferences.isDebugPanelEnabled
+        )
     }
 
     private fun getShopInfoItems() =
@@ -97,4 +94,11 @@ class InfoPresenter @Inject constructor(
             iconRes = R.drawable.ic_developer
         )
     )
+
+    fun updateHiddenSettings(adminEnabled: Boolean, debugEnabled: Boolean) {
+        preferences.isDebugPanelEnabled = debugEnabled
+        preferences.isAdminModeEnabled = adminEnabled
+
+        viewState.showAdminMode(adminEnabled)
+    }
 }

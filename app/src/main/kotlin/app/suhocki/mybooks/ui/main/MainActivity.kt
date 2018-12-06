@@ -34,7 +34,6 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
 import org.jetbrains.anko.itemsSequence
 import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.startActivity
-import org.jetbrains.anko.toast
 import toothpick.Toothpick
 import javax.inject.Inject
 
@@ -259,21 +258,20 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         }
     }
 
-    override fun toogleAdminMode(enabled: Boolean, withToast: Boolean) {
-        if (enabled) {
-            if (withToast) toast(R.string.admin_mode_enabled)
-            ui.bottomBar.addItem(AHBottomNavigationItem(R.string.admin, R.drawable.ic_admin, 0))
-            ui.bottomBar.restoreBottomNavigation()
-            ui.navigationView.menu.getItem(TAB_POSITION_ADMIN).isVisible = true
-        } else {
-            if (withToast) toast(R.string.admin_mode_disabled)
-            ui.bottomBar.removeItemAtIndex(TAB_POSITION_ADMIN)
-            ui.navigationView.menu.getItem(TAB_POSITION_ADMIN).isVisible = false
+    override fun toogleAdminMode(enabled: Boolean) = with(ui){
+        val containsAdminTab = bottomBar.getItem(TAB_POSITION_ADMIN) != null
+        if (enabled && !containsAdminTab) {
+            bottomBar.addItem(AHBottomNavigationItem(R.string.admin, R.drawable.ic_admin, 0))
+            bottomBar.restoreBottomNavigation()
+            navigationView.menu.getItem(TAB_POSITION_ADMIN).isVisible = true
+        } else if (!enabled && containsAdminTab){
+            bottomBar.removeItemAtIndex(TAB_POSITION_ADMIN)
+            navigationView.menu.getItem(TAB_POSITION_ADMIN).isVisible = false
         }
     }
 
-    override fun showAdminMode(enabled: Boolean, withToast: Boolean) {
-        toogleAdminMode(enabled, withToast)
+    override fun showAdminMode(enabled: Boolean) {
+        toogleAdminMode(enabled)
     }
 
 

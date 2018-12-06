@@ -5,7 +5,7 @@ import app.suhocki.mybooks.data.notification.NotificationHelper
 import app.suhocki.mybooks.data.parser.entity.InfoEntity
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
-import app.suhocki.mybooks.data.preferences.AppPreferencesRepository
+import app.suhocki.mybooks.data.preferences.PreferencesRepository
 import app.suhocki.mybooks.data.room.entity.BannerDbo
 import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.data.room.entity.CategoryDbo
@@ -28,7 +28,7 @@ class XlsParser @Inject constructor(
     private val uploadControl: UploadControlEntity,
     private val notificationHelper: NotificationHelper,
     private val mapper: Mapper,
-    private val preferencesRepository: AppPreferencesRepository
+    private val preferencesRepository: PreferencesRepository
 ) : AnkoLogger {
 
     private var creationDate: Long = 0
