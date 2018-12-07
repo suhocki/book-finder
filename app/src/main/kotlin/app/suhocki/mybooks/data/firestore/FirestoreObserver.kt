@@ -51,15 +51,10 @@ class FirestoreObserver @Inject constructor(
                         .map { mapper.map<UiCategory>(it) as UiItem }
                         .toMutableList()
                     if (disposedCount == 0) {
-                        if (currentObserverIndex == observers.lastIndex &&
-                            uiData.size == limit
-                        ) {
-                            listTools.updatePageData(allData, uiData, offset, limit)
-                            listTools.setNextPageTrigger(allData)
-                            listTools.addPageProgress(allData)
-
-                            refreshedDataListener?.invoke(allData)
-                        }
+                        listTools.updatePageData(allData, uiData, offset, limit)
+                        listTools.setNextPageTrigger(allData)
+                        listTools.addPageProgress(allData)
+                        refreshedDataListener?.invoke(allData)
                     } else {
                         listTools.updatePageData(allData, uiData, offset, limit)
                         reSubscribeFrom(offset + pageData.size, disposedCount)
@@ -151,6 +146,7 @@ class FirestoreObserver @Inject constructor(
         oldObservers.forEach { it.remove() }
         oldObservers.clear()
 
+        observersCountListener?.invoke(observers.size)
         return disposedCount
     }
 }
