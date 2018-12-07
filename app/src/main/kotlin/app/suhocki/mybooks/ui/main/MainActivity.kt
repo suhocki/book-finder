@@ -3,9 +3,11 @@ package app.suhocki.mybooks.ui.main
 import android.os.Bundle
 import android.support.annotation.IntDef
 import android.support.design.internal.NavigationMenu
+import android.support.transition.TransitionManager
 import android.support.v4.widget.DrawerLayout
 import android.view.Gravity
 import android.view.MenuItem
+import android.view.View
 import app.suhocki.mybooks.BuildConfig
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
@@ -16,7 +18,6 @@ import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.admin.AdminFragment
 import app.suhocki.mybooks.ui.base.BaseFragment
-import app.suhocki.mybooks.ui.base.listener.AdminModeEnabler
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.changelog.ChangelogActivity
@@ -39,7 +40,7 @@ import javax.inject.Inject
 
 
 class MainActivity : MvpAppCompatActivity(), MainView,
-    NavigationHandler, AdminModeEnabler {
+    NavigationHandler {
 
     @InjectPresenter
     lateinit var presenter: MainPresenter
@@ -258,20 +259,29 @@ class MainActivity : MvpAppCompatActivity(), MainView,
         }
     }
 
-    override fun toogleAdminMode(enabled: Boolean) = with(ui){
+    override fun showAdminMode(enabled: Boolean) = with(ui) {
         val containsAdminTab = bottomBar.getItem(TAB_POSITION_ADMIN) != null
         if (enabled && !containsAdminTab) {
             bottomBar.addItem(AHBottomNavigationItem(R.string.admin, R.drawable.ic_admin, 0))
             bottomBar.restoreBottomNavigation()
             navigationView.menu.getItem(TAB_POSITION_ADMIN).isVisible = true
-        } else if (!enabled && containsAdminTab){
+        } else if (!enabled && containsAdminTab) {
             bottomBar.removeItemAtIndex(TAB_POSITION_ADMIN)
             navigationView.menu.getItem(TAB_POSITION_ADMIN).isVisible = false
         }
     }
 
-    override fun showAdminMode(enabled: Boolean) {
-        toogleAdminMode(enabled)
+    override fun showDebugPanel(show: Boolean) {
+        TransitionManager.beginDelayedTransition(ui.parent)
+
+        ui.simultaneousConnections.visibility =
+                if (show) View.VISIBLE
+                else View.GONE
+    }
+
+    override fun showSimultaneousConnectionsCount(count: Int) {
+        val text = resources.getString(R.string.simultaneous_connections, count)
+        ui.simultaneousConnections.text = text
     }
 
 

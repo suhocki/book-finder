@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.data.dialog
 
+import android.content.DialogInterface
 import android.support.annotation.StringRes
 import android.support.v7.app.AlertDialog
 import android.view.Gravity
@@ -29,7 +30,8 @@ class DialogManager @Inject constructor(
         debugPanelEnabled: Boolean,
         resultListener: (Boolean, Boolean) -> Unit
     ) {
-        contextManager.currentContext
+        var dialog: DialogInterface? = null
+        dialog = contextManager.currentContext
             .alert {
                 customView {
                     verticalLayout {
@@ -60,6 +62,7 @@ class DialogManager @Inject constructor(
 
                             onClick {
                                 resultListener.invoke(adminMode.isChecked, debugPanel.isChecked)
+                                dialog!!.dismiss()
                             }
                         }.lparams(wrapContent, wrapContent) {
                             gravity = Gravity.END

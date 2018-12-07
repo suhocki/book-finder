@@ -78,7 +78,7 @@ class CatalogRequestFactoryProvider @Inject constructor(
 
 
     companion object {
-        const val ITEMS_PER_PAGE = 15
+        const val ITEMS_PER_PAGE = 2
         const val TRIGGER_OFFSET = 1
     }
 }

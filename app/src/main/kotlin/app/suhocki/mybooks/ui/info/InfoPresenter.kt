@@ -100,5 +100,6 @@ class InfoPresenter @Inject constructor(
         preferences.isAdminModeEnabled = adminEnabled
 
         viewState.showAdminMode(adminEnabled)
+        viewState.showDebugPanel(debugEnabled)
     }
 }

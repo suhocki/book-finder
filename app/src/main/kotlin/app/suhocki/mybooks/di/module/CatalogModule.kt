@@ -2,7 +2,6 @@ package app.suhocki.mybooks.di.module
 
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.di.*
 import app.suhocki.mybooks.di.provider.CatalogRequestFactoryProvider
 import app.suhocki.mybooks.domain.model.Category
@@ -10,7 +9,6 @@ import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.presentation.base.paginator.PaginationView
 import app.suhocki.mybooks.ui.base.decorator.SearchItemDecoration
 import app.suhocki.mybooks.ui.base.decorator.TypeDividerItemDecoration
-import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.catalog.CatalogView
 import com.arellomobile.mvp.viewstate.MvpViewState
 import toothpick.config.Module
@@ -51,12 +49,6 @@ class CatalogModule(
         bind(Function1::class.java)
             .withName(CatalogRequestFactory::class.java)
             .toProvider(CatalogRequestFactoryProvider::class.java)
-
-        bind(MutableList::class.java)
-            .toInstance(mutableListOf<UiItem>())
-
-        bind(FirestoreObserver::class.java)
-            .singletonInScope()
     }
 
     internal class SearchEntity(

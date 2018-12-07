@@ -4,7 +4,6 @@ import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
 import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.di.provider.CatalogRequestFactoryProvider
 import app.suhocki.mybooks.domain.ListTools
-import app.suhocki.mybooks.presentation.base.paginator.PaginationView
 import app.suhocki.mybooks.ui.base.entity.PageProgress
 import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.catalog.entity.UiCategory
@@ -13,11 +12,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
 import javax.inject.Inject
 
 class FirestoreObserver @Inject constructor(
-    private val viewState: PaginationView<UiItem>,
     private val firestore: FirebaseFirestore,
     private val mapper: Mapper,
     private val allData: MutableList<UiItem>,
@@ -25,6 +22,8 @@ class FirestoreObserver @Inject constructor(
 ) {
     private val allSnapshots = mutableListOf<DocumentSnapshot>()
     private var observers = mutableListOf<ListenerRegistration>()
+    var observersCountListener: ((Int) -> Unit)? = null
+    var refreshedDataListener: ((List<UiItem>) -> Unit)? = null
 
     fun observeCategories(offset: Int, limit: Int): List<FirestoreCategory> {
         var pageData = mutableListOf<FirestoreCategory>()
@@ -59,7 +58,7 @@ class FirestoreObserver @Inject constructor(
                             listTools.setNextPageTrigger(allData)
                             listTools.addPageProgress(allData)
 
-                            viewState.showData(allData)
+                            refreshedDataListener?.invoke(allData)
                         }
                     } else {
                         listTools.updatePageData(allData, uiData, offset, limit)
@@ -70,9 +69,11 @@ class FirestoreObserver @Inject constructor(
 
         while (needReturnData) {
         }
+
         if (pageData.isNotEmpty() || offset == 0) observers.add(observer)
         else observer.remove()
 
+        observersCountListener?.invoke(observers.size)
         return pageData
     }
 
@@ -117,10 +118,7 @@ class FirestoreObserver @Inject constructor(
                 }
             fixPageTrigger(uiData, offset, limit)
 
-
-            this.uiThread {
-                viewState.showData(allData)
-            }
+            refreshedDataListener?.invoke(allData)
         }
     }
 

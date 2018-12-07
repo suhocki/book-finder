@@ -13,11 +13,11 @@ import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.openMap
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.eventbus.ShopInfoUpdatedEvent
-import app.suhocki.mybooks.ui.base.listener.AdminModeEnabler
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import app.suhocki.mybooks.ui.changelog.ChangelogActivity
 import app.suhocki.mybooks.ui.info.listener.OnInfoClickListener
 import app.suhocki.mybooks.ui.licenses.LicensesActivity
+import app.suhocki.mybooks.ui.main.MainView
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -111,7 +111,10 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
     }
 
     override fun showAdminMode(enabled: Boolean) =
-        (activity as AdminModeEnabler).toogleAdminMode(enabled)
+        (activity as MainView).showAdminMode(enabled)
+
+    override fun showDebugPanel(debugEnabled: Boolean) =
+        (activity as MainView).showDebugPanel(debugEnabled)
 
     override fun showProgress(isVisible: Boolean) {
         ui.progressBar.visibility =
@@ -127,14 +130,11 @@ class InfoFragment : BaseFragment(), InfoView, OnInfoClickListener {
     override fun showHiddenSettingsDialog(
         adminModeEnabled: Boolean,
         debugPanelEnabled: Boolean
-    ) {
-        dialogManager.showHiddenSettingsDialog(
-            adminModeEnabled,
-            debugPanelEnabled
-        ) { resultAdminEnabled, resultDebugEnabled ->
-            presenter.updateHiddenSettings(resultAdminEnabled, resultDebugEnabled)
-        }
-    }
+    ) = dialogManager.showHiddenSettingsDialog(
+        adminModeEnabled,
+        debugPanelEnabled,
+        presenter::updateHiddenSettings
+    )
 
 
     companion object {

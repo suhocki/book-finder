@@ -6,8 +6,8 @@ import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.context.ContextManager
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
-import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.Converters
+import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.provider.AppPreferencesProvider
 import app.suhocki.mybooks.di.provider.ErrorReceiverProvider
 import app.suhocki.mybooks.di.provider.MapperConvertersProvider
@@ -23,6 +23,13 @@ import toothpick.config.Module
 import java.util.*
 
 class AppModule(app: App) : Module() {
+
+    @Suppress("DEPRECATION")
+    private val locale =
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            app.applicationContext.configuration.locales.get(0)
+        else app.applicationContext.configuration.locale
+
     init {
         bind(App::class.java)
             .toInstance(app)
@@ -67,12 +74,7 @@ class AppModule(app: App) : Module() {
         bind(UploadControlEntity::class.java)
             .toInstance(UploadControlEntity())
 
-        @Suppress("DEPRECATION")
         bind(Locale::class.java)
-            .toInstance(
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                    app.applicationContext.configuration.locales.get(0)
-                else app.applicationContext.configuration.locale
-            )
+            .toInstance(locale)
     }
 }

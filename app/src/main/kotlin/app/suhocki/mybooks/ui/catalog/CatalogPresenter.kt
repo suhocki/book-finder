@@ -16,6 +16,7 @@ import app.suhocki.mybooks.domain.repository.BooksRepository
 import app.suhocki.mybooks.presentation.base.paginator.Paginator
 import app.suhocki.mybooks.ui.base.entity.PageProgress
 import app.suhocki.mybooks.ui.base.entity.UiItem
+import app.suhocki.mybooks.uiThread
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import com.arellomobile.mvp.viewstate.MvpViewState
@@ -52,6 +53,11 @@ class CatalogPresenter @Inject constructor(
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+
+        firestoreObserver.refreshedDataListener = {
+            uiThread { viewState.showData(it) }
+        }
+
         loadData()
     }
 
@@ -72,7 +78,7 @@ class CatalogPresenter @Inject constructor(
 
     fun startSearchMode(): Future<Unit> {
         return doAsync(errorReceiver) {
-//            isSearchMode.set(true)
+            //            isSearchMode.set(true)
 //            val catalogItems = mutableListOf<UiItem>().apply {
 //                getBanner()?.let { add(it) }
 //                add(searchEntity)
@@ -90,7 +96,7 @@ class CatalogPresenter @Inject constructor(
 
     fun stopSearchMode() =
         doAsync(errorReceiver) {
-//            isSearchMode.set(false)
+            //            isSearchMode.set(false)
 //            searchEntity.searchQuery = EMPTY_STRING
 //            val catalogItems = mutableListOf<Any>().apply {
 //                getBanner()?.let { add(it) }
@@ -119,7 +125,7 @@ class CatalogPresenter @Inject constructor(
     }
 
     fun search() = doAsync(errorReceiver) {
-//        if (searchEntity.searchQuery.isBlank()) return@doAsync
+        //        if (searchEntity.searchQuery.isBlank()) return@doAsync
 //        val catalogItems = mutableListOf<Any>().apply {
 //            getBanner()?.let { add(it) }
 //            add(searchEntity)
@@ -141,7 +147,7 @@ class CatalogPresenter @Inject constructor(
     }
 
     fun clearSearchQuery() = doAsync(errorReceiver) {
-//        if (searchEntity.searchQuery.isBlank()) stopSearchMode()
+        //        if (searchEntity.searchQuery.isBlank()) stopSearchMode()
 //        else {
 //            val catalogItems = mutableListOf<Any>().apply {
 //                getBanner()?.let { add(it) }
@@ -235,6 +241,7 @@ class CatalogPresenter @Inject constructor(
         adsManager.onAdFlowFinished()
         paginator.release()
         firestoreObserver.dispose()
+        firestoreObserver.refreshedDataListener = null
     }
 
     fun removePageProgress(items: List<UiItem>) {
