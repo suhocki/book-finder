@@ -9,5 +9,5 @@ interface MainView : MvpView {
 
     fun showAdminMode(enabled: Boolean)
     fun showDebugPanel(show: Boolean)
-    fun showSimultaneousConnectionsCount(count: Int)
+    fun showActiveConnectionsCount(count: Int)
 }

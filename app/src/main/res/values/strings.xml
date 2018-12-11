@@ -86,7 +86,7 @@
     <string name="debug_menu">Debug Menu</string>
     <string name="admin_mode">Admin mode</string>
     <string name="debug_panel">Debug panel</string>
-    <string name="simultaneous_connections" translatable="false">simultaneous connections: %d</string>
+    <string name="active_connections" translatable="false">active connections: %d</string>
 
     <!--License names-->
     <string name="library_license_MIT">MIT</string>

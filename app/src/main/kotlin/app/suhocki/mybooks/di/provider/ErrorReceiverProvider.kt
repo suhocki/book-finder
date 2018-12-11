@@ -8,6 +8,7 @@ class ErrorReceiverProvider @Inject constructor(
     private val errorHandler: ErrorHandler
 ) : Provider<(Throwable) -> Unit> {
 
-    override fun get() =
-        { throwable: Throwable -> errorHandler.handleError(throwable) }
+    override fun get() = { throwable: Throwable ->
+        errorHandler.handleError(throwable)
+    }
 }

@@ -54,7 +54,7 @@ class CatalogPresenter @Inject constructor(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        firestoreObserver.refreshedDataListener = {
+        firestoreObserver.onDataUpdated = {
             uiThread { viewState.showData(it) }
         }
 
@@ -241,7 +241,7 @@ class CatalogPresenter @Inject constructor(
         adsManager.onAdFlowFinished()
         paginator.release()
         firestoreObserver.dispose()
-        firestoreObserver.refreshedDataListener = null
+        firestoreObserver.onDataUpdated = null
     }
 
     fun removePageProgress(items: List<UiItem>) {

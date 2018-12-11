@@ -23,9 +23,7 @@ class PageProgress<T> constructor(
         if (data.isNotEmpty()) {
             paginator.toggleState<Data<T>>()
             paginator.currentData.addAll(data)
-            paginator.currentPage++
 
-            viewController.hidePageProgress()
             viewController.showData(paginator.currentData)
         } else {
             paginator.toggleState<AllData<T>>()

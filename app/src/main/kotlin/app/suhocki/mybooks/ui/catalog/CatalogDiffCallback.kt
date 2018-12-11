@@ -20,6 +20,7 @@ internal class CatalogDiffCallback : EndActionDiffUtil.ItemCallback<UiItem>() {
     override fun areContentsTheSame(oldItem: UiItem, newItem: UiItem) = when {
         oldItem is Category && newItem is Category ->
             oldItem.name == newItem.name && oldItem.booksCount == newItem.booksCount
+                    && oldItem.isNextPageTrigger == newItem.isNextPageTrigger
 
         oldItem is Header && newItem is Header ->
             oldItem.title == newItem.title

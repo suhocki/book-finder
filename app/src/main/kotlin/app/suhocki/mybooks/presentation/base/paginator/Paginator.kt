@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.presentation.base.paginator
 
+import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.di.CatalogRequestFactory
 import app.suhocki.mybooks.presentation.base.paginator.state.*
 import app.suhocki.mybooks.uiThread
@@ -12,12 +13,32 @@ import javax.inject.Inject
 class Paginator<T> @Inject constructor(
     val viewController: PaginationView<T>,
     val currentData: MutableList<T>,
-    @CatalogRequestFactory private val requestFactory: (Int) -> List<T>
+    @CatalogRequestFactory private val requestFactory: (Int) -> List<T>,
+    firestoreObserver: FirestoreObserver
 ) {
 
     private var currentState: State<T> = Empty(this, viewController)
-    internal var currentPage = 0
+    internal var currentPage = FIRST_PAGE
     internal var currentTask: Future<Unit>? = null
+
+    init {
+        with(firestoreObserver) {
+            onEmptyData = {
+                currentPage = FIRST_PAGE
+                toggleState<EmptyData<T>>()
+                viewController.showEmptyProgress(false)
+                viewController.showEmptyView(true)
+            }
+            onNotEmptyData = {
+                if (currentState !is Data) {
+                    toggleState<Data<T>>()
+                }
+            }
+            onCurrentPageChanged = {
+                currentPage = it
+            }
+        }
+    }
 
     fun restart() {
         currentState.restart()
@@ -28,7 +49,6 @@ class Paginator<T> @Inject constructor(
     }
 
     fun loadNewPage() {
-        updateState()
         currentState.loadNewPage()
     }
 
@@ -36,17 +56,10 @@ class Paginator<T> @Inject constructor(
         currentState.release()
     }
 
-    fun updateState() {
-        if (currentData.isNotEmpty() && currentState is EmptyData) {
-            toggleState<Data<T>>()
-        }
-    }
-
     internal fun loadPage(page: Int = FIRST_PAGE) {
         doAsync({ throwable -> uiThread { currentState.fail(throwable) } }) {
             val data = requestFactory.invoke(page)
-
-            this.uiThread {
+            uiThread {
                 currentState.newData(data)
             }
         }.apply {
@@ -59,9 +72,7 @@ class Paginator<T> @Inject constructor(
             AllData::class.java -> AllData(this, viewController)
             Data::class.java -> Data(this, viewController)
             Empty::class.java -> Empty(this, viewController)
-            EmptyData::class.java -> {
-                EmptyData(this, viewController)
-            }
+            EmptyData::class.java -> EmptyData(this, viewController)
             EmptyError::class.java -> EmptyError(this, viewController)
             EmptyProgress::class.java -> EmptyProgress(this, viewController)
             PageProgress::class.java -> PageProgress(this, viewController)
@@ -73,5 +84,7 @@ class Paginator<T> @Inject constructor(
 
     companion object {
         const val FIRST_PAGE = 1
+        const val PAGE_SIZE = 2
+        const val TRIGGER_OFFSET = 1
     }
 }

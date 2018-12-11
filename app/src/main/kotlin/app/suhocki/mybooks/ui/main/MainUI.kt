@@ -23,7 +23,7 @@ class MainUI : AnkoComponent<MainActivity> {
     lateinit var parent: ViewGroup
     lateinit var navigationView: NavigationView
     lateinit var bottomBar: AHBottomNavigation
-    lateinit var simultaneousConnections: TextView
+    lateinit var activeConnections: TextView
 
     override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
 
@@ -83,8 +83,8 @@ class MainUI : AnkoComponent<MainActivity> {
                 horizontalPadding = dip(8)
                 backgroundColorResource = R.color.colorBlack
 
-                textView(resources.getString(R.string.simultaneous_connections, 0)) {
-                    simultaneousConnections = this
+                textView(resources.getString(R.string.active_connections, 0)) {
+                    activeConnections = this
                     textColorResource = R.color.colorGreen
                 }
 

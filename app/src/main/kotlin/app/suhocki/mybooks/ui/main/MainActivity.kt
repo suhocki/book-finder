@@ -18,6 +18,7 @@ import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.admin.AdminFragment
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.eventbus.ActiveConnectionsCountEvent
 import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.changelog.ChangelogActivity
@@ -32,6 +33,9 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
+import org.greenrobot.eventbus.EventBus
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.jetbrains.anko.itemsSequence
 import org.jetbrains.anko.setContentView
 import org.jetbrains.anko.startActivity
@@ -101,6 +105,21 @@ class MainActivity : MvpAppCompatActivity(), MainView,
             handleNavigationClick(position, wasSelected)
         }
         initFragments(savedInstanceState, intent.getIntExtra(SCREEN_TAG, TAB_POSITION_CATALOG))
+    }
+
+    override fun onStart() {
+        super.onStart()
+        EventBus.getDefault().register(this)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onActiveConnectionsCountChanged(event: ActiveConnectionsCountEvent) {
+        presenter.updateActiveConnectionsCount(event.count)
     }
 
     private fun MainUI.onDrawerItemClick(menuItem: MenuItem): Boolean {
@@ -274,14 +293,14 @@ class MainActivity : MvpAppCompatActivity(), MainView,
     override fun showDebugPanel(show: Boolean) {
         TransitionManager.beginDelayedTransition(ui.parent)
 
-        ui.simultaneousConnections.visibility =
+        ui.activeConnections.visibility =
                 if (show) View.VISIBLE
                 else View.GONE
     }
 
-    override fun showSimultaneousConnectionsCount(count: Int) {
-        val text = resources.getString(R.string.simultaneous_connections, count)
-        ui.simultaneousConnections.text = text
+    override fun showActiveConnectionsCount(count: Int) {
+        val text = resources.getString(R.string.active_connections, count)
+        ui.activeConnections.text = text
     }
 
 
