@@ -32,6 +32,7 @@ class FirestoreObserver @Inject constructor(
     var onCurrentPageChanged: ((Int) -> Unit)? = null
 
     fun observeCategories(offset: Int, limit: Int): MutableList<UiItem> {
+
         var pageData = mutableListOf<UiItem>()
         var needReturnData = true
 
@@ -66,46 +67,42 @@ class FirestoreObserver @Inject constructor(
                         onNotEmptyData?.invoke()
                     }
 
-                    var disposedCount = 0
+                    listTools.updatePageData(allData, pageData, offset, limit)
 
                     if (hasRemovedOrAddedItems(snapshot.documentChanges)) {
-                        disposedCount = dispose((offset + Paginator.PAGE_SIZE) / limit)
-                    }
+                        val disposedCount = dispose((offset + Paginator.PAGE_SIZE) / limit)
 
-                    if (disposedCount == 0) {
-                        listTools.updatePageData(allData, pageData, offset, limit)
+                        when {
+                            pageData.size == limit && disposedCount == 0 ->
+                                listTools.addProgressAndSetTrigger(allData, limit)
 
-                        if (pageData.size == limit) {
-                            listTools.addProgressAndSetTrigger(allData, limit)
-                        } else {
-                            allData.removeAll { it is PageProgress }
-                        }
+                            pageData.size < limit && disposedCount == 0 ->
+                                allData.removeAll { it is PageProgress }
 
-                        onDataUpdated?.invoke(allData)
-                    } else {
-                        listTools.updatePageData(allData, pageData, offset, limit)
+                            pageData.size == limit -> {
+                                val nextPageOffset = offset + Paginator.PAGE_SIZE
+                                allData.subList(nextPageOffset, allData.size).clear()
+                                allSnapshots.subList(nextPageOffset, allSnapshots.size).clear()
 
-                        if (pageData.size == limit) {
-                            val nextPageOffset = offset + Paginator.PAGE_SIZE
-                            allData.subList(nextPageOffset, allData.size).clear()
-                            allSnapshots.subList(nextPageOffset, allSnapshots.size).clear()
-
-                            doAsync {
-                                val newData =
-                                    getResubscribedData(disposedCount, nextPageOffset, limit)
-                                allData.addAll(newData)
-                                listTools.addProgressAndSetTrigger(newData, limit)
-                                onDataUpdated?.invoke(allData)
+                                doAsync {
+                                    val newData =
+                                        getResubscribedData(disposedCount, nextPageOffset, limit)
+                                    allData.addAll(newData)
+                                    listTools.addProgressAndSetTrigger(allData, limit)
+                                    onDataUpdated?.invoke(allData)
+                                }
+                                return@addSnapshotListener
                             }
-                            return@addSnapshotListener
 
-                        } else if (pageData.isEmpty()) {
-                            allData.removeAll { it is PageProgress }
+                            pageData.isEmpty() ->
+                                allData.removeAll { it is PageProgress }
                         }
-                        onDataUpdated?.invoke(allData)
                     }
+
+                    onDataUpdated?.invoke(allData)
                     EventBus.getDefault().postSticky(ActiveConnectionsCountEvent(observers.size))
                 }
+
                 onCurrentPageChanged?.invoke(observers.size)
             }
 
@@ -113,6 +110,8 @@ class FirestoreObserver @Inject constructor(
         }
 
         observers.add(observer)
+        onCurrentPageChanged?.invoke(observers.size)
+
         EventBus.getDefault().postSticky(ActiveConnectionsCountEvent(observers.size))
 
         return pageData
@@ -125,12 +124,14 @@ class FirestoreObserver @Inject constructor(
     ): MutableList<UiItem> {
         val pagesData = mutableListOf<UiItem>()
 
-        repeat(disposedCount) { index ->
+        for (index in 0 until disposedCount) {
             val newOffset = offset + index * Paginator.PAGE_SIZE
             val pageData = observeCategories(newOffset, limit)
 
-            if (pageData.size < limit) return@repeat
             pagesData.addAll(pageData)
+            if (pageData.size < limit) {
+                break
+            }
         }
         return pagesData.asSequence()
             .map { mapper.map<UiCategory>(it) as UiItem }
