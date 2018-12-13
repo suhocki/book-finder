@@ -31,7 +31,7 @@ class FirestoreObserver @Inject constructor(
     var onNotEmptyData: (() -> Unit)? = null
     var onCurrentPageChanged: ((Int) -> Unit)? = null
 
-    fun observeCategories(offset: Int, limit: Int): MutableList<UiItem> {
+    fun observePage(offset: Int, limit: Int): MutableList<UiItem> {
 
         var pageData = mutableListOf<UiItem>()
         var needReturnData = true
@@ -56,53 +56,51 @@ class FirestoreObserver @Inject constructor(
                 if (needReturnData) {
                     allData.removeAll { it is PageProgress }
                     needReturnData = false
-                } else {
-                    if (pageData.isEmpty() && offset == 0) {
-                        allData.clear()
-                        dispose(1)
-                        onEmptyData?.invoke()
-                    }
-
-                    if (pageData.size == limit) {
-                        onNotEmptyData?.invoke()
-                    }
-
-                    listTools.updatePageData(allData, pageData, offset, limit)
-
-                    if (hasRemovedOrAddedItems(snapshot.documentChanges)) {
-                        val disposedCount = dispose((offset + Paginator.PAGE_SIZE) / limit)
-
-                        when {
-                            pageData.size == limit && disposedCount == 0 ->
-                                listTools.addProgressAndSetTrigger(allData, limit)
-
-                            pageData.size < limit && disposedCount == 0 ->
-                                allData.removeAll { it is PageProgress }
-
-                            pageData.size == limit -> {
-                                val nextPageOffset = offset + Paginator.PAGE_SIZE
-                                allData.subList(nextPageOffset, allData.size).clear()
-                                allSnapshots.subList(nextPageOffset, allSnapshots.size).clear()
-
-                                doAsync {
-                                    val newData =
-                                        getResubscribedData(disposedCount, nextPageOffset, limit)
-                                    allData.addAll(newData)
-                                    listTools.addProgressAndSetTrigger(allData, limit)
-                                    onDataUpdated?.invoke(allData)
-                                }
-                                return@addSnapshotListener
-                            }
-
-                            pageData.isEmpty() ->
-                                allData.removeAll { it is PageProgress }
-                        }
-                    }
-
-                    onDataUpdated?.invoke(allData)
-                    EventBus.getDefault().postSticky(ActiveConnectionsCountEvent(observers.size))
+                    return@addSnapshotListener
                 }
 
+                if (pageData.isEmpty() && offset == 0) {
+                    allData.clear()
+                    dispose(1)
+                    onEmptyData?.invoke()
+                } else if (pageData.size == limit) {
+                    onNotEmptyData?.invoke()
+                }
+
+                listTools.updatePageData(allData, pageData, offset, limit)
+
+                if (hasRemovedOrAddedItems(snapshot.documentChanges)) {
+                    val disposedCount = dispose((offset + Paginator.PAGE_SIZE) / limit)
+
+                    when {
+                        pageData.size == limit && disposedCount == 0 ->
+                            listTools.addProgressAndSetTrigger(allData, limit)
+
+                        pageData.size < limit && disposedCount == 0 ->
+                            allData.removeAll { it is PageProgress }
+
+                        pageData.size == limit -> {
+                            val nextPageOffset = offset + Paginator.PAGE_SIZE
+                            allData.subList(nextPageOffset, allData.size).clear()
+                            allSnapshots.subList(nextPageOffset, allSnapshots.size).clear()
+
+                            doAsync {
+                                val newData =
+                                    getResubscribedData(disposedCount, nextPageOffset, limit)
+                                allData.addAll(newData)
+                                listTools.addProgressAndSetTrigger(allData, limit)
+                                onDataUpdated?.invoke(allData)
+                            }
+                            return@addSnapshotListener
+                        }
+
+                        pageData.isEmpty() ->
+                            allData.removeAll { it is PageProgress }
+                    }
+                }
+
+                onDataUpdated?.invoke(allData)
+                EventBus.getDefault().postSticky(ActiveConnectionsCountEvent(observers.size))
                 onCurrentPageChanged?.invoke(observers.size)
             }
 
@@ -126,7 +124,7 @@ class FirestoreObserver @Inject constructor(
 
         for (index in 0 until disposedCount) {
             val newOffset = offset + index * Paginator.PAGE_SIZE
-            val pageData = observeCategories(newOffset, limit)
+            val pageData = observePage(newOffset, limit)
 
             pagesData.addAll(pageData)
             if (pageData.size < limit) {
@@ -145,20 +143,17 @@ class FirestoreObserver @Inject constructor(
                 it.type == DocumentChange.Type.REMOVED
     }
 
-    private fun configureCurrentPage(
-        offset: Int,
-        limit: Int
-    ) = firestore.collection(FirestoreRepository.CATEGORIES)
-
-        .let { fb ->
-            allSnapshots.getOrNull(offset - 1)?.let { fb.startAfter(it) } ?: fb
-        }
-        .let { fb ->
-            if (allSnapshots.size < offset && allSnapshots.isNotEmpty()) {
-                fb.startAfter(allSnapshots.last())
-            } else fb
-        }
-        .limit(limit.toLong())
+    private fun configureCurrentPage(offset: Int, limit: Int) =
+        firestore.collection(FirestoreRepository.CATEGORIES)
+            .let { fb ->
+                allSnapshots.getOrNull(offset - 1)?.let { fb.startAfter(it) } ?: fb
+            }
+            .let { fb ->
+                if (allSnapshots.size < offset && allSnapshots.isNotEmpty()) {
+                    fb.startAfter(allSnapshots.last())
+                } else fb
+            }
+            .limit(limit.toLong())
 
     fun dispose(startPage: Int = 0): Int {
         if (observers.isEmpty()) return 0

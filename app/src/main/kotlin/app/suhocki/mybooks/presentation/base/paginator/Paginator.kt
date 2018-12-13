@@ -84,7 +84,7 @@ class Paginator<T> @Inject constructor(
 
     companion object {
         const val FIRST_PAGE = 1
-        const val PAGE_SIZE = 2
-        const val TRIGGER_OFFSET = 1
+        const val PAGE_SIZE = 20
+        const val TRIGGER_OFFSET = 4
     }
 }
