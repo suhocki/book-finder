@@ -3,9 +3,9 @@ package app.suhocki.mybooks.data.firestore
 import app.suhocki.mybooks.data.error.ErrorHandler
 import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
 import app.suhocki.mybooks.data.mapper.Mapper
+import app.suhocki.mybooks.di.FirestoreCollection
 import app.suhocki.mybooks.domain.ListTools
 import app.suhocki.mybooks.presentation.base.paginator.Paginator
-import app.suhocki.mybooks.ui.base.entity.PageProgress
 import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.base.eventbus.ActiveConnectionsCountEvent
 import app.suhocki.mybooks.ui.catalog.entity.UiCategory
@@ -18,18 +18,27 @@ import org.jetbrains.anko.doAsync
 import javax.inject.Inject
 
 class FirestoreObserver @Inject constructor(
+    @FirestoreCollection private val collectionName: String,
     private val firestore: FirebaseFirestore,
     private val mapper: Mapper,
-    private val allData: MutableList<UiItem>,
     private val listTools: ListTools,
     private val errorHandler: ErrorHandler
 ) {
     private val allSnapshots = mutableListOf<DocumentSnapshot>()
     private var observers = mutableListOf<ListenerRegistration>()
-    var onDataUpdated: ((List<UiItem>) -> Unit)? = null
-    var onEmptyData: (() -> Unit)? = null
-    var onNotEmptyData: (() -> Unit)? = null
+    private val emptyDataListeners = mutableListOf<() -> Unit>()
+
+    var onFullPage: (() -> Unit)? = null
+    var onNotFullPage: (() -> Unit)? = null
+    var onPageUpdate: ((List<UiItem>, Int) -> Unit)? = null
+
     var onCurrentPageChanged: ((Int) -> Unit)? = null
+
+    var onResubscribe: ((Int) -> Unit)? = null
+    var onResubscribedData: ((List<UiItem>) -> Unit)? = null
+
+    var onDataUpdated: (() -> Unit)? = null
+    var onNotEmptyData: (() -> Unit)? = null
 
     fun observePage(offset: Int, limit: Int): MutableList<UiItem> {
 
@@ -54,52 +63,48 @@ class FirestoreObserver @Inject constructor(
                 listTools.updatePageData(allSnapshots, snapshot.documents, offset, limit)
 
                 if (needReturnData) {
-                    allData.removeAll { it is PageProgress }
+                    onNotFullPage?.invoke()
                     needReturnData = false
                     return@addSnapshotListener
                 }
 
                 if (pageData.isEmpty() && offset == 0) {
-                    allData.clear()
-                    dispose(1)
-                    onEmptyData?.invoke()
+                    emptyDataListeners.forEach { it.invoke() }
                 } else if (pageData.size == limit) {
                     onNotEmptyData?.invoke()
                 }
 
-                listTools.updatePageData(allData, pageData, offset, limit)
+                onPageUpdate?.invoke(pageData, offset)
 
                 if (hasRemovedOrAddedItems(snapshot.documentChanges)) {
-                    val disposedCount = dispose((offset + Paginator.PAGE_SIZE) / limit)
+                    val disposedCount = dispose((offset + Paginator.LIMIT) / limit)
 
                     when {
-                        pageData.size == limit && disposedCount == 0 ->
-                            listTools.addProgressAndSetTrigger(allData, limit)
+                        pageData.size < limit && disposedCount == 0 || pageData.isEmpty() ->
+                            onNotFullPage?.invoke()
 
-                        pageData.size < limit && disposedCount == 0 ->
-                            allData.removeAll { it is PageProgress }
+                        pageData.size == limit && disposedCount == 0 ->
+                            onFullPage?.invoke()
 
                         pageData.size == limit -> {
-                            val nextPageOffset = offset + Paginator.PAGE_SIZE
-                            allData.subList(nextPageOffset, allData.size).clear()
+                            val nextPageOffset = offset + Paginator.LIMIT
+                            onResubscribe?.invoke(nextPageOffset)
                             allSnapshots.subList(nextPageOffset, allSnapshots.size).clear()
 
                             doAsync {
                                 val newData =
                                     getResubscribedData(disposedCount, nextPageOffset, limit)
-                                allData.addAll(newData)
-                                listTools.addProgressAndSetTrigger(allData, limit)
-                                onDataUpdated?.invoke(allData)
+
+                                onResubscribedData?.invoke(newData)
+                                onFullPage?.invoke()
+                                onDataUpdated?.invoke()
                             }
                             return@addSnapshotListener
                         }
-
-                        pageData.isEmpty() ->
-                            allData.removeAll { it is PageProgress }
                     }
                 }
 
-                onDataUpdated?.invoke(allData)
+                onDataUpdated?.invoke()
                 EventBus.getDefault().postSticky(ActiveConnectionsCountEvent(observers.size))
                 onCurrentPageChanged?.invoke(observers.size)
             }
@@ -123,7 +128,7 @@ class FirestoreObserver @Inject constructor(
         val pagesData = mutableListOf<UiItem>()
 
         for (index in 0 until disposedCount) {
-            val newOffset = offset + index * Paginator.PAGE_SIZE
+            val newOffset = offset + index * Paginator.LIMIT
             val pageData = observePage(newOffset, limit)
 
             pagesData.addAll(pageData)
@@ -144,7 +149,7 @@ class FirestoreObserver @Inject constructor(
     }
 
     private fun configureCurrentPage(offset: Int, limit: Int) =
-        firestore.collection(FirestoreRepository.CATEGORIES)
+        firestore.collection(collectionName)
             .let { fb ->
                 allSnapshots.getOrNull(offset - 1)?.let { fb.startAfter(it) } ?: fb
             }
@@ -167,5 +172,9 @@ class FirestoreObserver @Inject constructor(
         oldObservers.clear()
 
         return disposedCount
+    }
+
+    fun addOnEmptyDataListener(listener: () -> Unit) {
+        emptyDataListeners.add(listener)
     }
 }

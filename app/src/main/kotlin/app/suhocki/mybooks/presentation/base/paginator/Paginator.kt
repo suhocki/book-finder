@@ -23,7 +23,7 @@ class Paginator<T> @Inject constructor(
 
     init {
         with(firestoreObserver) {
-            onEmptyData = {
+            addOnEmptyDataListener {
                 currentPage = FIRST_PAGE
                 toggleState<EmptyData<T>>()
                 viewController.showEmptyProgress(false)
@@ -84,7 +84,9 @@ class Paginator<T> @Inject constructor(
 
     companion object {
         const val FIRST_PAGE = 1
-        const val PAGE_SIZE = 20
-        const val TRIGGER_OFFSET = 4
+        const val LIMIT = 1
+
+        //min is 1
+        const val TRIGGER_OFFSET = 1
     }
 }

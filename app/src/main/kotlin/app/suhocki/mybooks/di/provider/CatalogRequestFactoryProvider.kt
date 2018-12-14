@@ -14,10 +14,10 @@ class CatalogRequestFactoryProvider @Inject constructor(
 
     override fun get(): (Int) -> List<UiItem> = { page ->
         val pageData = firestoreObserver.observePage(
-            page.dec() * Paginator.PAGE_SIZE,
-            Paginator.PAGE_SIZE
+            page.dec() * Paginator.LIMIT,
+            Paginator.LIMIT
         )
-        listTools.addProgressAndSetTrigger(pageData, Paginator.PAGE_SIZE)
+        listTools.addProgressAndSetTrigger(pageData, Paginator.LIMIT)
         pageData
     }
 }

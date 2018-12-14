@@ -9,6 +9,7 @@ import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.di.*
+import app.suhocki.mybooks.domain.ListTools
 import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.domain.repository.BannersRepository
@@ -44,8 +45,10 @@ class CatalogPresenter @Inject constructor(
     private val resourceManager: ResourceManager,
     private val adsManager: AdsManager,
     private val remoteConfigurator: RemoteConfiguration,
+    private val allData: MutableList<UiItem>,
+    private val listTools: ListTools,
     private val paginator: Paginator<UiItem>
-) : MvpPresenter<CatalogView>(), AnkoLogger {
+    ) : MvpPresenter<CatalogView>(), AnkoLogger {
 
     init {
         setViewState(mvpViewState)
@@ -54,8 +57,28 @@ class CatalogPresenter @Inject constructor(
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        firestoreObserver.onDataUpdated = {
-            uiThread { viewState.showData(it) }
+        with(firestoreObserver) {
+            addOnEmptyDataListener {
+                allData.clear()
+            }
+            onResubscribe = {
+                allData.subList(it, allData.size).clear()
+            }
+            onResubscribedData = {
+                allData.addAll(it)
+            }
+            onDataUpdated = {
+                uiThread { viewState.showData(allData) }
+            }
+            onNotFullPage = {
+                allData.removeAll { it is PageProgress }
+            }
+            onFullPage = {
+                listTools.addProgressAndSetTrigger(allData, Paginator.LIMIT)
+            }
+            onPageUpdate = { pageData, offset ->
+                listTools.updatePageData(allData, pageData, offset, Paginator.LIMIT)
+            }
         }
 
         loadData()
@@ -241,7 +264,6 @@ class CatalogPresenter @Inject constructor(
         adsManager.onAdFlowFinished()
         paginator.release()
         firestoreObserver.dispose()
-        firestoreObserver.onDataUpdated = null
     }
 
     fun removePageProgress(items: List<UiItem>) {

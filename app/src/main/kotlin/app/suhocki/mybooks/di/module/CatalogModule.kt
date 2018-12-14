@@ -3,6 +3,7 @@ package app.suhocki.mybooks.di.module
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
+import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.di.*
 import app.suhocki.mybooks.di.provider.CatalogRequestFactoryProvider
 import app.suhocki.mybooks.domain.model.Category
@@ -54,6 +55,10 @@ class CatalogModule(
 
         bind(MutableList::class.java)
             .toInstance(mutableListOf<UiItem>())
+
+        bind(String::class.java)
+            .withName(FirestoreCollection::class.java)
+            .toInstance(FirestoreRepository.CATEGORIES)
 
         bind(FirestoreObserver::class.java)
             .singletonInScope()
