@@ -14,9 +14,6 @@ annotation class Firestore
 annotation class ErrorReceiver
 
 @Qualifier
-annotation class CatalogRequestFactory
-
-@Qualifier
 annotation class DownloadDirectoryPath
 
 @Qualifier

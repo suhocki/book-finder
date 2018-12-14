@@ -22,7 +22,6 @@ import app.suhocki.mybooks.ui.base.listener.OnSearchListener
 import app.suhocki.mybooks.ui.books.BooksActivity
 import app.suhocki.mybooks.ui.details.DetailsActivity
 import app.suhocki.mybooks.ui.main.listener.NavigationHandler
-import com.arellomobile.mvp.MoxyReflector
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.AnkoContext
@@ -57,10 +56,9 @@ class CatalogFragment : BaseFragment(), CatalogView,
         val isSearchMode = arguments!!.getBoolean(ARG_IS_SEARCH_MODE)
         val dividerOffset = dimen(R.dimen.height_divider_decorator)
         val searchOffset = dip(4)
-        val viewState = MoxyReflector.getViewState(CatalogPresenter::class.java)
-        val catalogModule = CatalogModule(isSearchMode, dividerOffset, searchOffset, viewState)
 
-        scope.installModules(catalogModule)
+        scope.installModules(CatalogModule(isSearchMode, dividerOffset, searchOffset))
+
         val catalogPresenter = scope.getInstance(CatalogPresenter::class.java)
         Toothpick.closeScope(DI.CATALOG_SCOPE)
 

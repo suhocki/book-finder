@@ -1,20 +1,18 @@
 package app.suhocki.mybooks.presentation.base.paginator
 
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
-import app.suhocki.mybooks.di.CatalogRequestFactory
 import app.suhocki.mybooks.presentation.base.paginator.state.*
 import app.suhocki.mybooks.uiThread
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import java.util.concurrent.Future
-import javax.inject.Inject
 
 
-class Paginator<T> @Inject constructor(
+class Paginator<T> constructor(
+    firestoreObserver: FirestoreObserver,
     val viewController: PaginationView<T>,
     val currentData: MutableList<T>,
-    @CatalogRequestFactory private val requestFactory: (Int) -> List<T>,
-    firestoreObserver: FirestoreObserver
+    private val requestFactory: (Int) -> List<T>
 ) {
 
     private var currentState: State<T> = Empty(this, viewController)
@@ -22,21 +20,22 @@ class Paginator<T> @Inject constructor(
     internal var currentTask: Future<Unit>? = null
 
     init {
-        with(firestoreObserver) {
-            addOnEmptyDataListener {
+        firestoreObserver.addOnNewSnapshotListener { querySnapshot, offset, limit ->
+            if (querySnapshot.documents.size == limit) {
+                if (currentState !is Data) {
+                    toggleState<Data<T>>()
+                }
+            }
+            if (querySnapshot.documents.isEmpty() && offset == 0) {
                 currentPage = FIRST_PAGE
                 toggleState<EmptyData<T>>()
                 viewController.showEmptyProgress(false)
                 viewController.showEmptyView(true)
             }
-            onNotEmptyData = {
-                if (currentState !is Data) {
-                    toggleState<Data<T>>()
-                }
-            }
-            onCurrentPageChanged = {
-                currentPage = it
-            }
+        }
+
+        firestoreObserver.onPageChanged = {
+            currentPage = it
         }
     }
 

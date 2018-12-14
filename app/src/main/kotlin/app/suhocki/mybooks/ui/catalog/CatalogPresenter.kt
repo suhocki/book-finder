@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
+import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
+import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.room.entity.BookDbo
@@ -14,13 +16,15 @@ import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.presentation.base.paginator.PaginationView
 import app.suhocki.mybooks.presentation.base.paginator.Paginator
 import app.suhocki.mybooks.ui.base.entity.PageProgress
 import app.suhocki.mybooks.ui.base.entity.UiItem
+import app.suhocki.mybooks.ui.catalog.entity.UiCategory
 import app.suhocki.mybooks.uiThread
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.arellomobile.mvp.viewstate.MvpViewState
+import com.google.firebase.firestore.DocumentChange
 import org.jetbrains.anko.AnkoLogger
 import org.jetbrains.anko.doAsync
 import java.util.concurrent.Future
@@ -29,9 +33,6 @@ import javax.inject.Inject
 
 @InjectViewState
 class CatalogPresenter @Inject constructor(
-    mvpViewState: MvpViewState<CatalogView>,
-    private val firestoreObserver: FirestoreObserver,
-
     @IsSearchMode private val isSearchMode: AtomicBoolean,
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     @SearchAll private val searchEntity: Search,
@@ -42,46 +43,115 @@ class CatalogPresenter @Inject constructor(
     @Room private val booksRepository: BooksRepository,
     @Room private val bannersRepository: BannersRepository,
 
+    private val firestoreObserver: FirestoreObserver,
     private val resourceManager: ResourceManager,
     private val adsManager: AdsManager,
     private val remoteConfigurator: RemoteConfiguration,
     private val allData: MutableList<UiItem>,
     private val listTools: ListTools,
-    private val paginator: Paginator<UiItem>
-    ) : MvpPresenter<CatalogView>(), AnkoLogger {
+    private val mapper: Mapper
+) : MvpPresenter<CatalogView>(), AnkoLogger {
 
-    init {
-        setViewState(mvpViewState)
+    private val categoriesFactory: (Int) -> List<UiCategory> = { page: Int ->
+        val snapshot = firestoreObserver.observePage(
+            page.dec() * Paginator.LIMIT,
+            Paginator.LIMIT
+        )
+        mapper.map(snapshot, UiCategory::class.java)
     }
+
+    private val paginationView = object : PaginationView<UiItem> {
+        override fun showEmptyProgress(show: Boolean) {
+            viewState.showEmptyProgress(show)
+        }
+
+        override fun showEmptyError(show: Boolean, error: Throwable?) {
+            error?.let {
+                viewState.showEmptyError(show, error)
+            } ?: viewState.showEmptyError(show, null)
+        }
+
+        override fun showErrorMessage(error: Throwable) {
+            viewState.showErrorMessage(error)
+        }
+
+        override fun showEmptyView(show: Boolean) {
+            viewState.showEmptyView(show)
+        }
+
+        override fun showData(data: List<UiItem>) {
+            val mutableData = data.toMutableList()
+            listTools.addProgressAndSetTrigger(mutableData, Paginator.LIMIT)
+            viewState.showData(mutableData)
+        }
+
+        override fun showRefreshProgress(show: Boolean) {
+            viewState.showRefreshProgress(show)
+        }
+
+        override fun hidePageProgress() {
+            viewState.hidePageProgress()
+        }
+    }
+
+    private val paginator = Paginator(firestoreObserver, paginationView, allData, categoriesFactory)
+
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
+        loadData()
 
-        with(firestoreObserver) {
-            addOnEmptyDataListener {
+        firestoreObserver.addOnNewSnapshotListener onNewSnapshot@{ snapshot, offset, limit ->
+            val pageData: List<UiCategory> = mapper.map(snapshot, UiCategory::class.java)
+
+            if (pageData.isEmpty() && offset == 0) {
                 allData.clear()
             }
-            onResubscribe = {
-                allData.subList(it, allData.size).clear()
-            }
-            onResubscribedData = {
-                allData.addAll(it)
-            }
-            onDataUpdated = {
-                uiThread { viewState.showData(allData) }
-            }
-            onNotFullPage = {
-                allData.removeAll { it is PageProgress }
-            }
-            onFullPage = {
-                listTools.addProgressAndSetTrigger(allData, Paginator.LIMIT)
-            }
-            onPageUpdate = { pageData, offset ->
-                listTools.updatePageData(allData, pageData, offset, Paginator.LIMIT)
-            }
-        }
 
-        loadData()
+            listTools.updatePageData(allData, pageData, offset, Paginator.LIMIT)
+
+            val hasRemovedOrAddedItems =
+                snapshot.documentChanges.any {
+                    it.type == DocumentChange.Type.ADDED ||
+                            it.type == DocumentChange.Type.REMOVED
+                }
+
+            if (hasRemovedOrAddedItems) {
+                val disposedCount = firestoreObserver.dispose((offset + limit) / limit)
+
+                when {
+                    pageData.size < limit && disposedCount == 0 || pageData.isEmpty() ->
+                        allData.removeAll { it is PageProgress }
+
+                    pageData.size == limit && disposedCount == 0 ->
+                        listTools.addProgressAndSetTrigger(allData, Paginator.LIMIT)
+
+                    pageData.size == limit -> {
+                        val nextPageOffset = offset + limit
+                        allData.subList(nextPageOffset, allData.size).clear()
+                        firestoreObserver.removeSnapshots(nextPageOffset)
+
+                        doAsync {
+                            val querySnapshots = firestoreObserver
+                                .getResubscribedData(disposedCount, nextPageOffset, limit)
+
+                            val categories = querySnapshots
+                                .flatMap { it.toObjects(FirestoreCategory::class.java) }
+                                .mapTo(mutableListOf<UiCategory>()) { mapper.map(it) }
+
+                            allData.addAll(categories)
+                            listTools.addProgressAndSetTrigger(allData, Paginator.LIMIT)
+                            uiThread { viewState.showData(allData) }
+                        }
+                        return@onNewSnapshot
+                    }
+                }
+            }
+
+            uiThread { viewState.showData(allData) }
+
+            firestoreObserver.sendObserversCount()
+        }
     }
 
     fun loadData() {
