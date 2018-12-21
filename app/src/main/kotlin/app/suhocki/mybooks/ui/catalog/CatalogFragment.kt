@@ -211,10 +211,6 @@ class CatalogFragment : BaseFragment(), CatalogView,
         TODO("not implemented")
     }
 
-    override fun hidePageProgress() =
-        presenter.removePageProgress(adapter.items)
-
-
     companion object {
         private const val ARG_IS_SEARCH_MODE = "ARG_IS_SEARCH_MODE"
         const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"

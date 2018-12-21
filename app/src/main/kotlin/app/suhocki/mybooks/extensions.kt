@@ -196,3 +196,16 @@ fun Double.toRoundedPrice() =
 fun uiThread(action: () -> Unit) {
     Handler(Looper.getMainLooper()).post(action)
 }
+
+fun <T> MutableList<T>.replaceInRange(data: List<T>, offset: Int, limit: Int) {
+    if (data.isEmpty()) {
+        addAll(data)
+        return
+    }
+
+    val from = if (offset <= lastIndex) offset else size
+    val to = if (offset + limit <= lastIndex) offset + limit else size
+
+    subList(from, to).clear()
+    addAll(from, data)
+}

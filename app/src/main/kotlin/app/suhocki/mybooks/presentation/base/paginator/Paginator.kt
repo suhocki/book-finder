@@ -1,6 +1,5 @@
 package app.suhocki.mybooks.presentation.base.paginator
 
-import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.presentation.base.paginator.state.*
 import app.suhocki.mybooks.uiThread
 import org.jetbrains.anko.doAsync
@@ -9,35 +8,15 @@ import java.util.concurrent.Future
 
 
 class Paginator<T> constructor(
-    firestoreObserver: FirestoreObserver,
-    val viewController: PaginationView<T>,
-    val currentData: MutableList<T>,
+    val view: PaginatorView<T>,
+    val listOfT: MutableList<T>,
     private val requestFactory: (Int) -> List<T>
 ) {
 
-    private var currentState: State<T> = Empty(this, viewController)
+    var currentState: State<T> = Empty(this, view)
+
     internal var currentPage = FIRST_PAGE
     internal var currentTask: Future<Unit>? = null
-
-    init {
-        firestoreObserver.addOnNewSnapshotListener { querySnapshot, offset, limit ->
-            if (querySnapshot.documents.size == limit) {
-                if (currentState !is Data) {
-                    toggleState<Data<T>>()
-                }
-            }
-            if (querySnapshot.documents.isEmpty() && offset == 0) {
-                currentPage = FIRST_PAGE
-                toggleState<EmptyData<T>>()
-                viewController.showEmptyProgress(false)
-                viewController.showEmptyView(true)
-            }
-        }
-
-        firestoreObserver.onPageChanged = {
-            currentPage = it
-        }
-    }
 
     fun restart() {
         currentState.restart()
@@ -68,14 +47,14 @@ class Paginator<T> constructor(
 
     internal inline fun <reified T> toggleState() {
         currentState = when (T::class.java) {
-            AllData::class.java -> AllData(this, viewController)
-            Data::class.java -> Data(this, viewController)
-            Empty::class.java -> Empty(this, viewController)
-            EmptyData::class.java -> EmptyData(this, viewController)
-            EmptyError::class.java -> EmptyError(this, viewController)
-            EmptyProgress::class.java -> EmptyProgress(this, viewController)
-            PageProgress::class.java -> PageProgress(this, viewController)
-            Refresh::class.java -> Refresh(this, viewController)
+            AllData::class.java -> AllData(this, view)
+            Data::class.java -> Data(this, view)
+            Empty::class.java -> Empty(this, view)
+            EmptyData::class.java -> EmptyData(this, view)
+            EmptyError::class.java -> EmptyError(this, view)
+            EmptyProgress::class.java -> EmptyProgress(this, view)
+            PageProgress::class.java -> PageProgress(this, view)
+            Refresh::class.java -> Refresh(this, view)
             Released::class.java -> Released()
             else -> throw NotImplementedError("Cannot determine state: ${T::class.java}")
         }
@@ -83,9 +62,6 @@ class Paginator<T> constructor(
 
     companion object {
         const val FIRST_PAGE = 1
-        const val LIMIT = 1
-
-        //min is 1
-        const val TRIGGER_OFFSET = 1
+        const val LIMIT = 3
     }
 }

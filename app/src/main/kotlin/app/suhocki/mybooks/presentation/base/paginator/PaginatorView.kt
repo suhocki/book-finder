@@ -1,6 +1,6 @@
 package app.suhocki.mybooks.presentation.base.paginator
 
-interface PaginationView<T> {
+interface PaginatorView<T> {
     fun showEmptyProgress(show: Boolean)
     fun showEmptyError(show: Boolean, error: Throwable? = null)
     fun showEmptyView(show: Boolean)

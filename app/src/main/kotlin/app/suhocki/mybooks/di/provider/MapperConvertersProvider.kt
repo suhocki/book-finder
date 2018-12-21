@@ -25,7 +25,7 @@ class MapperConvertersProvider @Inject constructor(
     private val firestoreBannerToUiBanner: FirestoreBannerToUiBanner,
     private val categoryDboToFirestoreCategory: CategoryDboToFirestoreCategory,
     private val shopInfoToList: ShopInfoToList,
-    private val firestoreSnapshotToUiCategories: FirestoreSnapshotToUiCategories,
+    private val firestoreSnapshotToUiCategories: FirestoreDocumentToUiCategory,
     private val bookDboToFirestoreBook: BookDboToFirestoreBook
 ) : Provider<Set<Converter<*, *>>> {
 

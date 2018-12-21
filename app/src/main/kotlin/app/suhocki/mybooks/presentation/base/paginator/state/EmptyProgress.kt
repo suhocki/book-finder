@@ -1,12 +1,12 @@
 package app.suhocki.mybooks.presentation.base.paginator.state
 
-import app.suhocki.mybooks.presentation.base.paginator.PaginationView
 import app.suhocki.mybooks.presentation.base.paginator.Paginator
+import app.suhocki.mybooks.presentation.base.paginator.PaginatorView
 import app.suhocki.mybooks.presentation.base.paginator.State
 
 class EmptyProgress<T> constructor(
     private val paginator: Paginator<T>,
-    private val viewController: PaginationView<T>
+    private val view: PaginatorView<T>
 ) : State<T> {
 
     override fun restart() {
@@ -16,22 +16,22 @@ class EmptyProgress<T> constructor(
     override fun newData(data: List<T>) {
         if (data.isNotEmpty()) {
             paginator.toggleState<Data<T>>()
-            paginator.currentData.clear()
-            paginator.currentData.addAll(data)
+            paginator.listOfT.clear()
+            paginator.listOfT.addAll(data)
             paginator.currentPage = Paginator.FIRST_PAGE
-            viewController.showData(paginator.currentData)
-            viewController.showEmptyProgress(false)
+            view.showData(paginator.listOfT)
+            view.showEmptyProgress(false)
         } else {
             paginator.toggleState<EmptyData<T>>()
-            viewController.showEmptyProgress(false)
-            viewController.showEmptyView(true)
+            view.showEmptyProgress(false)
+            view.showEmptyView(true)
         }
     }
 
     override fun fail(error: Throwable) {
         paginator.toggleState<EmptyError<T>>()
-        viewController.showEmptyProgress(false)
-        viewController.showEmptyError(true, error)
+        view.showEmptyProgress(false)
+        view.showEmptyError(true, error)
     }
 
     override fun release() {

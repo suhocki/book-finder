@@ -1,7 +1,5 @@
 package app.suhocki.mybooks.di
 
-import android.support.annotation.StringDef
-import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import javax.inject.Qualifier
 
 @Qualifier
@@ -45,13 +43,3 @@ annotation class BookId
 
 @Qualifier
 annotation class Converters
-
-@Qualifier
-@StringDef(
-    FirestoreRepository.BOOKS,
-    FirestoreRepository.CATEGORIES,
-    FirestoreRepository.BANNERS,
-    FirestoreRepository.SHOP_INFO
-)
-@Retention(AnnotationRetention.SOURCE)
-annotation class FirestoreCollection

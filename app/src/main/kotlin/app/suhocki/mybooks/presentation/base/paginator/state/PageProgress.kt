@@ -1,20 +1,20 @@
 package app.suhocki.mybooks.presentation.base.paginator.state
 
-import app.suhocki.mybooks.presentation.base.paginator.PaginationView
 import app.suhocki.mybooks.presentation.base.paginator.Paginator
+import app.suhocki.mybooks.presentation.base.paginator.PaginatorView
 import app.suhocki.mybooks.presentation.base.paginator.State
 
 class PageProgress<T> constructor(
     private val paginator: Paginator<T>,
-    private val viewController: PaginationView<T>
+    private val view: PaginatorView<T>
 ) : State<T> {
 
     override fun restart() {
         paginator.toggleState<EmptyProgress<T>>()
 
-        viewController.showData()
-        viewController.hidePageProgress()
-        viewController.showEmptyProgress(true)
+        view.showData()
+        view.hidePageProgress()
+        view.showEmptyProgress(true)
 
         paginator.loadPage()
     }
@@ -22,20 +22,20 @@ class PageProgress<T> constructor(
     override fun newData(data: List<T>) {
         if (data.isNotEmpty()) {
             paginator.toggleState<Data<T>>()
-            paginator.currentData.addAll(data)
+            paginator.listOfT.addAll(data)
 
-            viewController.showData(paginator.currentData)
+            view.showData(paginator.listOfT)
         } else {
             paginator.toggleState<AllData<T>>()
-            viewController.hidePageProgress()
+            view.hidePageProgress()
         }
     }
 
     override fun refresh() {
         paginator.toggleState<Refresh<T>>()
 
-        viewController.hidePageProgress()
-        viewController.showRefreshProgress(true)
+        view.hidePageProgress()
+        view.showRefreshProgress(true)
 
         paginator.loadPage()
     }
@@ -43,8 +43,8 @@ class PageProgress<T> constructor(
     override fun fail(error: Throwable) {
         paginator.toggleState<Data<T>>()
 
-        viewController.hidePageProgress()
-        viewController.showErrorMessage(error)
+        view.hidePageProgress()
+        view.showErrorMessage(error)
     }
 
     override fun release() {

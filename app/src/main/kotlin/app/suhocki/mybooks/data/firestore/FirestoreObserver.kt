@@ -1,89 +1,107 @@
 package app.suhocki.mybooks.data.firestore
 
-import app.suhocki.mybooks.data.error.ErrorHandler
-import app.suhocki.mybooks.data.mapper.Mapper
-import app.suhocki.mybooks.di.FirestoreCollection
-import app.suhocki.mybooks.domain.ListTools
+import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.presentation.base.paginator.Paginator
+import app.suhocki.mybooks.replaceInRange
 import app.suhocki.mybooks.ui.base.eventbus.ActiveConnectionsCountEvent
-import com.google.firebase.firestore.DocumentSnapshot
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.*
 import org.greenrobot.eventbus.EventBus
+import org.jetbrains.anko.doAsync
 import javax.inject.Inject
 
 class FirestoreObserver @Inject constructor(
-    @FirestoreCollection private val collectionName: String,
     private val firestore: FirebaseFirestore,
-    val mapper: Mapper,
-    private val listTools: ListTools,
-    private val errorHandler: ErrorHandler
+    @FirestoreCollection private val collectionName: String,
+    @ErrorReceiver private val errorReceiver: (Throwable) -> Unit
 ) {
-
     private val allSnapshots = mutableListOf<DocumentSnapshot>()
     private var observers = mutableListOf<ListenerRegistration>()
 
-    var onPageChanged: ((Int) -> Unit)? = null
+    lateinit var onPageChanged: (Int) -> Unit
 
-    private val onNewSnapshotListeners = mutableListOf<(QuerySnapshot, Int, Int) -> Unit>()
+    lateinit var onUpdate: (documentUpdates: List<DocumentSnapshot>, offset: Int, limit: Int) -> Unit
 
-    fun observePage(offset: Int, limit: Int): QuerySnapshot {
+    lateinit var onWaitForNext: () -> Unit
+
+    fun observePage(offset: Int, limit: Int): List<DocumentSnapshot> {
         var snapshot: QuerySnapshot? = null
 
         val observer = configureCurrentPage(offset, limit)
             .addSnapshotListener { newSnapshot, firestoreException ->
                 if (newSnapshot == null) {
-                    errorHandler.handleError(firestoreException!!)
+                    errorReceiver.invoke(firestoreException!!)
                     return@addSnapshotListener
                 }
-                listTools.updatePageData(allSnapshots, newSnapshot.documents, offset, limit)
+
+                allSnapshots.replaceInRange(newSnapshot.documents, offset, limit)
+
                 if (snapshot == null) {
                     snapshot = newSnapshot
-                    return@addSnapshotListener
+                } else {
+                    handleDocumentUpdates(newSnapshot, offset, limit)
+                    sendObserversCount()
                 }
-                onNewSnapshotListeners.forEach {
-                    it.invoke(newSnapshot, offset, limit)
-                }
+
             }
         while (snapshot == null) {
         }
         observers.add(observer)
+        onPageChanged(observers.size)
         sendObserversCount()
 
-        return snapshot!!
+        return snapshot!!.documents
     }
 
-    fun addOnNewSnapshotListener(listener: (QuerySnapshot, Int, Int) -> Unit) {
-        onNewSnapshotListeners.add(listener)
+    private fun handleDocumentUpdates(snapshot: QuerySnapshot, offset: Int, limit: Int) {
+        val documents = snapshot.documents
+        val currentPage = offset / limit
+        val lastObservingPage = observers.lastIndex
+        val isFullPage = documents.size == limit
+
+        if (!isFullPage && currentPage < lastObservingPage) {
+            dispose(offset / limit + 1)
+            onPageChanged(observers.size)
+        }
+
+        val hasAddedElement =
+            snapshot.documentChanges.any { it.type == DocumentChange.Type.ADDED }
+
+        if (isFullPage && currentPage < lastObservingPage && hasAddedElement) {
+            onWaitForNext()
+            val disposedCount = dispose(currentPage + 1)
+            allSnapshots.subList(offset + limit, allSnapshots.size).clear()
+
+            resubscribeFrom(offset + limit, limit, disposedCount) {
+                allSnapshots.replaceInRange(it, offset + limit, disposedCount * limit)
+                onUpdate(it, offset + limit, disposedCount * limit)
+            }
+            return
+        }
+
+        onUpdate(documents, offset, limit)
     }
 
     fun sendObserversCount() {
-        onPageChanged?.invoke(observers.size)
         EventBus.getDefault().postSticky(ActiveConnectionsCountEvent(observers.size))
     }
 
-    fun getResubscribedData(
-        disposedCount: Int,
+    fun resubscribeFrom(
         offset: Int,
-        limit: Int
-    ): List<QuerySnapshot> {
-        val querySnapshots = mutableListOf<QuerySnapshot>()
-
-        for (index in 0 until disposedCount) {
+        limit: Int,
+        pagesCount: Int,
+        onDocumentsLoaded: (List<DocumentSnapshot>) -> Unit
+    ) = doAsync {
+        val documents = mutableListOf<DocumentSnapshot>()
+        for (index in 0 until pagesCount) {
             val newOffset = offset + index * Paginator.LIMIT
-            val pageQuerySnapshot = observePage(newOffset, limit)
+            val pageDocuments = observePage(newOffset, limit)
 
-            querySnapshots.add(pageQuerySnapshot)
-            if (pageQuerySnapshot.documents.size < limit) {
+            documents.addAll(pageDocuments)
+            if (pageDocuments.size < limit) {
                 break
             }
         }
-        return querySnapshots
-    }
-
-    fun removeSnapshots(removeFromIndex: Int) {
-        allSnapshots.subList(removeFromIndex, allSnapshots.size).clear()
+        onDocumentsLoaded.invoke(documents)
     }
 
     private fun configureCurrentPage(offset: Int, limit: Int) =
@@ -98,17 +116,11 @@ class FirestoreObserver @Inject constructor(
             }
             .limit(limit.toLong())
 
-    fun dispose(startPage: Int = 0): Int {
-        if (observers.isEmpty()) return 0
-
-        val startFromIndex =
-            if (startPage > observers.size) observers.size
-            else startPage
-        val oldObservers = observers.subList(startFromIndex, observers.size)
-        val disposedCount = oldObservers.size
-        oldObservers.forEach { it.remove() }
-        oldObservers.clear()
-
-        return disposedCount
-    }
+    fun dispose(fromPage: Int = 0) =
+        with(observers.subList(fromPage, observers.size)) {
+            val subListSize = size
+            forEach { it.remove() }
+            clear()
+            subListSize
+        }
 }
