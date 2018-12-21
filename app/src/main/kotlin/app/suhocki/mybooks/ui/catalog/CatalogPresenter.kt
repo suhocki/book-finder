@@ -128,14 +128,16 @@ class CatalogPresenter @Inject constructor(
                         } else {
                             paginator.toggleState<AllData<UiItem>>()
                             uiItems.removeAll { it is PageProgress }
+                            uiItems.subList(offset, uiItems.size).clear()
+                            uiItems.addAll(categories)
                         }
                     }
 
-                    limit -> {
+                    limit - offset-> {
                         paginator.toggleState<Data<UiItem>>()
                         uiItems.removeAll { it is PageProgress }
-                        uiItems[uiItems.lastIndex - TRIGGER_OFFSET].isNextPageTrigger = true
                         uiItems.replaceInRange(categories, offset, limit)
+                        uiItems[uiItems.lastIndex - TRIGGER_OFFSET].isNextPageTrigger = true
                         uiItems.add(PageProgress())
                     }
 

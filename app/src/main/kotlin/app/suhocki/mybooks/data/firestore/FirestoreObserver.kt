@@ -67,15 +67,15 @@ class FirestoreObserver @Inject constructor(
             snapshot.documentChanges.any { it.type == DocumentChange.Type.ADDED }
 
         if (isFullPage && currentPage < lastObservingPage && hasAddedElement) {
-            onWaitForNext()
             val disposedCount = dispose(currentPage + 1)
-            allSnapshots.subList(offset + limit, allSnapshots.size).clear()
+            val nextPageOffset = offset + limit
+            allSnapshots.subList(nextPageOffset, allSnapshots.size).clear()
 
-            resubscribeFrom(offset + limit, limit, disposedCount) {
-                allSnapshots.replaceInRange(it, offset + limit, disposedCount * limit)
-                onUpdate(it, offset + limit, disposedCount * limit)
+            resubscribeFrom(nextPageOffset, limit, disposedCount) {
+                allSnapshots.addAll(it)
+                onWaitForNext()
+                onUpdate(it, nextPageOffset, nextPageOffset + disposedCount * limit)
             }
-            return
         }
 
         onUpdate(documents, offset, limit)
@@ -85,7 +85,7 @@ class FirestoreObserver @Inject constructor(
         EventBus.getDefault().postSticky(ActiveConnectionsCountEvent(observers.size))
     }
 
-    fun resubscribeFrom(
+    private fun resubscribeFrom(
         offset: Int,
         limit: Int,
         pagesCount: Int,
