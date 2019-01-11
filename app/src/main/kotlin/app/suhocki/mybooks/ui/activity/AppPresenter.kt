@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.main
+package app.suhocki.mybooks.ui.activity
 
 import app.suhocki.mybooks.data.preferences.PreferencesRepository
 import com.arellomobile.mvp.InjectViewState
@@ -6,17 +6,13 @@ import com.arellomobile.mvp.MvpPresenter
 import javax.inject.Inject
 
 @InjectViewState
-class MainPresenter @Inject constructor(
+class AppPresenter @Inject constructor(
     private val settingsRepository: PreferencesRepository
-) : MvpPresenter<MainView>() {
+) : MvpPresenter<AppView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        val mode = settingsRepository.isAdminModeEnabled
-        viewState.showAdminMode(mode)
-    }
-
-    fun updateActiveConnectionsCount(count: Int) {
-        viewState.showActiveConnectionsCount(count)
+        val isDebugPanelEnabled = settingsRepository.isDebugPanelEnabled
+        viewState.showDebugPanel(isDebugPanelEnabled)
     }
 }

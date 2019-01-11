@@ -1,4 +1,4 @@
-package app.suhocki.mybooks.ui.main.listener
+package app.suhocki.mybooks.ui.activity.listener
 
 interface NavigationHandler {
 

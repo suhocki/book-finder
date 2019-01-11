@@ -1,13 +1,10 @@
-package app.suhocki.mybooks.ui.main
+package app.suhocki.mybooks.ui.activity
 
 import com.arellomobile.mvp.MvpView
 import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface MainView : MvpView {
-
-    fun showAdminMode(enabled: Boolean)
+interface AppView : MvpView {
     fun showDebugPanel(show: Boolean)
-    fun showActiveConnectionsCount(count: Int)
 }
