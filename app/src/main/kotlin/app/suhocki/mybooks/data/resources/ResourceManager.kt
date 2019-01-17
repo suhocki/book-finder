@@ -1,16 +1,16 @@
 package app.suhocki.mybooks.data.resources
 
+import android.content.Context
 import android.support.annotation.ArrayRes
 import android.support.annotation.StringRes
-import app.suhocki.mybooks.data.context.ContextManager
 import app.suhocki.mybooks.getStringArrayIdentifiers
 import javax.inject.Inject
 
 class ResourceManager @Inject constructor(
-    private val contextManager: ContextManager
+    private val context: Context
 ) {
 
-    private val resources by lazy { contextManager.currentContext.resources }
+    private val resources by lazy { context.resources }
 
     fun getString(@StringRes id: Int) =
         resources.getString(id)!!

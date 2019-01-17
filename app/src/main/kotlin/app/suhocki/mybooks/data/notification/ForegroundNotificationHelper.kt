@@ -10,10 +10,9 @@ import android.os.Build
 import android.support.annotation.StringRes
 import android.support.v4.app.NotificationCompat
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.data.context.ContextManager
 import app.suhocki.mybooks.data.resources.ResourceManager
+import app.suhocki.mybooks.ui.activity.AppActivity
 import app.suhocki.mybooks.ui.admin.background.UploadService
-import app.suhocki.mybooks.ui.main.MainActivity
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.notificationManager
 import javax.inject.Inject

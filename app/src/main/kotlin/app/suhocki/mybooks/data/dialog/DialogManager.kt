@@ -5,18 +5,18 @@ import android.support.annotation.StringRes
 import android.support.v7.app.AlertDialog
 import android.view.Gravity
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.data.context.ContextManager
+import android.content.Context
 import app.suhocki.mybooks.ui.base.materialButton
 import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import javax.inject.Inject
 
 class DialogManager @Inject constructor(
-    private val contextManager: ContextManager
+    private val context: Context
 ) {
     fun showErrorDialog(@StringRes messageRes: Int, onRetry: () -> Unit) {
         AlertDialog.Builder(
-            contextManager.currentContext,
+            context,
             R.style.Theme_MaterialComponents_Light_Dialog_Alert
         ).setMessage(messageRes)
             .setPositiveButton(R.string.retry) { _, _ -> onRetry() }
@@ -31,7 +31,7 @@ class DialogManager @Inject constructor(
         resultListener: (Boolean, Boolean) -> Unit
     ) {
         var dialog: DialogInterface? = null
-        dialog = contextManager.currentContext
+        dialog = context
             .alert {
                 customView {
                     verticalLayout {
