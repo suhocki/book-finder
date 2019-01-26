@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Theme colors-->
     <color name="colorPrimary">#C30008</color>
     <color name="colorPrimaryDark">#8a0000</color>
     <color name="colorAccent">#C30008</color>
+    <!--Menu colors-->
+    <color name="selectedOverlay">#2aC30008</color>
+
     <color name="colorGray">#F4F4F4</color>
     <color name="colorWhite">#FFF</color>
     <color name="colorDarkGray">#DADCE0</color>
