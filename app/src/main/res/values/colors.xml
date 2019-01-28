@@ -5,13 +5,14 @@
     <color name="colorPrimaryDark">#8a0000</color>
     <color name="colorAccent">#C30008</color>
     <!--Menu colors-->
-    <color name="selectedOverlay">#2aC30008</color>
+    <color name="selectedOverlay">#1fC30008</color>
+    <color name="menuIconColor">#6B6B6B</color>
 
     <color name="colorGray">#F4F4F4</color>
     <color name="colorWhite">#FFF</color>
     <color name="colorDarkGray">#DADCE0</color>
     <color name="colorDescriptionBackground">#88FFFFFF</color>
-    <color name="colorDarkerGray">#878787</color>
+    <color name="colorDarkerGray">#757575</color>
     <color name="colorBlack">#212121</color>
     <color name="colorGreen">#00C853</color>
 </resources>
