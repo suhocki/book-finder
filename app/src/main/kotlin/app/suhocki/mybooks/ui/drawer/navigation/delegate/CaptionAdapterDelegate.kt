@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.drawer.navigation.delegate
 
 import android.content.Context
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
@@ -31,15 +32,15 @@ class CaptionAdapterDelegate :
     ) = holder.bind(item)
 
     inner class ViewHolder(val ui: Ui) :
-        RecyclerView.ViewHolder(ui.parentView) {
+        RecyclerView.ViewHolder(ui.parent) {
 
         fun bind(item: Caption) {
-            ui.textView.textResource = item.textRes
+            ui.textView.text = item.text
         }
     }
 
     inner class Ui(context: Context) : AnkoComponent<Context> {
-        lateinit var parentView: View
+        lateinit var parent: View
         lateinit var textView: TextView
 
         init {
@@ -47,26 +48,26 @@ class CaptionAdapterDelegate :
         }
 
         override fun createView(ui: AnkoContext<Context>): View {
-            parentView = ui.verticalLayout {
+            parent = ui.verticalLayout {
+                lparams(matchParent)
 
                 frameLayout {
-                    backgroundColorResource = R.color.colorDarkerGray
-                }.lparams(matchParent, dip(1))
+                    backgroundColorResource = R.color.colorDarkGray
+                }.lparams(matchParent, dip(2)) {
+                    topMargin = dip(4)
+                }
 
                 textView {
                     textView = this
+                    typeface = ResourcesCompat.getFont(context, R.font.roboto)
                     gravity = Gravity.CENTER_VERTICAL
-                    textAppearance = R.style.TextAppearance_AppCompat_Caption
+                    textColorResource = R.color.colorDarkerGray
                 }.lparams(matchParent, matchParent) {
                     leftMargin = dip(16)
+                    verticalMargin = dip(20)
                 }
-            }.apply {
-                rootView.layoutParams = ViewGroup.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    dimenAttr(R.attr.actionBarSize)
-                )
             }
-            return parentView
+            return parent
         }
     }
 }

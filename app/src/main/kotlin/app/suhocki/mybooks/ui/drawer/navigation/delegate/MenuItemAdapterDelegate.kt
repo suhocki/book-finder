@@ -1,12 +1,11 @@
 package app.suhocki.mybooks.ui.drawer.navigation.delegate
 
 import android.content.Context
-import android.support.v4.content.ContextCompat
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.ui.drawer.navigation.delegate.MenuItemAdapterDelegate.ViewHolder
@@ -41,12 +40,21 @@ class MenuItemAdapterDelegate(
             ui.parent.onClick { onMenuItemClick(item) }
         }
 
-        fun bind(item: MenuItem) = with(ui.textView) {
-            this@ViewHolder.item = item
-            val drawableStart = ContextCompat.getDrawable(context, item.iconRes)
-            setCompoundDrawablesWithIntrinsicBounds(drawableStart, null, null, null)
-            textResource = item.nameRes
-            isSelected = item.isSelected
+        fun bind(item: MenuItem) {
+            with(ui.parent) {
+                this@ViewHolder.item = item
+                isSelected = item.isSelected
+
+                with(ui.textView) {
+                    textResource = item.nameRes
+
+                    val icon = ResourcesCompat.getDrawable(resources, item.iconRes, context.theme)!!
+                    setCompoundDrawablesWithIntrinsicBounds(icon, null, null, null)
+                    compoundDrawablePadding = dip(26)
+
+                    setPadding(dip(16), 0, 0, 0)
+                }
+            }
         }
     }
 
@@ -60,17 +68,20 @@ class MenuItemAdapterDelegate(
 
         override fun createView(ui: AnkoContext<Context>): View {
             parent = ui.textView {
-                textView = this
-                backgroundResource = R.drawable.bg_menu_selector
-                gravity = Gravity.CENTER_VERTICAL
-                textAppearance = R.style.TextAppearance_AppCompat_Body2
-            }.apply {
-                val lparams = LinearLayout.LayoutParams(
+                layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    dimenAttr(R.attr.actionBarSize)
+                    dip(54)
                 )
-                lparams.leftMargin = dip(16)
-                rootView.layoutParams = lparams
+
+                textView = this
+                typeface = ResourcesCompat.getFont(context, R.font.roboto_medium)
+                backgroundResource = R.drawable.selector_menu_overlay
+
+                ResourcesCompat
+                    .getColorStateList(resources, R.color.selector_primary, context.theme)
+                    .let { setTextColor(it) }
+
+                gravity = Gravity.CENTER_VERTICAL
             }
             return parent
         }

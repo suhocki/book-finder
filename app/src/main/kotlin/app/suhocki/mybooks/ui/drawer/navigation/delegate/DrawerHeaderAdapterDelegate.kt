@@ -1,11 +1,12 @@
 package app.suhocki.mybooks.ui.drawer.navigation.delegate
 
 import android.content.Context
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
+import android.widget.TextView
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.ui.drawer.navigation.delegate.DrawerHeaderAdapterDelegate.ViewHolder
 import app.suhocki.mybooks.ui.drawer.navigation.entity.DrawerHeaderItem
@@ -28,30 +29,48 @@ class DrawerHeaderAdapterDelegate :
         item: DrawerHeaderItem,
         holder: ViewHolder,
         payloads: MutableList<Any>
-    ) {
-    }
+    ) = holder.bind(item)
 
     inner class ViewHolder(val ui: Ui) :
-        RecyclerView.ViewHolder(ui.parentView)
+        RecyclerView.ViewHolder(ui.parent) {
+
+        fun bind(item: DrawerHeaderItem) {
+            ui.textView.textResource = item.textRes
+        }
+    }
 
     inner class Ui(context: Context) : AnkoComponent<Context> {
-        lateinit var parentView: View
+        lateinit var parent: View
+        lateinit var textView: TextView
 
         init {
-            createView(AnkoContext.create(context, context, false))
+            createView(AnkoContext.create(context, false))
         }
 
         override fun createView(ui: AnkoContext<Context>): View {
-            return ui.imageView(R.mipmap.ic_launcher_round) {
-                parentView = this
-            }.apply {
-                val lparams = FrameLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                lparams.gravity = Gravity.CENTER_HORIZONTAL
-                lparams.verticalMargin = dip(24)
-                rootView.layoutParams = lparams
+            return ui.verticalLayout {
+                this@Ui.parent = this
+
+                imageView(R.mipmap.ic_launcher_round)
+                    .lparams(matchParent, wrapContent) {
+                        gravity = Gravity.CENTER_HORIZONTAL
+                        verticalMargin = dip(24)
+                    }
+
+                textView {
+                    textView = this
+                    typeface = ResourcesCompat.getFont(context, R.font.roboto)
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }.lparams(matchParent, wrapContent)
+
+                frameLayout {
+                    backgroundColorResource = R.color.colorDarkGray
+                }.lparams(matchParent, dip(2)) {
+                    topMargin = dip(24)
+                    bottomMargin = dip(4)
+                }
+
+                lparams(matchParent)
             }
         }
     }

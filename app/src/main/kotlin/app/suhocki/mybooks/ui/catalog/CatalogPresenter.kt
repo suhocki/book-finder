@@ -7,7 +7,7 @@ import app.suhocki.mybooks.data.ads.AdsManager
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.mapper.Mapper
-import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
+import app.suhocki.mybooks.data.remoteconfig.RemoteConfig
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.di.*
@@ -15,13 +15,7 @@ import app.suhocki.mybooks.domain.model.Search
 import app.suhocki.mybooks.domain.model.SearchResult
 import app.suhocki.mybooks.domain.repository.BannersRepository
 import app.suhocki.mybooks.domain.repository.BooksRepository
-import app.suhocki.mybooks.presentation.base.paginator.Paginator
-import app.suhocki.mybooks.presentation.base.paginator.PaginatorView
-import app.suhocki.mybooks.presentation.base.paginator.state.AllData
-import app.suhocki.mybooks.presentation.base.paginator.state.Data
-import app.suhocki.mybooks.presentation.base.paginator.state.EmptyData
-import app.suhocki.mybooks.replaceInRange
-import app.suhocki.mybooks.ui.base.entity.PageProgress
+import app.suhocki.mybooks.presentation.global.paginator.FirestorePaginator
 import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.catalog.entity.UiCategory
 import com.arellomobile.mvp.InjectViewState
@@ -46,8 +40,7 @@ class CatalogPresenter @Inject constructor(
 
     private val resourceManager: ResourceManager,
     private val adsManager: AdsManager,
-    private val remoteConfigurator: RemoteConfiguration,
-    private val uiItems: MutableList<UiItem>,
+    private val remoteConfig: RemoteConfig,
     private val mapper: Mapper,
     firestore: FirebaseFirestore
 ) : MvpPresenter<CatalogView>() {
@@ -57,13 +50,19 @@ class CatalogPresenter @Inject constructor(
 
     private val categoriesFactory: (Int) -> List<UiCategory> = { page: Int ->
         val snapshot = firestoreObserver.observePage(
-            page.dec() * Paginator.LIMIT,
-            Paginator.LIMIT
+            page.dec() * LIMIT,
+            LIMIT
         )
-        snapshot.map { mapper.map<UiCategory>(it) }
+        val pageData = snapshot
+            .mapTo(mutableListOf()) { mapper.map<UiCategory>(it) }
+
+        if (pageData.size.rem(CatalogPresenter.LIMIT) == 0) {
+            pageData[pageData.lastIndex - TRIGGER_OFFSET].isNextPageTrigger = true
+        }
+        pageData
     }
 
-    private val paginatorView = object : PaginatorView<UiItem> {
+    private val paginatorView = object : FirestorePaginator.ViewController<UiItem> {
         override fun showEmptyProgress(show: Boolean) {
             viewState.showEmptyProgress(show)
         }
@@ -82,79 +81,30 @@ class CatalogPresenter @Inject constructor(
             viewState.showEmptyView(show)
         }
 
-        override fun showData(data: List<UiItem>) {
-            uiItems.removeAll { it is PageProgress }
-
-            if (uiItems.size.rem(Paginator.LIMIT) == 0) {
-                uiItems[uiItems.lastIndex - TRIGGER_OFFSET].isNextPageTrigger = true
-                uiItems.add(PageProgress())
-            }
-
-            viewState.showData(uiItems)
+        override fun showData(show: Boolean, data: List<UiItem>) {
+            viewState.showData(data)
         }
 
         override fun showRefreshProgress(show: Boolean) {
             viewState.showRefreshProgress(show)
         }
 
-        override fun hidePageProgress() {
-            uiItems.removeAll { it is PageProgress }
-            viewState.showData(uiItems)
+        override fun showPageProgress(show: Boolean) {
+            viewState.showPageProgress(show)
         }
     }
 
-    private val paginator = Paginator(paginatorView, uiItems, categoriesFactory)
+    private val paginator = FirestorePaginator(
+        categoriesFactory,
+        paginatorView,
+        firestoreObserver,
+        { firestoreData -> firestoreData.map { mapper.map<UiCategory>(it) } }
+    )
 
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         paginator.refresh()
-
-        with(firestoreObserver) {
-            onPageChanged = {
-                paginator.currentPage = it
-            }
-
-            onUpdate = { documentUpdates, offset, limit ->
-                val categories = documentUpdates.map { mapper.map<UiCategory>(it) }
-
-                when (documentUpdates.size) {
-                    0 -> {
-                        if (offset == 0) {
-                            paginator.toggleState<EmptyData<UiItem>>()
-                            uiItems.clear()
-                            viewState.showEmptyProgress(false)
-                            viewState.showEmptyView(true)
-                        } else {
-                            paginator.toggleState<AllData<UiItem>>()
-                            uiItems.removeAll { it is PageProgress }
-                            uiItems.subList(offset, uiItems.size).clear()
-                            uiItems.addAll(categories)
-                        }
-                    }
-
-                    limit - offset-> {
-                        paginator.toggleState<Data<UiItem>>()
-                        uiItems.removeAll { it is PageProgress }
-                        uiItems.replaceInRange(categories, offset, limit)
-                        uiItems[uiItems.lastIndex - TRIGGER_OFFSET].isNextPageTrigger = true
-                        uiItems.add(PageProgress())
-                    }
-
-                    else -> {
-                        paginator.toggleState<AllData<UiItem>>()
-                        uiItems.subList(offset, uiItems.size).clear()
-                        uiItems.addAll(categories)
-                    }
-                }
-
-                viewState.showData(uiItems)
-            }
-
-            onWaitForNext = {
-                uiItems.forEach { it.isNextPageTrigger = false }
-            }
-        }
     }
 
     fun loadNextPage() {
@@ -285,7 +235,7 @@ class CatalogPresenter @Inject constructor(
     }
 
     private fun getBanner(): Any? =
-        if (remoteConfigurator.isBannerAdEnabled) adsManager.getBannerAd()
+        if (remoteConfig.isBannerAdEnabled) adsManager.getBannerAd()
         else bannersRepository.getBanners().firstOrNull()
 
     private fun search(search: Search) =
@@ -333,8 +283,8 @@ class CatalogPresenter @Inject constructor(
         firestoreObserver.dispose()
     }
 
-
     companion object {
-        private const val TRIGGER_OFFSET = 0
+        const val LIMIT = 3
+        const val TRIGGER_OFFSET = 0
     }
 }
