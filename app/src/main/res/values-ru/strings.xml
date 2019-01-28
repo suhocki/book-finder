@@ -68,9 +68,9 @@
     <string name="error_filter_price_invalid">Цена От должна быть меньше цены До.</string>
     <string name="contacts">Контакты</string>
     <string name="address">Адрес:</string>
-    <string name="licences">Лицензии</string>
+    <string name="licenses">Лицензии</string>
     <string name="licenses_title">Библиотеки</string>
-    <string name="about_developer">О разработчике</string>
+    <string name="developer">Разработчик</string>
     <string name="about_this_application">Об этом приложении:</string>
     <string name="about">О приложении</string>
     <string name="working_time">Время работы:</string>
