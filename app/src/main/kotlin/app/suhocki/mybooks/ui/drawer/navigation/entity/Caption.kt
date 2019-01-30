@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.drawer.navigation.entity
 
 data class Caption(
-    val text: String
+    val text: String,
+    val clickable: Boolean = false
 )

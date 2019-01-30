@@ -20,7 +20,9 @@ class AppUI : AnkoComponent<Context> {
 
             frameLayout {
                 id = Ids.appContainer
-            }.lparams(matchParent, matchParent)
+            }.lparams(matchParent, 0) {
+                weight = 1f
+            }
 
             verticalLayout {
                 debugPanel = this

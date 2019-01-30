@@ -65,7 +65,7 @@ class DrawerHeaderAdapterDelegate :
 
                 frameLayout {
                     backgroundColorResource = R.color.colorDarkGray
-                }.lparams(matchParent, dip(2)) {
+                }.lparams(matchParent, dip(1)) {
                     topMargin = dip(24)
                     bottomMargin = dip(4)
                 }

@@ -7,15 +7,15 @@ import app.suhocki.mybooks.ui.drawer.navigation.entity.MenuItem
 import com.hannesdorfmann.adapterdelegates3.AbsDelegationAdapter
 
 class NavigationDrawerAdapter(
-    onMenuItemClick: (menuItem: MenuItem) -> Unit
+    onMenuItemClick: (menuItem: MenuItem) -> Unit,
+    onCaptionLongClick: () -> Unit
 ) : AbsDelegationAdapter<List<Any>>() {
 
     init {
-        delegatesManager.apply {
-            addDelegate(MenuItemAdapterDelegate(onMenuItemClick))
-            addDelegate(DrawerHeaderAdapterDelegate())
-            addDelegate(CaptionAdapterDelegate())
-        }
+        delegatesManager
+            .addDelegate(MenuItemAdapterDelegate(onMenuItemClick))
+            .addDelegate(DrawerHeaderAdapterDelegate())
+            .addDelegate(CaptionAdapterDelegate(onCaptionLongClick))
     }
 
     override fun getItemCount(): Int {

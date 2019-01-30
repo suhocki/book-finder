@@ -7,12 +7,12 @@ import javax.inject.Inject
 
 @InjectViewState
 class AppPresenter @Inject constructor(
-    private val settingsRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository
 ) : MvpPresenter<AppView>() {
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        val isDebugPanelEnabled = settingsRepository.isDebugPanelEnabled
+        val isDebugPanelEnabled = preferencesRepository.isDebugPanelEnabled
         viewState.showDebugPanel(isDebugPanelEnabled)
     }
 }

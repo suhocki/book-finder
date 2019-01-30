@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.drawer.navigation
 
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.data.preferences.PreferencesRepository
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.domain.model.Version
 import app.suhocki.mybooks.model.system.flow.FlowRouter
@@ -17,7 +18,8 @@ class NavigationDrawerPresenter @Inject constructor(
     version: Version,
     resourceManager: ResourceManager,
     private val router: FlowRouter,
-    private val menuController: GlobalMenuController
+    private val menuController: GlobalMenuController,
+    private val preferencesRepository: PreferencesRepository
 ) : MvpPresenter<NavigationDrawerView>() {
 
     private val data = mutableListOf(
@@ -29,7 +31,7 @@ class NavigationDrawerPresenter @Inject constructor(
         MenuItem(R.id.nav_licenses, R.string.licenses, R.drawable.ic_copyright),
         MenuItem(R.id.nav_changes, R.string.changelog, R.drawable.ic_changelog),
         MenuItem(R.id.nav_about_developer, R.string.developer, R.drawable.ic_developer),
-        Caption(resourceManager.getString(R.string.version, version.version, version.code))
+        Caption(resourceManager.getString(R.string.version, version.version, version.code), true)
     )
 
     override fun onFirstViewAttach() {
@@ -44,5 +46,20 @@ class NavigationDrawerPresenter @Inject constructor(
             .forEach { it.isSelected = it.id == menuItem.id }
 
         viewState.showData(data)
+    }
+
+    fun openAppSettings() {
+        viewState.showAppSettings(
+            preferencesRepository.isAdminModeEnabled,
+            preferencesRepository.isDebugPanelEnabled
+        )
+    }
+
+    fun applySettings(
+        adminEnabled: Boolean,
+        debugEnabled: Boolean
+    ) {
+        preferencesRepository.isAdminModeEnabled = adminEnabled
+        preferencesRepository.isDebugPanelEnabled = debugEnabled
     }
 }
