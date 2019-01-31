@@ -81,8 +81,10 @@ class FirestoreObserver @Inject constructor(
         onUpdate(documents, offset, limit)
     }
 
-    fun sendObserversCount() {
-        EventBus.getDefault().postSticky(ActiveConnectionsCountEvent(observers.size))
+    private fun sendObserversCount() {
+        uiThread {
+            firestoreConnectionsController.onConnectionsCountChanged(observers.size)
+        }
     }
 
     private fun resubscribeFrom(

@@ -14,6 +14,7 @@ import app.suhocki.mybooks.model.system.message.SystemMessage
 import app.suhocki.mybooks.model.system.message.SystemMessageNotifier
 import app.suhocki.mybooks.model.system.message.SystemMessageType
 import app.suhocki.mybooks.presentation.global.paginator.GlobalAppSettingsController
+import app.suhocki.mybooks.presentation.global.paginator.GlobalFirestoreConnectionsController
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.MessageDialogFragment
@@ -48,6 +49,8 @@ class AppActivity : MvpAppCompatActivity(), AppView {
     lateinit var systemMessageNotifier: SystemMessageNotifier
     @Inject
     lateinit var globalAppSettingsController: GlobalAppSettingsController
+    @Inject
+    lateinit var globalFirestoreConnectionsController: GlobalFirestoreConnectionsController
 
     private val currentFragment: BaseFragment<*>?
         get() = supportFragmentManager.findFragmentById(Ids.appContainer) as? BaseFragment<*>
@@ -88,6 +91,7 @@ class AppActivity : MvpAppCompatActivity(), AppView {
         super.onResumeFragments()
         subscribeOnSystemMessages()
         subscribeOnAppSettingsUpdates()
+        subscribeOnFirestoreConnections()
         navigatorHolder.setNavigator(navigator)
     }
 
@@ -95,6 +99,7 @@ class AppActivity : MvpAppCompatActivity(), AppView {
         navigatorHolder.removeNavigator()
         unsubscribeOnSystemMessages()
         unsubscribeOnAppSettingsUpdates()
+        unsubscribeOnFirestoreConnections()
         super.onPause()
     }
 
@@ -105,7 +110,7 @@ class AppActivity : MvpAppCompatActivity(), AppView {
     override fun showDebugPanel(show: Boolean) {
         TransitionManager.beginDelayedTransition(ui.parent)
 
-        ui.activeConnections.visibility =
+        ui.firestoreConnections.visibility =
                 if (show) View.VISIBLE
                 else View.GONE
     }
@@ -135,11 +140,21 @@ class AppActivity : MvpAppCompatActivity(), AppView {
         }
     }
 
-    private fun unsubscribeOnAppSettingsUpdates() {
-        globalAppSettingsController.eventReciever = null
+    private fun subscribeOnFirestoreConnections() {
+        globalFirestoreConnectionsController.eventReciever = { count ->
+            ui.firestoreConnections.text = getString(R.string.firestore_connection, count)
+        }
     }
 
     private fun unsubscribeOnSystemMessages() {
         systemMessageNotifier.notificationReceiver = null
+    }
+
+    private fun unsubscribeOnAppSettingsUpdates() {
+        globalAppSettingsController.eventReciever = null
+    }
+
+    private fun unsubscribeOnFirestoreConnections() {
+        globalFirestoreConnectionsController.eventReciever = null
     }
 }

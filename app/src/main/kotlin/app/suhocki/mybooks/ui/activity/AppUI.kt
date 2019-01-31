@@ -11,7 +11,7 @@ import org.jetbrains.anko.*
 class AppUI : AnkoComponent<Context> {
     lateinit var parent: ViewGroup
     lateinit var debugPanel: View
-    lateinit var activeConnections: TextView
+    lateinit var firestoreConnections: TextView
 
     override fun createView(ui: AnkoContext<Context>) = with(ui) {
 
@@ -29,8 +29,8 @@ class AppUI : AnkoComponent<Context> {
                 horizontalPadding = dip(8)
                 backgroundColorResource = R.color.colorBlack
 
-                textView(resources.getString(R.string.active_connections, 0)) {
-                    activeConnections = this
+                textView(resources.getString(R.string.firestore_connection, 0)) {
+                    firestoreConnections = this
                     textColorResource = R.color.colorGreen
                 }
 
