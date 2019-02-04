@@ -53,26 +53,20 @@ class FirestorePaginator<T : UiItem>(
             onUpdate = { documentUpdates, offset, limit ->
                 val categories = mapper.invoke(documentUpdates)
 
-                when (documentUpdates.size) {
-                    0 -> {
-                        if (offset == 0) {
-                            currentState = EMPTY_DATA()
-                            currentData.clear()
-                            viewController.showEmptyProgress(false)
-                            viewController.showEmptyView(true)
-                        } else {
-                            currentState = ALL_DATA()
-                            currentData.subList(offset, currentData.size).clear()
-                            currentData.addAll(categories)
-                        }
-                    }
-
-                    limit - offset -> {
+                when {
+                    documentUpdates.isNotEmpty() && documentUpdates.size.rem(limit) == 0 -> {
                         currentState = DATA()
                         currentData.replaceInRange(categories, offset, limit)
                         currentData[currentData.lastIndex - CatalogPresenter.TRIGGER_OFFSET].isNextPageTrigger =
                                 true
                         viewController.showPageProgress(true)
+                    }
+
+                    offset == 0 && documentUpdates.isEmpty() -> {
+                        currentState = EMPTY_DATA()
+                        currentData.clear()
+                        viewController.showEmptyProgress(false)
+                        viewController.showEmptyView(true)
                     }
 
                     else -> {
@@ -85,7 +79,7 @@ class FirestorePaginator<T : UiItem>(
                 viewController.showData(true, currentData)
             }
 
-            onWaitForNext = {
+            onLoadingUpdatedPages = {
                 currentData.forEach { it.isNextPageTrigger = false }
             }
         }
@@ -295,7 +289,8 @@ class FirestorePaginator<T : UiItem>(
             if (data.isNotEmpty()) {
                 currentState = DATA()
                 currentData.addAll(data)
-                currentPage++
+                /*currentPage++
+                * now it is controlled by onPageChanged*/
                 viewController.showPageProgress(false)
                 viewController.showData(true, currentData)
             } else {

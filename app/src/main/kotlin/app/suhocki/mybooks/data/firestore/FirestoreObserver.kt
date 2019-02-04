@@ -73,8 +73,8 @@ class FirestoreObserver @Inject constructor(
 
             resubscribeFrom(nextPageOffset, limit, disposedCount) {
                 allSnapshots.addAll(it)
-                onWaitForNext()
-                onUpdate(it, nextPageOffset, nextPageOffset + disposedCount * limit)
+                onLoadingUpdatedPages()
+                onUpdate(it, nextPageOffset, disposedCount * limit)
             }
         }
 
