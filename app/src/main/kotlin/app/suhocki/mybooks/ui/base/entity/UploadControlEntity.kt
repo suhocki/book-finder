@@ -2,7 +2,7 @@ package app.suhocki.mybooks.ui.base.entity
 
 import android.os.Parcel
 import android.os.Parcelable
-import app.suhocki.mybooks.data.notification.NotificationHelper
+import app.suhocki.mybooks.data.notification.ForegroundNotificationHelper
 import app.suhocki.mybooks.domain.model.admin.UploadControl
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import org.jetbrains.anko.AnkoLogger
@@ -33,7 +33,7 @@ class UploadControlEntity(
 
     fun sendProgress(
         progress: Int,
-        notificationHelper: NotificationHelper
+        notificationHelper: ForegroundNotificationHelper
     ) {
         if (isEnoughTimePassed()) {
             info { progress }

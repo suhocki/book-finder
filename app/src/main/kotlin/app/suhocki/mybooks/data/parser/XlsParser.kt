@@ -1,7 +1,7 @@
 package app.suhocki.mybooks.data.parser
 
 import app.suhocki.mybooks.data.mapper.Mapper
-import app.suhocki.mybooks.data.notification.NotificationHelper
+import app.suhocki.mybooks.data.notification.ForegroundNotificationHelper
 import app.suhocki.mybooks.data.parser.entity.InfoEntity
 import app.suhocki.mybooks.data.parser.entity.StatisticsEntity
 import app.suhocki.mybooks.data.parser.entity.XlsDocumentEntity
@@ -26,7 +26,7 @@ import javax.inject.Inject
 
 class XlsParser @Inject constructor(
     private val uploadControl: UploadControlEntity,
-    private val notificationHelper: NotificationHelper,
+    private val notificationHelper: ForegroundNotificationHelper,
     private val mapper: Mapper,
     private val preferencesRepository: PreferencesRepository
 ) : AnkoLogger {

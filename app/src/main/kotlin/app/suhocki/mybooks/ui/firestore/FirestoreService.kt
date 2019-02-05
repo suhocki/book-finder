@@ -7,7 +7,7 @@ import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.firestore.entity.FirestoreBook
 import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
 import app.suhocki.mybooks.data.mapper.Mapper
-import app.suhocki.mybooks.data.notification.NotificationHelper
+import app.suhocki.mybooks.data.notification.ForegroundNotificationHelper
 import app.suhocki.mybooks.data.preferences.PreferencesRepository
 import app.suhocki.mybooks.data.room.RoomRepository
 import app.suhocki.mybooks.data.room.entity.BookDbo
@@ -38,7 +38,7 @@ class FirestoreService : Service() {
     @Inject
     lateinit var firestoreRepository: FirestoreRepository
     @Inject
-    lateinit var notificationHelper: NotificationHelper
+    lateinit var notificationHelper: ForegroundNotificationHelper
     @Inject
     lateinit var settingsRepository: PreferencesRepository
     @Inject

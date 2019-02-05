@@ -7,7 +7,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.googledrive.RemoteFilesRepository
 import app.suhocki.mybooks.data.localstorage.LocalFilesRepository
 import app.suhocki.mybooks.data.mapper.Mapper
-import app.suhocki.mybooks.data.notification.NotificationHelper
+import app.suhocki.mybooks.data.notification.ForegroundNotificationHelper
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.data.room.RoomRepository
 import app.suhocki.mybooks.data.service.ServiceHandler
@@ -41,7 +41,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
     @Inject
     lateinit var serviceHandler: ServiceHandler
     @Inject
-    lateinit var notificationHelper: NotificationHelper
+    lateinit var notificationHelper: ForegroundNotificationHelper
     @Inject
     lateinit var resourceManager: ResourceManager
     @Inject
@@ -66,7 +66,7 @@ class UploadService : IntentService("UploadService"), AnkoLogger {
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         if (intent.extras.getString(ARG_COMMAND) == UploadService.Command.CANCEL) {
-            notificationManager.cancel(NotificationHelper.NOTIFICATION_ID)
+            notificationManager.cancel(ForegroundNotificationHelper.NOTIFICATION_ID)
             MPEventBus.getDefault().postToAll(UploadCompleteEvent(true))
             serviceHandler.killUploadServiceProcess()
         }

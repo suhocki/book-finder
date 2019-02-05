@@ -1,6 +1,6 @@
 package app.suhocki.mybooks.data.api.interceptor
 
-import app.suhocki.mybooks.data.notification.NotificationHelper
+import app.suhocki.mybooks.data.notification.ForegroundNotificationHelper
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import okhttp3.Interceptor
 import okhttp3.Response
@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class ProgressInterceptor @Inject constructor(
     private val uploadControl: UploadControlEntity,
-    private val notificationHelper: NotificationHelper
+    private val notificationHelper: ForegroundNotificationHelper
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {

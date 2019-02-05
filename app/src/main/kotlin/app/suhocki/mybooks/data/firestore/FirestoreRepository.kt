@@ -3,7 +3,7 @@ package app.suhocki.mybooks.data.firestore
 import app.suhocki.mybooks.data.firestore.entity.FirestoreBanner
 import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
 import app.suhocki.mybooks.data.mapper.Mapper
-import app.suhocki.mybooks.data.notification.NotificationHelper
+import app.suhocki.mybooks.data.notification.ForegroundNotificationHelper
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.domain.model.Category
@@ -23,7 +23,7 @@ import kotlin.math.roundToInt
 class FirestoreRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val mapper: Mapper,
-    private val notificationHelper: NotificationHelper
+    private val notificationHelper: ForegroundNotificationHelper
 ) : BooksRepository, CategoriesRepository, InfoRepository, BannersRepository {
 
     private val snapshots = mutableListOf<DocumentSnapshot>()
