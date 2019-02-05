@@ -5,7 +5,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_catalog"
-            android:icon="@drawable/ic_books"
+            android:icon="@drawable/ic_catalog"
             android:title="@string/catalog" />
         <item
             android:id="@+id/nav_search"

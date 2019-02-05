@@ -5,7 +5,7 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/nav_catalog"
-            android:icon="@drawable/ic_books"
+            android:icon="@drawable/ic_catalog"
             android:title="@string/catalog" />
         <item
             android:id="@+id/nav_search"
@@ -24,13 +24,13 @@
     <group android:id="@+id/menu_bottom">
         <item
             android:id="@+id/nav_licenses"
-            android:title="@string/licences" />
+            android:title="@string/licenses" />
         <item
             android:id="@+id/nav_changes"
             android:title="@string/changelog" />
         <item
             android:id="@+id/nav_about_developer"
-            android:title="@string/about_developer" />
+            android:title="@string/developer" />
         <item
             android:id="@+id/nav_version_number"
             android:enabled="false"
