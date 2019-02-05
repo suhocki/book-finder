@@ -2,8 +2,6 @@ package app.suhocki.mybooks.presentation.global.paginator
 
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.replaceInRange
-import app.suhocki.mybooks.ui.base.entity.UiItem
-import app.suhocki.mybooks.ui.catalog.CatalogPresenter
 import com.google.firebase.firestore.DocumentSnapshot
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -17,7 +15,7 @@ import java.util.concurrent.Future
  * - Implement applying firestore updates
  * - Replace rx.Disposable with java.util.concurrent.Future
  */
-class FirestorePaginator<T : UiItem>(
+class FirestorePaginator<T>(
     firestoreObserver: FirestoreObserver,
     private val requestFactory: (Int) -> List<T>,
     private val viewController: ViewController<T>,
@@ -57,8 +55,6 @@ class FirestorePaginator<T : UiItem>(
                     documentUpdates.isNotEmpty() && documentUpdates.size.rem(limit) == 0 -> {
                         currentState = DATA()
                         currentData.replaceInRange(categories, offset, limit)
-                        currentData[currentData.lastIndex - CatalogPresenter.TRIGGER_OFFSET].isNextPageTrigger =
-                                true
                         viewController.showPageProgress(true)
                     }
 
@@ -77,10 +73,6 @@ class FirestorePaginator<T : UiItem>(
                 }
 
                 viewController.showData(true, currentData)
-            }
-
-            onLoadingUpdatedPages = {
-                currentData.forEach { it.isNextPageTrigger = false }
             }
         }
     }
@@ -289,8 +281,7 @@ class FirestorePaginator<T : UiItem>(
             if (data.isNotEmpty()) {
                 currentState = DATA()
                 currentData.addAll(data)
-                /*currentPage++
-                * now it is controlled by onPageChanged*/
+//                currentPage++ now it is controlled by onPageChanged
                 viewController.showPageProgress(false)
                 viewController.showData(true, currentData)
             } else {
