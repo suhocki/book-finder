@@ -9,7 +9,6 @@ import javax.inject.Inject
 class ResourceManager @Inject constructor(
     private val context: Context
 ) {
-
     private val resources by lazy { context.resources }
 
     fun getString(@StringRes id: Int) =
@@ -17,6 +16,9 @@ class ResourceManager @Inject constructor(
 
     fun getString(@StringRes id: Int, double: Double) =
         resources.getString(id, double)!!
+
+    fun getString(@StringRes id: Int, string: String, int: Int) =
+        resources.getString(id, string, int)!!
 
     fun getStringArray(@ArrayRes id: Int): Array<String> =
         resources.getStringArray(id)!!
