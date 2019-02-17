@@ -2,12 +2,16 @@ package app.suhocki.mybooks.ui
 
 import android.support.annotation.IdRes
 import android.view.View
+import app.suhocki.mybooks.R
 
 object Ids {
+    //Recycler view
     @IdRes
     val recyclerCatalog = View.generateViewId()
     @IdRes
     val recyclerInfo = View.generateViewId()
+    @IdRes
+    val recyclerDrawerMenu = View.generateViewId()
     @IdRes
     val recyclerBooks = View.generateViewId()
     @IdRes
@@ -20,8 +24,19 @@ object Ids {
     val recyclerLicenses = View.generateViewId()
     @IdRes
     val recyclerChangelog = View.generateViewId()
+
+    //Fragment containers
     @IdRes
-    val mainContainer = View.generateViewId()
+    val appContainer = View.generateViewId()
+    @IdRes
+    val drawerMainContainer = View.generateViewId()
+    @IdRes
+    val mainFlowContainer = View.generateViewId()
+    @IdRes
+    val drawerMenuContainer = View.generateViewId()
+    @IdRes
+    val flowFragmentContainer = View.generateViewId()
+
     @IdRes
     val bottomMenu = View.generateViewId()
     @IdRes
@@ -30,12 +45,20 @@ object Ids {
     val recyclerSearch = View.generateViewId()
     @IdRes
     val filterContainer = View.generateViewId()
+
+    /*Navigation menu*/
     @IdRes
-    val navCatalog = View.generateViewId()
+    val navCatalog = R.id.nav_catalog
     @IdRes
-    val navSearch = View.generateViewId()
+    val navSearch = R.id.nav_search
     @IdRes
-    val navInfo = View.generateViewId()
+    val navInfo = R.id.nav_info
     @IdRes
-    val navAdmin = View.generateViewId()
+    val navAdmin = R.id.nav_admin
+    @IdRes
+    val navLicenses = View.generateViewId()
+    @IdRes
+    val navChanges = View.generateViewId()
+    @IdRes
+    val navAboutDeveloper = View.generateViewId()
 }

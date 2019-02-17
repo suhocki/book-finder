@@ -23,6 +23,10 @@ import android.view.inputmethod.InputMethodManager
 import app.suhocki.mybooks.domain.model.License
 import retrofit2.HttpException
 import retrofit2.Response
+import ru.terrakok.cicerone.Navigator
+import ru.terrakok.cicerone.android.support.SupportAppScreen
+import ru.terrakok.cicerone.commands.BackTo
+import ru.terrakok.cicerone.commands.Replace
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -208,4 +212,22 @@ fun <T> MutableList<T>.replaceInRange(data: List<T>, offset: Int, limit: Int) {
 
     subList(from, to).clear()
     addAll(from, data)
+}
+
+fun Any.objectScopeName() = "${javaClass.simpleName}_${hashCode()}"
+
+fun Navigator.setLaunchScreen(screen: SupportAppScreen) {
+    applyCommands(
+        arrayOf(
+            BackTo(null),
+            Replace(screen)
+        )
+    )
+}
+
+fun Activity.hideKeyboard() {
+    currentFocus?.apply {
+        val inputManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        inputManager.hideSoftInputFromWindow(windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+    }
 }

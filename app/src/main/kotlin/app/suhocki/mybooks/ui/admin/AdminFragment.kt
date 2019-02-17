@@ -2,30 +2,30 @@ package app.suhocki.mybooks.ui.admin
 
 import android.os.Bundle
 import android.support.annotation.StringRes
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
+import app.suhocki.mybooks.data.api.GoogleDriveApi
 import app.suhocki.mybooks.data.dialog.DialogManager
-import app.suhocki.mybooks.di.DI
-import app.suhocki.mybooks.di.module.AdminModule
 import app.suhocki.mybooks.di.module.GsonModule
+import app.suhocki.mybooks.di.provider.GoogleDriveApiProvider
 import app.suhocki.mybooks.domain.model.admin.UploadControl
 import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
-import app.suhocki.mybooks.ui.main.listener.NavigationHandler
+import app.suhocki.mybooks.ui.app.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
+import okhttp3.OkHttpClient
+import app.suhocki.mybooks.di.provider.GoogleDriveOkHttpProvider
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
-import org.jetbrains.anko.AnkoContext
-import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.textResource
+import toothpick.Scope
 import toothpick.Toothpick
+import toothpick.config.Module
 import javax.inject.Inject
 
-class AdminFragment : BaseFragment(), AdminView {
+class AdminFragment : BaseFragment<AdminUI>(), AdminView {
 
     @InjectPresenter
     lateinit var presenter: AdminPresenter
@@ -34,16 +34,28 @@ class AdminFragment : BaseFragment(), AdminView {
     fun providePresenter(): AdminPresenter =
         scope.getInstance(AdminPresenter::class.java)
 
-    private val scope by lazy {
-        Toothpick.openScopes(DI.APP_SCOPE, DI.GSON_SCOPE, DI.ADMIN_SCOPE)
-            .apply { installModules(GsonModule(), AdminModule()) }
+    override val scopeModuleInstaller = { scope: Scope ->
+        scope.installModules(
+            GsonModule(),
+            object : Module() {
+                init {
+                    bind(OkHttpClient::class.java)
+                        .toProvider(GoogleDriveOkHttpProvider::class.java)
+                        .providesSingletonInScope()
+
+                    bind(GoogleDriveApi::class.java)
+                        .toProvider(GoogleDriveApiProvider::class.java)
+                        .providesSingletonInScope()
+                }
+            }
+        )
     }
 
     @Inject
     lateinit var dialogManager: DialogManager
 
-    private val ui by lazy {
-        AdminUI<AdminFragment> {
+    override val ui by lazy {
+        AdminUI {
             presenter.loadFiles()
         }
     }
@@ -59,12 +71,6 @@ class AdminFragment : BaseFragment(), AdminView {
         super.onCreate(savedInstanceState)
         Toothpick.inject(this, scope)
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ) = ui.createView(AnkoContext.create(ctx, this@AdminFragment))
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

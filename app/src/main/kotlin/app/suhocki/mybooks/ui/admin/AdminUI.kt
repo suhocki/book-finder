@@ -1,9 +1,9 @@
 package app.suhocki.mybooks.ui.admin
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.support.design.widget.AppBarLayout
-import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.support.v7.widget.RecyclerView
@@ -28,9 +28,7 @@ import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
-class AdminUI<in T : Fragment>(
-    private val refresh: () -> Unit
-) : AnkoComponent<T> {
+class AdminUI(private val refresh: () -> Unit) : AnkoComponent<Context> {
     lateinit var recyclerView: RecyclerView
     lateinit var toolbar: Toolbar
     lateinit var progressBar: ProgressBar
@@ -38,7 +36,7 @@ class AdminUI<in T : Fragment>(
     lateinit var retry: View
     lateinit var errorText: TextView
 
-    override fun createView(ui: AnkoContext<T>) = with(ui) {
+    override fun createView(ui: AnkoContext<Context>) = with(ui) {
 
         coordinatorLayout {
             fitsSystemWindows = false

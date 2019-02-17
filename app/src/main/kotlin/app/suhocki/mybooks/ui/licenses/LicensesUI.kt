@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.licenses
 
+import android.content.Context
 import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
@@ -13,11 +14,11 @@ import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 
 
-class LicensesUI : AnkoComponent<LicensesActivity> {
+class LicensesUI : AnkoComponent<Context> {
 
     lateinit var recyclerView: RecyclerView
 
-    override fun createView(ui: AnkoContext<LicensesActivity>) = with(ui) {
+    override fun createView(ui: AnkoContext<Context>) = with(ui) {
 
         coordinatorLayout {
             fitsSystemWindows = false
@@ -25,12 +26,9 @@ class LicensesUI : AnkoComponent<LicensesActivity> {
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
-                    owner.setSupportActionBar(this)
-                    owner.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                     backgroundColorResource = R.color.colorPrimary
                     popupTheme = R.style.ThemeOverlay_AppCompat_Light
-                    setTitle(R.string.licences)
-                    owner.setSupportActionBar(this)
+                    setTitle(R.string.licenses)
                 }.lparams(matchParent, matchParent) {
                     scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
                 }

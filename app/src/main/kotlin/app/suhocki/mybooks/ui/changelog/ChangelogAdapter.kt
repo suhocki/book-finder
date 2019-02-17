@@ -1,37 +1,40 @@
 package app.suhocki.mybooks.ui.changelog
 
-import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
-import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
+import android.support.v7.util.DiffUtil
+import app.suhocki.mybooks.domain.model.Changelog
 import app.suhocki.mybooks.ui.admin.delegate.HeaderAdapterDelegate
-import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
-import app.suhocki.mybooks.ui.books.BooksDiffCallback
 import app.suhocki.mybooks.ui.changelog.delegate.ChangelogAdapterDelegate
-import app.suhocki.mybooks.ui.changelog.listener.OnDownloadFileClickListener
-import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
+import com.hannesdorfmann.adapterdelegates3.AsyncListDifferDelegationAdapter
 
 class ChangelogAdapter(
-    onDownloadFileClickListener: OnDownloadFileClickListener
-) :  ListDelegationAdapter<MutableList<Any>>() {
-
-    private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
-
-    private val diffConfig by lazy { EndActionAsyncDifferConfig.Builder<Any>(BooksDiffCallback()).build() }
-
-    private val differ by lazy { EndActionAsyncListDiffer(listUpdateCallback, diffConfig) }
+    diffCallback: ChangelogDiffCallback,
+    onDownloadFileClick: (String) -> Unit
+) : AsyncListDifferDelegationAdapter<Any>(diffCallback) {
 
     init {
-        delegatesManager.addDelegate(ChangelogAdapterDelegate(onDownloadFileClickListener))
+        delegatesManager.addDelegate(ChangelogAdapterDelegate(onDownloadFileClick))
         delegatesManager.addDelegate(HeaderAdapterDelegate())
     }
 
-    override fun getItemCount(): Int =
-        differ.currentList.size
+    fun setData(list: List<Any>) {
+        items = list.toList()
+    }
 
-    fun submitList(list: List<Any>) {
-        mutableListOf<Any>().apply {
-            addAll(list)
-            items = this
-            differ.submitList(this)
+    class ChangelogDiffCallback : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any) = when {
+            oldItem is Changelog && newItem is Changelog -> oldItem.version == newItem.version
+            else -> oldItem::class.java == newItem::class.java
+        }
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any) = when {
+            oldItem is Changelog && newItem is Changelog ->
+                oldItem.version == newItem.version &&
+                        oldItem.changes.contentDeepEquals(newItem.changes) &&
+                        oldItem.date == newItem.date &&
+                        oldItem.link == newItem.link
+
+            else -> true
         }
     }
+
 }

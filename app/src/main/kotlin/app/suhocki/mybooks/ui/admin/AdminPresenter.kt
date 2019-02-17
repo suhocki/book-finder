@@ -8,8 +8,8 @@ import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.domain.model.admin.UploadControl
-import app.suhocki.mybooks.ui.base.entity.PageProgress
 import app.suhocki.mybooks.ui.admin.entity.UploadControlEntity
+import app.suhocki.mybooks.ui.base.entity.Progress
 import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
 import app.suhocki.mybooks.ui.licenses.entity.HeaderEntity
 import com.arellomobile.mvp.InjectViewState
@@ -57,7 +57,7 @@ class AdminPresenter @Inject constructor(
         uploadControl: UploadControl
     ) = mutableListOf<Any>().apply {
         addAll(data)
-        removeAll { it is UploadControl || it is PageProgress || it is Header }
+        removeAll { it is UploadControl || it is Progress || it is Header }
         add(UPLOAD_CONTROL_POSITION, UploadControlEntity(uploadControl))
         viewState.showData(this)
     }
@@ -70,9 +70,9 @@ class AdminPresenter @Inject constructor(
 
     fun upload(file: File, items: MutableList<Any>) = mutableListOf<Any>().apply {
         addAll(items)
-        removeAll { it is Header || it is PageProgress || (it is File && it.id == file.id) }
+        removeAll { it is Header || it is Progress || (it is File && it.id == file.id) }
         add(UPLOADING_FILE_POSITION, file)
-        add(PROGRESS_POSITION, PageProgress())
+        add(PROGRESS_POSITION, Progress())
 
         viewState.showData(this)
         serviceHandler.startUploadService(file)

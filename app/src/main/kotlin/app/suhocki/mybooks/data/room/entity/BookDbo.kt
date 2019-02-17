@@ -10,7 +10,7 @@ import app.suhocki.mybooks.domain.model.Book
 @Entity(
     indices = [(Index(BookDbo.CATEGORY_ID))],
     tableName = BooksDatabase.Table.BOOKS,
-    primaryKeys = [BookDbo.PRODUCT_CODE],
+    primaryKeys = [BookDbo.ID],
     foreignKeys = [
         (ForeignKey(
             entity = CategoryDbo::class,
@@ -52,6 +52,6 @@ data class BookDbo(
         const val SHORT_NAME = "shortName"
         const val PRICE = "price"
         const val CATEGORY_ID = "categoryId"
-        const val PRODUCT_CODE = "id"
+        const val ID = "id"
     }
 }

@@ -4,6 +4,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.repository.LicenseRepository
+import app.suhocki.mybooks.model.system.flow.FlowRouter
 import app.suhocki.mybooks.ui.licenses.entity.HeaderEntity
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -16,7 +17,8 @@ import javax.inject.Inject
 class LicensesPresenter @Inject constructor(
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val licensesRepository: LicenseRepository,
-    private val resourceManager: ResourceManager
+    private val resourceManager: ResourceManager,
+    private val router: FlowRouter
 ) : MvpPresenter<LicensesView>() {
 
     override fun onFirstViewAttach() {
@@ -28,8 +30,10 @@ class LicensesPresenter @Inject constructor(
             data.add(header)
             data.addAll(licensesRepository.getLicenses())
             uiThread {
-                viewState.showLicenses(data)
+                viewState.showData(data)
             }
         }
     }
+
+    fun onBackPressed() = router.exit()
 }

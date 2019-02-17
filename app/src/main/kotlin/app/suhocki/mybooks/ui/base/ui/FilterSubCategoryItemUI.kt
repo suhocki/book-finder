@@ -17,7 +17,6 @@ class FilterSubCategoryItemUI : AnkoComponent<ViewGroup> {
     lateinit var checkBox: CheckBox
 
     override fun createView(ui: AnkoContext<ViewGroup>) = with(ui) {
-
         frameLayout {
             this@FilterSubCategoryItemUI.parent = this
             backgroundResource = R.color.colorWhite

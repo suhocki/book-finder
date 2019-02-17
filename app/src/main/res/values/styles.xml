@@ -4,13 +4,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@color/colorWhite</item>
-        <item name="android:colorBackground">@color/colorWhite</item>
-    </style>
-
-    <style name="SplashTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/splash</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorBackground">@color/colorWhite</item>
     </style>
 
     <style name="AccentProgressBar" parent="AppTheme">

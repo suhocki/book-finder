@@ -11,18 +11,16 @@ import android.support.annotation.StringRes
 import android.support.v4.app.NotificationCompat
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager
-import app.suhocki.mybooks.ui.activity.AppActivity
+import app.suhocki.mybooks.ui.app.AppActivity
 import app.suhocki.mybooks.ui.admin.background.UploadService
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.notificationManager
 import javax.inject.Inject
 
-class NotificationHelper @Inject constructor(
-    private val contextManager: ContextManager,
+class ForegroundNotificationHelper @Inject constructor(
+    private val context: Context,
     private val resourceManager: ResourceManager
 ) {
-    private val context: Context
-        get() = contextManager.applicationContext
     private val notificationManager: NotificationManager
         get() = context.notificationManager
 
@@ -47,7 +45,7 @@ class NotificationHelper @Inject constructor(
         val description = context.resources.getString(stepId)
         val cancelText = context.resources.getString(R.string.cancel)
 
-        val notification = getNotificationBuilder(MainActivity.TabPositions.TAB_POSITION_ADMIN)
+        val notification = getNotificationBuilder(0)
             .setContentTitle(title)
             .setShowWhen(false)
             .setContentText(description)
@@ -64,7 +62,7 @@ class NotificationHelper @Inject constructor(
         val title = getString(R.string.error)
         val description = getString(errorDescriptionRes)
         val pendingIntent = createPendingIntent()
-        return getNotificationBuilder(MainActivity.TabPositions.TAB_POSITION_ADMIN)
+        return getNotificationBuilder(1)
             .setSmallIcon(R.drawable.notification_error)
             .setContentTitle(title)
             .addAction(NotificationCompat.Action(0, getString(R.string.retry), pendingIntent))
@@ -77,7 +75,7 @@ class NotificationHelper @Inject constructor(
 
     fun showSuccessNotification(fileName: String) {
         val title = context.getString(R.string.success)
-        val intentForContent = context.intentFor<MainActivity>()
+        val intentForContent = context.intentFor<AppActivity>()
             .apply {
                 flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
                 action = Intent.ACTION_MAIN
@@ -85,7 +83,7 @@ class NotificationHelper @Inject constructor(
             }
         val intentContent = PendingIntent
             .getActivity(context, 0, intentForContent, PendingIntent.FLAG_UPDATE_CURRENT)
-        val notification = getNotificationBuilder(MainActivity.TabPositions.TAB_POSITION_ADMIN)
+        val notification = getNotificationBuilder(2)
             .setSmallIcon(R.drawable.ic_success)
             .setContentTitle(title)
             .setContentText(context.getString(R.string.file_uploaded, fileName))
@@ -99,12 +97,12 @@ class NotificationHelper @Inject constructor(
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 
-    private fun getNotificationBuilder(@MainActivity.TabPosition tabPosition: Int): NotificationCompat.Builder =
+    private fun getNotificationBuilder(tabPosition: Int): NotificationCompat.Builder =
         with(context) {
             val contentIntent = PendingIntent.getActivity(
                 this,
                 0,
-                intentFor<MainActivity>(MainActivity.SCREEN_TAG to tabPosition),
+                intentFor<AppActivity>("AppActivity.SCREEN_TAG" to tabPosition),
                 PendingIntent.FLAG_UPDATE_CURRENT
             )
             return NotificationCompat.Builder(this, CHANNEL_ID)

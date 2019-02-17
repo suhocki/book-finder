@@ -8,7 +8,6 @@ import app.suhocki.mybooks.ui.base.delegate.FilterPublisherAdapterDelegate
 import app.suhocki.mybooks.ui.base.delegate.SearchAdapterDelegate
 import app.suhocki.mybooks.ui.base.listener.OnFilterAuthorClickListener
 import app.suhocki.mybooks.ui.base.listener.OnFilterPublisherClickListener
-import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.filter.delegate.*
 import app.suhocki.mybooks.ui.filter.listener.*
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
@@ -18,7 +17,6 @@ class FilterAdapter(
     onSortPriceToggleListener: SortPriceListener,
     onSortNameToggleListener: SortNameListener,
     onFilterCategoryClickListener: OnFilterCategoryClickListener,
-    onSearchClickListener: OnSearchClickListener,
     onFilterAuthorClickListener: OnFilterAuthorClickListener,
     yearClickListener: OnFilterYearClickListener,
     onFilterPriceChangeListener: OnFilterPriceChangeListener,
@@ -40,7 +38,7 @@ class FilterAdapter(
             .addDelegate(FilterYearAdapterDelegate(yearClickListener))
             .addDelegate(FilterStatusAdapterDelegate(onFilterStatusClickListener))
             .addDelegate(FilterPriceAdapterDelegate(onFilterPriceChangeListener))
-            .addDelegate(SearchAdapterDelegate(onSearchClickListener))
+            .addDelegate(SearchAdapterDelegate())
             .addDelegate(SortNameAdapterDelegate(onSortNameToggleListener))
             .addDelegate(SortPriceAdapterDelegate(onSortPriceToggleListener))
             .addDelegate(EmptyCategoryAdapterDelegate())

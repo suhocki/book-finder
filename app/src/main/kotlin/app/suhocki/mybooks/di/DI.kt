@@ -1,7 +1,9 @@
 package app.suhocki.mybooks.di
 
 object DI {
-    const val APP_SCOPE = "APP_SCOPE"
+    //single scopes
+    const val APP_SCOPE = "app scope"
+    const val UI_SCOPE = "ui scope"
 
     const val CATALOG_SCOPE = "CATALOG_SCOPE"
 

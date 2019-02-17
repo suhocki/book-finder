@@ -1,30 +1,54 @@
 package app.suhocki.mybooks.ui.base.delegate
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
-import app.suhocki.mybooks.ui.admin.ui.ProgressItemUI
-import app.suhocki.mybooks.ui.base.entity.UiItem
-import app.suhocki.mybooks.ui.base.entity.PageProgress
-import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
-import org.jetbrains.anko.AnkoContext
+import app.suhocki.mybooks.R
+import app.suhocki.mybooks.ui.base.entity.Progress
+import com.hannesdorfmann.adapterdelegates3.AbsListItemAdapterDelegate
+import org.jetbrains.anko.*
 
 
-class ProgressAdapterDelegate : AdapterDelegate<MutableList<UiItem>>() {
+class ProgressAdapterDelegate :
+    AbsListItemAdapterDelegate<Progress, Any, ProgressAdapterDelegate.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
-        ViewHolder(ProgressItemUI().apply {
-            createView(AnkoContext.createReusable(parent.context, parent, false))
-        })
+    override fun onCreateViewHolder(
+        parent: ViewGroup
+    ) = ViewHolder(Ui(parent.context))
 
-    override fun isForViewType(items: MutableList<UiItem>, position: Int): Boolean =
-        with(items[position]) { this is PageProgress }
+    override fun isForViewType(
+        item: Any, items: MutableList<Any>,
+        position: Int
+    ) = items[position] is Progress
 
     override fun onBindViewHolder(
-        items: MutableList<UiItem>,
-        position: Int,
-        holder: RecyclerView.ViewHolder,
+        item: Progress,
+        holder: ProgressAdapterDelegate.ViewHolder,
         payloads: MutableList<Any>
-    ) = Unit
+    ) {
+    }
 
-    private inner class ViewHolder(ui: ProgressItemUI) : RecyclerView.ViewHolder(ui.parent)
+    inner class ViewHolder(val ui: ProgressAdapterDelegate.Ui) : RecyclerView.ViewHolder(ui.parent)
+
+    inner class Ui(context: Context) : AnkoComponent<Context> {
+        lateinit var parent: View
+
+        init {
+            createView(AnkoContext.create(context, context, false))
+        }
+
+        override fun createView(ui: AnkoContext<Context>) =
+            ui.frameLayout {
+                this@Ui.parent = this
+
+                themedProgressBar(R.style.AccentProgressBar).lparams {
+                    gravity = Gravity.CENTER_HORIZONTAL
+                }
+
+                lparams(matchParent, wrapContent)
+            }
+    }
+
 }

@@ -7,5 +7,5 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 @StateStrategyType(AddToEndSingleStrategy::class)
 interface ChangelogView : MvpView {
 
-    fun showChangelog(data: List<Any>)
+    fun showData(data: List<Any>)
 }

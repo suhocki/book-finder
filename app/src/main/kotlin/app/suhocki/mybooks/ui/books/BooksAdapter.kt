@@ -1,36 +1,66 @@
 package app.suhocki.mybooks.ui.books
 
-import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
-import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
-import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
-import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
+import android.support.v7.util.DiffUtil
+import android.support.v7.widget.RecyclerView
+import app.suhocki.mybooks.domain.model.Book
+import app.suhocki.mybooks.ui.base.delegate.ProgressAdapterDelegate
+import app.suhocki.mybooks.ui.base.entity.Progress
 import app.suhocki.mybooks.ui.books.delegate.BookAdapterDelegate
-import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
-
+import com.hannesdorfmann.adapterdelegates3.AsyncListDifferDelegationAdapter
 
 class BooksAdapter(
-    onBookClickListener: OnBookClickListener
-) : ListDelegationAdapter<MutableList<Any>>() {
-
-    private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
-
-    private val diffConfig by lazy { EndActionAsyncDifferConfig.Builder<Any>(BooksDiffCallback()).build() }
-
-    private val differ by lazy { EndActionAsyncListDiffer(listUpdateCallback, diffConfig) }
+    diffCallback: BooksDiffCallback,
+    onBookClick: (Book) -> Unit,
+    private val nextPageListener: () -> Unit
+) : AsyncListDifferDelegationAdapter<Any>(diffCallback) {
 
     init {
-        delegatesManager.addDelegate(BookAdapterDelegate(onBookClickListener))
+        delegatesManager
+            .addDelegate(BookAdapterDelegate(onBookClick))
+            .addDelegate(ProgressAdapterDelegate())
     }
 
-    override fun getItemCount(): Int =
-        differ.currentList.size
+    fun setData(list: List<Any>) {
+        items = list.toList()
+    }
 
-    fun submitList(list: List<Any>, onAnimationEnd: () -> Unit) {
-        listUpdateCallback.endAction = onAnimationEnd
-        mutableListOf<Any>().apply {
-            addAll(list)
-            items = this
-            differ.submitList(this)
+    fun showProgress(isVisible: Boolean) {
+        val newData = items.toMutableList()
+
+        if (isVisible && items.lastOrNull() !is Progress) {
+            newData.add(Progress())
+            items = newData
+        } else if (!isVisible && items.lastOrNull() is Progress) {
+            newData.removeAt(newData.lastIndex)
+            items = newData
         }
+    }
+
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: MutableList<Any?>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+
+        if (position == items.lastIndex) nextPageListener()
+    }
+
+    class BooksDiffCallback : DiffUtil.ItemCallback<Any>() {
+
+        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+            return if (oldItem is Book && newItem is Book) oldItem.id == newItem.id
+            else false
+        }
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any) =
+            when {
+                oldItem is Book && newItem is Book ->
+                    oldItem.shortName == newItem.shortName &&
+                            oldItem.price == newItem.price &&
+                            oldItem.iconLink == newItem.iconLink
+
+                else -> false
+            }
     }
 }

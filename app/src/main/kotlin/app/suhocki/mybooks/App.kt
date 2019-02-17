@@ -8,7 +8,6 @@ import android.os.Build
 import android.support.v7.app.AppCompatDelegate
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.AppModule
-import app.suhocki.mybooks.di.module.FirestoreModule
 import app.suhocki.mybooks.di.module.RoomModule
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
 import com.facebook.drawee.backends.pipeline.Fresco
@@ -18,6 +17,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.firebase.FirebaseApp
 import org.jetbrains.anko.notificationManager
 import toothpick.Toothpick
+import java.util.*
 
 
 @Suppress("unused")
@@ -26,6 +26,8 @@ open class App : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        appCode = UUID.randomUUID().toString()
+
         FirebaseApp.initializeApp(this)
         initAppScope()
         initNotificationChannel()
@@ -36,12 +38,9 @@ open class App : Application() {
     }
 
     private fun initAppScope() {
-        val appScope = Toothpick.openScope(DI.APP_SCOPE)
-        appScope.installModules(
-            AppModule(this),
-            RoomModule(),
-            FirestoreModule()
-        )
+        Toothpick
+            .openScope(DI.APP_SCOPE)
+            .installModules(AppModule(this), RoomModule())
     }
 
     private fun initNotificationChannel() {
@@ -72,6 +71,8 @@ open class App : Application() {
     }
 
     companion object {
+        lateinit var appCode: String
+            private set
         const val BASE_NOTIFICATION_ID = 1
         private const val CHANNEL_ID = "MyBooks notifications"
     }

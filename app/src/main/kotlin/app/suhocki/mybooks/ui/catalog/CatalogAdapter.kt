@@ -1,47 +1,40 @@
 package app.suhocki.mybooks.ui.catalog
 
-import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
-import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
-import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
+import app.suhocki.mybooks.domain.model.Category
+import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.ui.base.delegate.ProgressAdapterDelegate
-import app.suhocki.mybooks.ui.base.entity.UiItem
-import app.suhocki.mybooks.ui.base.listener.OnBookClickListener
-import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
-import app.suhocki.mybooks.ui.base.listener.OnSearchListener
-import app.suhocki.mybooks.ui.catalog.delegate.*
-import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
+import app.suhocki.mybooks.ui.base.entity.Progress
+import app.suhocki.mybooks.ui.catalog.delegate.CategoryAdapterDelegate
+import com.hannesdorfmann.adapterdelegates3.AsyncListDifferDelegationAdapter
 
 class CatalogAdapter(
-    private val loadNextPage: () -> Unit,
-    onCategoryClick: (String) -> Unit,
-    onBookClickListener: OnBookClickListener,
-    onSearchClickListener: OnSearchClickListener,
-    onSearchListener: OnSearchListener
-) : ListDelegationAdapter<MutableList<UiItem>>() {
-
-    private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
-
-    private val diffConfig by lazy {
-        EndActionAsyncDifferConfig.Builder<UiItem>(CatalogDiffCallback()).build()
-    }
-
-    private val differ by lazy { EndActionAsyncListDiffer(listUpdateCallback, diffConfig) }
+    diffCallback: CatalogDiffCallback,
+    categoryClickListener: (Category) -> Unit,
+    private val nextPageListener: () -> Unit
+) : AsyncListDifferDelegationAdapter<Any>(diffCallback) {
 
     init {
         delegatesManager
-            .addDelegate(BannerAdAdapterDelegate())
-            .addDelegate(CategoryAdapterDelegate(onCategoryClick))
-            .addDelegate(BannerAdapterDelegate())
+            .addDelegate(CategoryAdapterDelegate(categoryClickListener))
             .addDelegate(ProgressAdapterDelegate())
-            .addDelegate(HeaderAdapterDelegate())
-//            .addDelegate(SearchAdapterDelegate(onSearchClickListener, onSearchListener))
-            .addDelegate(SearchResultBookAdapterDelegate(onBookClickListener))
     }
 
-    fun submitList(list: List<UiItem>, onAnimationEnd: (() -> Unit)? = null) {
-        items = list.toMutableList()
-        differ.submitList(list.toList())
+    fun setData(list: List<Any>) {
+        items = list.toList()
+    }
+
+    fun showProgress(isVisible: Boolean) {
+        val newData = items.toMutableList()
+
+        if (isVisible && items.lastOrNull() !is Progress) {
+            newData.add(Progress())
+            items = newData
+        } else if (!isVisible && items.lastOrNull() is Progress) {
+            newData.removeAt(newData.lastIndex)
+            items = newData
+        }
     }
 
     override fun onBindViewHolder(
@@ -51,9 +44,24 @@ class CatalogAdapter(
     ) {
         super.onBindViewHolder(holder, position, payloads)
 
-        if (items[position].isNextPageTrigger) {
-            items[position].isNextPageTrigger = false
-            loadNextPage.invoke()
+        if (position == items.lastIndex) nextPageListener()
+    }
+
+    class CatalogDiffCallback : DiffUtil.ItemCallback<Any>() {
+
+        override fun areItemsTheSame(oldItem: Any, newItem: Any) = when {
+            oldItem is Category && newItem is Category -> oldItem.id == newItem.id
+            else -> oldItem::class.java == newItem::class.java
+        }
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any) = when {
+            oldItem is Category && newItem is Category ->
+                oldItem.name == newItem.name && oldItem.booksCount == newItem.booksCount
+
+            oldItem is Header && newItem is Header ->
+                oldItem.title == newItem.title
+
+            else -> true
         }
     }
 }

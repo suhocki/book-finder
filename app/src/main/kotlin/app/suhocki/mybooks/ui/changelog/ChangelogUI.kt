@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.changelog
 
+import android.content.Context
 import android.support.design.widget.AppBarLayout
 import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.R
@@ -13,11 +14,11 @@ import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 
 
-class ChangelogUI : AnkoComponent<ChangelogActivity> {
+class ChangelogUI : AnkoComponent<Context> {
 
     lateinit var recyclerView: RecyclerView
 
-    override fun createView(ui: AnkoContext<ChangelogActivity>) = with(ui) {
+    override fun createView(ui: AnkoContext<Context>) = with(ui) {
 
         coordinatorLayout {
             fitsSystemWindows = false
@@ -25,12 +26,9 @@ class ChangelogUI : AnkoComponent<ChangelogActivity> {
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 themedToolbarCompat(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
-                    owner.setSupportActionBar(this)
-                    owner.supportActionBar!!.setDisplayHomeAsUpEnabled(true)
                     backgroundColorResource = R.color.colorPrimary
                     popupTheme = R.style.ThemeOverlay_AppCompat_Light
                     setTitle(R.string.changelog)
-                    owner.setSupportActionBar(this)
                 }.lparams(matchParent, matchParent) {
                     scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS
                 }
@@ -48,8 +46,8 @@ class ChangelogUI : AnkoComponent<ChangelogActivity> {
                         1
                     )
                 )
-            }.lparams(matchParent, matchParent) {
-                behavior = AppBarLayout.ScrollingViewBehavior()
+
+                lparams(matchParent, matchParent)
             }
         }
     }

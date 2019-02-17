@@ -1,27 +1,21 @@
 package app.suhocki.mybooks.data.firestore
 
-import app.suhocki.mybooks.di.ErrorReceiver
-import app.suhocki.mybooks.presentation.base.paginator.Paginator
+import app.suhocki.mybooks.presentation.global.GlobalFirestoreConnectionsController
 import app.suhocki.mybooks.replaceInRange
-import app.suhocki.mybooks.ui.base.eventbus.ActiveConnectionsCountEvent
+import app.suhocki.mybooks.ui.catalog.CatalogPresenter
 import com.google.firebase.firestore.*
-import org.greenrobot.eventbus.EventBus
 import org.jetbrains.anko.doAsync
-import javax.inject.Inject
 
-class FirestoreObserver @Inject constructor(
-    private val firestore: FirebaseFirestore,
-    @FirestoreCollection private val collectionName: String,
-    @ErrorReceiver private val errorReceiver: (Throwable) -> Unit
+class FirestoreObserver constructor(
+    private val firestoreQuery: Query,
+    private val errorReceiver: (Throwable) -> Unit,
+    private val firestoreConnectionsController: GlobalFirestoreConnectionsController
 ) {
     private val allSnapshots = mutableListOf<DocumentSnapshot>()
     private var observers = mutableListOf<ListenerRegistration>()
 
     lateinit var onPageChanged: (Int) -> Unit
-
     lateinit var onUpdate: (documentUpdates: List<DocumentSnapshot>, offset: Int, limit: Int) -> Unit
-
-    lateinit var onWaitForNext: () -> Unit
 
     fun observePage(offset: Int, limit: Int): List<DocumentSnapshot> {
         var snapshot: QuerySnapshot? = null
@@ -76,14 +70,11 @@ class FirestoreObserver @Inject constructor(
                 onUpdate(it, nextPageOffset, disposedCount * limit)
             }
         }
-
         onUpdate(documents, offset, limit)
     }
 
     private fun sendObserversCount() {
-        uiThread {
-            firestoreConnectionsController.onConnectionsCountChanged(observers.size)
-        }
+        firestoreConnectionsController.onConnectionsCountChanged(observers.size)
     }
 
     private fun resubscribeFrom(
@@ -94,7 +85,7 @@ class FirestoreObserver @Inject constructor(
     ) = doAsync {
         val documents = mutableListOf<DocumentSnapshot>()
         for (index in 0 until pagesCount) {
-            val newOffset = offset + index * Paginator.LIMIT
+            val newOffset = offset + index * CatalogPresenter.LIMIT
             val pageDocuments = observePage(newOffset, limit)
 
             documents.addAll(pageDocuments)
@@ -106,7 +97,7 @@ class FirestoreObserver @Inject constructor(
     }
 
     private fun configureCurrentPage(offset: Int, limit: Int) =
-        firestore.collection(collectionName)
+        firestoreQuery
             .let { fb ->
                 allSnapshots.getOrNull(offset - 1)?.let { fb.startAfter(it) } ?: fb
             }

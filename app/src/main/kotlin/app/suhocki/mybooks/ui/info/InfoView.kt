@@ -14,5 +14,5 @@ interface InfoView : MvpView {
 
     fun showProgress(isVisible: Boolean)
 
-    fun showHiddenSettingsDialog(adminModeEnabled: Boolean, debugPanelEnabled: Boolean)
+    fun showAppSettingsDialog(adminModeEnabled: Boolean, debugPanelEnabled: Boolean)
 }

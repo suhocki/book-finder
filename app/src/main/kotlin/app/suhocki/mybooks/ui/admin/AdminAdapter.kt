@@ -5,9 +5,9 @@ import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.ui.admin.delegate.FileAdapterDelegate
 import app.suhocki.mybooks.ui.admin.delegate.HeaderAdapterDelegate
-import app.suhocki.mybooks.ui.admin.delegate.ProgressAdapterDelegate
 import app.suhocki.mybooks.ui.admin.delegate.UploadControlAdapterDelegate
 import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
+import app.suhocki.mybooks.ui.base.delegate.ProgressAdapterDelegate
 import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
 
 

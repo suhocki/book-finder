@@ -1,9 +1,8 @@
 package app.suhocki.mybooks.data.ads
 
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.data.remoteconfig.RemoteConfiguration
+import app.suhocki.mybooks.data.remoteconfig.RemoteConfig
 import app.suhocki.mybooks.data.resources.ResourceManager
-import app.suhocki.mybooks.ui.base.entity.UiItem
 import app.suhocki.mybooks.ui.catalog.entity.UiBannerAd
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
@@ -13,7 +12,7 @@ import javax.inject.Inject
 class AdsManager @Inject constructor(
     private val interstitialAd: InterstitialAd,
     private val resourceManager: ResourceManager,
-    private val remoteConfigurator: RemoteConfiguration
+    private val remoteConfig: RemoteConfig
 ) {
 
     private val adRequest by lazy {
@@ -54,7 +53,7 @@ class AdsManager @Inject constructor(
     }
 
     fun isAdShownFor(url: String) =
-        if (remoteConfigurator.isAdsEnabled) urlsAdShownFor.contains(url)
+        if (remoteConfig.isAdsEnabled) urlsAdShownFor.contains(url)
         else true
 
     fun onAdFlowFinished(onAdFlowFinished: (() -> Unit)? = null) {
@@ -72,7 +71,7 @@ class AdsManager @Inject constructor(
         interstitialAd.show()
     }
 
-    fun getBannerAd(): UiItem = UiBannerAd(resourceManager.getString(R.string.banner_ad_id))
+    fun getBannerAd() = UiBannerAd(resourceManager.getString(R.string.banner_ad_id))
 
     companion object {
         const val TEST_DEVICE_ID = "81288C50BEE14137D41BADDDCBC3D173"

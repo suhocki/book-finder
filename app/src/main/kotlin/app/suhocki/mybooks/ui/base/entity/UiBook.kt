@@ -21,7 +21,5 @@ class UiBook(
     override val year: String?,
     override val pageCount: String?,
     override val cover: String?,
-    override val description: String?,
-
-    override var isNextPageTrigger: Boolean = false
-) : Book, UiItem
+    override val description: String?
+) : Book

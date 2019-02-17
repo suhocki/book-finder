@@ -1,8 +1,8 @@
 package app.suhocki.mybooks.ui.info
 
+import android.content.Context
 import android.graphics.Color
 import android.support.design.widget.AppBarLayout
-import android.support.v4.app.Fragment
 import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -19,13 +19,13 @@ import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 
-class InfoUI<in T : Fragment> : AnkoComponent<T> {
+class InfoUI : AnkoComponent<Context> {
 
     lateinit var recyclerView: RecyclerView
     lateinit var toolbar: Toolbar
     lateinit var progressBar: View
 
-    override fun createView(ui: AnkoContext<T>) = with(ui) {
+    override fun createView(ui: AnkoContext<Context>) = with(ui) {
 
         coordinatorLayout {
             fitsSystemWindows = false

@@ -11,6 +11,7 @@ import com.arellomobile.mvp.MvpAppCompatFragment
 import org.jetbrains.anko.AnkoComponent
 import org.jetbrains.anko.AnkoContext
 import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.debug
 import org.jetbrains.anko.support.v4.ctx
 import toothpick.Scope
 import toothpick.Toothpick
@@ -18,6 +19,7 @@ import toothpick.Toothpick
 private const val PROGRESS_TAG = "bf_progress"
 private const val STATE_LAUNCH_FLAG = "state_launch_flag"
 private const val STATE_SCOPE_NAME = "state_scope_name"
+private const val STATE_SCOPE_WAS_CLOSED = "state_scope_was_closed"
 
 abstract class BaseFragment<UI: AnkoComponent<Context>> : MvpAppCompatFragment(), AnkoLogger {
     private var instanceStateSaved: Boolean = false
@@ -41,10 +43,18 @@ abstract class BaseFragment<UI: AnkoComponent<Context>> : MvpAppCompatFragment()
 
         //False - if fragment was restored without new app process (for example: activity rotation)
         val isNewInAppProcess = savedAppCode != App.appCode
+        val scopeWasClosed = savedInstanceState?.getBoolean(STATE_SCOPE_WAS_CLOSED) ?: true
+
+        val scopeIsNotInit = isNewInAppProcess || scopeWasClosed
         fragmentScopeName = savedInstanceState?.getString(STATE_SCOPE_NAME) ?: objectScopeName()
         scope = Toothpick.openScopes(parentScopeName, fragmentScopeName)
             .apply {
-                if (isNewInAppProcess) scopeModuleInstaller(this)
+                if (scopeIsNotInit) {
+                    debug("Init new UI scope: $fragmentScopeName")
+                    scopeModuleInstaller(this)
+                } else {
+                    debug("Get exist UI scope: $fragmentScopeName")
+                }
             }
 
         super.onCreate(savedInstanceState)
@@ -74,9 +84,10 @@ abstract class BaseFragment<UI: AnkoComponent<Context>> : MvpAppCompatFragment()
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
+        instanceStateSaved = true
         outState.putString(STATE_LAUNCH_FLAG, App.appCode)
         outState.putString(STATE_SCOPE_NAME, fragmentScopeName)
-        instanceStateSaved = true
+        outState.putBoolean(STATE_SCOPE_WAS_CLOSED, needCloseScope()) //save it but will be used only if destroyed
     }
 
     override fun onDestroy() {
@@ -86,6 +97,19 @@ abstract class BaseFragment<UI: AnkoComponent<Context>> : MvpAppCompatFragment()
             Toothpick.closeScope(scope.name)
         }
     }
+
+    //This is android, baby!
+    private fun isRealRemoving(): Boolean =
+        (isRemoving && !instanceStateSaved) //because isRemoving == true for fragment in backstack on screen rotation
+                || ((parentFragment as? BaseFragment<*>)?.isRealRemoving() ?: false)
+
+    //It will be valid only for 'onDestroy()' method
+    private fun needCloseScope(): Boolean =
+        when {
+            activity?.isChangingConfigurations == true -> false
+            activity?.isFinishing == true -> true
+            else -> isRealRemoving()
+        }
 
     open fun onBackPressed() {}
 

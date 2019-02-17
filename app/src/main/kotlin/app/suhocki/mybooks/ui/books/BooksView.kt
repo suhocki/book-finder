@@ -1,28 +1,20 @@
 package app.suhocki.mybooks.ui.books
 
-import android.support.annotation.DrawableRes
-import app.suhocki.mybooks.domain.model.Book
-import app.suhocki.mybooks.ui.base.entity.UiBook
 import com.arellomobile.mvp.MvpView
-import com.arellomobile.mvp.viewstate.strategy.AddToEndSingleStrategy
 import com.arellomobile.mvp.viewstate.strategy.OneExecutionStateStrategy
 import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
-@StateStrategyType(AddToEndSingleStrategy::class)
+@StateStrategyType(OneExecutionStateStrategy::class)
 interface BooksView : MvpView {
 
-    fun showTitle(title: String)
+    fun showData(data: List<Any>)
 
-    fun showBooks(books: List<Book>, scrollToTop: Boolean = false)
+    fun showEmptyProgress(show: Boolean)
+    fun showEmptyError(show: Boolean, error: Throwable? = null)
+    fun showEmptyView(show: Boolean)
+    fun showErrorMessage(error: Throwable)
+    fun showRefreshProgress(show: Boolean)
 
-    fun showEmptyScreen(isEmpty: Boolean)
+    fun showPageProgress(show: Boolean)
 
-    fun showProgressVisible(visible: Boolean)
-
-    fun showDrawerExpanded(isExpanded: Boolean)
-
-    fun showBuyDrawableForItem(book: UiBook, @DrawableRes drawableRes: Int)
-
-    @StateStrategyType(OneExecutionStateStrategy::class)
-    fun openBookWebsite(book: Book)
 }

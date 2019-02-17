@@ -4,6 +4,7 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.data.resources.ResourceManager
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.repository.ChangelogRepository
+import app.suhocki.mybooks.model.system.flow.FlowRouter
 import app.suhocki.mybooks.ui.licenses.entity.HeaderEntity
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -15,7 +16,8 @@ import javax.inject.Inject
 class ChangelogPresenter @Inject constructor(
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val changelogRepository: ChangelogRepository,
-    private val resourceManager: ResourceManager
+    private val resourceManager: ResourceManager,
+    private val router: FlowRouter
 ) : MvpPresenter<ChangelogView>() {
 
     override fun onFirstViewAttach() {
@@ -26,7 +28,7 @@ class ChangelogPresenter @Inject constructor(
             data.add(HeaderEntity(resourceManager.getString(R.string.changelog_title)))
             data.addAll(getChangelog())
             uiThread {
-                viewState.showChangelog(data)
+                viewState.showData(data)
             }
         }
     }
@@ -34,4 +36,6 @@ class ChangelogPresenter @Inject constructor(
     private fun getChangelog() =
         changelogRepository.getChangelog()
             .sortedByDescending {it.date}
+
+    fun onBackPressed() = router.exit()
 }

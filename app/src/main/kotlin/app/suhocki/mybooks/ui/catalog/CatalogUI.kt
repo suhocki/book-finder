@@ -1,8 +1,8 @@
 package app.suhocki.mybooks.ui.catalog
 
+import android.content.Context
 import android.graphics.Color
 import android.support.design.widget.AppBarLayout
-import android.support.v4.app.Fragment
 import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -13,24 +13,22 @@ import app.suhocki.mybooks.R
 import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.Ids
-import app.suhocki.mybooks.ui.base.listener.OnSearchClickListener
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
 import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
 import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
-import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
-class CatalogUI<in T : Fragment> : AnkoComponent<T> {
+class CatalogUI : AnkoComponent<Context> {
     lateinit var recyclerView: RecyclerView
     lateinit var search: View
     lateinit var close: ImageView
     lateinit var toolbar: Toolbar
     lateinit var progressBar: View
 
-    override fun createView(ui: AnkoContext<T>) = with(ui) {
+    override fun createView(ui: AnkoContext<Context>) = with(ui) {
 
         coordinatorLayout {
             fitsSystemWindows = false
@@ -58,9 +56,6 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
 
                     imageView(R.drawable.ic_search).apply {
                         search = this
-                        onClick {
-                            (owner as OnSearchClickListener).onExpandSearchClick()
-                        }
                         padding = dimen(R.dimen.padding_toolbar_icon)
                         backgroundResource = context
                             .attrResource(R.attr.selectableItemBackgroundBorderless)
@@ -75,7 +70,6 @@ class CatalogUI<in T : Fragment> : AnkoComponent<T> {
 
                     imageView(R.drawable.ic_close).apply {
                         close = this
-                        onClick { (owner as OnSearchClickListener).onClearSearchClick() }
                         padding = dimen(R.dimen.padding_toolbar_icon)
                         backgroundResource = context
                             .attrResource(R.attr.selectableItemBackgroundBorderless)

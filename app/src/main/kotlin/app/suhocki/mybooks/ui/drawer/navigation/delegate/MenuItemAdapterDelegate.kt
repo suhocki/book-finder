@@ -15,7 +15,7 @@ import org.jetbrains.anko.*
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
 class MenuItemAdapterDelegate(
-    private val onMenuItemClick: (menuItem: MenuItem) -> Unit
+    private val onMenuItemClick: (menuItemId: Int) -> Unit
 ) : AbsListItemAdapterDelegate<MenuItem, Any, ViewHolder>() {
 
     override fun onCreateViewHolder(
@@ -37,7 +37,7 @@ class MenuItemAdapterDelegate(
         private lateinit var item: MenuItem
 
         init {
-            ui.parent.onClick { onMenuItemClick(item) }
+            ui.parent.onClick { onMenuItemClick(item.id) }
         }
 
         fun bind(item: MenuItem) {
@@ -66,11 +66,12 @@ class MenuItemAdapterDelegate(
             createView(AnkoContext.create(context, context, false))
         }
 
-        override fun createView(ui: AnkoContext<Context>): View {
-            parent = ui.textView {
+        override fun createView(ui: AnkoContext<Context>) =
+            ui.textView {
+                this@Ui.parent = this
                 layoutParams = ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
-                    dip(54)
+                    dip(50)
                 )
 
                 textView = this
@@ -83,7 +84,5 @@ class MenuItemAdapterDelegate(
 
                 gravity = Gravity.CENTER_VERTICAL
             }
-            return parent
-        }
     }
 }

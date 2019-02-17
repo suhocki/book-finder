@@ -1,37 +1,44 @@
 package app.suhocki.mybooks.ui.licenses
 
-import android.support.v7.recyclerview.extensions.EndActionAsyncDifferConfig
-import android.support.v7.recyclerview.extensions.EndActionAsyncListDiffer
+import android.support.v7.util.DiffUtil
+import app.suhocki.mybooks.domain.model.Header
+import app.suhocki.mybooks.domain.model.License
 import app.suhocki.mybooks.ui.admin.delegate.HeaderAdapterDelegate
-import app.suhocki.mybooks.ui.base.EndActionAdapterListUpdateCallback
 import app.suhocki.mybooks.ui.licenses.delegate.LicenseAdapterDelegate
-import app.suhocki.mybooks.ui.licenses.listener.OnLicenseClickListener
-import com.hannesdorfmann.adapterdelegates3.ListDelegationAdapter
+import com.hannesdorfmann.adapterdelegates3.AsyncListDifferDelegationAdapter
 
 
 class LicensesAdapter(
-    onLicenseClickListener: OnLicenseClickListener
-) : ListDelegationAdapter<MutableList<Any>>() {
-
-    private val listUpdateCallback by lazy { EndActionAdapterListUpdateCallback(this, null) }
-
-    private val diffConfig by lazy { EndActionAsyncDifferConfig.Builder<Any>(LicenseDiffCallback()).build() }
-
-    private val differ by lazy { EndActionAsyncListDiffer(listUpdateCallback, diffConfig) }
+    diffCallback: LicensesDiffCallback,
+    onLicenseClick: (License) -> Unit
+) : AsyncListDifferDelegationAdapter<Any>(diffCallback) {
 
     init {
-        delegatesManager.addDelegate(LicenseAdapterDelegate(onLicenseClickListener))
+        delegatesManager.addDelegate(LicenseAdapterDelegate(onLicenseClick))
         delegatesManager.addDelegate(HeaderAdapterDelegate())
     }
 
-    override fun getItemCount(): Int =
-        differ.currentList.size
+    fun setData(list: List<Any>) {
+        items = list.toList()
+    }
 
-    fun submitList(list: List<Any>) {
-        mutableListOf<Any>().apply {
-            addAll(list)
-            items = this
-            differ.submitList(this)
+    class LicensesDiffCallback : DiffUtil.ItemCallback<Any>() {
+
+        override fun areItemsTheSame(oldItem: Any, newItem: Any) = when {
+            oldItem is License && newItem is License -> oldItem.url == newItem.url
+            else -> oldItem::class.java == newItem::class.java
+        }
+
+        override fun areContentsTheSame(oldItem: Any, newItem: Any) = when {
+            oldItem is License && newItem is License ->
+                oldItem.license == newItem.license &&
+                        oldItem.url == newItem.url &&
+                        oldItem.name == newItem.name
+
+            oldItem is Header && newItem is Header ->
+                oldItem.title == newItem.title
+
+            else -> true
         }
     }
 }

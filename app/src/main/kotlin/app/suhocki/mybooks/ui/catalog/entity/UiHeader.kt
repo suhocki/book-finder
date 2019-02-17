@@ -7,9 +7,8 @@ import app.suhocki.mybooks.ui.base.entity.UiItem
 class UiHeader(
     override var title: String,
     override val inverseColors: Boolean = false,
-    override val allCaps: Boolean = true,
-    override var isNextPageTrigger: Boolean = false
-) : Header, UiItem {
+    override val allCaps: Boolean = true
+) : Header {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (javaClass != other?.javaClass) return false

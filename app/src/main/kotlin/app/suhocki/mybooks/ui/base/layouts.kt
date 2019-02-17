@@ -56,7 +56,7 @@ inline fun ViewManager.themedToolbarCompat(
     init: (@AnkoViewDslMarker Toolbar).() -> Unit
 ) = ankoView({ ctx: Context -> Toolbar(ctx) }, theme) { init() }
 
-inline fun ViewManager.bottomNavigation(
+inline fun ViewManager.ahBottomNavigation(
     theme: Int = 0,
     init: (@AnkoViewDslMarker AHBottomNavigation).() -> Unit
 ) = ankoView({ ctx: Context -> AHBottomNavigation(ctx) }, theme) { init() }

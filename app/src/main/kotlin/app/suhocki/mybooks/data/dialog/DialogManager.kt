@@ -25,7 +25,7 @@ class DialogManager @Inject constructor(
             .show()
     }
 
-    fun showHiddenSettingsDialog(
+    fun showAppSettingsDialog(
         adminModeEnabled: Boolean,
         debugPanelEnabled: Boolean,
         resultListener: (Boolean, Boolean) -> Unit

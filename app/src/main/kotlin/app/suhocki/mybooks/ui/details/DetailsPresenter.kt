@@ -1,70 +1,41 @@
 package app.suhocki.mybooks.ui.details
 
-import app.suhocki.mybooks.R
-import app.suhocki.mybooks.data.ads.AdsManager
-import app.suhocki.mybooks.di.BookId
-import app.suhocki.mybooks.di.Room
-import app.suhocki.mybooks.domain.model.Book
-import app.suhocki.mybooks.domain.repository.BooksRepository
+import app.suhocki.mybooks.data.mapper.Mapper
+import app.suhocki.mybooks.di.ErrorReceiver
+import app.suhocki.mybooks.model.system.flow.FlowRouter
+import app.suhocki.mybooks.ui.base.entity.UiBook
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import javax.inject.Inject
 
 @InjectViewState
 class DetailsPresenter @Inject constructor(
-    private val adsManager: AdsManager,
-    @Room private val booksRepository: BooksRepository,
-    @BookId private val bookId: String
+    private val firestoreQuery: Query,
+    private val router: FlowRouter,
+    private val mapper: Mapper,
+    @ErrorReceiver private val errorReceiver: (Throwable) -> Unit
 ) : MvpPresenter<DetailsView>() {
 
-    private lateinit var book: Book
+    private lateinit var observer: ListenerRegistration
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        loadBook()
-        adsManager.loadInterstitialAd()
-
-    }
-
-    private fun loadBook() {
-        doAsync {
-            val book = booksRepository.getBookById(bookId)
-            uiThread {
+        observer = firestoreQuery.addSnapshotListener { snapshot, exception ->
+            if (snapshot == null) {
+                errorReceiver.invoke(exception!!)
+            } else {
+                val book = mapper.map<UiBook>(snapshot.documents.first())
                 viewState.showBook(book)
-                viewState.showFabDrawableRes(R.drawable.ic_buy)
             }
-        }
-    }
-
-    fun onBuyBookClicked() {
-        if (adsManager.isInterstitialAdLoading ||
-            adsManager.isInterstitialAdLoaded
-        ) {
-            adsManager.onAdFlowFinished {
-                adsManager.loadInterstitialAd()
-                viewState.openBookWebsite(book)
-                viewState.showFabDrawableRes(R.drawable.ic_buy)
-            }
-        }
-
-        when {
-            adsManager.isAdShownFor(book.website) -> viewState.openBookWebsite(book)
-
-            adsManager.isInterstitialAdLoading -> {
-                viewState.showFabDrawableRes(R.drawable.ic_time_inverse)
-                adsManager.requestShowInterstitialAdFor(book.website)
-            }
-
-            adsManager.isInterstitialAdLoaded -> adsManager.showInterstitialAd(book.website)
-
-            else -> viewState.openBookWebsite(book)
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        adsManager.onAdFlowFinished()
+        observer.remove()
     }
+
+    fun onBackPressed() = router.exit()
 }
