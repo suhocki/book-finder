@@ -54,7 +54,7 @@ object Ids {
     @IdRes
     val navInfo = R.id.nav_info
     @IdRes
-    val navAdmin = R.id.nav_admin
+    val navAdmin = View.generateViewId()
     @IdRes
     val navLicenses = View.generateViewId()
     @IdRes

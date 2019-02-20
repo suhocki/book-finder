@@ -1,9 +1,7 @@
 package app.suhocki.mybooks.ui.drawer.navigation
 
 import android.os.Bundle
-import android.support.annotation.IdRes
-import app.suhocki.mybooks.presentation.global.GlobalAppSettingsController
-import app.suhocki.mybooks.presentation.global.GlobalMenuController
+import app.suhocki.mybooks.ui.app.AppActivity
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.ui.AppSettingsUi
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -12,7 +10,6 @@ import org.jetbrains.anko.customView
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.alert
 import toothpick.Toothpick
-import javax.inject.Inject
 
 class NavigationDrawerFragment : BaseFragment<NavigationDrawerUI>(), NavigationDrawerView {
 
@@ -23,18 +20,12 @@ class NavigationDrawerFragment : BaseFragment<NavigationDrawerUI>(), NavigationD
     fun providePresenter(): NavigationDrawerPresenter =
         scope.getInstance(NavigationDrawerPresenter::class.java)
 
-    @Inject
-    lateinit var appSettingsController: GlobalAppSettingsController
-
-    @Inject
-    lateinit var menuController: GlobalMenuController
-
     override val ui: NavigationDrawerUI by lazy { NavigationDrawerUI() }
 
     private val adapter by lazy {
         NavigationDrawerAdapter(
             NavigationDrawerAdapter.NavigationDrawerDiffCallback(),
-            menuController::selectMenuItem,
+            presenter::onMenuItemClick,
             presenter::openAppSettings
         )
     }
@@ -47,18 +38,6 @@ class NavigationDrawerFragment : BaseFragment<NavigationDrawerUI>(), NavigationD
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         ui.recyclerView.adapter = adapter
-    }
-
-    override fun onResume() {
-        super.onResume()
-        menuController.onMenuItemSelectedListeners.add(::selectMenuItem)
-        menuController.onAdminModeChangedReceivers.add(presenter::onAdminModeStateChanged)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        menuController.onMenuItemSelectedListeners.remove(::selectMenuItem)
-        menuController.onAdminModeChangedReceivers.remove(presenter::onAdminModeStateChanged)
     }
 
     override fun showData(data: List<Any>) {
@@ -81,18 +60,12 @@ class NavigationDrawerFragment : BaseFragment<NavigationDrawerUI>(), NavigationD
         ui.adminMode.isChecked = adminEnabled
         ui.debugPanel.isChecked = debugEnabled
         ui.apply.onClick {
-            val adminMode = ui.adminMode.isChecked
-            val debugPanel = ui.debugPanel.isChecked
-
-            presenter.applySettings(adminMode, debugPanel)
-            appSettingsController.applySettings(debugPanel, adminMode)
-            menuController.notifyAdminModeChanged()
+            val isAdminModeChecked = ui.adminMode.isChecked
+            val isDebugPanelChecked = ui.debugPanel.isChecked
+            presenter.applySettings(isAdminModeChecked, isDebugPanelChecked)
+            presenter.refreshMenuItems()
+            (activity as AppActivity).showDebugPanel(isDebugPanelChecked)
             dialog.dismiss()
         }
-    }
-
-    private fun selectMenuItem(@IdRes menuItemId: Int) {
-        presenter.selectMenuItem(menuItemId)
-        menuController.close()
     }
 }

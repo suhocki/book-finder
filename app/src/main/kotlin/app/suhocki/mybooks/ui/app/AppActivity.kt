@@ -13,7 +13,6 @@ import app.suhocki.mybooks.di.module.UiModule
 import app.suhocki.mybooks.model.system.message.SystemMessage
 import app.suhocki.mybooks.model.system.message.SystemMessageNotifier
 import app.suhocki.mybooks.model.system.message.SystemMessageType
-import app.suhocki.mybooks.presentation.global.GlobalAppSettingsController
 import app.suhocki.mybooks.presentation.global.GlobalFirestoreConnectionsController
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.BaseFragment
@@ -36,6 +35,7 @@ class AppActivity : MvpAppCompatActivity(), AppView {
 
     @InjectPresenter
     lateinit var presenter: AppPresenter
+
     @ProvidePresenter
     fun providePresenter(): AppPresenter =
         Toothpick.openScopes(DI.UI_SCOPE)
@@ -47,8 +47,6 @@ class AppActivity : MvpAppCompatActivity(), AppView {
     lateinit var router: Router
     @Inject
     lateinit var systemMessageNotifier: SystemMessageNotifier
-    @Inject
-    lateinit var globalAppSettingsController: GlobalAppSettingsController
     @Inject
     lateinit var globalFirestoreConnectionsController: GlobalFirestoreConnectionsController
 
@@ -90,7 +88,6 @@ class AppActivity : MvpAppCompatActivity(), AppView {
     override fun onResumeFragments() {
         super.onResumeFragments()
         subscribeOnSystemMessages()
-        subscribeOnAppSettingsUpdates()
         subscribeOnFirestoreConnections()
         navigatorHolder.setNavigator(navigator)
     }
@@ -98,7 +95,6 @@ class AppActivity : MvpAppCompatActivity(), AppView {
     override fun onPause() {
         navigatorHolder.removeNavigator()
         unsubscribeOnSystemMessages()
-        unsubscribeOnAppSettingsUpdates()
         unsubscribeOnFirestoreConnections()
         super.onPause()
     }
@@ -134,12 +130,6 @@ class AppActivity : MvpAppCompatActivity(), AppView {
         }
     }
 
-    private fun subscribeOnAppSettingsUpdates() {
-        globalAppSettingsController.eventReciever = { debugPanel, adminMode ->
-            showDebugPanel(debugPanel)
-        }
-    }
-
     private fun subscribeOnFirestoreConnections() {
         globalFirestoreConnectionsController.eventReciever = { count ->
             ui.firestoreConnections.text = getString(R.string.firestore_connection, count)
@@ -148,10 +138,6 @@ class AppActivity : MvpAppCompatActivity(), AppView {
 
     private fun unsubscribeOnSystemMessages() {
         systemMessageNotifier.notificationReceiver = null
-    }
-
-    private fun unsubscribeOnAppSettingsUpdates() {
-        globalAppSettingsController.eventReciever = null
     }
 
     private fun unsubscribeOnFirestoreConnections() {

@@ -10,13 +10,20 @@ import app.suhocki.mybooks.di.module.FlowNavigationModule
 import app.suhocki.mybooks.presentation.global.GlobalMenuController
 import app.suhocki.mybooks.setLaunchScreen
 import app.suhocki.mybooks.ui.Ids
+import app.suhocki.mybooks.ui.admin.AdminFlowFragment
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.changelog.ChangelogFragment
 import app.suhocki.mybooks.ui.drawer.navigation.NavigationDrawerFragment
+import app.suhocki.mybooks.ui.licenses.LicensesFragment
+import app.suhocki.mybooks.ui.main.MainFlowFragment
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
+import ru.terrakok.cicerone.android.support.SupportAppScreen
+import ru.terrakok.cicerone.commands.BackTo
 import ru.terrakok.cicerone.commands.Command
+import ru.terrakok.cicerone.commands.Forward
 import toothpick.Scope
 import toothpick.Toothpick
 import toothpick.config.Module
@@ -53,7 +60,6 @@ class DrawerFlowFragment : BaseFragment<DrawerFlowUI>() {
 
     private val navigator: Navigator by lazy {
         object : SupportAppNavigator(this.activity, childFragmentManager, Ids.drawerMainContainer) {
-
             override fun applyCommands(commands: Array<out Command>?) {
                 super.applyCommands(commands)
                 updateNavDrawer()
@@ -110,17 +116,20 @@ class DrawerFlowFragment : BaseFragment<DrawerFlowUI>() {
     }
 
     private fun updateNavDrawer() {
-//        childFragmentManager.executePendingTransactions()
-//
-//        drawerFragment?.let { drawerFragment ->
-//            currentFragment?.let {
-//                when (it) {
-//                    is CatalogFlowFragment -> drawerFragment.onScreenChanged(R.id.nav_catalog)
-//                    is InfoFlowFragment -> drawerFragment.onScreenChanged(R.id.nav_info)
-//                    is SearchFlowFragment -> drawerFragment.onScreenChanged(R.id.nav_search)
-//                }
-//            }
-//        }
+        childFragmentManager.executePendingTransactions()
+
+        drawerFragment?.let { drawerFragment ->
+            currentFragment?.let {
+                val menuItemId = when (it) {
+                    is MainFlowFragment -> Ids.navCatalog
+                    is AdminFlowFragment -> Ids.navAdmin
+                    is LicensesFragment -> Ids.navLicenses
+                    is ChangelogFragment -> Ids.navChanges
+                    else -> Ids.navCatalog
+                }
+                drawerFragment.presenter.selectMenuItem(menuItemId)
+            }
+        }
     }
     //endregion
 

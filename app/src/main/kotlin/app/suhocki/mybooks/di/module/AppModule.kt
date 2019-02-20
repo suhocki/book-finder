@@ -8,7 +8,6 @@ import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.provider.ErrorReceiverProvider
 import app.suhocki.mybooks.di.provider.MapperConvertersProvider
 import app.suhocki.mybooks.model.system.message.SystemMessageNotifier
-import app.suhocki.mybooks.presentation.global.GlobalAppSettingsController
 import app.suhocki.mybooks.presentation.global.GlobalFirestoreConnectionsController
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -42,9 +41,6 @@ class AppModule(context: Context) : Module() {
         bind(Function1::class.java).withName(ErrorReceiver::class.java)
             .toProvider(ErrorReceiverProvider::class.java).singletonInScope()
         bind(SystemMessageNotifier::class.java).toInstance(SystemMessageNotifier())
-        bind(GlobalAppSettingsController::class.java).toInstance(
-            GlobalAppSettingsController()
-        )
         bind(GlobalFirestoreConnectionsController::class.java).toInstance(
             GlobalFirestoreConnectionsController()
         )

@@ -8,6 +8,7 @@ import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.domain.model.admin.File
 import app.suhocki.mybooks.domain.model.admin.UploadControl
+import app.suhocki.mybooks.model.system.flow.FlowRouter
 import app.suhocki.mybooks.ui.admin.entity.UploadControlEntity
 import app.suhocki.mybooks.ui.base.entity.Progress
 import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
@@ -23,7 +24,8 @@ class AdminPresenter @Inject constructor(
     @ErrorReceiver private val errorReceiver: (Throwable) -> Unit,
     private val resourceManager: ResourceManager,
     private val googleDriveRepository: GoogleDriveRepository,
-    private val serviceHandler: ServiceHandler
+    private val serviceHandler: ServiceHandler,
+    private val router: FlowRouter
 ) : MvpPresenter<AdminView>() {
 
 
@@ -90,6 +92,8 @@ class AdminPresenter @Inject constructor(
         }
         viewState.showData(newItems)
     }
+
+    fun onBackPressed() = router.exit()
 
 
     companion object {

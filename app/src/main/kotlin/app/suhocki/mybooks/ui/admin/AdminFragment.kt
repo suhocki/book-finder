@@ -119,6 +119,11 @@ class AdminFragment : BaseFragment<AdminUI>(), AdminView {
         }
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        presenter.onBackPressed()
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onUploadControlEvent(uploadControl: UploadControl) {
         presenter.insertUploadControl(adapter.items, uploadControl)
