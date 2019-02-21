@@ -8,7 +8,6 @@ import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.di.provider.FirestoreObserverProvider
 import app.suhocki.mybooks.extensions.argument
-import app.suhocki.mybooks.ui.app.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.BaseFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -66,7 +65,6 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
 
             if (isArrowVisible) {
             } else {
-                (activity as NavigationHandler).setDrawerExpanded(true)
             }
         }
 

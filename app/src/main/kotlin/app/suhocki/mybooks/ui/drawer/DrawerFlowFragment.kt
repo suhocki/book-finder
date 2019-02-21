@@ -20,13 +20,9 @@ import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
-import ru.terrakok.cicerone.android.support.SupportAppScreen
-import ru.terrakok.cicerone.commands.BackTo
 import ru.terrakok.cicerone.commands.Command
-import ru.terrakok.cicerone.commands.Forward
 import toothpick.Scope
 import toothpick.Toothpick
-import toothpick.config.Module
 import javax.inject.Inject
 
 class DrawerFlowFragment : BaseFragment<DrawerFlowUI>() {
@@ -47,12 +43,7 @@ class DrawerFlowFragment : BaseFragment<DrawerFlowUI>() {
     override val parentScopeName = DI.UI_SCOPE
     override val scopeModuleInstaller = { scope: Scope ->
         scope.installModules(
-            FlowNavigationModule(scope.getInstance(Router::class.java)),
-            object : Module() {
-                init {
-                    bind(GlobalMenuController::class.java).toInstance(GlobalMenuController())
-                }
-            }
+            FlowNavigationModule(scope.getInstance(Router::class.java))
         )
     }
 

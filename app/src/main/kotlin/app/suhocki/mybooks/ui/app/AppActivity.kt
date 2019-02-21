@@ -14,6 +14,7 @@ import app.suhocki.mybooks.model.system.message.SystemMessage
 import app.suhocki.mybooks.model.system.message.SystemMessageNotifier
 import app.suhocki.mybooks.model.system.message.SystemMessageType
 import app.suhocki.mybooks.presentation.global.GlobalFirestoreConnectionsController
+import app.suhocki.mybooks.presentation.global.GlobalMenuController
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.MessageDialogFragment
@@ -27,6 +28,7 @@ import ru.terrakok.cicerone.Router
 import ru.terrakok.cicerone.android.support.SupportAppNavigator
 import ru.terrakok.cicerone.commands.Command
 import toothpick.Toothpick
+import toothpick.config.Module
 import javax.inject.Inject
 
 private const val STATE_LAUNCH_FLAG = "state_launch_flag"
@@ -71,7 +73,14 @@ class AppActivity : MvpAppCompatActivity(), AppView {
         Toothpick.closeScope(DI.UI_SCOPE)
         Toothpick
             .openScopes(DI.APP_SCOPE, DI.UI_SCOPE)
-            .installModules(UiModule())
+            .installModules(
+                UiModule(),
+                object : Module() {
+                    init {
+                        bind(GlobalMenuController::class.java).toInstance(GlobalMenuController())
+                    }
+                }
+            )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

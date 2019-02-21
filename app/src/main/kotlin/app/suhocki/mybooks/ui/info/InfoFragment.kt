@@ -9,7 +9,6 @@ import app.suhocki.mybooks.openCaller
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.openMap
 import app.suhocki.mybooks.ui.app.AppView
-import app.suhocki.mybooks.ui.app.listener.NavigationHandler
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.eventbus.ShopInfoUpdatedEvent
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
@@ -53,7 +52,6 @@ class InfoFragment : BaseFragment<InfoUI>(), InfoView, OnInfoClickListener {
         super.onActivityCreated(savedInstanceState)
 
         ui.toolbar.setNavigationOnClickListener {
-            (activity as NavigationHandler).setDrawerExpanded(true)
         }
 
         ui.recyclerView.adapter = adapter

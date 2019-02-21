@@ -12,7 +12,7 @@ import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.di.provider.FirestoreObserverProvider
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.openLink
-import app.suhocki.mybooks.ui.app.listener.NavigationHandler
+import app.suhocki.mybooks.presentation.global.GlobalMenuController
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.entity.UiBook
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -21,7 +21,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import org.jetbrains.anko.support.v4.longToast
 import toothpick.Scope
+import toothpick.Toothpick
 import toothpick.config.Module
+import javax.inject.Inject
 
 
 class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
@@ -32,6 +34,9 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
     @ProvidePresenter
     fun providePresenter(): CatalogPresenter =
         scope.getInstance(CatalogPresenter::class.java)
+
+    @Inject
+    lateinit var menuController: GlobalMenuController
 
     override val ui by lazy { CatalogUI() }
 
@@ -59,6 +64,11 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
         )
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Toothpick.inject(this, scope)
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -68,7 +78,7 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
 
             if (isArrowVisible) {
             } else {
-                (activity as NavigationHandler).setDrawerExpanded(true)
+                menuController.open()
             }
         }
 

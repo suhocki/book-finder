@@ -10,7 +10,6 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.hideKeyboard
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
@@ -52,41 +51,6 @@ class CatalogUI : AnkoComponent<Context> {
                             margin = dip(8)
                             gravity = Gravity.CENTER_HORIZONTAL
                         }
-                    }
-
-                    imageView(R.drawable.ic_search).apply {
-                        search = this
-                        padding = dimen(R.dimen.padding_toolbar_icon)
-                        backgroundResource = context
-                            .attrResource(R.attr.selectableItemBackgroundBorderless)
-                        scaleType = ImageView.ScaleType.FIT_CENTER
-                        layoutParams = Toolbar.LayoutParams(
-                            dimenAttr(R.attr.actionBarSize),
-                            matchParent
-                        ).apply {
-                            gravity = Gravity.END
-                        }
-                    }
-
-                    imageView(R.drawable.ic_close).apply {
-                        close = this
-                        padding = dimen(R.dimen.padding_toolbar_icon)
-                        backgroundResource = context
-                            .attrResource(R.attr.selectableItemBackgroundBorderless)
-                        scaleType = ImageView.ScaleType.FIT_CENTER
-                        layoutParams = Toolbar.LayoutParams(
-                            dimenAttr(R.attr.actionBarSize),
-                            matchParent
-                        ).apply {
-                            gravity = Gravity.END
-                        }
-                        visibility = View.GONE
-                    }
-
-                    view {
-                        backgroundColorResource = R.color.colorGray
-                        layoutParams = Toolbar.LayoutParams(dip(1), matchParent)
-                            .apply { gravity = Gravity.END }
                     }
                 }.lparams(matchParent, matchParent) {
                     scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS

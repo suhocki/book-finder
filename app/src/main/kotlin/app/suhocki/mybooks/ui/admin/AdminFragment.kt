@@ -12,7 +12,6 @@ import app.suhocki.mybooks.ui.admin.eventbus.UploadCompleteEvent
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.eventbus.ErrorEvent
 import app.suhocki.mybooks.ui.base.mpeventbus.MPEventBus
-import app.suhocki.mybooks.ui.app.listener.NavigationHandler
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import okhttp3.OkHttpClient
@@ -76,7 +75,7 @@ class AdminFragment : BaseFragment<AdminUI>(), AdminView {
         super.onActivityCreated(savedInstanceState)
 
         ui.toolbar.setNavigationOnClickListener {
-            (activity as NavigationHandler).setDrawerExpanded(true)
+
         }
 
         ui.recyclerView.adapter = adapter
