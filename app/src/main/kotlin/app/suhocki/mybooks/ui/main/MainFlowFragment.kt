@@ -28,8 +28,8 @@ class MainFlowFragment : BaseFragment<MainFlowUI>() {
         navigationAdapter.setupWithBottomNavigation(ui.bottomBar)
 
         ui.bottomBar.setOnTabSelectedListener { position, wasSelected ->
-            if (!wasSelected) {
-                selectTab(
+            if (currentTabFragment == null || !wasSelected) {
+                showScreen(
                     when (position) {
                         0 -> catalogTab
                         1 -> searchTab
@@ -41,27 +41,28 @@ class MainFlowFragment : BaseFragment<MainFlowUI>() {
             true
         }
 
-        selectTab(
+        ui.bottomBar.setCurrentItem(
             when (currentTabFragment?.tag) {
-                catalogTab.screenKey -> catalogTab
-                infoTab.screenKey -> infoTab
-                searchTab.screenKey -> searchTab
-                else -> catalogTab
-            }
+                catalogTab.screenKey -> 0
+                searchTab.screenKey -> 1
+                infoTab.screenKey -> 2
+                else -> 0
+            },
+            true
         )
     }
 
-    private fun selectTab(tab: SupportAppScreen) {
+    private fun showScreen(screen: SupportAppScreen) {
         val currentFragment = currentTabFragment
-        val newFragment = childFragmentManager.findFragmentByTag(tab.screenKey)
+        val newFragment = childFragmentManager.findFragmentByTag(screen.screenKey)
 
         if (currentFragment != null && newFragment != null && currentFragment == newFragment) return
 
         childFragmentManager.beginTransaction().apply {
             if (newFragment == null) add(
                 Ids.mainFlowContainer,
-                createTabFragment(tab),
-                tab.screenKey
+                createTabFragment(screen),
+                screen.screenKey
             )
 
             currentFragment?.let {

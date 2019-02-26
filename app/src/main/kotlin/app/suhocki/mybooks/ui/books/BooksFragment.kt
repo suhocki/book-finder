@@ -6,13 +6,13 @@ import android.view.View
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.room.entity.BookDbo
-import app.suhocki.mybooks.di.provider.FirestoreObserverProvider
+import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.extensions.argument
+import app.suhocki.mybooks.ui.app.AppActivity
 import app.suhocki.mybooks.ui.base.BaseFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.withArguments
 import toothpick.Scope
@@ -39,18 +39,30 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
     override val scopeModuleInstaller = { scope: Scope ->
+        val errorReceiver = scope.getInstance(
+            Function1::class.java,
+            ErrorReceiver::class.java.canonicalName
+        ) as (Throwable) -> Unit
+        val onConnectionsCountChanged =
+            (activity as AppActivity)::onFirestoreConnectionsCount
+        val firestore = scope.getInstance(FirebaseFirestore::class.java)
+
         scope.installModules(
             object : Module() {
                 init {
-                    val query = scope.getInstance(FirebaseFirestore::class.java)
-                        .collection(FirestoreRepository.BOOKS)
-                        .whereEqualTo(BookDbo.CATEGORY_ID, categoryId)
-
-                    bind(Query::class.java).toInstance(query)
-
+                    //region firestore books
                     bind(FirestoreObserver::class.java)
-                        .toProvider(FirestoreObserverProvider::class.java)
+                        .toInstance(
+                            FirestoreObserver(
+                                firestore.collection(FirestoreRepository.BOOKS)
+                                    .whereEqualTo(BookDbo.CATEGORY_ID, categoryId),
+                                errorReceiver,
+                                onConnectionsCountChanged
+                            )
+                        )
+                    //endregion
                 }
             }
         )

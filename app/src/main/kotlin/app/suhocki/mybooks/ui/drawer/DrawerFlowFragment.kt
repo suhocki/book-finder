@@ -10,7 +10,7 @@ import app.suhocki.mybooks.di.module.FlowNavigationModule
 import app.suhocki.mybooks.presentation.global.GlobalMenuController
 import app.suhocki.mybooks.setLaunchScreen
 import app.suhocki.mybooks.ui.Ids
-import app.suhocki.mybooks.ui.admin.AdminFlowFragment
+import app.suhocki.mybooks.ui.admin.AdminFragment
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.changelog.ChangelogFragment
 import app.suhocki.mybooks.ui.drawer.navigation.NavigationDrawerFragment
@@ -113,7 +113,7 @@ class DrawerFlowFragment : BaseFragment<DrawerFlowUI>() {
             currentFragment?.let {
                 val menuItemId = when (it) {
                     is MainFlowFragment -> Ids.navCatalog
-                    is AdminFlowFragment -> Ids.navAdmin
+                    is AdminFragment -> Ids.navAdmin
                     is LicensesFragment -> Ids.navLicenses
                     is ChangelogFragment -> Ids.navChanges
                     else -> Ids.navCatalog

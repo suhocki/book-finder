@@ -1,6 +1,5 @@
 package app.suhocki.mybooks.data.firestore
 
-import app.suhocki.mybooks.presentation.global.GlobalFirestoreConnectionsController
 import app.suhocki.mybooks.replaceInRange
 import app.suhocki.mybooks.ui.catalog.CatalogPresenter
 import com.google.firebase.firestore.*
@@ -9,7 +8,7 @@ import org.jetbrains.anko.doAsync
 class FirestoreObserver constructor(
     private val firestoreQuery: Query,
     private val errorReceiver: (Throwable) -> Unit,
-    private val firestoreConnectionsController: GlobalFirestoreConnectionsController
+    private val onFirestoreConnectionsCountChanged: (Int) -> Unit
 ) {
     private val allSnapshots = mutableListOf<DocumentSnapshot>()
     private var observers = mutableListOf<ListenerRegistration>()
@@ -74,7 +73,7 @@ class FirestoreObserver constructor(
     }
 
     private fun sendObserversCount() {
-        firestoreConnectionsController.onConnectionsCountChanged(observers.size)
+        onFirestoreConnectionsCountChanged(observers.size)
     }
 
     private fun resubscribeFrom(

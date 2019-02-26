@@ -9,16 +9,18 @@ import android.view.View
 import app.suhocki.mybooks.Analytics
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
-import app.suhocki.mybooks.di.provider.FirestoreObserverProvider
+import app.suhocki.mybooks.di.BannersObserver
+import app.suhocki.mybooks.di.CategoriesObserver
+import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.presentation.global.GlobalMenuController
+import app.suhocki.mybooks.ui.app.AppActivity
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.entity.UiBook
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import org.jetbrains.anko.support.v4.longToast
 import toothpick.Scope
 import toothpick.Toothpick
@@ -48,17 +50,42 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
         )
     }
 
+    @Suppress("UNCHECKED_CAST")
     override val scopeModuleInstaller = { scope: Scope ->
+        val errorReceiver = scope.getInstance(
+            Function1::class.java,
+            ErrorReceiver::class.java.canonicalName
+        ) as (Throwable) -> Unit
+        val onConnectionsCountChanged =
+            (activity as AppActivity)::onFirestoreConnectionsCount
+        val firestore = scope.getInstance(FirebaseFirestore::class.java)
+
         scope.installModules(
             object : Module() {
                 init {
-                    val query = scope.getInstance(FirebaseFirestore::class.java)
-                        .collection(FirestoreRepository.CATEGORIES)
-
-                    bind(Query::class.java).toInstance(query)
-
+                    //region firestore banners
                     bind(FirestoreObserver::class.java)
-                        .toProvider(FirestoreObserverProvider::class.java)
+                        .withName(BannersObserver::class.java)
+                        .toInstance(
+                            FirestoreObserver(
+                                firestore.collection(FirestoreRepository.BANNERS),
+                                errorReceiver,
+                                onConnectionsCountChanged
+                            )
+                        )
+                    //endregion
+
+                    //region firestore categories
+                    bind(FirestoreObserver::class.java)
+                        .withName(CategoriesObserver::class.java)
+                        .toInstance(
+                            FirestoreObserver(
+                                firestore.collection(FirestoreRepository.CATEGORIES),
+                                errorReceiver,
+                                onConnectionsCountChanged
+                            )
+                        )
+                    //endregion
                 }
             }
         )

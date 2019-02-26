@@ -79,7 +79,7 @@ class NavigationDrawerPresenter @Inject constructor(
         }
         val screen = when (menuItemId) {
             Ids.navCatalog -> Screens.MainFlow
-            Ids.navAdmin -> Screens.AdminFlow
+            Ids.navAdmin -> Screens.Admin
             Ids.navLicenses -> Screens.Licenses
             Ids.navChanges -> Screens.Changelog
             else -> Screens.Changelog

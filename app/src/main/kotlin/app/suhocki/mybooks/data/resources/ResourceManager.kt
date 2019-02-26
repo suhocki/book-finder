@@ -14,11 +14,8 @@ class ResourceManager @Inject constructor(
     fun getString(@StringRes id: Int) =
         resources.getString(id)!!
 
-    fun getString(@StringRes id: Int, double: Double) =
-        resources.getString(id, double)!!
-
-    fun getString(@StringRes id: Int, string: String, int: Int) =
-        resources.getString(id, string, int)!!
+    fun getString(@StringRes id: Int, vararg arguments: Any) =
+        resources.getString(id, *arguments)!!
 
     fun getStringArray(@ArrayRes id: Int): Array<String> =
         resources.getStringArray(id)!!

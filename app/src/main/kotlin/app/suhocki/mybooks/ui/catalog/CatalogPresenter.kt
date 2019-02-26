@@ -3,29 +3,33 @@ package app.suhocki.mybooks.ui.catalog
 import app.suhocki.mybooks.Screens
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.data.mapper.Mapper
+import app.suhocki.mybooks.di.BannersObserver
+import app.suhocki.mybooks.di.CategoriesObserver
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.model.system.flow.FlowRouter
 import app.suhocki.mybooks.presentation.global.paginator.FirestorePaginator
 import app.suhocki.mybooks.ui.catalog.entity.UiCategory
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.google.firebase.firestore.DocumentSnapshot
 import javax.inject.Inject
 
 @InjectViewState
 class CatalogPresenter @Inject constructor(
-    private val firestoreObserver: FirestoreObserver,
+    @CategoriesObserver private val categoriesObserver: FirestoreObserver,
+    @BannersObserver private val bannersObserver: FirestoreObserver,
     private val mapper: Mapper,
     private val router: FlowRouter
 ) : MvpPresenter<CatalogView>() {
 
-    private val categoriesFactory: (Int) -> List<UiCategory> = { page: Int ->
-        val snapshot = firestoreObserver.observePage(
-            page.dec() * LIMIT,
-            LIMIT
-        )
-        val pageData = snapshot
-            .mapTo(mutableListOf()) { mapper.map<UiCategory>(it) }
-        pageData
+    private val firestoreDataMapper = { firestoreData: List<DocumentSnapshot> ->
+        firestoreData.map { mapper.map<UiCategory>(it) }
+    }
+
+    private val categoriesFactory = { page: Int ->
+        categoriesObserver
+            .observePage(page.dec() * LIMIT, LIMIT)
+            .let { firestoreDataMapper.invoke(it) }
     }
 
     private val paginatorView = object : FirestorePaginator.ViewController<Any> {
@@ -60,12 +64,13 @@ class CatalogPresenter @Inject constructor(
         }
     }
 
-    private val paginator = FirestorePaginator(
-        firestoreObserver,
-        categoriesFactory,
-        paginatorView,
-        { firestoreData -> firestoreData.map { mapper.map<UiCategory>(it) } }
-    )
+    private val paginator =
+        FirestorePaginator(
+            categoriesObserver,
+            categoriesFactory,
+            paginatorView,
+            firestoreDataMapper
+        )
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -75,7 +80,7 @@ class CatalogPresenter @Inject constructor(
     override fun onDestroy() {
         super.onDestroy()
         paginator.release()
-        firestoreObserver.dispose()
+        categoriesObserver.dispose()
     }
 
     fun loadNextPage() {
