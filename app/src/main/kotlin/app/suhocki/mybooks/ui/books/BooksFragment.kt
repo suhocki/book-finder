@@ -8,7 +8,7 @@ import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.extensions.argument
-import app.suhocki.mybooks.ui.app.AppActivity
+import app.suhocki.mybooks.model.system.debug.DebugPanelController
 import app.suhocki.mybooks.ui.base.BaseFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
@@ -16,7 +16,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.withArguments
 import toothpick.Scope
+import toothpick.Toothpick
 import toothpick.config.Module
+import javax.inject.Inject
 
 class BooksFragment : BaseFragment<BooksUI>(), BooksView {
 
@@ -30,6 +32,9 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
     override val ui by lazy { BooksUI() }
 
     private val categoryId: String by argument(ARG_CATEGORY_ID)
+
+    @Inject
+    lateinit var debugPanelController: DebugPanelController
 
     private val adapter by lazy {
         BooksAdapter(
@@ -45,27 +50,29 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
             Function1::class.java,
             ErrorReceiver::class.java.canonicalName
         ) as (Throwable) -> Unit
-        val onConnectionsCountChanged =
-            (activity as AppActivity)::onFirestoreConnectionsCount
         val firestore = scope.getInstance(FirebaseFirestore::class.java)
+        val debugPanel = scope.getInstance(DebugPanelController::class.java)
 
         scope.installModules(
             object : Module() {
                 init {
-                    //region firestore books
                     bind(FirestoreObserver::class.java)
                         .toInstance(
                             FirestoreObserver(
                                 firestore.collection(FirestoreRepository.BOOKS)
                                     .whereEqualTo(BookDbo.CATEGORY_ID, categoryId),
                                 errorReceiver,
-                                onConnectionsCountChanged
+                                debugPanel::onBooksObserversCount
                             )
                         )
-                    //endregion
                 }
             }
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Toothpick.inject(this, scope)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -81,6 +88,16 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
         }
 
         ui.recyclerView.adapter = adapter
+    }
+
+    override fun onResume() {
+        super.onResume()
+        debugPanelController.showBooksObservers(true)
+    }
+
+    override fun onPause() {
+        debugPanelController.showBooksObservers(false)
+        super.onPause()
     }
 
     override fun onBackPressed() {

@@ -1,15 +1,17 @@
 package app.suhocki.mybooks.ui.app
 
 import android.os.Bundle
-import android.support.transition.TransitionManager
+import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.view.View
 import android.widget.Toast
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.Screens
+import app.suhocki.mybooks.data.firestore.entity.DebugInfo
 import app.suhocki.mybooks.di.DI
 import app.suhocki.mybooks.di.module.UiModule
+import app.suhocki.mybooks.model.system.debug.DebugPanelController
 import app.suhocki.mybooks.model.system.message.SystemMessage
 import app.suhocki.mybooks.model.system.message.SystemMessageNotifier
 import app.suhocki.mybooks.model.system.message.SystemMessageType
@@ -21,6 +23,8 @@ import com.arellomobile.mvp.MvpAppCompatActivity
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import org.jetbrains.anko.setContentView
+import org.jetbrains.anko.textColorResource
+import org.jetbrains.anko.textView
 import ru.terrakok.cicerone.Navigator
 import ru.terrakok.cicerone.NavigatorHolder
 import ru.terrakok.cicerone.Router
@@ -44,13 +48,20 @@ class AppActivity : MvpAppCompatActivity(), AppView {
 
     @Inject
     lateinit var navigatorHolder: NavigatorHolder
+
     @Inject
     lateinit var router: Router
+
     @Inject
     lateinit var systemMessageNotifier: SystemMessageNotifier
 
+    @Inject
+    lateinit var debugPanelController: DebugPanelController
+
     private val currentFragment: BaseFragment<*>?
         get() = supportFragmentManager.findFragmentById(Ids.appContainer) as? BaseFragment<*>
+
+    private val viewHandler = Handler()
     private val ui = AppUI()
 
     private val navigator: Navigator =
@@ -95,11 +106,14 @@ class AppActivity : MvpAppCompatActivity(), AppView {
         super.onResumeFragments()
         subscribeOnSystemMessages()
         navigatorHolder.setNavigator(navigator)
+        debugPanelController.eventConsumer = ::showDebugInfo
     }
 
     override fun onPause() {
         navigatorHolder.removeNavigator()
         unsubscribeOnSystemMessages()
+        debugPanelController.eventConsumer = null
+        viewHandler.removeCallbacksAndMessages(null)
         super.onPause()
     }
 
@@ -108,11 +122,22 @@ class AppActivity : MvpAppCompatActivity(), AppView {
     }
 
     override fun showDebugPanel(show: Boolean) {
-        TransitionManager.beginDelayedTransition(ui.parent)
-
-        ui.firestoreConnections.visibility =
+        ui.debugPanel.visibility =
                 if (show) View.VISIBLE
                 else View.GONE
+    }
+
+    private fun showDebugInfo(data: Collection<DebugInfo>) = postViewAction {
+        with(ui.debugPanel) {
+            removeAllViews()
+
+            data.forEach {
+                textView {
+                    text = getString(R.string.firestore_connection, it.text, it.count)
+                    textColorResource = R.color.colorGreen
+                }
+            }
+        }
     }
 
     private fun showAlertMessage(message: String) {
@@ -134,11 +159,11 @@ class AppActivity : MvpAppCompatActivity(), AppView {
         }
     }
 
-    fun onFirestoreConnectionsCount(count: Int) {
-            ui.firestoreConnections.text = getString(R.string.firestore_connection, count)
-    }
-
     private fun unsubscribeOnSystemMessages() {
         systemMessageNotifier.notificationReceiver = null
+    }
+
+    private fun postViewAction(action: () -> Unit) {
+        viewHandler.post(action)
     }
 }

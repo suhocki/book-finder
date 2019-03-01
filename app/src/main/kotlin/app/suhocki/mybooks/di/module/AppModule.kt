@@ -7,6 +7,7 @@ import app.suhocki.mybooks.di.Converters
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.di.provider.ErrorReceiverProvider
 import app.suhocki.mybooks.di.provider.MapperConvertersProvider
+import app.suhocki.mybooks.model.system.debug.DebugPanelController
 import app.suhocki.mybooks.model.system.message.SystemMessageNotifier
 import app.suhocki.mybooks.ui.base.entity.UploadControlEntity
 import com.google.firebase.firestore.FirebaseFirestore
@@ -39,6 +40,7 @@ class AppModule(context: Context) : Module() {
         bind(AppPreferences::class.java).toInstance(AppPreferences(context))
         bind(Function1::class.java).withName(ErrorReceiver::class.java).toProvider(ErrorReceiverProvider::class.java).singletonInScope()
         bind(SystemMessageNotifier::class.java).toInstance(SystemMessageNotifier())
+        bind(DebugPanelController::class.java).toInstance(DebugPanelController())
 
         //Mapper dependencies
         bind(Set::class.java).withName(Converters::class.java)

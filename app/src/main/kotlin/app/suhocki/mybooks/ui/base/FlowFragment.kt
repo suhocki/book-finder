@@ -62,6 +62,14 @@ abstract class FlowFragment : BaseFragment<AnkoComponent<Context>>() {
         super.onPause()
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        childFragmentManager
+            .fragments
+            .filter { it.isVisible }
+            .forEach { it.userVisibleHint = isVisibleToUser }
+    }
+
     inner class Ui(context: Context) : AnkoComponent<Context> {
         lateinit var parent: View
 

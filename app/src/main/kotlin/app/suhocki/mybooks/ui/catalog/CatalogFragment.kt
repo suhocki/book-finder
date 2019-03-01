@@ -13,9 +13,9 @@ import app.suhocki.mybooks.di.BannersObserver
 import app.suhocki.mybooks.di.CategoriesObserver
 import app.suhocki.mybooks.di.ErrorReceiver
 import app.suhocki.mybooks.domain.model.Book
+import app.suhocki.mybooks.model.system.debug.DebugPanelController
 import app.suhocki.mybooks.openLink
 import app.suhocki.mybooks.presentation.global.GlobalMenuController
-import app.suhocki.mybooks.ui.app.AppActivity
 import app.suhocki.mybooks.ui.base.BaseFragment
 import app.suhocki.mybooks.ui.base.entity.UiBook
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -40,6 +40,9 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
     @Inject
     lateinit var menuController: GlobalMenuController
 
+    @Inject
+    lateinit var debugPanelController: DebugPanelController
+
     override val ui by lazy { CatalogUI() }
 
     private val adapter by lazy {
@@ -56,36 +59,32 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
             Function1::class.java,
             ErrorReceiver::class.java.canonicalName
         ) as (Throwable) -> Unit
-        val onConnectionsCountChanged =
-            (activity as AppActivity)::onFirestoreConnectionsCount
+
         val firestore = scope.getInstance(FirebaseFirestore::class.java)
+        val debugPanel = scope.getInstance(DebugPanelController::class.java)
 
         scope.installModules(
             object : Module() {
                 init {
-                    //region firestore banners
                     bind(FirestoreObserver::class.java)
                         .withName(BannersObserver::class.java)
                         .toInstance(
                             FirestoreObserver(
                                 firestore.collection(FirestoreRepository.BANNERS),
                                 errorReceiver,
-                                onConnectionsCountChanged
+                                debugPanel::onBannerObserversCount
                             )
                         )
-                    //endregion
 
-                    //region firestore categories
                     bind(FirestoreObserver::class.java)
                         .withName(CategoriesObserver::class.java)
                         .toInstance(
                             FirestoreObserver(
                                 firestore.collection(FirestoreRepository.CATEGORIES),
                                 errorReceiver,
-                                onConnectionsCountChanged
+                                debugPanel::onCategoriesObserversCount
                             )
                         )
-                    //endregion
                 }
             }
         )
@@ -110,6 +109,21 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
         }
 
         ui.recyclerView.adapter = adapter
+    }
+
+    override fun onStart() {
+        super.onStart()
+        debugPanelController.showCatalogObservers(true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        debugPanelController.showCatalogObservers(false)
+    }
+
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        debugPanelController.showCatalogObservers(isVisibleToUser)
     }
 
     override fun onBackPressed() {
