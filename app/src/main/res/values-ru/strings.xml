@@ -67,13 +67,13 @@
     <string name="reset">Сброс</string>
     <string name="error_filter_price_invalid">Цена От должна быть меньше цены До.</string>
     <string name="contacts">Контакты</string>
-    <string name="address">Адрес:</string>
+    <string name="address">Адрес</string>
     <string name="licenses">Лицензии</string>
     <string name="licenses_title">Библиотеки</string>
     <string name="developer">Разработчик</string>
-    <string name="about_this_application">Об этом приложении:</string>
+    <string name="about_this_application">Об этом приложении</string>
     <string name="about">О приложении</string>
-    <string name="working_time">Время работы:</string>
+    <string name="working_time">Время работы</string>
     <string name="changelog_title">История версий</string>
     <string name="changelog">Изменения</string>
     <string name="version_changelog">Версия %s</string>

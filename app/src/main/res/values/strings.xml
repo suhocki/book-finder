@@ -68,14 +68,14 @@
     <string name="apply">Apply</string>
     <string name="reset">Reset</string>
     <string name="contacts">Contacts</string>
-    <string name="address">Address:</string>
+    <string name="address">Address</string>
     <string name="developer">Developer</string>
     <string name="about">About</string>
     <string name="licenses">Licenses</string>
     <string name="licenses_title">Libraries</string>
     <string name="changelog_title">Version history</string>
-    <string name="about_this_application">About this application:</string>
-    <string name="working_time">Working time:</string>
+    <string name="about_this_application">About this application</string>
+    <string name="working_time">Working time</string>
     <string name="changelog">Changelog</string>
     <string name="choose_file">Choose file</string>
     <string name="vk_group">VK group</string>
@@ -86,7 +86,7 @@
     <string name="debug_menu">Debug Menu</string>
     <string name="admin_mode">Admin mode</string>
     <string name="debug_panel">Debug panel</string>
-    <string name="firestore_connection" translatable="false">firestore connections: %d</string>
+    <string name="firestore_connection" translatable="false">%s observers: %d</string>
 
     <!--License names-->
     <string name="library_license_MIT">MIT</string>
