@@ -6,19 +6,23 @@ import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.ui.base.delegate.ProgressAdapterDelegate
 import app.suhocki.mybooks.ui.base.entity.Progress
+import app.suhocki.mybooks.ui.catalog.delegate.BannersHolderAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.delegate.CategoryAdapterDelegate
+import app.suhocki.mybooks.ui.catalog.entity.BannersHolder
 import com.hannesdorfmann.adapterdelegates3.AsyncListDifferDelegationAdapter
 
 class CatalogAdapter(
     diffCallback: CatalogDiffCallback,
     categoryClickListener: (Category) -> Unit,
-    private val nextPageListener: () -> Unit
+    loadNextBannersPage: () -> Unit,
+    private val loadNextCategoriesPage: () -> Unit
 ) : AsyncListDifferDelegationAdapter<Any>(diffCallback) {
 
     init {
         delegatesManager
             .addDelegate(CategoryAdapterDelegate(categoryClickListener))
             .addDelegate(ProgressAdapterDelegate())
+            .addDelegate(BannersHolderAdapterDelegate(loadNextBannersPage))
     }
 
     fun setData(list: List<Any>) {
@@ -44,13 +48,14 @@ class CatalogAdapter(
     ) {
         super.onBindViewHolder(holder, position, payloads)
 
-        if (position == items.lastIndex) nextPageListener()
+        if (position == items.lastIndex) loadNextCategoriesPage()
     }
 
     class CatalogDiffCallback : DiffUtil.ItemCallback<Any>() {
 
         override fun areItemsTheSame(oldItem: Any, newItem: Any) = when {
             oldItem is Category && newItem is Category -> oldItem.id == newItem.id
+
             else -> oldItem::class.java == newItem::class.java
         }
 
@@ -58,10 +63,18 @@ class CatalogAdapter(
             oldItem is Category && newItem is Category ->
                 oldItem.name == newItem.name && oldItem.booksCount == newItem.booksCount
 
+            oldItem is BannersHolder && newItem is BannersHolder ->
+                false
+
             oldItem is Header && newItem is Header ->
                 oldItem.title == newItem.title
 
             else -> true
+        }
+
+        override fun getChangePayload(oldItem: Any, newItem: Any): Any? {
+            return if (oldItem is BannersHolder && newItem is BannersHolder) Any()
+            else super.getChangePayload(oldItem, newItem)
         }
     }
 }

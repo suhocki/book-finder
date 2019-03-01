@@ -5,7 +5,9 @@ import android.view.View
 import app.suhocki.mybooks.R
 
 object Ids {
-    //Recycler view
+    //region recycler view
+    @IdRes
+    val recyclerBanners = View.generateViewId()
     @IdRes
     val recyclerCatalog = View.generateViewId()
     @IdRes
@@ -24,6 +26,7 @@ object Ids {
     val recyclerLicenses = View.generateViewId()
     @IdRes
     val recyclerChangelog = View.generateViewId()
+    //endregion
 
     //Fragment containers
     @IdRes

@@ -10,20 +10,15 @@ import com.arellomobile.mvp.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(OneExecutionStateStrategy::class)
 interface CatalogView : MvpView {
-
     fun showData(data: List<Any>)
-
     fun showEmptyProgress(show: Boolean)
     fun showEmptyError(show: Boolean, error: Throwable? = null)
     fun showEmptyView(show: Boolean)
     fun showErrorMessage(error: Throwable)
     fun showRefreshProgress(show: Boolean)
+    fun showPageProgress(show: Boolean)
 
     fun showRecyclerDecoration(decoration: RecyclerView.ItemDecoration)
-
     fun showBuyDrawableForItem(book: UiBook, @DrawableRes drawableRes: Int)
-
     fun openBookWebsite(book: Book)
-
-    fun showPageProgress(show: Boolean)
 }

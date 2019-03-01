@@ -49,7 +49,8 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
         CatalogAdapter(
             CatalogAdapter.CatalogDiffCallback(),
             presenter::onCategoryClick,
-            presenter::loadNextPage
+            loadNextBannersPage = presenter::loadNextBannersPage,
+            loadNextCategoriesPage = presenter::loadNextCategoriesPage
         )
     }
 
@@ -158,6 +159,10 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
         context!!.openLink(book.website)
     }
 
+    override fun showData(data: List<Any>) {
+        postViewAction { adapter.setData(data) }
+    }
+
     override fun showEmptyProgress(show: Boolean) {
         ui.progressBar.visibility =
                 if (show) View.VISIBLE
@@ -170,10 +175,6 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
 
     override fun showEmptyView(show: Boolean) {
         longToast("empty data")
-    }
-
-    override fun showData(data: List<Any>) {
-        postViewAction { adapter.setData(data) }
     }
 
     override fun showErrorMessage(error: Throwable) {

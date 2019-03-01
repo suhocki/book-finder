@@ -8,8 +8,8 @@ import org.jetbrains.anko.uiThread
 import java.util.concurrent.Future
 
 /**
- * Created by Konstantin Tskhovrebov (aka @terrakok) on 22.07.17,
- * changed by Maksim Sukhotski on 22.12.18.
+ * Created by Konstantin Tskhovrebov (aka @terrakok) on 22.07.17.
+ * Changed by Maksim Sukhotski on 22.12.18.
  *
  * Changes:
  * - Implement applying firestore updates
@@ -17,7 +17,7 @@ import java.util.concurrent.Future
  */
 class FirestorePaginator<T>(
     firestoreObserver: FirestoreObserver,
-    private val requestFactory: (Int) -> List<T>,
+    private val requestFactory: (page: Int) -> List<T>,
     private val viewController: ViewController<T>,
     private val mapper: (List<DocumentSnapshot>) -> List<T>
 ) {
@@ -32,11 +32,12 @@ class FirestorePaginator<T>(
         fun showPageProgress(show: Boolean)
     }
 
+    val currentData = mutableListOf<T>()
+
     private val FIRST_PAGE = 1
 
     private var currentState: State<T> = EMPTY()
     private var currentPage = 0
-    private val currentData = mutableListOf<T>()
     private var disposable: Future<Unit>? = null
     private val exceptionHandler = { throwable: Throwable ->
         currentState.fail(throwable)

@@ -5,13 +5,13 @@ import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.di.BannersObserver
 import app.suhocki.mybooks.di.CategoriesObserver
+import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.model.system.flow.FlowRouter
 import app.suhocki.mybooks.presentation.global.paginator.FirestorePaginator
-import app.suhocki.mybooks.ui.catalog.entity.UiCategory
+import app.suhocki.mybooks.ui.catalog.entity.BannersHolder
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import com.google.firebase.firestore.DocumentSnapshot
 import javax.inject.Inject
 
 @InjectViewState
@@ -22,69 +22,124 @@ class CatalogPresenter @Inject constructor(
     private val router: FlowRouter
 ) : MvpPresenter<CatalogView>() {
 
-    private val firestoreDataMapper = { firestoreData: List<DocumentSnapshot> ->
-        firestoreData.map { mapper.map<UiCategory>(it) }
-    }
-
+    //region init categories paginator
     private val categoriesFactory = { page: Int ->
         categoriesObserver
-            .observePage(page.dec() * LIMIT, LIMIT)
-            .let { firestoreDataMapper.invoke(it) }
+            .observePage((page - 1) * LIMIT, LIMIT)
+            .map { mapper.map<Category>(it) }
     }
 
-    private val paginatorView = object : FirestorePaginator.ViewController<Any> {
-        override fun showEmptyProgress(show: Boolean) {
-            viewState.showEmptyProgress(show)
+    private val categoriesPaginatorView: FirestorePaginator.ViewController<Any> =
+        object : FirestorePaginator.ViewController<Any> {
+            override fun showEmptyProgress(show: Boolean) =
+                viewState.showEmptyProgress(show)
+
+            override fun showEmptyError(show: Boolean, error: Throwable?) {
+                error?.let {
+                    viewState.showEmptyError(show, error)
+                } ?: viewState.showEmptyError(show, null)
+            }
+
+            override fun showErrorMessage(error: Throwable) =
+                viewState.showErrorMessage(error)
+
+            override fun showEmptyView(show: Boolean) =
+                viewState.showEmptyView(show)
+
+            override fun showData(show: Boolean, data: List<Any>) {
+                val resultData =
+                    mutableListOf<Any>(BannersHolder(bannersPaginator.currentData))
+                        .apply { addAll(data) }
+                viewState.showData(resultData)
+            }
+
+            override fun showRefreshProgress(show: Boolean) =
+                viewState.showRefreshProgress(show)
+
+            override fun showPageProgress(show: Boolean) =
+                viewState.showPageProgress(show)
         }
 
-        override fun showEmptyError(show: Boolean, error: Throwable?) {
-            error?.let {
-                viewState.showEmptyError(show, error)
-            } ?: viewState.showEmptyError(show, null)
-        }
-
-        override fun showErrorMessage(error: Throwable) {
-            viewState.showErrorMessage(error)
-        }
-
-        override fun showEmptyView(show: Boolean) {
-            viewState.showEmptyView(show)
-        }
-
-        override fun showData(show: Boolean, data: List<Any>) {
-            viewState.showData(data)
-        }
-
-        override fun showRefreshProgress(show: Boolean) {
-            viewState.showRefreshProgress(show)
-        }
-
-        override fun showPageProgress(show: Boolean) {
-            viewState.showPageProgress(show)
-        }
-    }
-
-    private val paginator =
+    private val categoriesPaginator =
         FirestorePaginator(
             categoriesObserver,
             categoriesFactory,
-            paginatorView,
-            firestoreDataMapper
+            categoriesPaginatorView,
+            { firestoreData -> firestoreData.map { mapper.map<Category>(it) } }
         )
+    //endregion
+
+    //region init banners paginator
+    private val bannersFactory = { page: Int ->
+        bannersObserver
+            .observePage((page - 1) * LIMIT, LIMIT)
+            .map { mapper.map<Banner>(it) }
+    }
+
+    private val bannersPaginatorView: FirestorePaginator.ViewController<Any> =
+        object : FirestorePaginator.ViewController<Any> {
+            override fun showEmptyProgress(show: Boolean) {
+//                viewState.showEmptyProgress(show)
+            }
+
+            override fun showEmptyError(show: Boolean, error: Throwable?) {
+//                error?.let {
+//                    viewState.showEmptyError(show, error)
+//                } ?: viewState.showEmptyError(show, null)
+            }
+
+            override fun showErrorMessage(error: Throwable) {
+//                viewState.showErrorMessage(error)
+            }
+
+            override fun showEmptyView(show: Boolean) {
+//                viewState.showEmptyView(show)
+            }
+
+            override fun showData(show: Boolean, data: List<Any>) {
+                val resultData = mutableListOf<Any>(BannersHolder(data))
+                    .apply { addAll(categoriesPaginator.currentData) }
+                viewState.showData(resultData)
+            }
+
+            override fun showRefreshProgress(show: Boolean) {
+//                viewState.showRefreshProgress(show)
+            }
+
+            override fun showPageProgress(show: Boolean) {
+//                viewState.showPageProgress(show)
+            }
+        }
+
+    private val bannersPaginator =
+        FirestorePaginator(
+            bannersObserver,
+            bannersFactory,
+            bannersPaginatorView,
+            { firestoreData -> firestoreData.map { mapper.map<Banner>(it) } }
+        )
+    //endregion
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
-        paginator.refresh()
+        categoriesPaginator.refresh()
+        bannersPaginator.refresh()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        paginator.release()
+        categoriesPaginator.release()
         categoriesObserver.dispose()
+        bannersPaginator.release()
+        bannersObserver.dispose()
     }
 
-    fun loadNextPage() {
-        paginator.loadNewPage()
+    fun loadNextCategoriesPage() {
+        categoriesPaginator.loadNewPage()
+    }
+
+    fun loadNextBannersPage() {
+        bannersPaginator.loadNewPage()
     }
 
     fun onCategoryClick(category: Category) {

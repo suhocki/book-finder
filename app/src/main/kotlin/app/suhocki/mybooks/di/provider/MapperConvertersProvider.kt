@@ -17,17 +17,18 @@ class MapperConvertersProvider @Inject constructor(
     private val firestoreBookToRoomBook: FirestoreBookToBookDbo,
     private val bannerDboToFirestoreBanner: BannerDboToFirestoreBanner,
     private val firestoreCategoryToRoomCategory: FirestoreCategoryToCategoryDbo,
-    private val firestoreBookToUiBook: FirestoreBookToUiBook,
     private val firestoreBannerToRoomBanner: FirestoreBannerToBannerDbo,
     private val bookDboToUiBookEntity: BookDboToUiBook,
     private val bannerDboToUiBanner: BannerDboToUiBanner,
     private val categoryDboToUiCategory: RoomDboToUiCategory,
-    private val firestoreCategoryToUiCategory: FirestoreCategoryToUiCategory,
-    private val firestoreBannerToUiBanner: FirestoreBannerToUiBanner,
     private val categoryDboToFirestoreCategory: CategoryDboToFirestoreCategory,
     private val shopInfoToList: ShopInfoToList,
-    private val firestoreSnapshotToUiCategories: FirestoreDocumentToUiCategory,
-    private val firestoreDocumentToUiBook: FirestoreDocumentToUiBook,
+    private val firestoreCategoryToUiCategory: FirestoreConverters.FirestoreCategoryToCategory,
+    private val firestoreBannerToBanner: FirestoreConverters.FirestoreBannerToUiBanner,
+    private val firestoreBookToBook: FirestoreConverters.FirestoreBookToBook,
+    private val documentSnapshotToCategory: FirestoreConverters.DocumentSnapshotToCategory,
+    private val documentSnapshotToBook: FirestoreConverters.DocumentSnapshotToBook,
+    private val documentSnapshotToBanner: FirestoreConverters.DocumentSnapshotToBanner,
     private val bookDboToFirestoreBook: BookDboToFirestoreBook
 ) : Provider<Set<Converter<*, *>>> {
 
@@ -48,11 +49,12 @@ class MapperConvertersProvider @Inject constructor(
         firestoreBookToRoomBook,
         firestoreCategoryToRoomCategory,
         firestoreBannerToRoomBanner,
-        firestoreSnapshotToUiCategories,
+        documentSnapshotToCategory,
+        documentSnapshotToBook,
+        documentSnapshotToBanner,
         firestoreCategoryToUiCategory,
-        firestoreBannerToUiBanner,
-        firestoreBookToUiBook,
-        firestoreDocumentToUiBook,
+        firestoreBannerToBanner,
+        firestoreBookToBook,
         shopInfoToList
     )
 }

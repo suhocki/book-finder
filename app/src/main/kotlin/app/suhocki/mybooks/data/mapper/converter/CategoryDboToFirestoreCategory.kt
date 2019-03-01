@@ -7,13 +7,14 @@ import javax.inject.Inject
 
 class CategoryDboToFirestoreCategory @Inject constructor() :
     BaseConverter<CategoryDbo, FirestoreCategory>(
-        CategoryDbo::class.java, FirestoreCategory::class.java
+        CategoryDbo::class.java,
+        FirestoreCategory::class.java
     ) {
-
-    override fun convert(value: CategoryDbo) =
-        FirestoreCategory(
-            id = value.id,
-            name = value.name,
-            booksCount = value.booksCount
-        )
+    override fun convert(
+        value: CategoryDbo
+    ) = FirestoreCategory(
+        id = value.id,
+        name = value.name,
+        booksCount = value.booksCount
+    )
 }
