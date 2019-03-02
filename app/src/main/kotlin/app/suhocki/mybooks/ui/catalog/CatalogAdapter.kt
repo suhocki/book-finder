@@ -5,7 +5,6 @@ import android.support.v7.widget.RecyclerView
 import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.ui.base.delegate.ProgressAdapterDelegate
-import app.suhocki.mybooks.ui.base.entity.Progress
 import app.suhocki.mybooks.ui.catalog.delegate.BannersHolderAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.delegate.CategoryAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.entity.BannersHolder
@@ -27,18 +26,6 @@ class CatalogAdapter(
 
     fun setData(list: List<Any>) {
         items = list.toList()
-    }
-
-    fun showProgress(isVisible: Boolean) {
-        val newData = items.toMutableList()
-
-        if (isVisible && items.lastOrNull() !is Progress) {
-            newData.add(Progress())
-            items = newData
-        } else if (!isVisible && items.lastOrNull() is Progress) {
-            newData.removeAt(newData.lastIndex)
-            items = newData
-        }
     }
 
     override fun onBindViewHolder(

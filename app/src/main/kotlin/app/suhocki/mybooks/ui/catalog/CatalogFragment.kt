@@ -185,10 +185,6 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
         TODO("not implemented")
     }
 
-    override fun showPageProgress(show: Boolean) {
-        postViewAction { adapter.showProgress(show) }
-    }
-
     companion object {
         const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
         const val SEARCH_RESULT_POSITION = 3

@@ -16,7 +16,6 @@ interface CatalogView : MvpView {
     fun showEmptyView(show: Boolean)
     fun showErrorMessage(error: Throwable)
     fun showRefreshProgress(show: Boolean)
-    fun showPageProgress(show: Boolean)
 
     fun showRecyclerDecoration(decoration: RecyclerView.ItemDecoration)
     fun showBuyDrawableForItem(book: UiBook, @DrawableRes drawableRes: Int)

@@ -33,6 +33,8 @@ class FirestorePaginator<T>(
     }
 
     val currentData = mutableListOf<T>()
+    val isPageProgress: Boolean
+        get() = currentState is PAGE_PROGRESS
 
     private val FIRST_PAGE = 1
 

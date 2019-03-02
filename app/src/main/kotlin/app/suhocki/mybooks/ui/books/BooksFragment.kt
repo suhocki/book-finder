@@ -100,6 +100,11 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
         super.onPause()
     }
 
+    override fun setUserVisibleHint(isVisibleToUser: Boolean) {
+        super.setUserVisibleHint(isVisibleToUser)
+        debugPanelController.showBooksObservers(isVisibleToUser)
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         presenter.onBackPressed()

@@ -1,6 +1,7 @@
 package app.suhocki.mybooks.ui.catalog.delegate
 
 import android.content.Context
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
@@ -8,7 +9,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import app.suhocki.mybooks.R
+import app.suhocki.mybooks.attrResource
 import app.suhocki.mybooks.domain.model.Banner
+import app.suhocki.mybooks.setForegroundCompat
+import app.suhocki.mybooks.ui.base.materialCardView
 import app.suhocki.mybooks.ui.base.simpleDraweeView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.hannesdorfmann.adapterdelegates3.AbsListItemAdapterDelegate
@@ -57,23 +61,39 @@ class BannerAdapterDelegate :
             frameLayout {
                 this@Ui.parent = this
 
-                simpleDraweeView {
-                    this@Ui.image = this
-                    scaleType = ImageView.ScaleType.CENTER_CROP
-                }.lparams(matchParent, matchParent)
+                materialCardView {
+                    strokeColor = ResourcesCompat.getColor(
+                        resources, R.color.colorDarkGray, context.theme
+                    )
+                    strokeWidth = dip(1)
+                    radius = dip(10).toFloat()
+                    cardElevation = 0f
 
-                textView {
-                    this@Ui.description = this
-                    textAppearance = R.style.TextAppearance_AppCompat_Subhead
-                    textColorResource = R.color.colorBlack
-                    backgroundColorResource = R.color.colorDescriptionBackground
-                    gravity = Gravity.CENTER_HORIZONTAL
-                }.lparams(matchParent, wrapContent) {
-                    gravity = Gravity.BOTTOM
-                    bottomMargin = dip(8)
+                    frameLayout {
+                        setForegroundCompat(context.attrResource(R.attr.selectableItemBackground))
+
+                        simpleDraweeView {
+                            this@Ui.image = this
+                            scaleType = ImageView.ScaleType.CENTER_CROP
+                        }.lparams(matchParent, matchParent)
+
+                        textView {
+                            this@Ui.description = this
+                            textAppearance = R.style.TextAppearance_AppCompat_Subhead
+                            textColorResource = R.color.colorBlack
+                            backgroundColorResource = R.color.colorDescriptionBackground
+                            gravity = Gravity.CENTER_HORIZONTAL
+                        }.lparams(matchParent, wrapContent) {
+                            gravity = Gravity.BOTTOM
+                            bottomMargin = dip(8)
+                        }
+                    }
+
                 }
 
-                lparams(matchParent, dimen(R.dimen.height_item_banner))
+                lparams(matchParent, dimen(R.dimen.height_item_banner)) {
+                    margin = dip(16)
+                }
             }
         }
     }
