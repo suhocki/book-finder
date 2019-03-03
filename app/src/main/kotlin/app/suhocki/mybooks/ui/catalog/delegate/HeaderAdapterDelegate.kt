@@ -1,49 +1,74 @@
 package app.suhocki.mybooks.ui.catalog.delegate
 
+import android.content.Context
 import android.graphics.Typeface
 import android.support.v7.widget.RecyclerView
+import android.view.Gravity
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import app.suhocki.mybooks.R
-import app.suhocki.mybooks.domain.model.Header
-import app.suhocki.mybooks.ui.base.entity.UiItem
-import app.suhocki.mybooks.ui.catalog.ui.HeaderItemUI
-import com.hannesdorfmann.adapterdelegates3.AdapterDelegate
-import org.jetbrains.anko.AnkoContext
-import org.jetbrains.anko.backgroundResource
-import org.jetbrains.anko.textAppearance
+import app.suhocki.mybooks.ui.catalog.entity.Header
+import com.hannesdorfmann.adapterdelegates3.AbsListItemAdapterDelegate
+import org.jetbrains.anko.*
 
-class HeaderAdapterDelegate : AdapterDelegate<MutableList<UiItem>>() {
+class HeaderAdapterDelegate :
+    AbsListItemAdapterDelegate<Header, Any, HeaderAdapterDelegate.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder =
-        HeaderItemUI()
-            .apply { createView(AnkoContext.createReusable(parent.context, parent, false)) }
-            .let { ViewHolder(it) }
+    override fun onCreateViewHolder(
+        parent: ViewGroup
+    ) = ViewHolder(Ui(parent.context))
 
-    override fun isForViewType(items: MutableList<UiItem>, position: Int): Boolean =
-        with(items[position]) { this is Header }
+    override fun isForViewType(
+        item: Any, items: MutableList<Any>,
+        position: Int
+    ) = items[position] is Header
 
     override fun onBindViewHolder(
-        items: MutableList<UiItem>,
-        position: Int,
-        holder: RecyclerView.ViewHolder,
+        item: Header,
+        holder: ViewHolder,
         payloads: MutableList<Any>
-    ) = (holder as ViewHolder).bind(items[position] as Header)
+    ) = holder.bind(item)
 
-
-    private inner class ViewHolder(val ui: HeaderItemUI) : RecyclerView.ViewHolder(ui.parent) {
+    inner class ViewHolder(
+        val ui: Ui
+    ) : RecyclerView.ViewHolder(ui.parent) {
         fun bind(header: Header) {
             with(ui) {
-                if (!header.inverseColors) {
-                    parent.backgroundResource = R.color.colorPrimary
-                    title.textAppearance = R.style.TextAppearance_AppCompat_Subhead_Inverse
-                    title.setTypeface(title.typeface, Typeface.BOLD)
-                }
-                title.setAllCaps(header.allCaps)
-                if (!header.allCaps) {
-                    title.textAppearance = R.style.TextAppearance_AppCompat_Subhead
-                    title.setTypeface(title.typeface, Typeface.NORMAL)
-                }
-                title.text = header.title
+                parent.backgroundResource = R.color.colorPrimary
+                title.textAppearance = R.style.TextAppearance_AppCompat_Subhead_Inverse
+                title.setTypeface(title.typeface, Typeface.BOLD)
+                title.isAllCaps = true
+                title.textResource = header.textRes
+            }
+        }
+    }
+
+    inner class Ui(context: Context) : AnkoComponent<Context> {
+        lateinit var parent: View
+        lateinit var title: TextView
+
+        init {
+            createView(AnkoContext.create(context, context, false))
+        }
+
+        override fun createView(ui: AnkoContext<Context>) = with(ui) {
+
+            frameLayout {
+                this@Ui.parent = this
+                backgroundResource = R.color.colorWhite
+
+                textView {
+                    this@Ui.title = this
+                    allCaps = true
+                    textAppearance = R.style.TextAppearance_AppCompat_Subhead
+                    setTypeface(typeface, Typeface.BOLD)
+                    horizontalPadding = dip(18)
+                    gravity = Gravity.CENTER_VERTICAL
+                    minHeight = dimenAttr(R.attr.actionBarSize)
+                }.lparams(wrapContent, wrapContent)
+
+                lparams(matchParent, wrapContent)
             }
         }
     }

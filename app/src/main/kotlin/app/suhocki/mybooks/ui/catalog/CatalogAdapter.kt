@@ -7,6 +7,7 @@ import app.suhocki.mybooks.domain.model.Header
 import app.suhocki.mybooks.ui.base.delegate.ProgressAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.delegate.BannersHolderAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.delegate.CategoryAdapterDelegate
+import app.suhocki.mybooks.ui.catalog.delegate.HeaderAdapterDelegate
 import app.suhocki.mybooks.ui.catalog.entity.BannersHolder
 import com.hannesdorfmann.adapterdelegates3.AsyncListDifferDelegationAdapter
 
@@ -22,6 +23,7 @@ class CatalogAdapter(
             .addDelegate(CategoryAdapterDelegate(categoryClickListener))
             .addDelegate(ProgressAdapterDelegate())
             .addDelegate(BannersHolderAdapterDelegate(loadNextBannersPage))
+            .addDelegate(HeaderAdapterDelegate())
     }
 
     fun setData(list: List<Any>) {

@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.delegate.ProgressAdapterDelegate
-import app.suhocki.mybooks.ui.base.entity.Progress
 import app.suhocki.mybooks.ui.catalog.entity.BannersHolder
 import com.hannesdorfmann.adapterdelegates3.AbsListItemAdapterDelegate
 import com.hannesdorfmann.adapterdelegates3.AsyncListDifferDelegationAdapter
@@ -94,18 +93,6 @@ class BannersHolderAdapterDelegate(
 
         fun setData(list: List<Any>) {
             items = list.toList()
-        }
-
-        fun showProgress(isVisible: Boolean) {
-            val newData = items.toMutableList()
-
-            if (isVisible && items.lastOrNull() !is Progress) {
-                newData.add(Progress())
-                items = newData
-            } else if (!isVisible && items.lastOrNull() is Progress) {
-                newData.removeAt(newData.lastIndex)
-                items = newData
-            }
         }
 
         override fun onBindViewHolder(

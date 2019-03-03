@@ -1,7 +1,6 @@
 package app.suhocki.mybooks.ui.base.delegate
 
 import android.content.Context
-import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
@@ -30,10 +29,10 @@ class ProgressAdapterDelegate :
         payloads: MutableList<Any>
     ) {
         holder.ui.parent.layoutParams =
-                if (item.orientation == LinearLayoutManager.VERTICAL) {
-                    ViewGroup.LayoutParams(matchParent, wrapContent)
-                } else {
+                if (item.horizontal) {
                     ViewGroup.LayoutParams(wrapContent, matchParent)
+                } else {
+                    ViewGroup.LayoutParams(matchParent, wrapContent)
                 }
     }
 

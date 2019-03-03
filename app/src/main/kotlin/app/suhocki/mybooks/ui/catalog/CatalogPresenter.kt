@@ -1,6 +1,6 @@
 package app.suhocki.mybooks.ui.catalog
 
-import android.support.v7.widget.LinearLayoutManager
+import app.suhocki.mybooks.R
 import app.suhocki.mybooks.Screens
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.data.mapper.Mapper
@@ -12,6 +12,7 @@ import app.suhocki.mybooks.model.system.flow.FlowRouter
 import app.suhocki.mybooks.presentation.global.paginator.FirestorePaginator
 import app.suhocki.mybooks.ui.base.entity.Progress
 import app.suhocki.mybooks.ui.catalog.entity.BannersHolder
+import app.suhocki.mybooks.ui.catalog.entity.Header
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import javax.inject.Inject
@@ -23,6 +24,8 @@ class CatalogPresenter @Inject constructor(
     private val mapper: Mapper,
     private val router: FlowRouter
 ) : MvpPresenter<CatalogView>() {
+
+    private val header = Header(R.string.categories)
 
     //region init categories paginator
     private val categoriesFactory = { page: Int ->
@@ -49,33 +52,46 @@ class CatalogPresenter @Inject constructor(
                 viewState.showEmptyView(show)
 
             override fun showData(show: Boolean, data: List<Any>) {
-                val resultData =
-                    mutableListOf<Any>(BannersHolder(bannersPaginator.currentData))
-                        .apply { addAll(data) }
-                viewState.showData(resultData)
+                val bannersHolder = BannersHolder(
+                    mutableListOf<Any>()
+                        .apply {
+                            addAll(bannersPaginator.currentData)
+                            if (bannersPaginator.isPageProgress) {
+                                add(Progress(true))
+                            }
+                        }
+                )
+                mutableListOf<Any>()
+                    .apply {
+                        add(bannersHolder)
+                        add(header)
+                        addAll(data)
+                    }.let {
+                        viewState.showData(it)
+                    }
             }
 
             override fun showRefreshProgress(show: Boolean) =
                 viewState.showRefreshProgress(show)
 
             override fun showPageProgress(show: Boolean) {
-                val bannersHolder = BannersHolder(
-                    bannersPaginator.currentData
-                        .toMutableList()
-                        .apply {
-                            if (bannersPaginator.isPageProgress) {
-                                add(Progress(LinearLayoutManager.HORIZONTAL))
-                            }
-                        }
-                )
-                categoriesPaginator.currentData
-                    .toMutableList()
+                val bannersHolder = BannersHolder(mutableListOf<Any>()
                     .apply {
-                        add(0, bannersHolder)
-                        if (show) {
+                        addAll(bannersPaginator.currentData)
+                        if (bannersPaginator.isPageProgress) {
+                            add(Progress(true))
+                        }
+                    })
+                mutableListOf<Any>()
+                    .apply {
+                        add(bannersHolder)
+                        add(header)
+                        addAll(categoriesPaginator.currentData)
+                        if (categoriesPaginator.isPageProgress) {
                             add(Progress())
                         }
-                        viewState.showData(this)
+                    }.let {
+                        viewState.showData(it)
                     }
             }
         }
@@ -117,9 +133,17 @@ class CatalogPresenter @Inject constructor(
             }
 
             override fun showData(show: Boolean, data: List<Any>) {
-                val resultData = mutableListOf<Any>(BannersHolder(data))
-                    .apply { addAll(categoriesPaginator.currentData) }
-                viewState.showData(resultData)
+                mutableListOf<Any>()
+                    .apply {
+                        add(BannersHolder(data))
+                        add(header)
+                        addAll(categoriesPaginator.currentData)
+                        if (categoriesPaginator.isPageProgress) {
+                            add(Progress())
+                        }
+                    }.let {
+                        viewState.showData(it)
+                    }
             }
 
             override fun showRefreshProgress(show: Boolean) {
@@ -131,14 +155,22 @@ class CatalogPresenter @Inject constructor(
                     mutableListOf<Any>().apply {
                         addAll(bannersPaginator.currentData)
                         if (show) {
-                            add(Progress(LinearLayoutManager.HORIZONTAL))
+                            add(Progress(true))
                         }
                     }
                 )
-                val resultData = mutableListOf<Any>(bannersHolder)
-                resultData.addAll(categoriesPaginator.currentData)
+                mutableListOf<Any>()
+                    .apply {
+                        add(bannersHolder)
+                        add(header)
+                        addAll(categoriesPaginator.currentData)
+                        if (categoriesPaginator.isPageProgress) {
+                            add(Progress())
+                        }
+                    }.let {
+                        viewState.showData(it)
+                    }
 
-                viewState.showData(resultData)
             }
         }
 
