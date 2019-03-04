@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.catalog
 
+import android.view.MotionEvent
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.Screens
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
@@ -13,9 +14,16 @@ import app.suhocki.mybooks.presentation.global.paginator.FirestorePaginator
 import app.suhocki.mybooks.ui.base.entity.Progress
 import app.suhocki.mybooks.ui.catalog.entity.BannersHolder
 import app.suhocki.mybooks.ui.catalog.entity.Header
+import app.suhocki.mybooks.uiThread
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import org.jetbrains.anko.AnkoLogger
+import org.jetbrains.anko.info
+import java.util.*
 import javax.inject.Inject
+import kotlin.concurrent.timer
+
+private const val AUTO_SCROLL_TIMER_DELAY = 3000L
 
 @InjectViewState
 class CatalogPresenter @Inject constructor(
@@ -23,9 +31,10 @@ class CatalogPresenter @Inject constructor(
     @BannersObserver private val bannersObserver: FirestoreObserver,
     private val mapper: Mapper,
     private val router: FlowRouter
-) : MvpPresenter<CatalogView>() {
+) : MvpPresenter<CatalogView>(), AnkoLogger {
 
     private val header = Header(R.string.categories)
+    private var visibleBannerIndex = 0
 
     //region init categories paginator
     private val categoriesFactory = { page: Int ->
@@ -183,6 +192,23 @@ class CatalogPresenter @Inject constructor(
         )
     //endregion
 
+    private var bannersTimer: Timer? = timer(
+        period = AUTO_SCROLL_TIMER_DELAY
+    ) {
+        flingBanners()
+    }
+
+    private fun flingBanners() {
+        if (bannersPaginator.currentData.isEmpty()) {
+            return
+        }
+        val bannersCount = bannersPaginator.currentData.size
+        uiThread {
+            info {"fling to ${visibleBannerIndex++ % bannersCount}"}
+            viewState.showBannerByIndex(visibleBannerIndex++ % bannersCount)
+        }
+    }
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         categoriesPaginator.refresh()
@@ -190,11 +216,12 @@ class CatalogPresenter @Inject constructor(
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         categoriesPaginator.release()
         categoriesObserver.dispose()
         bannersPaginator.release()
         bannersObserver.dispose()
+        with(bannersTimer!!) { cancel(); purge() }
+        super.onDestroy()
     }
 
     fun loadNextCategoriesPage() {
@@ -207,6 +234,29 @@ class CatalogPresenter @Inject constructor(
 
     fun onCategoryClick(category: Category) {
         router.navigateTo(Screens.Books(category.id))
+    }
+
+    fun setVisibleBannerIndex(index: Int) {
+        visibleBannerIndex = index
+    }
+
+    fun onUserFlingBanners(action: Int) {
+        if (bannersTimer != null &&
+            action == MotionEvent.ACTION_DOWN
+        ) {
+            bannersTimer!!.cancel()
+            bannersTimer = null
+        } else if (bannersTimer == null &&
+            (action == MotionEvent.ACTION_UP ||
+                    action == MotionEvent.ACTION_CANCEL)
+        ) {
+            bannersTimer = timer(
+                period = AUTO_SCROLL_TIMER_DELAY,
+                initialDelay = AUTO_SCROLL_TIMER_DELAY
+            ) {
+                flingBanners()
+            }
+        }
     }
 
     fun onBackPressed() = router.exit()

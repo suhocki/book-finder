@@ -43,14 +43,22 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
     @Inject
     lateinit var debugPanelController: DebugPanelController
 
+    private val bannersController by lazy {
+        BannersController(
+            presenter::onUserFlingBanners,
+            presenter::setVisibleBannerIndex
+        )
+    }
+
     override val ui by lazy { CatalogUI() }
 
     private val adapter by lazy {
         CatalogAdapter(
             CatalogAdapter.CatalogDiffCallback(),
+            bannersController,
             presenter::onCategoryClick,
-            loadNextBannersPage = presenter::loadNextBannersPage,
-            loadNextCategoriesPage = presenter::loadNextCategoriesPage
+            presenter::loadNextBannersPage,
+            presenter::loadNextCategoriesPage
         )
     }
 
@@ -159,6 +167,10 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
         context!!.openLink(book.website)
     }
 
+    override fun showBannerByIndex(index: Int) {
+        bannersController.showBannerByIndex(index)
+    }
+
     override fun showData(data: List<Any>) {
         postViewAction {
             adapter.setData(data)
@@ -188,9 +200,19 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
         TODO("not implemented")
     }
 
+
     companion object {
         const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"
         const val SEARCH_RESULT_POSITION = 3
+    }
+
+    class BannersController(
+        val userTouchReceiver: ((motionEvent: Int) -> Unit),
+        val onVisibleIndexChanged: ((index: Int) -> Unit)
+    ) {
+        var indexToShowReceiver: ((index: Int) -> Unit)? = null
+
+        fun showBannerByIndex(index: Int) = indexToShowReceiver?.invoke(index)
     }
 }
 

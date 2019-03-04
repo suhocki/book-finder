@@ -20,4 +20,5 @@ interface CatalogView : MvpView {
     fun showRecyclerDecoration(decoration: RecyclerView.ItemDecoration)
     fun showBuyDrawableForItem(book: UiBook, @DrawableRes drawableRes: Int)
     fun openBookWebsite(book: Book)
+    fun showBannerByIndex(index: Int)
 }

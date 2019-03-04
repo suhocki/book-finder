@@ -13,6 +13,7 @@ import com.hannesdorfmann.adapterdelegates3.AsyncListDifferDelegationAdapter
 
 class CatalogAdapter(
     diffCallback: CatalogDiffCallback,
+    bannerController: CatalogFragment.BannersController,
     categoryClickListener: (Category) -> Unit,
     loadNextBannersPage: () -> Unit,
     private val loadNextCategoriesPage: () -> Unit
@@ -22,7 +23,7 @@ class CatalogAdapter(
         delegatesManager
             .addDelegate(CategoryAdapterDelegate(categoryClickListener))
             .addDelegate(ProgressAdapterDelegate())
-            .addDelegate(BannersHolderAdapterDelegate(loadNextBannersPage))
+            .addDelegate(BannersHolderAdapterDelegate(loadNextBannersPage, bannerController))
             .addDelegate(HeaderAdapterDelegate())
     }
 

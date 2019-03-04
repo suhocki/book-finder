@@ -4,22 +4,28 @@ import android.content.Context
 import android.graphics.Color
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.RecyclerView
+import android.util.DisplayMetrics
 import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.Banner
 import app.suhocki.mybooks.ui.Ids
 import app.suhocki.mybooks.ui.base.delegate.ProgressAdapterDelegate
+import app.suhocki.mybooks.ui.catalog.CatalogFragment
 import app.suhocki.mybooks.ui.catalog.entity.BannersHolder
 import com.hannesdorfmann.adapterdelegates3.AbsListItemAdapterDelegate
 import com.hannesdorfmann.adapterdelegates3.AsyncListDifferDelegationAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
+import org.jetbrains.anko.sdk25.coroutines.onTouch
 
+private const val SPEED_COEFFICIENT = 125.0f
 
 class BannersHolderAdapterDelegate(
-    nextPageListener: () -> Unit
+    nextPageListener: () -> Unit,
+    private val bannerController: CatalogFragment.BannersController
 ) : AbsListItemAdapterDelegate<BannersHolder, Any, BannersHolderAdapterDelegate.ViewHolder>(),
     AnkoLogger {
 
@@ -27,6 +33,20 @@ class BannersHolderAdapterDelegate(
         BannersDiffCallback(),
         nextPageListener
     )
+
+    private val onScrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                bannerController.onVisibleIndexChanged(
+                    layoutManager.findFirstVisibleItemPosition()
+                )
+            }
+            super.onScrollStateChanged(recyclerView, newState)
+        }
+    }
+
+    private lateinit var layoutManager: LinearLayoutManager
+    private lateinit var scroller: LinearSmoothScroller
 
     override fun onCreateViewHolder(
         parent: ViewGroup
@@ -47,8 +67,27 @@ class BannersHolderAdapterDelegate(
         val ui: BannersHolderAdapterDelegate.Ui
     ) : RecyclerView.ViewHolder(ui.parent) {
         init {
+            scroller = object : LinearSmoothScroller(ui.recyclerView.context) {
+                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics?): Float {
+                    return SPEED_COEFFICIENT / displayMetrics!!.densityDpi.toFloat()
+                }
+            }
+            layoutManager = LinearLayoutManager(
+                ui.recyclerView.context, LinearLayoutManager.HORIZONTAL, false
+            )
+
             ui.recyclerView.adapter = adapter
+            ui.recyclerView.layoutManager = layoutManager
+            ui.recyclerView.addOnScrollListener(onScrollListener)
+            ui.recyclerView.onTouch { _, event ->
+                bannerController.userTouchReceiver.invoke(event.action)
+            }
             PagerSnapHelper().attachToRecyclerView(ui.recyclerView)
+
+            bannerController.indexToShowReceiver = { index: Int ->
+                scroller.targetPosition = index
+                layoutManager.startSmoothScroll(scroller)
+            }
         }
 
         fun bind(bannersHolder: BannersHolder) {
@@ -73,9 +112,6 @@ class BannersHolderAdapterDelegate(
                     recyclerView = this
                     id = Ids.recyclerBanners
                     clipToPadding = false
-                    layoutManager = LinearLayoutManager(
-                        context, LinearLayoutManager.HORIZONTAL, false
-                    )
 
                     lparams(matchParent, wrapContent)
                 }
