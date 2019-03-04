@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.support.v7.util.DiffUtil
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
@@ -16,12 +17,14 @@ import com.hannesdorfmann.adapterdelegates3.AsyncListDifferDelegationAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 
+
 class BannersHolderAdapterDelegate(
     nextPageListener: () -> Unit
-) : AbsListItemAdapterDelegate<BannersHolder, Any, BannersHolderAdapterDelegate.ViewHolder>() {
+) : AbsListItemAdapterDelegate<BannersHolder, Any, BannersHolderAdapterDelegate.ViewHolder>(),
+    AnkoLogger {
 
-    private var adapter = BannersAdapter(
-        BannersAdapter.BannersDiffCallback(),
+    private val adapter = BannersAdapter(
+        BannersDiffCallback(),
         nextPageListener
     )
 
@@ -45,6 +48,7 @@ class BannersHolderAdapterDelegate(
     ) : RecyclerView.ViewHolder(ui.parent) {
         init {
             ui.recyclerView.adapter = adapter
+            PagerSnapHelper().attachToRecyclerView(ui.recyclerView)
         }
 
         fun bind(bannersHolder: BannersHolder) {
@@ -80,8 +84,8 @@ class BannersHolderAdapterDelegate(
             }
     }
 
-    private class BannersAdapter(
-        diffCallback: BannersAdapter.BannersDiffCallback,
+    private inner class BannersAdapter(
+        diffCallback: BannersDiffCallback,
         private val nextPageListener: () -> Unit
     ) : AsyncListDifferDelegationAdapter<Any>(diffCallback) {
 
@@ -104,19 +108,19 @@ class BannersHolderAdapterDelegate(
 
             if (position == items.lastIndex) nextPageListener()
         }
+    }
 
-        class BannersDiffCallback : DiffUtil.ItemCallback<Any>() {
-            override fun areItemsTheSame(oldItem: Any, newItem: Any) = when {
-                oldItem is Banner && newItem is Banner -> oldItem.id == newItem.id
-                else -> oldItem::class.java == newItem::class.java
-            }
+    class BannersDiffCallback : DiffUtil.ItemCallback<Any>() {
+        override fun areItemsTheSame(oldItem: Any, newItem: Any) = when {
+            oldItem is Banner && newItem is Banner -> oldItem.id == newItem.id
+            else -> oldItem::class.java == newItem::class.java
+        }
 
-            override fun areContentsTheSame(oldItem: Any, newItem: Any) = when {
-                oldItem is Banner && newItem is Banner ->
-                    oldItem.imageUrl == newItem.imageUrl &&
-                            oldItem.description == newItem.description
-                else -> true
-            }
+        override fun areContentsTheSame(oldItem: Any, newItem: Any) = when {
+            oldItem is Banner && newItem is Banner ->
+                oldItem.imageUrl == newItem.imageUrl &&
+                        oldItem.description == newItem.description
+            else -> true
         }
     }
 }

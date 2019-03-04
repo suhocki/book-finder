@@ -108,8 +108,8 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
                 menuController.open()
             }
         }
-
         ui.recyclerView.adapter = adapter
+        ui.recyclerView.addItemDecoration(CatalogItemDecoration())
     }
 
     override fun onStart() {
@@ -160,7 +160,10 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
     }
 
     override fun showData(data: List<Any>) {
-        postViewAction { adapter.setData(data) }
+        postViewAction {
+            adapter.setData(data)
+            ui.recyclerView.invalidateItemDecorations()
+        }
     }
 
     override fun showEmptyProgress(show: Boolean) {
