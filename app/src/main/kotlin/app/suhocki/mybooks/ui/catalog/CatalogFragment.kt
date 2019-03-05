@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.support.annotation.DrawableRes
 import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.support.v7.widget.RecyclerView
+import android.view.MotionEvent
 import android.view.View
 import app.suhocki.mybooks.Analytics
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
@@ -21,6 +22,7 @@ import app.suhocki.mybooks.ui.base.entity.UiBook
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.google.firebase.firestore.FirebaseFirestore
+import org.jetbrains.anko.sdk25.coroutines.onTouch
 import org.jetbrains.anko.support.v4.longToast
 import toothpick.Scope
 import toothpick.Toothpick
@@ -45,7 +47,7 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
 
     private val bannersController by lazy {
         BannersController(
-            presenter::onUserFlingBanners,
+            presenter::enableAutoScroll,
             presenter::setVisibleBannerIndex
         )
     }
@@ -118,6 +120,16 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
         }
         ui.recyclerView.adapter = adapter
         ui.recyclerView.addItemDecoration(CatalogItemDecoration())
+        ui.recyclerView.onTouch { _, event ->
+            val action = event.action
+            val isReleaseAction = action == MotionEvent.ACTION_UP ||
+                    action == MotionEvent.ACTION_CANCEL
+            val isTouchAction = action == MotionEvent.ACTION_DOWN ||
+                    action == MotionEvent.ACTION_MOVE
+
+            if (isReleaseAction) bannersController.enableAutoScroll(true)
+            else if (isTouchAction) bannersController.enableAutoScroll(false)
+        }
     }
 
     override fun onStart() {
@@ -207,7 +219,7 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
     }
 
     class BannersController(
-        val userTouchReceiver: ((motionEvent: Int) -> Unit),
+        val enableAutoScroll: ((enable: Boolean) -> Unit),
         val onVisibleIndexChanged: ((index: Int) -> Unit)
     ) {
         var indexToShowReceiver: ((index: Int) -> Unit)? = null

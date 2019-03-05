@@ -1,6 +1,5 @@
 package app.suhocki.mybooks.ui.catalog
 
-import android.view.MotionEvent
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.Screens
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
@@ -18,7 +17,6 @@ import app.suhocki.mybooks.uiThread
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import org.jetbrains.anko.AnkoLogger
-import org.jetbrains.anko.info
 import java.util.*
 import javax.inject.Inject
 import kotlin.concurrent.timer
@@ -192,11 +190,7 @@ class CatalogPresenter @Inject constructor(
         )
     //endregion
 
-    private var bannersTimer: Timer? = timer(
-        period = AUTO_SCROLL_TIMER_DELAY
-    ) {
-        flingBanners()
-    }
+    private var bannersTimer: Timer? = null
 
     private fun flingBanners() {
         if (bannersPaginator.currentData.isEmpty()) {
@@ -204,7 +198,6 @@ class CatalogPresenter @Inject constructor(
         }
         val bannersCount = bannersPaginator.currentData.size
         uiThread {
-            info {"fling to ${visibleBannerIndex++ % bannersCount}"}
             viewState.showBannerByIndex(visibleBannerIndex++ % bannersCount)
         }
     }
@@ -213,6 +206,18 @@ class CatalogPresenter @Inject constructor(
         super.onFirstViewAttach()
         categoriesPaginator.refresh()
         bannersPaginator.refresh()
+    }
+
+    override fun attachView(view: CatalogView?) {
+        super.attachView(view)
+        enableAutoScroll(true)
+        visibleBannerIndex = 0
+        viewState.showBannerByIndex(visibleBannerIndex)
+    }
+
+    override fun detachView(view: CatalogView?) {
+        enableAutoScroll(false)
+        super.detachView(view)
     }
 
     override fun onDestroy() {
@@ -240,16 +245,12 @@ class CatalogPresenter @Inject constructor(
         visibleBannerIndex = index
     }
 
-    fun onUserFlingBanners(action: Int) {
-        if (bannersTimer != null &&
-            action == MotionEvent.ACTION_DOWN
-        ) {
+    fun enableAutoScroll(enable: Boolean) {
+        if (bannersTimer != null && !enable) {
             bannersTimer!!.cancel()
+            bannersTimer!!.purge()
             bannersTimer = null
-        } else if (bannersTimer == null &&
-            (action == MotionEvent.ACTION_UP ||
-                    action == MotionEvent.ACTION_CANCEL)
-        ) {
+        } else if (bannersTimer == null && enable) {
             bannersTimer = timer(
                 period = AUTO_SCROLL_TIMER_DELAY,
                 initialDelay = AUTO_SCROLL_TIMER_DELAY
