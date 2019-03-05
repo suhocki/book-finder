@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.PagerSnapHelper
 import android.support.v7.widget.RecyclerView
 import android.util.DisplayMetrics
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import app.suhocki.mybooks.domain.model.Banner
@@ -80,7 +81,14 @@ class BannersHolderAdapterDelegate(
             ui.recyclerView.layoutManager = layoutManager
             ui.recyclerView.addOnScrollListener(onScrollListener)
             ui.recyclerView.onTouch { _, event ->
-                bannerController.userTouchReceiver.invoke(event.action)
+                val action = event.action
+                val isReleaseAction = action == MotionEvent.ACTION_UP ||
+                        action == MotionEvent.ACTION_CANCEL
+                val isTouchAction = action == MotionEvent.ACTION_DOWN ||
+                        action == MotionEvent.ACTION_MOVE
+
+                if (isReleaseAction) bannerController.enableAutoScroll(true)
+                else if (isTouchAction) bannerController.enableAutoScroll(false)
             }
             PagerSnapHelper().attachToRecyclerView(ui.recyclerView)
 
