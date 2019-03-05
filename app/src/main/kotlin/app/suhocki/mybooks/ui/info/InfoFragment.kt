@@ -67,7 +67,7 @@ class InfoFragment : BaseFragment<InfoUI>(), InfoView, OnInfoClickListener {
         MPEventBus.getDefault().unregister(this)
     }
 
-    override fun showInfoItems(items: MutableList<Any>) {
+    override fun showInfoItems(items: List<Any>) {
         adapter.submitList(items)
     }
 

@@ -3,9 +3,10 @@ package app.suhocki.mybooks.ui.base.decorator
 import android.graphics.Rect
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import app.suhocki.mybooks.R
 
 
-class ItemDecoratorGrid(private val offset: Int) : RecyclerView.ItemDecoration() {
+class ItemDecoratorGrid : RecyclerView.ItemDecoration() {
 
     override fun getItemOffsets(
         outRect: Rect,
@@ -13,6 +14,7 @@ class ItemDecoratorGrid(private val offset: Int) : RecyclerView.ItemDecoration()
         parent: RecyclerView,
         state: RecyclerView.State
     ) {
+        val offset = view.resources.getDimensionPixelSize(R.dimen.height_divider_decorator)
         with(outRect) {
             right = offset
             top = offset

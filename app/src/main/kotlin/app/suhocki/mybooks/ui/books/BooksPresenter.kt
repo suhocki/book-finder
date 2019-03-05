@@ -2,6 +2,7 @@ package app.suhocki.mybooks.ui.books
 
 import app.suhocki.mybooks.Screens
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
+import app.suhocki.mybooks.data.firestore.entity.FirestoreCategory
 import app.suhocki.mybooks.data.mapper.Mapper
 import app.suhocki.mybooks.domain.model.Book
 import app.suhocki.mybooks.model.system.flow.FlowRouter
@@ -9,11 +10,13 @@ import app.suhocki.mybooks.presentation.global.paginator.FirestorePaginator
 import app.suhocki.mybooks.ui.base.entity.UiBook
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import com.google.firebase.firestore.Query
 import javax.inject.Inject
 
 @InjectViewState
 class BooksPresenter @Inject constructor(
     private val firestoreObserver: FirestoreObserver,
+    private val categoryQuery: Query,
     private val mapper: Mapper,
     private val router: FlowRouter
 ) : MvpPresenter<BooksView>() {
@@ -67,10 +70,10 @@ class BooksPresenter @Inject constructor(
         { firestoreData -> firestoreData.map { mapper.map<UiBook>(it) } }
     )
 
-
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
         paginator.refresh()
+        observeCategory()
     }
 
     override fun onDestroy() {
@@ -88,6 +91,20 @@ class BooksPresenter @Inject constructor(
     }
 
     fun onBackPressed() = router.exit()
+
+    private fun observeCategory() {
+        categoryQuery.addSnapshotListener { snapshot, error ->
+            if (snapshot == null) {
+                viewState.showErrorMessage(error!!)
+                return@addSnapshotListener
+            }
+            snapshot.documents
+                .firstOrNull()
+                ?.let {
+                    viewState.showCategory(it.toObject(FirestoreCategory::class.java)!!)
+                }
+        }
+    }
 
     companion object {
         const val LIMIT = 3

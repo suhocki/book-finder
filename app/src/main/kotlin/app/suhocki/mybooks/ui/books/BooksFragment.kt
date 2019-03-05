@@ -2,17 +2,23 @@ package app.suhocki.mybooks.ui.books
 
 import android.os.Bundle
 import android.support.v7.graphics.drawable.DrawerArrowDrawable
+import android.support.v7.widget.GridLayoutManager
 import android.view.View
 import app.suhocki.mybooks.data.firestore.FirestoreObserver
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.room.entity.BookDbo
+import app.suhocki.mybooks.data.room.entity.CategoryDbo
 import app.suhocki.mybooks.di.ErrorReceiver
+import app.suhocki.mybooks.domain.model.Category
 import app.suhocki.mybooks.extensions.argument
 import app.suhocki.mybooks.model.system.debug.DebugPanelController
 import app.suhocki.mybooks.ui.base.BaseFragment
+import app.suhocki.mybooks.ui.base.decorator.ItemDecoratorGrid
+import app.suhocki.mybooks.ui.base.entity.Progress
 import com.arellomobile.mvp.presenter.InjectPresenter
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import org.jetbrains.anko.support.v4.longToast
 import org.jetbrains.anko.support.v4.withArguments
 import toothpick.Scope
@@ -65,6 +71,13 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
                                 debugPanel::onBooksObserversCount
                             )
                         )
+
+                    bind(Query::class.java)
+                        .toInstance(
+                            firestore.collection(FirestoreRepository.CATEGORIES)
+                                .whereEqualTo(CategoryDbo.ID, categoryId)
+                                .limit(1)
+                        )
                 }
             }
         )
@@ -88,6 +101,16 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
         }
 
         ui.recyclerView.adapter = adapter
+        ui.recyclerView.addItemDecoration(ItemDecoratorGrid())
+        with(ui.recyclerView.layoutManager as GridLayoutManager) layoutManager@{
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int) =
+                    when (adapter.items.getOrNull(position)) {
+                        is Progress -> this@layoutManager.spanCount
+                        else -> 1
+                    }
+            }
+        }
     }
 
     override fun onResume() {
@@ -108,6 +131,10 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
     override fun onBackPressed() {
         super.onBackPressed()
         presenter.onBackPressed()
+    }
+
+    override fun showCategory(category: Category) {
+        ui.toolbar.title = category.name
     }
 
     override fun showEmptyProgress(show: Boolean) {

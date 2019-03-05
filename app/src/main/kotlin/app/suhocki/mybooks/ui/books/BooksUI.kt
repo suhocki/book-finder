@@ -10,12 +10,11 @@ import android.view.Gravity
 import android.view.View
 import app.suhocki.mybooks.R
 import app.suhocki.mybooks.ui.Ids
+import app.suhocki.mybooks.ui.base.themedAutofitRecyclerView
 import app.suhocki.mybooks.ui.base.themedToolbarCompat
-import app.suhocki.mybooks.ui.base.view.ScrollLayoutManager
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.coordinatorLayout
 import org.jetbrains.anko.design.themedAppBarLayout
-import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 
 
 class BooksUI : AnkoComponent<Context> {
@@ -43,12 +42,14 @@ class BooksUI : AnkoComponent<Context> {
                 }
             }.lparams(matchParent, dimenAttr(R.attr.actionBarSize))
 
-            themedRecyclerView(R.style.ScrollbarRecyclerView) {
+            themedAutofitRecyclerView(R.style.ScrollbarRecyclerView) {
                 recyclerView = this
                 id = Ids.recyclerCatalog
                 clipToPadding = false
-                layoutManager = ScrollLayoutManager(context)
+                setHasFixedSize(true)
+                columnWidth = dip(146)
                 backgroundColorResource = R.color.colorGray
+                padding = resources.getDimensionPixelSize(R.dimen.height_divider_decorator)
             }.lparams(matchParent, matchParent) {
                 behavior = AppBarLayout.ScrollingViewBehavior()
             }
