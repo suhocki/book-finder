@@ -1,5 +1,6 @@
 package app.suhocki.mybooks.ui.books
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.support.v7.widget.GridLayoutManager
@@ -165,6 +166,17 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
 
     override fun showPageProgress(show: Boolean) {
         postViewAction { adapter.showProgress(show) }
+    }
+
+    override fun showHamburgerMenu(animate: Boolean) {
+        val animatedDrawable = ui.toolbar.navigationIcon as DrawerArrowDrawable
+        if (animate) {
+            ObjectAnimator
+                .ofFloat(animatedDrawable, "progress", 0f, 1f)
+                .start()
+        } else {
+            animatedDrawable.progress = 1f
+        }
     }
 
     companion object {

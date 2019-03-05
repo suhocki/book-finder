@@ -74,6 +74,12 @@ class BooksPresenter @Inject constructor(
         super.onFirstViewAttach()
         paginator.refresh()
         observeCategory()
+        viewState.showHamburgerMenu(true)
+    }
+
+    override fun attachView(view: BooksView?) {
+        super.attachView(view)
+        viewState.showHamburgerMenu(false)
     }
 
     override fun onDestroy() {

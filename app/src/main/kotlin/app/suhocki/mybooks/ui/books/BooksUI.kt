@@ -32,7 +32,9 @@ class BooksUI : AnkoComponent<Context> {
                     toolbar = this
 
                     navigationIcon = DrawerArrowDrawable(context!!)
-                        .apply { color = Color.WHITE }
+                        .apply {
+                            color = Color.WHITE
+                        }
 
                     backgroundColorResource = R.color.colorPrimary
                     setContentInsetsRelative(0, 0)

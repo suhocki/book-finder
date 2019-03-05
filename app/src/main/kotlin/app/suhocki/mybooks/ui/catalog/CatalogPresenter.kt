@@ -191,16 +191,7 @@ class CatalogPresenter @Inject constructor(
     //endregion
 
     private var bannersTimer: Timer? = null
-
-    private fun flingBanners() {
-        if (bannersPaginator.currentData.isEmpty()) {
-            return
-        }
-        val bannersCount = bannersPaginator.currentData.size
-        uiThread {
-            viewState.showBannerByIndex(visibleBannerIndex++ % bannersCount)
-        }
-    }
+    private var isNavigatingToBooks = false
 
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
@@ -218,6 +209,10 @@ class CatalogPresenter @Inject constructor(
     override fun detachView(view: CatalogView?) {
         enableAutoScroll(false)
         super.detachView(view)
+        if (isNavigatingToBooks) {
+            viewState.animateHamburgerOnBack()
+            isNavigatingToBooks = false
+        }
     }
 
     override fun onDestroy() {
@@ -238,6 +233,7 @@ class CatalogPresenter @Inject constructor(
     }
 
     fun onCategoryClick(category: Category) {
+        isNavigatingToBooks = true
         router.navigateTo(Screens.Books(category.id))
     }
 
@@ -261,6 +257,17 @@ class CatalogPresenter @Inject constructor(
     }
 
     fun onBackPressed() = router.exit()
+
+    private fun flingBanners() {
+        if (bannersPaginator.currentData.isEmpty()) {
+            return
+        }
+        val bannersCount = bannersPaginator.currentData.size
+        uiThread {
+            viewState.showBannerByIndex(visibleBannerIndex++ % bannersCount)
+        }
+    }
+
 
     companion object {
         const val LIMIT = 3

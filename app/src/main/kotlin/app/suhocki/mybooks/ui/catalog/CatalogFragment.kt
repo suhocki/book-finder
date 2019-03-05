@@ -212,6 +212,13 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
         TODO("not implemented")
     }
 
+    override fun animateHamburgerOnBack() {
+        val drawable = ui.toolbar.navigationIcon as DrawerArrowDrawable
+        ObjectAnimator
+            .ofFloat(drawable, "progress", 1f, 0f)
+            .start()
+    }
+
 
     companion object {
         const val ARG_CATEGORY_ID = "ARG_CATEGORY_ID"

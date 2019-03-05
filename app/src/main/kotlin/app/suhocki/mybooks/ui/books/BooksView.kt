@@ -18,4 +18,6 @@ interface BooksView : MvpView {
     fun showRefreshProgress(show: Boolean)
     fun showPageProgress(show: Boolean)
 
+    fun showHamburgerMenu(animate: Boolean)
+
 }
