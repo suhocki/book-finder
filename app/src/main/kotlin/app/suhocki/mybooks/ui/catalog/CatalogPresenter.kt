@@ -220,7 +220,7 @@ class CatalogPresenter @Inject constructor(
         categoriesObserver.dispose()
         bannersPaginator.release()
         bannersObserver.dispose()
-        with(bannersTimer!!) { cancel(); purge() }
+        bannersTimer?.apply { cancel(); purge() }
         super.onDestroy()
     }
 

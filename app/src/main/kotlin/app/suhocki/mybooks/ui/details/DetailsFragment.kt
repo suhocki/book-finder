@@ -1,5 +1,7 @@
 package app.suhocki.mybooks.ui.details
 
+import android.os.Bundle
+import android.support.v7.app.AppCompatActivity
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.domain.model.Book
@@ -42,6 +44,14 @@ class DetailsFragment : BaseFragment<DetailsUI>(), DetailsView {
 
     override val ui by lazy { DetailsUI() }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        with(activity as AppCompatActivity) {
+            setSupportActionBar(ui.toolbar)
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        }
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
         presenter.onBackPressed()
@@ -49,7 +59,7 @@ class DetailsFragment : BaseFragment<DetailsUI>(), DetailsView {
 
     override fun showBook(book: Book) {
         ui.image.setImageURI(book.productLink)
-        ui.toolbar.title = book.shortName
+        ui.toolbarLayout.title = book.shortName
         ui.bindBook(book)
     }
 

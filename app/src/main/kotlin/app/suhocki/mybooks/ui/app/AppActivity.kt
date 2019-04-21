@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
+import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import app.suhocki.mybooks.R
@@ -125,6 +126,11 @@ class AppActivity : MvpAppCompatActivity(), AppView {
         ui.debugPanel.visibility =
                 if (show) View.VISIBLE
                 else View.GONE
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        onBackPressed()
+        return true
     }
 
     private fun showDebugInfo(data: Collection<DebugInfo>) = postViewAction {

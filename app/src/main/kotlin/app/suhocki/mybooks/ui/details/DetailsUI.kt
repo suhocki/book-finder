@@ -5,6 +5,7 @@ import android.graphics.Point
 import android.support.design.widget.AppBarLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.content.res.ResourcesCompat
+import android.support.v7.widget.Toolbar
 import android.view.Gravity
 import android.view.View
 import android.view.ViewGroup
@@ -20,6 +21,7 @@ import app.suhocki.mybooks.ui.base.multilineCollapsingToolbarLayout
 import app.suhocki.mybooks.ui.base.simpleDraweeView
 import app.suhocki.mybooks.ui.base.view.MultilineCollapsingToolbarLayout
 import com.facebook.drawee.view.SimpleDraweeView
+import net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.design.coordinatorLayout
@@ -31,7 +33,8 @@ import org.jetbrains.anko.support.v4.nestedScrollView
 class DetailsUI : AnkoComponent<Context> {
     lateinit var fabBuy: FloatingActionButton
     lateinit var image: SimpleDraweeView
-    lateinit var toolbar: MultilineCollapsingToolbarLayout
+    lateinit var toolbarLayout: MultilineCollapsingToolbarLayout
+    lateinit var toolbar: Toolbar
     lateinit var scrollView: ViewGroup
 
     private var windowHeight = 0
@@ -41,13 +44,14 @@ class DetailsUI : AnkoComponent<Context> {
 
         coordinatorLayout {
             fitsSystemWindows = false
+            backgroundColorResource = R.color.colorWhite
 
             themedAppBarLayout(R.style.ThemeOverlay_AppCompat_Dark_ActionBar) {
                 id = Ids.appbarDetails
                 fitsSystemWindows = false
 
                 multilineCollapsingToolbarLayout {
-                    toolbar = this@multilineCollapsingToolbarLayout
+                    toolbarLayout = this@multilineCollapsingToolbarLayout
                     maxLines = 2
                     fitsSystemWindows = false
                     setContentScrimResource(R.color.colorPrimary)
@@ -66,18 +70,17 @@ class DetailsUI : AnkoComponent<Context> {
                             scaleType = ImageView.ScaleType.CENTER_CROP
                         }.lparams(matchParent, matchParent)
                     }.lparams(matchParent, matchParent) {
-                        collapseMode =
-                                net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
+                        collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
                     }
 
                     toolbar {
                         setContentInsetsRelative(dip(16), dip(16))
+                        toolbar = this
                         popupTheme = R.style.ThemeOverlay_AppCompat_Light
                     }.lparams(
                         matchParent,
                         with(context) { dimen(attrResource(R.attr.actionBarSize)) }) {
-                        collapseMode =
-                                net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PARALLAX
+                        collapseMode = CollapsingToolbarLayout.LayoutParams.COLLAPSE_MODE_PIN
                     }
                 }.lparams(matchParent, matchParent) {
                     scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_SCROLL or
