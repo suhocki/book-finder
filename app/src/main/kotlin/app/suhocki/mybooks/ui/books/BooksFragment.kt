@@ -93,12 +93,7 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
         super.onActivityCreated(savedInstanceState)
 
         ui.toolbar.setNavigationOnClickListener {
-            val animatedDrawable = ui.toolbar.navigationIcon as DrawerArrowDrawable
-            val isArrowVisible = animatedDrawable.progress > 0f
-
-            if (isArrowVisible) {
-            } else {
-            }
+            presenter.onBackPressed()
         }
 
         ui.recyclerView.adapter = adapter
@@ -153,7 +148,7 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
     }
 
     override fun showData(data: List<Any>) {
-        postViewAction { adapter.setData(data) }
+        adapter.setData(data)
     }
 
     override fun showErrorMessage(error: Throwable) {
@@ -165,7 +160,7 @@ class BooksFragment : BaseFragment<BooksUI>(), BooksView {
     }
 
     override fun showPageProgress(show: Boolean) {
-        postViewAction { adapter.showProgress(show) }
+        adapter.showProgress(show)
     }
 
     override fun showHamburgerMenu(animate: Boolean) {

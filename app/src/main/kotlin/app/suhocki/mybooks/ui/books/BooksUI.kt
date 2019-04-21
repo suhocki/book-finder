@@ -3,6 +3,7 @@ package app.suhocki.mybooks.ui.books
 import android.content.Context
 import android.graphics.Color
 import android.support.design.widget.AppBarLayout
+import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.graphics.drawable.DrawerArrowDrawable
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.Toolbar
@@ -38,6 +39,17 @@ class BooksUI : AnkoComponent<Context> {
 
                     backgroundColorResource = R.color.colorPrimary
                     setContentInsetsRelative(0, 0)
+
+                    textView(R.string.filter) {
+                        gravity = Gravity.CENTER_VERTICAL
+                        horizontalPadding = dip(16)
+                        textColorResource = R.color.colorWhite
+                        textSize = 16f
+                        typeface = ResourcesCompat.getFont(context, R.font.roboto_medium)
+                        layoutParams = Toolbar.LayoutParams(
+                            Gravity.END or Gravity.CENTER_VERTICAL
+                        )
+                    }
 
                 }.lparams(matchParent, matchParent) {
                     scrollFlags = AppBarLayout.LayoutParams.SCROLL_FLAG_ENTER_ALWAYS

@@ -196,7 +196,10 @@ class CatalogFragment : BaseFragment<CatalogUI>(), CatalogView {
                 else View.GONE
     }
 
-    override fun showEmptyError(show: Boolean, error: Throwable?) {
+    override fun showEmptyError(
+        show: Boolean,
+        error: Throwable?
+    ) {
         longToast(error.toString())
     }
 
