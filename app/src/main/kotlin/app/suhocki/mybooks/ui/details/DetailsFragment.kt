@@ -2,6 +2,7 @@ package app.suhocki.mybooks.ui.details
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.View
 import app.suhocki.mybooks.data.firestore.FirestoreRepository
 import app.suhocki.mybooks.data.room.entity.BookDbo
 import app.suhocki.mybooks.domain.model.Book
@@ -44,8 +45,8 @@ class DetailsFragment : BaseFragment<DetailsUI>(), DetailsView {
 
     override val ui by lazy { DetailsUI() }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         with(activity as AppCompatActivity) {
             setSupportActionBar(ui.toolbar)
             supportActionBar!!.setDisplayHomeAsUpEnabled(true)

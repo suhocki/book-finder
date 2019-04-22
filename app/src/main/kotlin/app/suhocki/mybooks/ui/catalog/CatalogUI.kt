@@ -22,10 +22,10 @@ import org.jetbrains.anko.recyclerview.v7.themedRecyclerView
 
 class CatalogUI : AnkoComponent<Context> {
     lateinit var recyclerView: RecyclerView
+    lateinit var progressBar: View
     lateinit var search: View
     lateinit var close: ImageView
     lateinit var toolbar: Toolbar
-    lateinit var progressBar: View
 
     override fun createView(ui: AnkoContext<Context>) = with(ui) {
 

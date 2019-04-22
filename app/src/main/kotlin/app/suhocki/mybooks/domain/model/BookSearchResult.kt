@@ -1,6 +1,6 @@
 package app.suhocki.mybooks.domain.model
 
-interface SearchResult {
-    val foundBy: String
+data class BookSearchResult (
+    val foundBy: String,
     val book: Book
-}
+)
